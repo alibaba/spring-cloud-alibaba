@@ -49,7 +49,7 @@ CREATE TABLE `undo_log` (
 ```
 
 #### Import the database tables required by the seata-server db schema
-Initializing [global_table、branch_table、lock_table、distributed_lock](https://github.com/seata/seata/blob/1.8.0/script/server/db/mysql.sql) in the database
+Initializing [global_table、branch_table、lock_table、distributed_lock](https://github.com/seata/seata/blob/2.0.0/script/server/db/mysql.sql) in the database
 
 ```sql
 -- -------------------------------- The script used when storeMode is 'db' --------------------------------
@@ -162,9 +162,9 @@ CREATE TABLE `account_tbl` (
 
 ### 2. Configure Nacos
 
-> Spring Cloud Alibaba is adapted with Nacos 2.2.3. In this example, Nacos 2.2.3 is used as the configuration center component of Seata.
+> Spring Cloud Alibaba is adapted with Nacos 2.3.0. In this example, Nacos 2.3.0 is used as the configuration center component of Seata.
 
-Create Nacos configuration for Seata: data-id: `seata.properties`, Group: `SEATA_GROUP` (default grouping for seata 1.8.0), import
+Create Nacos configuration for Seata: data-id: `seata.properties`, Group: `SEATA_GROUP` (default grouping for seata 2.0.0), import
 
 Add the following configuration items required in the application example to the `seata.properties` configuration file: [事务群组配置](https://seata.io/zh-cn/docs/user/configurations.html)
 
@@ -181,11 +181,11 @@ Add the following configuration items required in the application example to the
 
 #### 1. Download
 
-Click Download [Seata 1.8.0](https://github.com/seata/seata/releases/download/v1.8.0/seata-server-1.8.0.zip) Version.
+Click Download [Seata 2.0.0](https://github.com/seata/seata/releases/download/v2.0.0/seata-server-2.0.0.zip) Version.
 
 #### 2. Configure Seata-server
 
-Modify `seata-server-1.8.0\conf\application.yml` the following configuration items in the configuration file:
+Modify `seata-server-2.0.0\conf\application.yml` the following configuration items in the configuration file:
 
 - Comment `group: SEATA_GROUP`
 - Add Nacos username and password
@@ -220,7 +220,7 @@ seata:
 ```
 
 > **Notice**
-> Nacos 2.2.3 enables authentication. Configuration `username` and `password` properties are required, otherwise login fails. For more Nacos 2.2.3 related configurations, refer to `nacos-example`.
+> Nacos 2.3.0 enables authentication. Configuration `username` and `password` properties are required, otherwise login fails. For more Nacos 2.3.0 related configurations, refer to `nacos-example`.
 > **The Nacos service registration group when seata-server is started must be consistent with the group in the sample application, otherwise an error that seata-server cannot be found will occur!**
 > For more information about the configuration of Seata-server with Nacos as the configuration center, please refer to https://seata.io/zh-cn/docs/ops/deploy-by-docker-compose/#nacos-db.
 

@@ -20,8 +20,8 @@
     <properties>
         <revision>2023.0.0.0</revision>
         <sentinel.version>1.8.6</sentinel.version>
-        <seata.version>1.8.0</seata.version>
         <nacos.client.version>2.3.0</nacos.client.version>
+        <seata.version>2.0.0</seata.version>
         <spring.context.support.version>1.0.11</spring.context.support.version>
         <!-- Apache RocketMQ -->
         <rocketmq.version>4.9.4</rocketmq.version>
