@@ -19,7 +19,7 @@
 
         <junit.version>5.7.2</junit.version>
         <selenium.version>3.141.59</selenium.version>
-        <lombok.version>1.18.20</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
         <assertj-core.version>3.20.2</assertj-core.version>
         <awaitility.version>4.1.0</awaitility.version>
         <kotlin.version>1.5.30</kotlin.version>
