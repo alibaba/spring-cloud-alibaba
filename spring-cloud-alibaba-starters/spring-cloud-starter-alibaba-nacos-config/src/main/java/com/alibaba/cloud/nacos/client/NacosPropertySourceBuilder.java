@@ -83,13 +83,15 @@ public class NacosPropertySourceBuilder {
 			String fileExtension) {
 		String data = null;
 		try {
-			String configSnapshot = NacosSnapshotConfigManager.getConfigSnapshot(dataId, group);
+			String configSnapshot = NacosSnapshotConfigManager.getConfigSnapshot(dataId,
+					group);
 			if (StringUtils.isEmpty(configSnapshot)) {
 				log.debug("get config from nacos, dataId: {}, group: {}", dataId, group);
 				data = configService.getConfig(dataId, group, timeout);
 			}
 			else {
-				log.debug("get config from memory snapshot, dataId: {}, group: {}", dataId, group);
+				log.debug("get config from memory snapshot, dataId: {}, group: {}",
+						dataId, group);
 				NacosSnapshotConfigManager.removeConfigSnapshot(dataId, group);
 				data = configSnapshot;
 			}
