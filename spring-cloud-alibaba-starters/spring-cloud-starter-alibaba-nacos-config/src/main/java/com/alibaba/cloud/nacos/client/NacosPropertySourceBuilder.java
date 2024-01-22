@@ -83,8 +83,7 @@ public class NacosPropertySourceBuilder {
 			String fileExtension) {
 		String data = null;
 		try {
-			String configSnapshot = NacosSnapshotConfigManager.getConfigSnapshot(dataId,
-					group);
+			String configSnapshot = NacosSnapshotConfigManager.getAndRemoveConfigSnapshot(dataId, group);
 			if (StringUtils.isEmpty(configSnapshot)) {
 				log.debug("get config from nacos, dataId: {}, group: {}", dataId, group);
 				data = configService.getConfig(dataId, group, timeout);
@@ -92,7 +91,6 @@ public class NacosPropertySourceBuilder {
 			else {
 				log.debug("get config from memory snapshot, dataId: {}, group: {}",
 						dataId, group);
-				NacosSnapshotConfigManager.removeConfigSnapshot(dataId, group);
 				data = configSnapshot;
 			}
 			if (StringUtils.isEmpty(data)) {

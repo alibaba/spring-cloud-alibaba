@@ -44,8 +44,11 @@ public final class NacosSnapshotConfigManager {
 		return dataId + "@" + group;
 	}
 
-	public static String getConfigSnapshot(String dataId, String group) {
-		return CONFIG_INFO_SNAPSHOT_MAP.get(formatConfigSnapshotKey(dataId, group));
+	public static String getAndRemoveConfigSnapshot(String dataId, String group) {
+		String configInfo = CONFIG_INFO_SNAPSHOT_MAP
+				.get(formatConfigSnapshotKey(dataId, group));
+		removeConfigSnapshot(dataId, group);
+		return configInfo;
 	}
 
 	public static void putConfigSnapshot(String dataId, String group, String configInfo) {
