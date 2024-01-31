@@ -24,7 +24,7 @@
         <seata.version>2.0.0</seata.version>
         <spring.context.support.version>1.0.11</spring.context.support.version>
         <!-- Apache RocketMQ -->
-        <rocketmq.version>4.9.4</rocketmq.version>
+        <rocketmq.version>5.1.4</rocketmq.version>
         <!-- Maven Plugin Versions -->
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
