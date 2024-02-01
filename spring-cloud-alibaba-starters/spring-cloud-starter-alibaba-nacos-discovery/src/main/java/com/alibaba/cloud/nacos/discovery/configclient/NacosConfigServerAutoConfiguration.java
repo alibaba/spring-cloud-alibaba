@@ -18,6 +18,7 @@ package com.alibaba.cloud.nacos.discovery.configclient;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import jakarta.annotation.PostConstruct;
+
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -39,7 +40,8 @@ public class NacosConfigServerAutoConfiguration {
 
 	private final ConfigServerProperties server;
 
-	public NacosConfigServerAutoConfiguration(ObjectProvider<NacosDiscoveryProperties> properties,
+	public NacosConfigServerAutoConfiguration(
+			ObjectProvider<NacosDiscoveryProperties> properties,
 			ObjectProvider<ConfigServerProperties> server) {
 		this.properties = properties.getIfAvailable();
 		this.server = server.getIfAvailable();
@@ -51,7 +53,8 @@ public class NacosConfigServerAutoConfiguration {
 			return;
 		}
 		String prefix = this.server.getPrefix();
-		if (StringUtils.hasText(prefix) && !StringUtils.hasText(this.properties.getMetadata().get("configPath"))) {
+		if (StringUtils.hasText(prefix) && !StringUtils
+				.hasText(this.properties.getMetadata().get("configPath"))) {
 			this.properties.getMetadata().put("configPath", prefix);
 		}
 	}

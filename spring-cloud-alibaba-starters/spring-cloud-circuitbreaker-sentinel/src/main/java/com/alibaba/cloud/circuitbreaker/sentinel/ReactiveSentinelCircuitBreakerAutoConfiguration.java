@@ -16,6 +16,9 @@
 
 package com.alibaba.cloud.circuitbreaker.sentinel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -25,17 +28,14 @@ import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreakerFac
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Eric Zhao
  * @author freeman
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass(name = { "reactor.core.publisher.Mono", "reactor.core.publisher.Flux" })
-@ConditionalOnProperty(name = "spring.cloud.circuitbreaker.sentinel.enabled", havingValue = "true",
-		matchIfMissing = true)
+@ConditionalOnClass(name = { "reactor.core.publisher.Mono",
+		"reactor.core.publisher.Flux" })
+@ConditionalOnProperty(name = "spring.cloud.circuitbreaker.sentinel.enabled", havingValue = "true", matchIfMissing = true)
 public class ReactiveSentinelCircuitBreakerAutoConfiguration {
 
 	private final List<Customizer<ReactiveSentinelCircuitBreakerFactory>> customizers;
