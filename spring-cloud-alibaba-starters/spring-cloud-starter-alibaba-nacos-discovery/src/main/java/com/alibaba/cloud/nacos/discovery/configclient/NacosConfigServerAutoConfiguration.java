@@ -16,7 +16,6 @@
 
 package com.alibaba.cloud.nacos.discovery.configclient;
 
-
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.ObjectProvider;
@@ -33,28 +32,28 @@ import org.springframework.util.StringUtils;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties
-@ConditionalOnClass({NacosDiscoveryProperties.class, ConfigServerProperties.class})
+@ConditionalOnClass({ NacosDiscoveryProperties.class, ConfigServerProperties.class })
 public class NacosConfigServerAutoConfiguration {
 
-    private final NacosDiscoveryProperties properties;
+	private final NacosDiscoveryProperties properties;
 
-    private final ConfigServerProperties server;
+	private final ConfigServerProperties server;
 
-    public NacosConfigServerAutoConfiguration(ObjectProvider<NacosDiscoveryProperties> properties, ObjectProvider<ConfigServerProperties> server) {
-        this.properties = properties.getIfAvailable();
-        this.server = server.getIfAvailable();
-    }
+	public NacosConfigServerAutoConfiguration(ObjectProvider<NacosDiscoveryProperties> properties,
+			ObjectProvider<ConfigServerProperties> server) {
+		this.properties = properties.getIfAvailable();
+		this.server = server.getIfAvailable();
+	}
 
-    @PostConstruct
-    public void init() {
-        if (this.properties == null || this.server == null) {
-            return;
-        }
-        String prefix = this.server.getPrefix();
-        if (StringUtils.hasText(prefix) && !StringUtils
-                .hasText(this.properties.getMetadata().get("configPath"))) {
-            this.properties.getMetadata().put("configPath", prefix);
-        }
-    }
+	@PostConstruct
+	public void init() {
+		if (this.properties == null || this.server == null) {
+			return;
+		}
+		String prefix = this.server.getPrefix();
+		if (StringUtils.hasText(prefix) && !StringUtils.hasText(this.properties.getMetadata().get("configPath"))) {
+			this.properties.getMetadata().put("configPath", prefix);
+		}
+	}
 
 }
