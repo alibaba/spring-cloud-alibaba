@@ -16,13 +16,8 @@
 
 package com.alibaba.cloud.circuitbreaker.sentinel;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 import com.alibaba.csp.sentinel.SphU;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -31,6 +26,9 @@ import org.springframework.cloud.client.circuitbreaker.Customizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Auto configuration for {@link SentinelCircuitBreaker}.
  *
@@ -38,20 +36,23 @@ import org.springframework.context.annotation.Configuration;
  * @author freeman
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass({ SphU.class })
+@ConditionalOnClass({SphU.class})
 @ConditionalOnProperty(name = "spring.cloud.circuitbreaker.sentinel.enabled",
-		havingValue = "true", matchIfMissing = true)
+        havingValue = "true", matchIfMissing = true)
 public class SentinelCircuitBreakerAutoConfiguration {
 
-	@Autowired(required = false)
-	private List<Customizer<SentinelCircuitBreakerFactory>> customizers = new ArrayList<>();
+    private final List<Customizer<SentinelCircuitBreakerFactory>> customizers;
 
-	@Bean
-	@ConditionalOnMissingBean(CircuitBreakerFactory.class)
-	public CircuitBreakerFactory sentinelCircuitBreakerFactory() {
-		SentinelCircuitBreakerFactory factory = new SentinelCircuitBreakerFactory();
-		customizers.forEach(customizer -> customizer.customize(factory));
-		return factory;
-	}
+    public SentinelCircuitBreakerAutoConfiguration(ObjectProvider<List<Customizer<SentinelCircuitBreakerFactory>>> customizers) {
+        this.customizers = customizers.getIfAvailable(ArrayList::new);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(CircuitBreakerFactory.class)
+    public CircuitBreakerFactory sentinelCircuitBreakerFactory() {
+        SentinelCircuitBreakerFactory factory = new SentinelCircuitBreakerFactory();
+        customizers.forEach(customizer -> customizer.customize(factory));
+        return factory;
+    }
 
 }
