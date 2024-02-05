@@ -101,9 +101,9 @@ Examples：
 
 [Sentinel Example](https://github.com/alibaba/spring-cloud-alibaba/tree/2022.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme.md)
 
-[Nacos Config Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-examples/nacos-example/nacos-config-example/readme.md)
+[Nacos Config Example](https://github.com/alibaba/spring-cloud-alibaba/tree/2022.x/spring-cloud-alibaba-examples/nacos-example#spring-cloud-alibaba-nacos-config)
 
-[Nacos Discovery Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-examples/nacos-example/nacos-discovery-example/readme.md)
+[Nacos Discovery Example](https://github.com/alibaba/spring-cloud-alibaba/tree/2022.x/spring-cloud-alibaba-examples/nacos-example#spring-cloud-alibaba-nacos-discovery)
 
 [RocketMQ Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-examples/rocketmq-example/readme.md)
 
