@@ -1,39 +1,40 @@
-# Spring Cloud Alibaba Sidecar Example
+## Spring Cloud Alibaba Sidecar Example
 
-## Project Instruction
+## Project Description
 
-This project demonstrates how to use `Nacos + Spring Cloud Alibaba Sidecar` to access heterogeneous language microservices.
+This project demonstrates how to use Nacos + Spring Cloud Alibaba Sidecar to accomplish heterogeneous microservice access.
 
-[Spring Cloud Alibaba Sidecar](https://spring-cloud-alibaba-group.github.io/github-pages/hoxton/zh-cn/index.html#_spring_cloud_alibaba_sidecar)  is a framework for fast and seamless integration of Spring Cloud with heterogeneous language microservices.
-
-
+[Spring Cloud Alibaba Sidecar](https://sca.aliyun.com/zh-cn/docs/2022.0.0.0/user-guide/sidecar/overview) is a framework for quickly and seamlessly integrating Spring Cloud applications with heterogeneous microservices. services.
 
 ## Preparation
 
-### Download and Startup Nacos
+### Download and start Nacos
 
-**You should startup Nacos Server before using Sidecar**
+**Before you can access Sidecar, you need to start Nacos Server.**
 
-1. Download [Nacos](https://archive.apache.org/dist/rocketmq/4.3.2/rocketmq-all-4.3.2-bin-release.zip) and unzip it.
+1. Download [Nacos Server](https://github.com/alibaba/nacos/releases/download/2.1.0/nacos-server-2.1.0.zip) and unzip it. 2.
 
-2. Startup Name Server
+2. Start Nacos Server
 
-```bash
-startup.cmd -m standalone
-```
+   After downloading and unpacking, you need to go to the bin directory to start the nacos server, make sure you don't double-click to start it, double-clicking will start it as a cluster by default. Here, we will start it as a standalone server:
 
-3. Sign in Nacos
-   
-   Open you browser then input `localhost:8848/nacos` ,you can see the Nacos dashboard ui .
-   The default username and password are `nacos`
+   ```bash
+   startup.cmd -m standalone
+   ```
 
+3. Log in to Nacos
 
-## Simple example
-In this paper, Sidecar accesses a non-Java language service using Nacos as a registry as an example.
+   Type localhost:8848/nacos in your browser to see the Nacos console, and enter your username and password to log in to Nacos (username and password both are `nacos`);
 
+## Simple Example
 
-### Step1: Declare dependency
-Add dependency spring-cloud-starter-alibaba-sidecar to the `pom.xml` file in your Sidecar project.
+In this article, we use Nacos as a registry as an example, and Sidecar to access a non-Java language service.
+
+> By default, we use the golang language service as an example, and we can start the `node` heterogeneous service in `application.yml`.
+
+### Step1: Introducing dependencies
+
+Modify the `pom.xml` file to introduce Spring Cloud Alibaba Sidecar Starter.
 
 ```xml
 <dependency>
@@ -52,68 +53,80 @@ Add dependency spring-cloud-starter-alibaba-sidecar to the `pom.xml` file in you
 </dependency>
 ```
 
-### Step2: Configure sidecar
-Then add necessary configurations to file `/src/main/resources/application.yml`.
+### Step2: Configure Sidecar related information
+
+Then specify the following configuration in the project's `application.yml` configuration file:
+
 ```yaml
 server:
    port: 8070
+
 spring:
+   profiles:
+      active: node
+
    cloud:
       nacos:
-         username: nacos
-         password: nacos
          discovery:
+            username: 'nacos'
+            password: 'nacos'
             server-addr: 127.0.0.1:8848
-            group: test
       gateway:
          discovery:
             locator:
                enabled: true
 
    application:
-      name: node-service
+      name: sidecar-service
+
 sidecar:
-  # heterogeneous service‘s ip
-  ip: 127.0.0.1
-  # heterogeneous service's port
-  port: 8060
+   # heterogeneous microservices IP
+   ip: 127.0.0.1
+   # heterogeneous microservices Port
+   port: 8050
 
-  # heterogeneous service's health check URL
-  health-check-url: http://localhost:8060/health.json
+   # heterogeneous microservices health url
+   # health-check-url: http://localhost:8050/api/v1/health-check
+
+management:
+   endpoint:
+      health:
+         show-details: always
 ```
-Note: `localhost:8060` here, is my local machine started a nginx proxy for this `health.json` request. In actual use it can be any REST service, just need to return the correct JSON format health detection data.
-```json
 
+Note: localhost:8050 is the address of the heterogeneous service. In practice it can be any REST service, it just needs to return the correct JSON formatted health test data.
+
+```json
 {
-  "status": "DOWN"
+  "status": "UP"
 }
 ```
 
-### Step3: Start Application
-After that, start the `Sidecar` service and the local heterogeneous service respectively.
+### Step3: Starting the application
 
-Start in IDE: Find main class  `com.alibaba.cloud.sidecar.DemoApplication`, and execute the main method.
+After that, start the Sidecar service and local heterogeneous service respectively.
 
-Note: This article takes the `spring-cloud-alibaba-sidecar-nacos-example` project as an example, so it starts the `DemoApplication` startup class under it.
+IDE direct start: find the main class `com.alibaba.cloud.sidecar.DemoApplication` and execute the main method to start the application.
+
+Note: In this article, we take the `spring-cloud-alibaba-sidecar-nacos-example` project as an example, so we start the `DemoApplication` startup class under it.
+
 ![idea.png](https://cdn.nlark.com/yuque/0/2022/png/1752280/1662550869316-98d574af-d1ba-4c00-a0af-5e33e13075fd.png)
 
-### Step4: View service registration
-![nacos.png](https://cdn.nlark.com/yuque/0/2022/png/1752280/1662605412601-06780784-915c-40f6-b6b2-67176f6c5419.png)
+### Step4: Check the service registrations.
 
+![nacos.png](https://cdn.nlark.com/yuque/0/2022/png/1752280/1662548324337-566cc824-4d08-4041-ac83-1968c7347a9e.png)
 
+### Step4: Accessing Heterogeneous Services
 
+After completing the above 4 steps, we find that the corresponding service `sidecar-service` has been successfully registered to the registry. At this point, this service has been successfully integrated into Spring Cloud microservices. For Spring Cloud microservices, accessing it is no different from accessing other Java microservices.
+This is the beauty of Spring Cloud Alibaba Sidecar. Next, we will continue to demonstrate how to access this service.
 
-### Step4: Accessing services
-After completing the above 4 steps, we find that the corresponding service `node-service` has been successfully registered to the registry. At this point, the service has been successfully integrated into the Spring Cloud microservice. For Spring Cloud microservices, accessing it is no different than accessing any other Java microservice.
-This is where the beauty of Spring Cloud Alibaba Sidecar comes in. Next, we will continue to demonstrate how to access this service.
+Browser Access: `http://127.0.0.1:8070/sidecar-service/test`
 
-Browser Access below address:
-http://127.0.0.1:8070/node-service/health.json
-If you see the following message, the access was successful.
+The integration is successful if it works.
 
-![](https://cdn.nlark.com/yuque/0/2022/png/1752280/1662549893322-1b7a761a-ecd7-44ae-88b6-872eca43a866.png)
+![img](https://cdn.nlark.com/yuque/0/2022/png/1752280/1662549893322-1b7a761a-ecd7-44ae-88b6-872eca43a866.png)
 
 ## More
 
-If you have any ideas or suggestions for `Spring Cloud Alibaba Sidecar`, please don't hesitate to tell us by submitting github issues.
-
+If you have any suggestions or ideas about spring cloud starter alibaba sidecar, please feel free to submit them to us in an Issue or through other community channels.
