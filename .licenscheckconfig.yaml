@@ -68,6 +68,8 @@ header:
     - 'distribution/NOTICE-BIN'
     - 'test/src/test/resources/**'
     - '**/src/test/resources/statelang/**'
+    - '**/*.mod'
+    - '**/*.sum'
 
   comment: on-failure
 dependency:
