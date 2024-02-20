@@ -26,7 +26,7 @@ import org.apache.rocketmq.client.impl.consumer.ConsumeMessageConcurrentlyServic
 import org.apache.rocketmq.client.impl.consumer.ConsumeMessageOrderlyService;
 import org.apache.rocketmq.common.UtilAll;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
-import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
+import org.apache.rocketmq.remoting.protocol.heartbeat.MessageModel;
 
 /**
  * Extended consumer properties for RocketMQ binder.
