@@ -39,7 +39,7 @@ In addition to the above-mentioned features, for the needs of enterprise users' 
 
 **[RocketMQ](https://rocketmq.apache.org/)**: A distributed messaging and streaming platform with low latency, high performance and reliability, trillion-level capacity and flexible scalability.
 
-**[Seata](https://github.com/seata/seata)**: A distributed transaction solution with high performance and ease of use for microservices architecture.
+**[Seata](https://github.com/apache/incubator-seata)**: A distributed transaction solution with high performance and ease of use for microservices architecture.
 
 **[Alibaba Cloud OSS](https://www.aliyun.com/product/oss)**: An encrypted and secure cloud storage service which stores, processes and accesses massive amounts of data from anywhere in the world.
 
@@ -81,17 +81,7 @@ These artifacts are available from Maven Central and Spring Release repository v
     </dependencies>
 </dependencyManagement>
 ```
-add the module in  `dependencies`. If you want to choose an older version, you can refer to the [Release Notes](https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E).
-
-
-### Reference Doc
-
-[Contents](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-docs/src/main/asciidoc-zh/spring-cloud-alibaba.adoc)
-
-[Nacos Config](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-config.adoc)
-
-[Nacos Discovery](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-discovery.adoc)
-
+add the module in  `dependencies`. If you want to choose an older version, you can refer to the [Release Notes](https://sca.aliyun.com/zh-cn/docs/next/overview/version-explain).
 
 ## Examples
 
@@ -101,9 +91,9 @@ Examples：
 
 [Sentinel Example](https://github.com/alibaba/spring-cloud-alibaba/tree/2022.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme.md)
 
-[Nacos Config Example](https://github.com/alibaba/spring-cloud-alibaba/tree/2022.x/spring-cloud-alibaba-examples/nacos-example#spring-cloud-alibaba-nacos-config)
+[Nacos Config Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-examples/nacos-example/readme.md#spring-cloud-alibaba-nacos-config)
 
-[Nacos Discovery Example](https://github.com/alibaba/spring-cloud-alibaba/tree/2022.x/spring-cloud-alibaba-examples/nacos-example#spring-cloud-alibaba-nacos-discovery)
+[Nacos Discovery Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-examples/nacos-example/readme.md#spring-cloud-alibaba-nacos-discovery)
 
 [RocketMQ Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-examples/rocketmq-example/readme.md)
 
