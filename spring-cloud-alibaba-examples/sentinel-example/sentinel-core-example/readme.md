@@ -14,48 +14,54 @@ Before we start the demo, let's learn how to connect Sentinel to a Spring Cloud 
 
 1. Add dependency spring-cloud-starter-alibaba-sentinel in the pom.xml file in your Spring Cloud project.
 
-	    <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
-        </dependency>
+```xml
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+</dependency>
+```
 	
 2. Define Resources
 
 	1. Define HTTP Resources    
-		Sentinel starter defines all HTTP URLS as resources by relative paths. If you only want to add flow control for your HTTP services, you do not need to modify your code.  
+	   `spring-cloud-starter-alibaba-sentinel` defines all HTTP URLS as resources by relative paths. If you only want to add flow control for your HTTP services, you do not need to modify your code.  
 		
 	2. Define Custom Resources   
 		If you want to implement flow control or degradation for a specific method, you can add an @SentinelResource annotation to the method, as shown in the code below.
-	
-			@SentinelResource("resource")
-			public String hello() {
-				return "Hello";
-			}
+
+	     ```java
+         @SentinelResource("resource")
+         public String hello() {
+	       return "Hello";
+         }
+         ```
 		  
 3. Configure flow control rules 
 	
 	Sentinel provides two ways to configure flow control rules, init from code or configure by dashboard.
 
-	1. Init rule from code: See the code below for a simple flow rule. See [Sentinel Docs](https://github.com/alibaba/Sentinel/wiki/How-to-Use#define-rules) for more information about flow rules.
-	
-			List<FlowRule> rules = new ArrayList<FlowRule>();
-			FlowRule rule = new FlowRule();
-			rule.setResource(str);
-			// set limit qps to 10
-			rule.setCount(10);
-			rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
-			rule.setLimitApp("default");
-			rules.add(rule);
-			FlowRuleManager.loadRules(rules);
+   1. Init rule from code: See the code below for a simple flow rule. See [Sentinel Docs](https://github.com/alibaba/Sentinel/wiki/How-to-Use#define-rules) for more information about flow rules.
+
+      ```java
+      List<FlowRule> rules = new ArrayList<FlowRule>();
+      FlowRule rule = new FlowRule();
+      rule.setResource(str);
+      // set limit qps to 10
+      rule.setCount(10);
+      rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
+      rule.setLimitApp("default");
+      rules.add(rule);
+      FlowRuleManager.loadRules(rules);
+      ```
   
-	2. Config by dashboard: See the following section.
+   2. Config by dashboard: See the following section.
 
 ### Start Sentinel Dashboard
 
 1. Install Sentinel dashboard by downloading a fatjar or build from source code.
 
-	1. Download: [Download Sentinel Dashboard](http://edas-public.oss-cn-hangzhou.aliyuncs.com/install_package/demo/sentinel-dashboard.jar) 
-	2. Build from source code: Get source code by `git clone git@github.com:alibaba/Sentinel.git` from [Github Sentinel](https://github.com/alibaba/Sentinel) and build your code. See [build reference](https://github.com/alibaba/Sentinel/tree/2021.x/sentinel-dashboard) for details.
+	1. Download: [Download Sentinel Dashboard](https://github.com/alibaba/Sentinel/releases) 
+	2. Build from source code: Get source code by `git clone git@github.com:alibaba/Sentinel.git` from [Github Sentinel](https://github.com/alibaba/Sentinel) and build your code. See [build reference](https://github.com/alibaba/Sentinel/blob/1.8/sentinel-dashboard/README.md) for details.
 
 2. Start the dashboard by running the `java -jar sentinel-dashboard.jar` command.
 	The default port of Sentinel dashboard is 8080. Sentinel dashboard is a Spring Boot project. If you want to use another port, see [Spring Boot Reference](https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-customizing-embedded-containers).
@@ -63,10 +69,12 @@ Before we start the demo, let's learn how to connect Sentinel to a Spring Cloud 
 ### Start Application
 
 1. Add necessary configurations to file `/src/main/resources/application.properties`.
-	
-		spring.application.name=sentinel-example
-		server.port=18083
-		spring.cloud.sentinel.transport.dashboard=localhost:8080
+
+    ```properties
+	spring.application.name=sentinel-example
+	server.port=18083
+	spring.cloud.sentinel.transport.dashboard=localhost:8080
+    ```
 		
 2. Start the application in IDE or by building a fatjar.
 
@@ -75,21 +83,22 @@ Before we start the demo, let's learn how to connect Sentinel to a Spring Cloud 
 
 ### Invoke Service
 
-Execute command `curl http://127.0.0.1:18083/hello`    
-Execute command `curl http://127.0.0.1:18083/test`
+Use curl command to call two URLs, you can see:
 
-The screenshot belows shows invoke success:
+```shell
+$ curl http://localhost:18083/test
+Blocked by Sentinel (flow limiting)
 
-<p align="center"><img src="https://cdn.yuque.com/lark/0/2018/png/54319/1532084640137-8f4bc16c-4336-4c1b-9ddd-4582b967717a.png" width="240" heigh='180' ></p>
-
+$ curl http://localhost:18083/hello
+Hello
+```
 ### Configure Flow Control
 
-1. Open http://localhost:8080 in browser, and you can find a Sentinel-Example Application has been registered to the dashboard. 
+1. Open http://localhost:8080 in browser. The defaule username and password is `sentienl`. and you can find a Sentinel-Example Application has been registered to the dashboard. 
 
 	**Note: If you can't find your application in the dashboard, invoke a method that has been defined as a Sentinel Resource, for Sentinel uses lazy load strategy.**
 	
 <p align="center"><img src="https://cdn.nlark.com/lark/0/2018/png/54319/1532315951819-9ffd959e-0547-4f61-8f06-91374cfe7f21.png" width="1000" heigh='400' ></p>
-
 
 2. Configure HTTP Resource Flow Rule：Click **流控规则(Flow Rule)** on the left-side navigation pane and **新增流控规则(Create Flow Rule)**. On the Create Flow Rule dialogbox, type the URL relative path in the **资源名(Resource Name)** field , enter **单机阈值(Threshold)** value, then click **新增(OK)**. Here we set threshold to 1 for demonstration purpose.
 
@@ -105,43 +114,57 @@ The screenshot belows shows invoke success:
 
 <p align="center"><img src="https://cdn.yuque.com/lark/0/2018/png/54319/1532080661437-b84ee161-6c2d-4df2-bdb7-7cf0d5be92fb.png" width="480" heigh='180' ></p>
 
-
 ## Customize Flow Control Logic
 
 * Flow control exception handle by default 
 
 When a URL resource is blocked by Sentinel, the default logic is return HTTP response "Blocked by Sentinel (flow limiting)".
-   
-	If you want to customize your flow control logic, see the code below:
 
-		public class CustomUrlBlockHandler implements UrlBlockHandler {
-			@Override
-			public void blocked(HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse) throws IOException {
-				// todo add your logic
-			}
-		}
-		
-		WebCallbackManager.setUrlBlockHandler(new CustomUrlBlockHandler());
+```java
+public class CustomUrlBlockHandler implements UrlBlockHandler {
+    @Override
+    public void blocked(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
+        // todo add your logic
+    }
+}
+
+WebCallbackManager.setUrlBlockHandler(new CustomUrlBlockHandler());
+```
 
 
 * Flow control exception handle by using `@SentinelResource`
 
 When a custom resource is blocked by Sentinel, the default logic is throw BlockException.
-   
-    If you want to customize your flow control logic, implement interface `SentinelExceptionHandler`, set @SentinelResource's blockHandler() and blockHandlerClass(). See the code below:
-    
-        @SentinelResource(value = "resource", blockHandler = "", blockHandlerClass = ExceptionUtil.class)
-        public String hello() {
-            return "Hello";
-        }
-        
-        // ExceptionUtil.java
-        public class ExceptionUtil {
-            public static void handleException(BlockException ex) {
-                System.out.println("Oops: " + ex.getClass().getCanonicalName());
-            }
-        }
+
+```java
+public class TestService {
+	
+    @SentinelResource(value = "test", blockHandler = "handleException", blockHandlerClass = {ExceptionUtil.class})
+    public void test() {
+        System.out.println("Test");
+    }
+	
+    @SentinelResource(value = "hello", blockHandler = "exceptionHandler")
+    public String hello(long s) {
+        return String.format("Hello at %d", s);
+    }
+
+    public String exceptionHandler(long s, BlockException ex) {
+        // Do some log here.
+        ex.printStackTrace();
+        return "Oops, error occurred at " + s;
+    }
+}
+```
+
+```java
+public final class ExceptionUtil {
+
+    public static void handleException(BlockException ex) {
+        System.out.println("Oops: " + ex.getClass().getCanonicalName());
+    }
+}
+```
 
 ## Endpoint 
 
@@ -163,7 +186,7 @@ To view the endpoint information, visit the following URLS:
 ## Metrics
 You can view metrics information on Sentinel Dashboard.
 
-To see the metrics, click **实时监控(Real-time Monitoring)** in the left-side navigation pane.    
+To see the metrics, click **Real time monitoring(Real-time Monitoring)** in the left-side navigation pane.    
  
 `p_qps` stands for passed requests per second, `b_qps` stands for blocked requests per second.
 
@@ -192,8 +215,6 @@ spring.cloud.sentinel.datasource.ds2.nacos.data-type=json
 Now ReadableDataSource type support 5 categories: `file`, `nacos`, `zk`, `apollo` and `redis`.
 
 If you want to use `nacos`, `zk`, `apollo` or `redis` ReadableDataSource, you could add `sentinel-datasource-nacos`, `sentinel-datasource-zookeeper`,`sentinel-datasource-apollo` or `sentinel-datasource-redis` dependency.
-
-
 
 When ReadableDataSource load rule data successfully, console will print some logs:
 
