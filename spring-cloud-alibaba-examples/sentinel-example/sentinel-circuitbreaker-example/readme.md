@@ -2,11 +2,11 @@
 
 ## Project description
 
-OpenFeign integrates Sentinel circuit breaker implementation
+Spring Cloud OpenFeign integrates Sentinel circuit breaker implementation.
 
 ## sample
 
-1. add configuration to config center
+1. add configuration to config center.
 	
 ```yaml
 feign:
@@ -38,23 +38,26 @@ feign:
           statIntervalMs: 1000
           minRequestAmount: 1
 ```
-2. start FeignCircuitBreakerApplication
 
 ## Verify
-Startup project
 
-Verify that the default feign client takes effect.  
+Startup project main class `FeignCircuitBreakerApplication`
+
+### Verify that the default Feign client takes effect.  
+
 First visit http:localhost/test/default/false 2 times (in 1 second)  
 and then visit http:localhost/test/default/true, the circuit breaker is open
 
-Verify that the specified feign client takes effect.  
+### Verify that the specified Feign client takes effect.  
+
 First visit http:localhost/test/feign/false 2 times (in 1 second)  
 and then visit http:localhost/test/feign/true, the circuit breaker is open
 
-Verify that the specified method of feign client takes effect.  
+### Verify that the specified method of Feign client takes effect.  
+
 First visit http://localhost/test/feignMethod/false 2 times (in 1 second)  
 and then visit http://localhost/test/feignMethod/true, the circuit breaker is open
 
 ## Rules are dynamically refreshed
-Modify the rules of the configuration center, and then access the above interface
 
+Modify the rules of the configuration center, and then access the above interface
