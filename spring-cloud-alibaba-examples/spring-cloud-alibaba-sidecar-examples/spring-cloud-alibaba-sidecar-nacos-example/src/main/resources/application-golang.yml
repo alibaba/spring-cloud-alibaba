@@ -14,28 +14,11 @@
 # limitations under the License.
 #
 
-server:
-  port: 8070
+sidecar:
+  # heterogeneous microservices IP
+  ip: 127.0.0.1
+  # heterogeneous microservices Port
+  port: 8050
 
-spring:
-  profiles:
-    active: node
-
-  cloud:
-    nacos:
-      discovery:
-        username: 'nacos'
-        password: 'nacos'
-        server-addr: 127.0.0.1:8848
-    gateway:
-      discovery:
-        locator:
-          enabled: true
-
-  application:
-    name: sidecar-service
-
-management:
-  endpoint:
-    health:
-      show-details: always
+  # heterogeneous microservices health url
+  # health-check-url: http://localhost:8050/api/v1/health-check
