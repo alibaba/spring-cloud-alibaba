@@ -1,5 +1,5 @@
 #
-# Copyright 2013-2023 the original author or authors.
+# Copyright 2013-2024 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-name: 'Link Checker'
+name: "Link Checker"
 
 # **What it does**: Renders the content of every page and check all internal links.
 # **Why we have it**: To make sure all links connect correctly.
@@ -25,13 +25,13 @@ on:
   push:
     # branches: [master, 'release/**']
     paths:
-      - '**/*.md'
-      - '**/link-check.yml'
+      - "**/*.md"
+      - "**/link-check.yml"
   pull_request:
     branches: [2022.x, "release/**"]
     paths:
-      - '**/*.md'
-      - '**/link-check.yml'
+      - "**/*.md"
+      - "**/link-check.yml"
 
 permissions:
   contents: read
@@ -40,7 +40,7 @@ permissions:
 
 # This allows a subsequently queued workflow run to interrupt previous runs
 concurrency:
-  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  group: "${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}"
   cancel-in-progress: true
 
 jobs:
@@ -57,7 +57,7 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: "3.9"
 
       - name: Link check (critical, all files)
         run: |

@@ -1,5 +1,5 @@
 #
-# Copyright 2013-2023 the original author or authors.
+# Copyright 2013-2024 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,12 +28,12 @@ jobs:
     permissions:
       issues: write
       pull-requests: write
-    
+
     steps:
       - uses: actions/stale@v5
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          stale-issue-message: 'This issue has been open 30 days with no activity. This will be closed in 7 days.'
+          stale-issue-message: "This issue has been open 30 days with no activity. This will be closed in 7 days."
           close-issue-message: "This issue has been automatically marked as stale because it hasn't had any recent activity.If you think this should still be open, or the problem still persists, just pop a reply in the comments and one of the maintainers will (try!) to follow up. Thank you for your interest and contribution to the Sping Cloud Alibaba Community."
           days-before-issue-stale: 30
           days-before-issue-close: 7
@@ -44,4 +44,3 @@ jobs:
           days-before-pr-stale: -1
           days-before-pr-close: -1
           exempt-issue-labels: discussion,bug,question,good first issue
- 

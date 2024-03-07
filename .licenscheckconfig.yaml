@@ -1,5 +1,5 @@
 #
-# Copyright 2013-2023 the original author or authors.
+# Copyright 2013-2024 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,14 +19,14 @@ header:
     spdx-id: Apache-2.0
     copyright-owner: alibaba
     content: |
-      Copyright 2013-2023 the original author or authors.
-      
+      Copyright 2013-2024 the original author or authors.
+
       Licensed under the Apache License, Version 2.0 (the "License");
       you may not use this file except in compliance with the License.
       You may obtain a copy of the License at
-      
+
           https://www.apache.org/licenses/LICENSE-2.0
-      
+
       Unless required by applicable law or agreed to in writing, software
       distributed under the License is distributed on an "AS IS" BASIS,
       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,42 +34,42 @@ header:
       limitations under the License.
 
   paths-ignore:
-    - '.gitignore'
-    - '.gitattributes'
-    - 'CONTRIBUTING.md'
-    - 'CONTRIBUTING_CN.md'
-    - 'CODE_OF_CONDUCT.md'
-    - 'README.md'
-    - 'LICENSE'
-    - 'NOTICE'
-    - '**/*.md'
-    - '.github/**'
-    - '**/*.xml'
-    - '**/*.conf'
-    - '**/*.sql'
-    - '*.adoc'
-    - 'eclipse'
-    - '**/*.properties'
-    - '**/Dockerfile'
-    - '**/*.json'
-    - '**/*.html'
+    - ".gitignore"
+    - ".gitattributes"
+    - "CONTRIBUTING.md"
+    - "CONTRIBUTING_CN.md"
+    - "CODE_OF_CONDUCT.md"
+    - "README.md"
+    - "LICENSE"
+    - "NOTICE"
+    - "**/*.md"
+    - ".github/**"
+    - "**/*.xml"
+    - "**/*.conf"
+    - "**/*.sql"
+    - "*.adoc"
+    - "eclipse"
+    - "**/*.properties"
+    - "**/Dockerfile"
+    - "**/*.json"
+    - "**/*.html"
     - "spring-cloud-alibaba-examples/integrated-example/docker-compose/.env"
     #SPI、spring.factories、spring-configuration-metadata.json、additional-spring-configuration-metadata.json
-    - '**/src/test/resources/META-INF/**'
-    - '**/src/main/resources/META-INF/**'
-    - '**/target/**'
-    - '**/*.iml'
-    - 'mvnw'
-    - 'mvnw.cmd'
-    - '**/*.sh'
-    - '.mvn/**'
-    - 'sessionStore/**'
-    - 'distribution/LICENSE-BIN'
-    - 'distribution/NOTICE-BIN'
-    - 'test/src/test/resources/**'
-    - '**/src/test/resources/statelang/**'
-    - '**/*.mod'
-    - '**/*.sum'
+    - "**/src/test/resources/META-INF/**"
+    - "**/src/main/resources/META-INF/**"
+    - "**/target/**"
+    - "**/*.iml"
+    - "mvnw"
+    - "mvnw.cmd"
+    - "**/*.sh"
+    - ".mvn/**"
+    - "sessionStore/**"
+    - "distribution/LICENSE-BIN"
+    - "distribution/NOTICE-BIN"
+    - "test/src/test/resources/**"
+    - "**/src/test/resources/statelang/**"
+    - "**/*.mod"
+    - "**/*.sum"
 
   comment: on-failure
 dependency:

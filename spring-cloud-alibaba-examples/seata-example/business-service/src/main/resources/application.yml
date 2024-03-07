@@ -1,5 +1,5 @@
 #
-# Copyright 2013-2023 the original author or authors.
+# Copyright 2013-2024 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,11 +22,10 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
-        username: 'nacos'
-        password: 'nacos'
+        username: "nacos"
+        password: "nacos"
     loadbalancer:
-      ribbon:
-        enabled:true
+      ribbon: enabled:true
   application:
     name: business-service
 
@@ -40,15 +39,15 @@ seata:
     nacos:
       serverAddr: 127.0.0.1:8848
       dataId: "seata.properties"
-      username: 'nacos'
-      password: 'nacos'
+      username: "nacos"
+      password: "nacos"
   registry:
     type: nacos
     nacos:
       application: seata-server
       server-addr: 127.0.0.1:8848
-      username: 'nacos'
-      password: 'nacos'
+      username: "nacos"
+      password: "nacos"
 
 feign:
   client:
@@ -60,4 +59,3 @@ logging:
   level:
     io:
       seata: debug
-
