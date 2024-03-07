@@ -19,7 +19,7 @@ package com.alibaba.cloud.circuitbreaker.sentinel;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -33,14 +33,17 @@ import org.springframework.context.annotation.Configuration;
  * @author freeman
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass(
-		name = { "reactor.core.publisher.Mono", "reactor.core.publisher.Flux" })
-@ConditionalOnProperty(name = "spring.cloud.circuitbreaker.sentinel.enabled",
-		havingValue = "true", matchIfMissing = true)
+@ConditionalOnClass(name = { "reactor.core.publisher.Mono",
+		"reactor.core.publisher.Flux" })
+@ConditionalOnProperty(name = "spring.cloud.circuitbreaker.sentinel.enabled", havingValue = "true", matchIfMissing = true)
 public class ReactiveSentinelCircuitBreakerAutoConfiguration {
 
-	@Autowired(required = false)
-	private List<Customizer<ReactiveSentinelCircuitBreakerFactory>> customizers = new ArrayList<>();
+	private final List<Customizer<ReactiveSentinelCircuitBreakerFactory>> customizers;
+
+	public ReactiveSentinelCircuitBreakerAutoConfiguration(
+			ObjectProvider<List<Customizer<ReactiveSentinelCircuitBreakerFactory>>> customizers) {
+		this.customizers = customizers.getIfAvailable(ArrayList::new);
+	}
 
 	@Bean
 	@ConditionalOnMissingBean(ReactiveCircuitBreakerFactory.class)
