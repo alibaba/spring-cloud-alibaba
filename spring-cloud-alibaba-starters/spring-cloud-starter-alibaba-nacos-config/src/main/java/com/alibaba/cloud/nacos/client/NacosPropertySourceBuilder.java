@@ -23,6 +23,7 @@ import java.util.List;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
 import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
+import com.alibaba.cloud.nacos.refresh.NacosSnapshotConfigManager;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
 import org.slf4j.Logger;
@@ -82,7 +83,16 @@ public class NacosPropertySourceBuilder {
 			String fileExtension) {
 		String data = null;
 		try {
-			data = configService.getConfig(dataId, group, timeout);
+			String configSnapshot = NacosSnapshotConfigManager.getAndRemoveConfigSnapshot(dataId, group);
+			if (StringUtils.isEmpty(configSnapshot)) {
+				log.debug("get config from nacos, dataId: {}, group: {}", dataId, group);
+				data = configService.getConfig(dataId, group, timeout);
+			}
+			else {
+				log.debug("get config from memory snapshot, dataId: {}, group: {}",
+						dataId, group);
+				data = configSnapshot;
+			}
 			if (StringUtils.isEmpty(data)) {
 				log.warn(
 						"Ignore the empty nacos configuration and get it based on dataId[{}] & group[{}]",
