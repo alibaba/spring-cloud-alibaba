@@ -14,6 +14,9 @@
 # limitations under the License.
 #
 
+# `dependabot.yml` file with
+# maven version update.
+
 version: 2
 updates:
 
