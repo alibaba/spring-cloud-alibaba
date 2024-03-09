@@ -51,6 +51,7 @@ import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosIt
  * {@link ConfigDataResource}.
  *
  * @author freeman
+ * @author yuxin.wang
  * @since 2021.0.1.0
  */
 public class NacosConfigDataLocationResolver
@@ -152,28 +153,50 @@ public class NacosConfigDataLocationResolver
 
 		registerConfigManager(properties, bootstrapContext);
 
-		return loadConfigDataResources(location, profiles, properties);
+		return loadConfigDataResources(location.split(), profiles, properties);
 	}
 
 	private List<NacosConfigDataResource> loadConfigDataResources(
-			ConfigDataLocation location, Profiles profiles,
+			ConfigDataLocation[] configDataLocations, Profiles profiles,
 			NacosConfigProperties properties) {
 		List<NacosConfigDataResource> result = new ArrayList<>();
+		for (ConfigDataLocation configDataLocation: configDataLocations) {
+			result.add(loadConfigDataResource(configDataLocation, profiles, null, properties));
+			for (String profile: profiles) {
+				result.add(loadConfigDataResource(getProfileConfigDataLocation(configDataLocation, profile),
+						profiles, profile, properties));
+			}
+		}
+		return result;
+	}
+
+	ConfigDataLocation getProfileConfigDataLocation(ConfigDataLocation configDataLocation, String profile) {
+		StringBuilder profileResourceLocation = new StringBuilder(
+				configDataLocation.isOptional() ? ConfigDataLocation.OPTIONAL_PREFIX : "");
+		String resourceLocation = configDataLocation.getValue();
+		int paramIndex = resourceLocation.indexOf('?') < 0 ? resourceLocation.length() : resourceLocation.indexOf('?');
+		int extensionIndex = resourceLocation.lastIndexOf('.', paramIndex);
+		profileResourceLocation.append(resourceLocation, 0, extensionIndex > 0 ? extensionIndex : paramIndex);
+		profileResourceLocation.append('-').append(profile);
+		profileResourceLocation.append(resourceLocation.substring(extensionIndex > 0 ? extensionIndex : paramIndex));
+		return ConfigDataLocation.of(profileResourceLocation.toString());
+	}
+
+	private NacosConfigDataResource loadConfigDataResource(
+			ConfigDataLocation location, Profiles profiles, String profile,
+			NacosConfigProperties properties) {
 		URI uri = getUri(location, properties);
 
 		if (StringUtils.isBlank(dataIdFor(uri))) {
 			throw new IllegalArgumentException("dataId must be specified");
 		}
 
-		NacosConfigDataResource resource = new NacosConfigDataResource(properties,
-				location.isOptional(), profiles, log,
+		return new NacosConfigDataResource(properties,
+				location.isOptional(), profiles, profile, log,
 				new NacosItemConfig().setGroup(groupFor(uri, properties))
 						.setDataId(dataIdFor(uri)).setSuffix(suffixFor(uri, properties))
 						.setRefreshEnabled(refreshEnabledFor(uri, properties))
 						.setPreference(preferenceFor(uri)));
-		result.add(resource);
-
-		return result;
 	}
 
 	private String preferenceFor(URI uri) {
