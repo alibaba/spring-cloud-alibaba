@@ -14,6 +14,8 @@
 
 # Package Files #
 *.jar
+!.mvn/wrapper/maven-wrapper.jar
+
 *.war
 *.ear
 *.zip
@@ -32,6 +34,9 @@ hs_err_pid*
 target
 .DS_Store
 
+#Seata test data file
+sessionStore/
+
 # temp ignore
 *.cache
 *.diff
@@ -40,6 +45,3 @@ target
 
 # Maven ignore
 .flattened-pom.xml
-
-# AsciiDoc
-spring-cloud-alibaba-docs/**/*.html
