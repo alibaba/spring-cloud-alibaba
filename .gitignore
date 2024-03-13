@@ -46,5 +46,3 @@ sessionStore/
 # Maven ignore
 .flattened-pom.xml
 
-# AsciiDoc
-spring-cloud-alibaba-docs/**/*.html
