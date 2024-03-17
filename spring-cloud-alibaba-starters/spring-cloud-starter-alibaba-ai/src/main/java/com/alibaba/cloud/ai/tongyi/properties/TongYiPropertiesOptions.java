@@ -381,6 +381,7 @@ public class TongYiPropertiesOptions implements ChatOptions {
 
 	@Override
 	public String toString() {
+
 		return "TongYiPropertiesOptions {" + "apiKey='" + apiKey + '\''
 				+ ", model=" + model
 				+ ", seed=" + seed
