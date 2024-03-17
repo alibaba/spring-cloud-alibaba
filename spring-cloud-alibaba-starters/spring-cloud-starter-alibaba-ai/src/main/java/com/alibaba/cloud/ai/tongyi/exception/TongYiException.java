@@ -5,14 +5,14 @@ package com.alibaba.cloud.ai.tongyi.exception;
  * @author 1481556636@qq.com
  */
 
-public class TongyiException extends RuntimeException{
+public class TongYiException extends RuntimeException{
 
-	public TongyiException(String message) {
+	public TongYiException(String message) {
 
 		super(message);
 	}
 
-	public TongyiException(String message, Throwable cause) {
+	public TongYiException(String message, Throwable cause) {
 
 		super(message, cause);
 	}

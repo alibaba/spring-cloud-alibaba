@@ -8,21 +8,15 @@ import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.StreamingChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.http.ResponseEntity;
 
 /**
  * @author yuluo
  * @author 1481556636@qq.com
  */
 
-public class TongyiChatClient extends
-		AbstractFunctionCallSupport<
-				ChatCompletionMessage,
-				TongyiAPI.ChatCompletionRequest,
-				ResponseEntity<ChatCompletion>>
-		implements ChatClient, StreamingChatClient {
+public class TongYiChatClient implements ChatClient, StreamingChatClient {
 
-	private static final Logger logger = LoggerFactory.getLogger(TongyiChatClient.class);
+	private static final Logger logger = LoggerFactory.getLogger(TongYiChatClient.class);
 
 	@Override
 	public ChatResponse call(Prompt prompt) {
@@ -31,7 +25,7 @@ public class TongyiChatClient extends
 
 	@Override
 	public Flux<ChatResponse> stream(Prompt prompt) {
+
 		return null;
 	}
-
 }
