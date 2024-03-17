@@ -1,11 +1,14 @@
 package com.alibaba.cloud.ai.tongyi.client;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.ChatResponse;
+import org.springframework.ai.chat.Generation;
 import org.springframework.ai.chat.StreamingChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
 
@@ -20,7 +23,11 @@ public class TongYiChatClient implements ChatClient, StreamingChatClient {
 
 	@Override
 	public ChatResponse call(Prompt prompt) {
-		return null;
+
+		ArrayList<Generation> generations = new ArrayList<>();
+		generations.add(new Generation("test"));
+
+		return new ChatResponse(generations);
 	}
 
 	@Override
