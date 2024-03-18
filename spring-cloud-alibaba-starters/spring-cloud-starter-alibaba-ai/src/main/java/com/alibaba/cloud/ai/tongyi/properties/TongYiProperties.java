@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.alibaba.cloud.ai.tongyi.constant.TongYiConstants;
+import com.alibaba.dashscope.aigc.generation.models.QwenParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,14 +16,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author 1481556636@qq.com
  */
 
-@ConfigurationProperties(TongYiPropertiesOptions.PREFIX)
-public class TongYiPropertiesOptions implements ChatOptions {
+@ConfigurationProperties(TongYiProperties.PREFIX)
+public class TongYiProperties implements ChatOptions {
 
 	private static final Logger logger = LoggerFactory
-			.getLogger(TongYiPropertiesOptions.class);
+			.getLogger(TongYiProperties.class);
 
 	/**
-	 * Prefix of {@link TongYiPropertiesOptions}.
+	 * Prefix of {@link TongYiProperties}.
 	 */
 	public static final String PREFIX = "spring.cloud.ai.tongyi";
 
@@ -56,7 +57,7 @@ public class TongYiPropertiesOptions implements ChatOptions {
 	 * for example, takes the value of 0.8, only retains the smallest set of the most probable tokens with probabilities that add up to greater than or equal to 0.8 as the candidate set.
 	 * The range of values is (0,1.0), the larger the value, the higher the randomness of generation; the lower the value, the higher the certainty of generation.
 	 */
-	private Float topP = 0.8F;
+	private Double topP = 0.8;
 
 	/**
 	 * The size of the sampling candidate set at the time of generation.
@@ -71,7 +72,7 @@ public class TongYiPropertiesOptions implements ChatOptions {
 	 * Used to control the repeatability of model generation.
 	 * Increasing repetition_penalty reduces the repetition of model generation. 1.0 means no penalty.
 	 */
-	private Float repetitionPenalty = 1.1F;
+	private Double repetitionPenalty = 1.1;
 
 	/**
 	 * is used to control the degree of randomness and diversity.
@@ -81,7 +82,7 @@ public class TongYiPropertiesOptions implements ChatOptions {
 	 * Range: [0, 2), 0 is not recommended, meaningless.
 	 * java version >= 2.5.1
 	 */
-	private Float temperature = 0.85F;
+	private Double temperature = 0.85;
 
 	/**
 	 * The stop parameter is used to realize precise control of the content generation process, automatically stopping when the generated content is about to contain the specified string or token_ids,
@@ -90,7 +91,7 @@ public class TongYiPropertiesOptions implements ChatOptions {
 	 * The stop parameter can be passed as a list of arrays of strings or token_ids to support the scenario of using multiple stops.
 	 * Explanation: Do not mix strings and token_ids in list mode, the element types should be the same in list mode.
 	 */
-	private List<String> stop;
+	private List<Integer> stop;
 
 	/**
 	 * Whether or not to use stream output. When outputting the result in stream mode, the interface returns the result as generator,
@@ -108,9 +109,11 @@ public class TongYiPropertiesOptions implements ChatOptions {
 	private Boolean enableSearch = false;
 
 	/**
-	 *
+	 * [text|message], defaults to text, when it is message,
+	 * the output refers to the message result example.
+	 * It is recommended to prioritize the use of message format.
 	 */
-	private String resultFormat = "text";
+	private String resultFormat = QwenParam.ResultFormat.MESSAGE;
 
 	/**
 	 * Control the streaming output mode, that is, the content will contain the content has been output;
@@ -125,89 +128,28 @@ public class TongYiPropertiesOptions implements ChatOptions {
 	 */
 	private List<String> tools;
 
-	public static Builder builder() {
-
-		return new Builder();
-	}
-
-	public static class Builder {
-
-		protected TongYiPropertiesOptions options;
-
-		public Builder() {
-
-			this.options = new TongYiPropertiesOptions();
-		}
-
-		public Builder(TongYiPropertiesOptions properties) {
-
-			this.options = properties;
-		}
-
-		public Builder withModel(String model) {
-			this.options.model = model;
-			return this;
-		}
-
-		public Builder withMaxTokens(Integer maxTokens) {
-			this.options.maxTokens = maxTokens;
-			return this;
-		}
-
-		public Builder withSeed(Integer seed) {
-			this.options.seed = seed;
-			return this;
-		}
-
-		public Builder withStop(List<String> stop) {
-			this.options.stop = stop;
-			return this;
-		}
-
-		public Builder withTemperature(Float temperature) {
-			this.options.temperature = temperature;
-			return this;
-		}
-
-		public Builder withResultFormat(String rf) {
-
-			this.options.resultFormat = rf;
-			return this;
-		}
-
-		public Builder withTopP(Float topP) {
-			this.options.topP = topP;
-			return this;
-		}
-
-		public TongYiPropertiesOptions build() {
-
-			return this.options;
-		}
-	}
-
 	@Override
 	public Float getTemperature() {
 
-		return this.temperature;
+		return this.temperature.floatValue();
 	}
 
 	@Override
 	public void setTemperature(Float temperature) {
 
-		this.temperature = temperature;
+		this.temperature = temperature.doubleValue();
 	}
 
 	@Override
 	public Float getTopP() {
 
-		return this.topP;
+		return this.topP.floatValue();
 	}
 
 	@Override
 	public void setTopP(Float topP) {
 
-		this.topP = topP;
+		this.topP = topP.doubleValue();
 	}
 
 	@Override
@@ -274,20 +216,20 @@ public class TongYiPropertiesOptions implements ChatOptions {
 
 	public Float getRepetitionPenalty() {
 
-		return repetitionPenalty;
+		return repetitionPenalty.floatValue();
 	}
 
 	public void setRepetitionPenalty(Float repetitionPenalty) {
 
-		this.repetitionPenalty = repetitionPenalty;
+		this.repetitionPenalty = repetitionPenalty.doubleValue();
 	}
 
-	public List<String> getStop() {
+	public List<Integer> getStop() {
 
 		return stop;
 	}
 
-	public void setStop(List<String> stop) {
+	public void setStop(List<Integer> stop) {
 
 		this.stop = stop;
 	}
@@ -307,12 +249,12 @@ public class TongYiPropertiesOptions implements ChatOptions {
 		return enableSearch;
 	}
 
-	void setEnableSearch(Boolean enableSearch) {
+	public void setEnableSearch(Boolean enableSearch) {
 
 		this.enableSearch = enableSearch;
 	}
 
-	Boolean getIncrementalOutput() {
+	public Boolean getIncrementalOutput() {
 
 		return incrementalOutput;
 	}
@@ -340,7 +282,7 @@ public class TongYiPropertiesOptions implements ChatOptions {
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		TongYiPropertiesOptions that = (TongYiPropertiesOptions) o;
+		TongYiProperties that = (TongYiProperties) o;
 
 		return Objects.equals(apiKey, that.apiKey)
 				&& Objects.equals(model, that.model)
@@ -382,7 +324,7 @@ public class TongYiPropertiesOptions implements ChatOptions {
 	@Override
 	public String toString() {
 
-		return "TongYiPropertiesOptions {" + "apiKey='" + apiKey + '\''
+		return "TongYiProperties {" + "apiKey='" + apiKey + '\''
 				+ ", model=" + model
 				+ ", seed=" + seed
 				+ ", maxTokens=" + maxTokens

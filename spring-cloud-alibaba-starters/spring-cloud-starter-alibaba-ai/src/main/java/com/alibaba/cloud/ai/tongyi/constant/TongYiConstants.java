@@ -1,5 +1,7 @@
 package com.alibaba.cloud.ai.tongyi.constant;
 
+import com.alibaba.dashscope.aigc.generation.Generation;
+
 /**
  * @author yuluo
  * @author 1481556636@qq.com
@@ -12,18 +14,18 @@ public interface TongYiConstants {
 		/**
 		 * Tongyi Thousand Questions mega-language model supports input in different languages such as Chinese and English.
 		 */
-		String QWEN_TURBO = "qwen-turbo";
+		String QWEN_TURBO = Generation.Models.QWEN_TURBO;
 
 		/**
 		 * Enhanced version of Tongyi Thousand Questions mega-language model to support input in different languages such as Chinese and English.
 		 */
-		String QWEN_PLUS = "qwen-plus";
+		String QWEN_PLUS = Generation.Models.QWEN_PLUS;
 
 		/**
 		 * Tongyi Qianqi 100 billion level super large-scale language model, support Chinese, English and other different language input.
 		 * As the model is upgraded, qwen-max will be updated and upgraded on a rolling basis. If you wish to use a stable version, please use qwen-max-1201.
 		 */
-		String QWEN_MAX = "qwen-max";
+		String QWEN_MAX = Generation.Models.QWEN_MAX;
 
 		/**
 		 * Tongyi Qianqi 100 billion level mega-scale language model, supporting different language inputs such as Chinese and English.

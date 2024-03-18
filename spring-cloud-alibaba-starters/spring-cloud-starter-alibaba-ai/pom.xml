@@ -35,12 +35,6 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>dashscope-sdk-java</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>okio</artifactId>
-					<groupId>com.squareup.okio</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>
