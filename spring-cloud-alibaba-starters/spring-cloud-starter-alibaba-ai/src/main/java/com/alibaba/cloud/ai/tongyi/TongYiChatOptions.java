@@ -1,31 +1,19 @@
-package com.alibaba.cloud.ai.tongyi.properties;
+package com.alibaba.cloud.ai.tongyi;
 
 import java.util.List;
 import java.util.Objects;
 
 import com.alibaba.cloud.ai.tongyi.constant.TongYiConstants;
 import com.alibaba.dashscope.aigc.generation.models.QwenParam;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.springframework.ai.chat.prompt.ChatOptions;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author yuluo
  * @author 1481556636@qq.com
  */
 
-@ConfigurationProperties(TongYiProperties.PREFIX)
-public class TongYiProperties implements ChatOptions {
-
-	private static final Logger logger = LoggerFactory
-			.getLogger(TongYiProperties.class);
-
-	/**
-	 * Prefix of {@link TongYiProperties}.
-	 */
-	public static final String PREFIX = "spring.cloud.ai.tongyi";
+public class TongYiChatOptions implements ChatOptions {
 
 	/**
 	 * TongYi model api key.
@@ -274,6 +262,76 @@ public class TongYiProperties implements ChatOptions {
 		this.tools = tools;
 	}
 
+	public static Builder builder() {
+
+		return new Builder();
+	}
+
+	public static class Builder {
+
+		protected TongYiChatOptions options;
+
+		public Builder() {
+
+			this.options = new TongYiChatOptions();
+		}
+
+		public Builder(TongYiChatOptions options) {
+
+			this.options = options;
+		}
+
+		public Builder withModel(String model) {
+			this.options.model = model;
+			return this;
+		}
+
+		public Builder withMaxTokens(Integer maxTokens) {
+			this.options.maxTokens = maxTokens;
+			return this;
+		}
+
+		public Builder withResultFormat(String rf) {
+			this.options.resultFormat = rf;
+			return this;
+		}
+
+		public Builder withEnableSearch(Boolean enableSearch) {
+			this.options.enableSearch = enableSearch;
+			return this;
+		}
+
+		public Builder withSeed(Integer seed) {
+			this.options.seed = seed;
+			return this;
+		}
+
+		public Builder withStop(List<Integer> stop) {
+			this.options.stop = stop;
+			return this;
+		}
+
+		public Builder withTemperature(Double temperature) {
+			this.options.temperature = temperature;
+			return this;
+		}
+
+		public Builder withTopP(Double topP) {
+			this.options.topP = topP;
+			return this;
+		}
+
+		public Builder withTopK(Integer topK) {
+			this.options.topK = topK;
+			return this;
+		}
+
+		public TongYiChatOptions build() {
+
+			return this.options;
+		}
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -282,7 +340,7 @@ public class TongYiProperties implements ChatOptions {
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		TongYiProperties that = (TongYiProperties) o;
+		TongYiChatOptions that = (TongYiChatOptions) o;
 
 		return Objects.equals(apiKey, that.apiKey)
 				&& Objects.equals(model, that.model)

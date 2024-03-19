@@ -1,28 +1,27 @@
 package com.alibaba.cloud.ai.tongyi.client;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+import com.alibaba.cloud.ai.tongyi.TongYiChatOptions;
 import com.alibaba.cloud.ai.tongyi.exception.TongYiException;
-import com.alibaba.cloud.ai.tongyi.properties.TongYiProperties;
 import com.alibaba.dashscope.aigc.generation.Generation;
+import com.alibaba.dashscope.aigc.generation.GenerationOutput;
 import com.alibaba.dashscope.aigc.generation.GenerationResult;
 import com.alibaba.dashscope.aigc.generation.models.QwenParam;
-import com.alibaba.dashscope.common.MessageManager;
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.alibaba.dashscope.utils.Constants;
-import com.alibaba.dashscope.utils.JsonUtils;
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.Resource;
+import io.reactivex.Flowable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
 
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.StreamingChatClient;
+import org.springframework.ai.chat.metadata.ChatGenerationMetadata;
 import org.springframework.ai.chat.prompt.Prompt;
 
 /**
@@ -36,84 +35,121 @@ public class TongYiChatClient implements ChatClient, StreamingChatClient {
 
 	private final Generation generation;
 
-	@Resource
-	private MessageManager messageManager;
-
-	private QwenParam param;
+	private TongYiChatOptions defaultOptions;
 
 	public TongYiChatClient(Generation generation) {
 
-		this.generation = generation;
+		this(generation,
+				TongYiChatOptions.builder()
+						.withTopP(0.8)
+						.withEnableSearch(true)
+						.withResultFormat(QwenParam.ResultFormat.MESSAGE)
+						.build()
+		);
 	}
 
-	@Resource
-	private TongYiProperties properties;
+	public TongYiChatClient(Generation generation, TongYiChatOptions options) {
 
-	/**
-	 * Todo: SDK has three methods set api_key!
-	 */
-	@PostConstruct
-	public void init() {
-
-		String apiKey = properties.getApiKey();
-
-		if (Objects.isNull(apiKey))  {
-			throw new TongYiException("API_KEY must not be null");
-		}
-
-		Constants.apiKey = apiKey;
-		param = QwenParam.builder()
-				.model(properties.getModel())
-				.messages(messageManager.get())
-				.resultFormat(properties.getResultFormat())
-				.topP(properties.getTopP().doubleValue())
-				.topK(properties.getTopK())
-				.enableSearch(properties.getEnableSearch())
-				.seed(properties.getSeed())
-				.maxTokens(properties.getMaxTokens())
-				.repetitionPenalty(properties.getRepetitionPenalty())
-				.temperature(properties.getTemperature())
-				.incrementalOutput(properties.getIncrementalOutput())
-				.build();
+		this.generation = generation;
+		this.defaultOptions = options;
 	}
 
 	@Override
 	public ChatResponse call(Prompt prompt) {
 
 		GenerationResult res = null;
-		param.setPrompt(prompt.getContents());
-
 		try {
-			res = generation.call(param);
+			res = generation.call(toTongYiChatParams(prompt));
 		}
-		catch (NoApiKeyException e) {
+		catch (NoApiKeyException | InputRequiredException e) {
 			logger.warn("TongYi chat client: " + e.getMessage());
 			throw new TongYiException(e.getMessage());
 		}
-		catch (InputRequiredException e) {
-			logger.warn("TongYi chat client: " + e.getMessage());
-			throw new RuntimeException(e.getMessage());
-		}
 
-		if (Objects.nonNull(res)) {
-			messageManager.add(res);
-		}
-
-		List<org.springframework.ai.chat.Generation> generations = res.getOutput().getChoices().stream()
-				.map(item -> {
-					String content = item.getMessage().getContent();
-					System.out.println(content);
-					return new org.springframework.ai.chat.Generation(JsonUtils.toJson(content));
-				})
-				.collect(Collectors.toList());
+		List<org.springframework.ai.chat.Generation> generations =
+				res
+						.getOutput()
+						.getChoices()
+						.stream()
+						.map(choice ->
+								new org.springframework.ai.chat.Generation(
+										choice
+												.getMessage()
+												.getContent()
+								).withGenerationMetadata(generateChoiceMetadata(choice)
+								))
+						.toList();
 
 		return new ChatResponse(generations);
+
 	}
 
 	@Override
 	public Flux<ChatResponse> stream(Prompt prompt) {
 
-		return null;
+		QwenParam params = toTongYiChatParams(prompt);
+		Flowable<GenerationResult> generationResultFlowable = null;
+
+		try {
+			generationResultFlowable = generation.streamCall(params);
+		}
+		catch (NoApiKeyException | InputRequiredException e) {
+			logger.warn("TongYi chat client: " + e.getMessage());
+			throw new TongYiException(e.getMessage());
+		}
+
+		return Flux.fromStream(
+				StreamSupport
+						.stream(
+								Flowable
+										.fromPublisher(generationResultFlowable)
+										.blockingIterable()
+										.spliterator(),
+								false
+						)
+						.flatMap(
+								res -> res.getOutput()
+										.getChoices()
+										.stream()
+										.map(choice -> {
+													var content = (choice.getMessage() != null) ? choice.getMessage()
+															.getContent() : null;
+													var generation1 = new org.springframework.ai.chat.Generation(content);
+													return new ChatResponse(List.of(generation1));
+												}
+										)
+						)
+		).publishOn(Schedulers.parallel());
+
+	}
+
+	private QwenParam toTongYiChatParams(Prompt prompt) {
+
+		Constants.apiKey = this.defaultOptions.getApiKey();
+
+		System.out.println(this.defaultOptions.toString());
+
+		return QwenParam.builder()
+				.model(this.defaultOptions.getModel())
+				.resultFormat(this.defaultOptions.getResultFormat())
+				.topP(this.defaultOptions.getTopP().doubleValue())
+				.topK(this.defaultOptions.getTopK())
+				.enableSearch(this.defaultOptions.getEnableSearch())
+				.seed(this.defaultOptions.getSeed())
+				.maxTokens(this.defaultOptions.getMaxTokens())
+				.repetitionPenalty(this.defaultOptions.getRepetitionPenalty())
+				.temperature(this.defaultOptions.getTemperature())
+				.incrementalOutput(this.defaultOptions.getIncrementalOutput())
+				.prompt(prompt.getContents())
+				.build();
+	}
+
+	private ChatGenerationMetadata generateChoiceMetadata(GenerationOutput.Choice choice) {
+
+		return ChatGenerationMetadata.from(
+				String.valueOf(choice.getFinishReason()),
+				choice.getMessage().getContent()
+		);
 	}
 
 }
