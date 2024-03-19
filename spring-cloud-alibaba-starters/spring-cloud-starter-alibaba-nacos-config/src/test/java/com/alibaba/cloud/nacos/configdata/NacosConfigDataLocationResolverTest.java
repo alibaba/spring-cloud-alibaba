@@ -63,6 +63,12 @@ public class NacosConfigDataLocationResolverTest {
 	@BeforeEach
 	void setup() {
 		this.environment = new MockEnvironment();
+		environment.setProperty("spring.cloud.nacos.username", "root");
+		environment.setProperty("spring.cloud.nacos.password", "root");
+		environment.setProperty("spring.cloud.nacos.config.password", "not_root");
+		environment.setProperty("spring.cloud.nacos.server-addr", "127.0.0.1:8888");
+		environment.setProperty("spring.cloud.nacos.config.server-addr",
+				"127.0.0.1:9999");
 		this.environmentBinder = Binder.get(this.environment);
 		this.resolver = new NacosConfigDataLocationResolver(new DeferredLogs());
 		when(bootstrapContext.isRegistered(eq(ConfigService.class))).thenReturn(true);
@@ -166,7 +172,10 @@ public class NacosConfigDataLocationResolverTest {
 	void testSetCommonPropertiesIsOK() {
 		environment.setProperty("spring.cloud.nacos.username", "root");
 		environment.setProperty("spring.cloud.nacos.password", "root");
+		environment.setProperty("spring.cloud.nacos.config.password", "root");
 		environment.setProperty("spring.cloud.nacos.server-addr", "127.0.0.1:8888");
+		environment.setProperty("spring.cloud.nacos.config.server-addr",
+			"127.0.0.1:8888");
 		String locationUri = "nacos:test.yml";
 		List<NacosConfigDataResource> resources = testUri(locationUri);
 
