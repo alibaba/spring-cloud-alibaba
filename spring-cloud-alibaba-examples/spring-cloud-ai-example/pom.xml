@@ -28,7 +28,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>spring-cloud-starter-alibaba-ai-example</artifactId>
+	<artifactId>spring-cloud-ai-example</artifactId>
 	<name>Spring Cloud Starter Alibaba AI Example</name>
 	<description>Example demonstrating how to use Spring Cloud Alibaba AI</description>
 	<packaging>jar</packaging>
