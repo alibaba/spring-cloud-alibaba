@@ -37,7 +37,7 @@ public class TongYiChatOptions implements ChatOptions {
 	private String apiKey;
 
 	/**
-	 * TongYi model name, {@link TongYiConstants}
+	 * TongYi model name, {@link TongYiConstants}.
 	 */
 	private String model = TongYiConstants.Model.QWEN_TURBO;
 
@@ -132,6 +132,8 @@ public class TongYiChatOptions implements ChatOptions {
 	 */
 	private List<String> tools;
 
+	private String SystemUser = "You are a helpful assistant.";
+
 	@Override
 	public Float getTemperature() {
 
@@ -166,6 +168,14 @@ public class TongYiChatOptions implements ChatOptions {
 	public void setTopK(Integer topK) {
 
 		this.topK = topK;
+	}
+
+	public String getSystemUser() {
+		return SystemUser;
+	}
+
+	public void setSystemUser(String systemUser) {
+		SystemUser = systemUser;
 	}
 
 	public String getApiKey() {
@@ -278,6 +288,73 @@ public class TongYiChatOptions implements ChatOptions {
 		this.tools = tools;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		TongYiChatOptions that = (TongYiChatOptions) o;
+
+		return Objects.equals(apiKey, that.apiKey)
+				&& Objects.equals(model, that.model)
+				&& Objects.equals(seed, that.seed)
+				&& Objects.equals(maxTokens, that.maxTokens)
+				&& Objects.equals(topP, that.topP)
+				&& Objects.equals(topK, that.topK)
+				&& Objects.equals(repetitionPenalty, that.repetitionPenalty)
+				&& Objects.equals(temperature, that.temperature)
+				&& Objects.equals(stop, that.stop)
+				&& Objects.equals(resultFormat, that.resultFormat)
+				&& Objects.equals(stream, that.stream)
+				&& Objects.equals(enableSearch, that.enableSearch)
+				&& Objects.equals(incrementalOutput, that.incrementalOutput)
+				&& Objects.equals(tools, that.tools);
+	}
+
+	@Override
+	public int hashCode() {
+
+		return Objects.hash(
+				apiKey,
+				model,
+				seed,
+				maxTokens,
+				topP,
+				topK,
+				repetitionPenalty,
+				temperature,
+				stop,
+				stream,
+				resultFormat,
+				enableSearch,
+				incrementalOutput,
+				tools
+		);
+	}
+
+	@Override
+	public String toString() {
+
+		return "TongYiProperties {" + "apiKey='" + apiKey + '\''
+				+ ", model=" + model
+				+ ", seed=" + seed
+				+ ", maxTokens=" + maxTokens
+				+ ", topP=" + topP
+				+ ", topK=" + topK
+				+ ", repetitionPenalty=" + repetitionPenalty
+				+ ", temperature=" + temperature
+				+ ", stop=" + stop
+				+ ", resultFormat=" + resultFormat
+				+ ", stream=" + stream
+				+ ", enableSearch=" + enableSearch
+				+ ", incrementalOutput=" + incrementalOutput
+				+ ", tools=" + tools
+				+ '}';
+	}
+
 	public static Builder builder() {
 
 		return new Builder();
@@ -346,73 +423,6 @@ public class TongYiChatOptions implements ChatOptions {
 
 			return this.options;
 		}
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		TongYiChatOptions that = (TongYiChatOptions) o;
-
-		return Objects.equals(apiKey, that.apiKey)
-				&& Objects.equals(model, that.model)
-				&& Objects.equals(seed, that.seed)
-				&& Objects.equals(maxTokens, that.maxTokens)
-				&& Objects.equals(topP, that.topP)
-				&& Objects.equals(topK, that.topK)
-				&& Objects.equals(repetitionPenalty, that.repetitionPenalty)
-				&& Objects.equals(temperature, that.temperature)
-				&& Objects.equals(stop, that.stop)
-				&& Objects.equals(resultFormat, that.resultFormat)
-				&& Objects.equals(stream, that.stream)
-				&& Objects.equals(enableSearch, that.enableSearch)
-				&& Objects.equals(incrementalOutput, that.incrementalOutput)
-				&& Objects.equals(tools, that.tools);
-	}
-
-	@Override
-	public int hashCode() {
-
-		return Objects.hash(
-				apiKey,
-				model,
-				seed,
-				maxTokens,
-				topP,
-				topK,
-				repetitionPenalty,
-				temperature,
-				stop,
-				stream,
-				resultFormat,
-				enableSearch,
-				incrementalOutput,
-				tools
-		);
-	}
-
-	@Override
-	public String toString() {
-
-		return "TongYiProperties {" + "apiKey='" + apiKey + '\''
-				+ ", model=" + model
-				+ ", seed=" + seed
-				+ ", maxTokens=" + maxTokens
-				+ ", topP=" + topP
-				+ ", topK=" + topK
-				+ ", repetitionPenalty=" + repetitionPenalty
-				+ ", temperature=" + temperature
-				+ ", stop=" + stop
-				+ ", resultFormat=" + resultFormat
-				+ ", stream=" + stream
-				+ ", enableSearch=" + enableSearch
-				+ ", incrementalOutput=" + incrementalOutput
-				+ ", tools=" + tools
-				+ '}';
 	}
 
 }

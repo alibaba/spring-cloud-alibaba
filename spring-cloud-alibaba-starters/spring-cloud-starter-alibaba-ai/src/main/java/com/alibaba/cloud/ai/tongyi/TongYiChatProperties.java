@@ -30,27 +30,25 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @ConfigurationProperties(TongYiChatProperties.CONFIG_PREFIX)
 public class TongYiChatProperties {
 
+	/**
+	 * Spring Cloud Alibaba AI configuration prefix.
+	 */
 	public static final String CONFIG_PREFIX = "spring.cloud.ai.tongyi.chat";
 
+	/**
+	 * Default TongYi Chat model.
+	 */
 	public static final String DEFAULT_DEPLOYMENT_NAME = TongYiConstants.Model.QWEN_TURBO;
 
+	/**
+	 * Default temperature speed.
+	 */
 	private static final Double DEFAULT_TEMPERATURE = 0.8;
 
 	/**
 	 * Enable TongYiQWEN ai chat client.
 	 */
 	private boolean enabled = true;
-
-	private Integer test;
-
-	public Integer getTest() {
-
-		return test;
-	}
-
-	public void setTest(Integer test) {
-		this.test = test;
-	}
 
 	@NestedConfigurationProperty
 	private TongYiChatOptions options = TongYiChatOptions.builder()
@@ -61,8 +59,6 @@ public class TongYiChatProperties {
 			.build();
 
 	public TongYiChatOptions getOptions() {
-		System.out.println("fafdsf: " + test);
-		System.out.println("sdd  : " + options.getApiKey());
 
 		return this.options;
 	}

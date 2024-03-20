@@ -17,7 +17,7 @@
 package com.alibaba.cloud.ai.tongyi.client;
 
 import java.util.List;
-import java.util.stream.StreamSupport;
+import java.util.Objects;
 
 import com.alibaba.cloud.ai.tongyi.TongYiChatOptions;
 import com.alibaba.cloud.ai.tongyi.exception.TongYiException;
@@ -25,6 +25,7 @@ import com.alibaba.dashscope.aigc.generation.Generation;
 import com.alibaba.dashscope.aigc.generation.GenerationOutput;
 import com.alibaba.dashscope.aigc.generation.GenerationResult;
 import com.alibaba.dashscope.aigc.generation.models.QwenParam;
+import com.alibaba.dashscope.common.MessageManager;
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.alibaba.dashscope.utils.Constants;
@@ -39,6 +40,7 @@ import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.StreamingChatClient;
 import org.springframework.ai.chat.metadata.ChatGenerationMetadata;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author yuluo
@@ -52,6 +54,9 @@ public class TongYiChatClient implements ChatClient, StreamingChatClient {
 	private final Generation generation;
 
 	private TongYiChatOptions defaultOptions;
+
+	@Autowired
+	private MessageManager msgManager;
 
 	public TongYiChatClient(Generation generation) {
 
@@ -74,8 +79,10 @@ public class TongYiChatClient implements ChatClient, StreamingChatClient {
 	public ChatResponse call(Prompt prompt) {
 
 		GenerationResult res = null;
+
 		try {
 			res = generation.call(toTongYiChatParams(prompt));
+			msgManager.add(res);
 		}
 		catch (NoApiKeyException | InputRequiredException e) {
 			logger.warn("TongYi chat client: " + e.getMessage());
@@ -103,50 +110,45 @@ public class TongYiChatClient implements ChatClient, StreamingChatClient {
 	@Override
 	public Flux<ChatResponse> stream(Prompt prompt) {
 
-		QwenParam params = toTongYiChatParams(prompt);
-		Flowable<GenerationResult> generationResultFlowable = null;
+		Flowable<GenerationResult> genRes = null;
 
 		try {
-			generationResultFlowable = generation.streamCall(params);
+			genRes = generation.streamCall(toTongYiChatParams(prompt));
 		}
 		catch (NoApiKeyException | InputRequiredException e) {
 			logger.warn("TongYi chat client: " + e.getMessage());
 			throw new TongYiException(e.getMessage());
 		}
 
-		return Flux.fromStream(
-				StreamSupport
-						.stream(
-								Flowable
-										.fromPublisher(generationResultFlowable)
-										.blockingIterable()
-										.spliterator(),
-								false
-						)
-						.flatMap(
-								res -> res.getOutput()
+		return Flux.from(genRes)
+				.flatMap(
+						message -> Flux.just(
+								message.getOutput()
 										.getChoices()
-										.stream()
-										.map(choice -> {
-													var content = (choice.getMessage() != null) ? choice.getMessage()
-															.getContent() : null;
-													var generation1 = new org.springframework.ai.chat.Generation(content);
-													return new ChatResponse(List.of(generation1));
-												}
-										)
-						)
-		).publishOn(Schedulers.parallel());
+										.get(0)
+										.getMessage()
+										.getContent())
+								.map(content -> {
+									var gen = new org.springframework.ai.chat.Generation(content)
+											.withGenerationMetadata(generateChoiceMetadata(
+													message.getOutput()
+															.getChoices()
+															.get(0)
+												));
+									return new ChatResponse(List.of(gen));
+								})
+				)
+				.publishOn(Schedulers.parallel());
 
 	}
 
 	private QwenParam toTongYiChatParams(Prompt prompt) {
 
-		Constants.apiKey = this.defaultOptions.getApiKey();
-
-		System.out.println(this.defaultOptions.toString());
+		Constants.apiKey = getKey();
 
 		return QwenParam.builder()
 				.model(this.defaultOptions.getModel())
+				.messages(msgManager.get())
 				.resultFormat(this.defaultOptions.getResultFormat())
 				.topP(this.defaultOptions.getTopP().doubleValue())
 				.topK(this.defaultOptions.getTopK())
@@ -166,6 +168,21 @@ public class TongYiChatClient implements ChatClient, StreamingChatClient {
 				String.valueOf(choice.getFinishReason()),
 				choice.getMessage().getContent()
 		);
+	}
+
+	/**
+	 * Get TongYi model api_key .
+	 * todo: Get key from env and env_file.
+	 * @return api_key
+	 */
+	private String getKey() {
+
+		String apiKey = null;
+
+		if (Objects.nonNull(this.defaultOptions.getApiKey())) {
+			apiKey = this.defaultOptions.getApiKey();
+		}
+		return apiKey;
 	}
 
 }

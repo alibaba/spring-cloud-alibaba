@@ -21,7 +21,7 @@ package com.alibaba.cloud.ai.tongyi.exception;
  * @author 1481556636@qq.com
  */
 
-public class TongYiException extends RuntimeException{
+public class TongYiException extends RuntimeException {
 
 	public TongYiException(String message) {
 
