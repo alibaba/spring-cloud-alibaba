@@ -19,6 +19,8 @@ package com.alibaba.cloud.ai.tongyi.constant;
 import com.alibaba.dashscope.aigc.generation.Generation;
 
 /**
+ * TongYi models constants.
+ *
  * @author yuluo
  * @author 1481556636@qq.com
  */

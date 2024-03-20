@@ -43,6 +43,9 @@ import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
+ *
+ * {@link ChatClient} and {@link StreamingChatClient} implementation for {@literal Alibaba DashScope}
+ * backed by {@link Generation}.
  * @author yuluo
  * @author 1481556636@qq.com
  */
@@ -51,13 +54,26 @@ public class TongYiChatClient implements ChatClient, StreamingChatClient {
 
 	private static final Logger logger = LoggerFactory.getLogger(TongYiChatClient.class);
 
+	/**
+	 * DashScope generation client.
+	 */
 	private final Generation generation;
 
+	/**
+	 * The TongYi models default chat completion api.
+	 */
 	private TongYiChatOptions defaultOptions;
 
+	/**
+	 * User role message manager.
+	 */
 	@Autowired
 	private MessageManager msgManager;
 
+	/**
+	 * Initializes an instance of the TongYiChatClient.
+	 * @param generation DashScope generation client.
+	 */
 	public TongYiChatClient(Generation generation) {
 
 		this(generation,
@@ -69,6 +85,11 @@ public class TongYiChatClient implements ChatClient, StreamingChatClient {
 		);
 	}
 
+	/**
+	 * Create a TongYi models client.
+	 * @param generation DashScope model generation client.
+	 * @param options TongYi default chat completion api.
+	 */
 	public TongYiChatClient(Generation generation, TongYiChatOptions options) {
 
 		this.generation = generation;
@@ -142,6 +163,11 @@ public class TongYiChatClient implements ChatClient, StreamingChatClient {
 
 	}
 
+	/**
+	 * Configuration properties to Qwen model params.
+	 * @param prompt {@link Prompt}
+	 * @return Qwen models params {@link QwenParam}
+	 */
 	private QwenParam toTongYiChatParams(Prompt prompt) {
 
 		Constants.apiKey = getKey();
@@ -173,7 +199,7 @@ public class TongYiChatClient implements ChatClient, StreamingChatClient {
 	/**
 	 * Get TongYi model api_key .
 	 * todo: Get key from env and env_file.
-	 * @return api_key
+	 * @return api_key.
 	 */
 	private String getKey() {
 

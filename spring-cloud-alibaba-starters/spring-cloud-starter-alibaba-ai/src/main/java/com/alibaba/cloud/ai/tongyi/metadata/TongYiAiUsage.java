@@ -23,6 +23,8 @@ import org.springframework.ai.chat.metadata.Usage;
 import org.springframework.util.Assert;
 
 /**
+ * {@link Usage} implementation for {@literal Alibaba DashScope}.
+ *
  * @author yuluo
  * @author 1481556636@qq.com
  */
