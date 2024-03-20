@@ -80,7 +80,25 @@ Spring Cloud Alibaba AI 模块基于 [Spring AI 0.8.0](https://docs.spring.io/sp
    本 Example 项目支持如下两种启动方式：
 
    1. IDE 直接启动：找到主类 `TongYiApplication`，执行 main 方法启动应用。
-   2. 打包编译后启动：首先执行 `mvn clean package` 将工程编译打包，进入 `target` 文件夹执行 `java -jar spring-cloud-alib-example.jar` 启动应用。
+   2. 打包编译后启动：首先执行 `mvn clean package` 将工程编译打包，进入 `target` 文件夹执行 `java -jar spring-cloud-ai-example.jar` 启动应用。
+
+## 验证
+
+浏览器地址栏输入：`http://localhost:8080/ai/example`
+
+返回如下响应：
+
+```json
+{
+    "Tell me a joke": "Sure, here's a classic one for you:\n\nWhy was the math book sad?\n\nBecause it had too many problems.\n\nI hope that made you smile! If you're looking for more, just let me know."
+}
+```
+
+## 配置项说明
+
+https://help.aliyun.com/zh/dashscope/developer-reference/api-details
+
+## 
 
 
 
