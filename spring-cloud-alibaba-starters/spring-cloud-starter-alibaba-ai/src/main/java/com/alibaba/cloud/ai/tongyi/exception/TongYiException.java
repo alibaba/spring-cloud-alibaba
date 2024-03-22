@@ -20,7 +20,7 @@ package com.alibaba.cloud.ai.tongyi.exception;
  * TongYi models runtime exception.
  *
  * @author yuluo
- * @author 1481556636@qq.com
+ * @since 2023.0.0.0
  */
 
 public class TongYiException extends RuntimeException {

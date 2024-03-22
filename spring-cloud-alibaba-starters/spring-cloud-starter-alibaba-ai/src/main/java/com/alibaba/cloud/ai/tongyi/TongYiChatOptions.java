@@ -26,7 +26,7 @@ import org.springframework.ai.chat.prompt.ChatOptions;
 
 /**
  * @author yuluo
- * @author 1481556636@qq.com
+ * @since 2023.0.0.0
  */
 
 public class TongYiChatOptions implements ChatOptions {

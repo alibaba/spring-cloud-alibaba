@@ -47,7 +47,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * {@link ChatClient} and {@link StreamingChatClient} implementation for {@literal Alibaba DashScope}
  * backed by {@link Generation}.
  * @author yuluo
- * @author 1481556636@qq.com
+ * @since 2023.0.0.0
  */
 
 public class TongYiChatClient implements ChatClient, StreamingChatClient {

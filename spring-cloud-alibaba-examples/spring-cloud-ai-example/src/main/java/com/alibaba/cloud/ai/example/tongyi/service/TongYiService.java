@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  * @author yuluo
- * @author 1481556636@qq.com
+ * @since 2023.0.0.0
  */
 
 public interface TongYiService {

@@ -22,7 +22,7 @@ import com.alibaba.dashscope.aigc.generation.Generation;
  * TongYi models constants.
  *
  * @author yuluo
- * @author 1481556636@qq.com
+ * @since 2023.0.0.0
  */
 
 public final class TongYiConstants {

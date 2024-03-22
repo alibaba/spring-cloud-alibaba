@@ -26,7 +26,7 @@ import org.springframework.util.Assert;
  * {@link Usage} implementation for {@literal Alibaba DashScope}.
  *
  * @author yuluo
- * @author 1481556636@qq.com
+ * @since 2023.0.0.0
  */
 
 public class TongYiAiUsage implements Usage {

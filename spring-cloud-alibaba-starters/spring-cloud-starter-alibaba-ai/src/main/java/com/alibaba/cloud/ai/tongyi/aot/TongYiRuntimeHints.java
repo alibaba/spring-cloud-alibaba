@@ -23,7 +23,7 @@ import org.springframework.aot.hint.RuntimeHintsRegistrar;
  * The TongYiRuntimeHints class is responsible for registering runtime hints for TongYiAI.
  *
  * @author yuluo
- * @author 1481556636@qq.com
+ * @since 2023.0.0.0
  */
 
 public class TongYiRuntimeHints implements RuntimeHintsRegistrar {
