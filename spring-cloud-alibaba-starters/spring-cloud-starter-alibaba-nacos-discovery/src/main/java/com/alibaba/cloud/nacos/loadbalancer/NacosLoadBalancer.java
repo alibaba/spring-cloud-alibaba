@@ -143,14 +143,14 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 									.get("nacos.cluster");
 							return StringUtils.equals(cluster, clusterName);
 						}).collect(Collectors.toList());
-				if (!CollectionUtils.isEmpty(sameClusterInstances)) {
+				if (CollectionUtils.isEmpty(sameClusterInstances)) {
+					log.warn("Not filtering to the specified cluster instance node，name = {}, clusterName = {}, instance = {}",
+							serviceId, clusterName, serviceInstances);
+				} else {
 					instancesToChoose = sameClusterInstances;
+					log.info("Calling to filter cluster instance nodes, name = {}, clusterName = {}, instance = {}",
+							serviceId, clusterName, serviceInstances);
 				}
-			}
-			else {
-				log.warn(
-						"A cross-cluster call occurs，name = {}, clusterName = {}, instance = {}",
-						serviceId, clusterName, serviceInstances);
 			}
 			instancesToChoose = this.filterInstanceByIpType(instancesToChoose);
 
