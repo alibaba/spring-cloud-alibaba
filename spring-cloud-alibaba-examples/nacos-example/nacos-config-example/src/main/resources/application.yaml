@@ -12,7 +12,7 @@ spring:
         password: 'nacos'
   config:
     import:
-      - nacos:nacos-config-example.properties?refresh=true
+      - nacos:nacos-config-example.properties?refreshEnabled=true
 management:
   endpoint:
     health:

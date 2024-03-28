@@ -137,7 +137,7 @@ Before starting the application sample to demonstrate the project function, firs
          password: 'nacos'
      config:
        import:
-         - nacos:nacos-config-example.properties?refresh=true&group=DEFAULT_GROUP
+         - nacos:nacos-config-example.properties?refreshEnabled=true&group=DEFAULT_GROUP
    ```
 
 3. After completing the above two steps, the application will obtain the corresponding configuration from Nacos Server and add it to the Property Sources of Spring Environment. There are four ways to save a portion of the Nacos configuration using the Nacos Configuration Center:
