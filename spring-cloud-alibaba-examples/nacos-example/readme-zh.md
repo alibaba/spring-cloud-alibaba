@@ -138,7 +138,7 @@ nacos.core.auth.plugin.nacos.token.secret.key=SecretKey0123456789012345678901234
          password: 'nacos'
      config:
        import:
-         - nacos:nacos-config-example.properties?refresh=true&group=DEFAULT_GROUP
+         - nacos:nacos-config-example.properties?refreshEnabled=true&group=DEFAULT_GROUP
    ```
 
 3. 完成上述两步后，应用会从 Nacos Server 中获取相应的配置，并添加在 Spring Environment 的 PropertySources 中。使用 Nacos 配置中心保存 Nacos 的部分配置时，有以下四种方式:
