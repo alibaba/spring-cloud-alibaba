@@ -56,7 +56,7 @@ public class TongYiServiceImpl implements TongYiService {
 	}
 
 	@Override
-	public Map<String, String> completion(String message) {
+	public String completion(String message) {
 
 		Message userMsg = Message.builder()
 				.role(Role.USER.getValue())
@@ -64,7 +64,7 @@ public class TongYiServiceImpl implements TongYiService {
 				.build();
 		msgManager.add(userMsg);
 
-		return Map.of(message, chatClient.call(message));
+		return chatClient.call(message);
 	}
 
 	@Override

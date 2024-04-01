@@ -94,11 +94,12 @@ Spring Cloud Alibaba AI 模块基于 [Spring AI 0.8.0](https://docs.spring.io/sp
 }
 ```
 
+## 简易前端验证
+
+进入 `resources/static` 目录下，使用浏览器打开 index.html 文件，输入问题，即可获得输出响应（确保 api-key 有效）：
+
+![ai-example](./images/sca-ai-example-front.gif)
+
 ## 配置项说明
 
 https://help.aliyun.com/zh/dashscope/developer-reference/api-details
-
-## 
-
-
-

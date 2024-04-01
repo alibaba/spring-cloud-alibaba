@@ -25,7 +25,7 @@ import java.util.Map;
 
 public interface TongYiService {
 
-	Map<String, String> completion(String message);
+	String completion(String message);
 
 	Map<String, String> streamCompletion(String message);
 
