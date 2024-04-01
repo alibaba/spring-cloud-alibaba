@@ -2,7 +2,7 @@
 
 ## Project description
 
-The Spring Cloud Alibaba AI module is based on [Spring AI 0.8.0](https://docs.spring.io/spring-ai/reference/0.8-SNAPSHOT/index.html) the project API to complete the access of the general series of large models. This project demonstrates how to use `spring-cloud-starter-alibaba-ai` the Spring Cloud microservice application to integrate with the generic family model.
+The Spring Cloud Alibaba AI module is based on [Spring AI 1.0.0](https://docs.spring.io/spring-ai/reference/0.8-SNAPSHOT/index.html) the project API to complete the access of the general series of large models. This project demonstrates how to use `spring-cloud-starter-alibaba-ai` the Spring Cloud microservice application to integrate with the generic family model.
 
 [model service dashscope](https://help.aliyun.com/zh/dashscope/) It is a big model application service launched by Alibaba. Based on the concept of "Model-as-a-Service" (MaaS), Lingji Model Service provides a variety of model services including model reasoning and model fine-tuning training through standardized APIs around AI models in various fields.
 
