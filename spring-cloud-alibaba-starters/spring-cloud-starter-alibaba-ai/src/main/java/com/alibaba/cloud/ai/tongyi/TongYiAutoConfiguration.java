@@ -16,11 +16,10 @@
 
 package com.alibaba.cloud.ai.tongyi;
 
-import com.alibaba.cloud.ai.tongyi.client.TongYiChatClient;
-import com.alibaba.cloud.ai.tongyi.constant.TongYiConstants;
 import com.alibaba.dashscope.aigc.generation.Generation;
 import com.alibaba.dashscope.common.Message;
 import com.alibaba.dashscope.common.MessageManager;
+import com.alibaba.dashscope.common.Role;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -53,7 +52,7 @@ public class TongYiAutoConfiguration {
 		MessageManager messageManager = new MessageManager(10);
 		messageManager.add(
 				Message.builder()
-						.role(TongYiConstants.Role.SYSTEM)
+						.role(Role.SYSTEM.getValue())
 						.content(chatProperties.getOptions().getSystemUser())
 						.build()
 		);

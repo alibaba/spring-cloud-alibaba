@@ -62,16 +62,19 @@ public class TongYiAiUsage implements Usage {
 
 	@Override
 	public Long getGenerationTokens() {
+
 		return this.getUsage().getOutputTokens().longValue();
 	}
 
 	@Override
 	public Long getTotalTokens() {
-		return this.getUsage().getInputTokens().longValue() + this.getUsage().getInputTokens().longValue();
+
+		return this.getUsage().getTotalTokens().longValue();
 	}
 
 	@Override
 	public String toString() {
+
 		return this.getUsage().toString();
 	}
 }

@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi.client;
+package com.alibaba.cloud.ai.tongyi;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import com.alibaba.cloud.ai.tongyi.TongYiChatOptions;
 import com.alibaba.cloud.ai.tongyi.exception.TongYiException;
+import com.alibaba.dashscope.aigc.conversation.ConversationParam;
 import com.alibaba.dashscope.aigc.generation.Generation;
 import com.alibaba.dashscope.aigc.generation.GenerationOutput;
 import com.alibaba.dashscope.aigc.generation.GenerationResult;
-import com.alibaba.dashscope.aigc.generation.models.QwenParam;
 import com.alibaba.dashscope.common.MessageManager;
+import com.alibaba.dashscope.common.Role;
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
+import com.alibaba.dashscope.tools.ToolCallBase;
+import com.alibaba.dashscope.tools.ToolCallFunction;
+import com.alibaba.dashscope.utils.ApiKeywords;
 import com.alibaba.dashscope.utils.Constants;
 import io.reactivex.Flowable;
 import org.slf4j.Logger;
@@ -40,17 +44,26 @@ import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.StreamingChatClient;
 import org.springframework.ai.chat.metadata.ChatGenerationMetadata;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.model.ModelOptionsUtils;
+import org.springframework.ai.model.function.AbstractFunctionCallSupport;
+import org.springframework.ai.model.function.FunctionCallbackContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 /**
  *
  * {@link ChatClient} and {@link StreamingChatClient} implementation for {@literal Alibaba DashScope}
  * backed by {@link Generation}.
  * @author yuluo
- * @since 2023.0.0.0
+ * @since 2023.0.0.0-RC1
  */
 
-public class TongYiChatClient implements ChatClient, StreamingChatClient {
+public class TongYiChatClient extends
+		AbstractFunctionCallSupport<
+				com.alibaba.dashscope.common.Message,
+				ConversationParam,
+				GenerationResult>
+		implements ChatClient, StreamingChatClient {
 
 	private static final Logger logger = LoggerFactory.getLogger(TongYiChatClient.class);
 
@@ -80,9 +93,20 @@ public class TongYiChatClient implements ChatClient, StreamingChatClient {
 				TongYiChatOptions.builder()
 						.withTopP(0.8)
 						.withEnableSearch(true)
-						.withResultFormat(QwenParam.ResultFormat.MESSAGE)
-						.build()
+						.withResultFormat(ConversationParam.ResultFormat.MESSAGE)
+						.build(),
+				null
 		);
+	}
+
+	/**
+	 * Initializes an instance of the TongYiChatClient.
+	 * @param generation DashScope generation client.
+	 * @param options TongYi model params.
+	 */
+	public TongYiChatClient(Generation generation, TongYiChatOptions options) {
+
+		this(generation, options, null);
 	}
 
 	/**
@@ -90,8 +114,9 @@ public class TongYiChatClient implements ChatClient, StreamingChatClient {
 	 * @param generation DashScope model generation client.
 	 * @param options TongYi default chat completion api.
 	 */
-	public TongYiChatClient(Generation generation, TongYiChatOptions options) {
+	public TongYiChatClient(Generation generation, TongYiChatOptions options, FunctionCallbackContext functionCallbackContext) {
 
+		super(functionCallbackContext);
 		this.generation = generation;
 		this.defaultOptions = options;
 	}
@@ -144,18 +169,18 @@ public class TongYiChatClient implements ChatClient, StreamingChatClient {
 		return Flux.from(genRes)
 				.flatMap(
 						message -> Flux.just(
-								message.getOutput()
-										.getChoices()
-										.get(0)
-										.getMessage()
-										.getContent())
+										message.getOutput()
+												.getChoices()
+												.get(0)
+												.getMessage()
+												.getContent())
 								.map(content -> {
 									var gen = new org.springframework.ai.chat.Generation(content)
 											.withGenerationMetadata(generateChoiceMetadata(
 													message.getOutput()
 															.getChoices()
 															.get(0)
-												));
+											));
 									return new ChatResponse(List.of(gen));
 								})
 				)
@@ -166,13 +191,13 @@ public class TongYiChatClient implements ChatClient, StreamingChatClient {
 	/**
 	 * Configuration properties to Qwen model params.
 	 * @param prompt {@link Prompt}
-	 * @return Qwen models params {@link QwenParam}
+	 * @return Qwen models params {@link ConversationParam}
 	 */
-	private QwenParam toTongYiChatParams(Prompt prompt) {
+	private ConversationParam toTongYiChatParams(Prompt prompt) {
 
 		Constants.apiKey = getKey();
 
-		return QwenParam.builder()
+		return ConversationParam.builder()
 				.model(this.defaultOptions.getModel())
 				.messages(msgManager.get())
 				.resultFormat(this.defaultOptions.getResultFormat())
@@ -196,6 +221,10 @@ public class TongYiChatClient implements ChatClient, StreamingChatClient {
 		);
 	}
 
+	private <T> List<T> nullSafeList(List<T> list) {
+		return list != null ? list : Collections.emptyList();
+	}
+
 	/**
 	 * Get TongYi model api_key .
 	 * todo: Get key from env and env_file.
@@ -211,4 +240,89 @@ public class TongYiChatClient implements ChatClient, StreamingChatClient {
 		return apiKey;
 	}
 
+
+	@Override
+	protected ConversationParam doCreateToolResponseRequest(
+			ConversationParam previousRequest,
+			com.alibaba.dashscope.common.Message responseMessage,
+			List<com.alibaba.dashscope.common.Message> conversationHistory
+	) {
+		for (ToolCallBase toolCall : responseMessage.getToolCalls()) {
+			if (toolCall instanceof ToolCallFunction toolCallFunction) {
+				if (toolCallFunction.getFunction() != null) {
+					var functionName = toolCallFunction.getFunction().getName();
+					var functionArguments = toolCallFunction.getFunction().getArguments();
+
+					if (!this.functionCallbackRegister.containsKey(functionName)) {
+						throw new IllegalStateException("No function callback found for function name: " + functionName);
+					}
+
+					String functionResponse = this.functionCallbackRegister.get(functionName).call(functionArguments);
+
+					// Add the function response to the conversation.
+					conversationHistory
+							.add(com.alibaba.dashscope.common.Message.builder()
+									.content(functionResponse)
+									.role(Role.BOT.getValue())
+									.toolCallId(toolCall.getId())
+									.build()
+							);
+				}
+			}
+
+		}
+
+		ConversationParam newRequest = ConversationParam.builder().messages(conversationHistory).build();
+		newRequest = ModelOptionsUtils.merge(newRequest, previousRequest, ConversationParam.class);
+
+		return newRequest;
+
+	}
+
+	@Override
+	protected List<com.alibaba.dashscope.common.Message> doGetUserMessages(ConversationParam request) {
+
+		return request.getMessages();
+	}
+
+	@Override
+	protected com.alibaba.dashscope.common.Message doGetToolResponseMessage(GenerationResult response) {
+
+		var message = response.getOutput().getChoices().get(0).getMessage();
+		var assistantMessage = com.alibaba.dashscope.common.Message.builder().role(Role.ASSISTANT.getValue())
+				.content("").build();
+		assistantMessage.setToolCalls(message.getToolCalls());
+
+		return assistantMessage;
+	}
+
+	@Override
+	protected GenerationResult doChatCompletion(ConversationParam request) {
+
+		GenerationResult result;
+		try {
+			result = generation.call(request);
+		}
+		catch (NoApiKeyException | InputRequiredException e) {
+			throw new RuntimeException(e);
+		}
+
+		return result;
+	}
+
+	@Override
+	protected boolean isToolFunctionCall(GenerationResult response) {
+
+		if (response == null || CollectionUtils.isEmpty(response.getOutput().getChoices())) {
+
+			return false;
+		}
+		var choice = response.getOutput().getChoices().get(0);
+		if (choice == null || choice.getFinishReason() == null) {
+
+			return false;
+		}
+
+		return Objects.equals(choice.getFinishReason(), ApiKeywords.TOOL_CALLS);
+	}
 }
