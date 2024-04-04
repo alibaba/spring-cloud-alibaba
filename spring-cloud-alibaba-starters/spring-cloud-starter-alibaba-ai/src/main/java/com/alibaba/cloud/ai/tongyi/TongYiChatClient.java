@@ -16,9 +16,10 @@
 
 package com.alibaba.cloud.ai.tongyi;
 
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import com.alibaba.cloud.ai.tongyi.exception.TongYiException;
 import com.alibaba.dashscope.aigc.conversation.ConversationParam;
@@ -31,6 +32,7 @@ import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.alibaba.dashscope.tools.ToolCallBase;
 import com.alibaba.dashscope.tools.ToolCallFunction;
+import com.alibaba.dashscope.utils.ApiKey;
 import com.alibaba.dashscope.utils.ApiKeywords;
 import com.alibaba.dashscope.utils.Constants;
 import io.reactivex.Flowable;
@@ -42,7 +44,9 @@ import reactor.core.scheduler.Schedulers;
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.StreamingChatClient;
+import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.metadata.ChatGenerationMetadata;
+import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.model.ModelOptionsUtils;
 import org.springframework.ai.model.function.AbstractFunctionCallSupport;
@@ -51,11 +55,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 /**
- *
  * {@link ChatClient} and {@link StreamingChatClient} implementation for {@literal Alibaba DashScope}
  * backed by {@link Generation}.
+ *
  * @author yuluo
  * @since 2023.0.0.0-RC1
+ * @see ChatClient
+ * @see com.alibaba.dashscope.aigc.generation
  */
 
 public class TongYiChatClient extends
@@ -114,29 +120,32 @@ public class TongYiChatClient extends
 	 * @param generation DashScope model generation client.
 	 * @param options TongYi default chat completion api.
 	 */
-	public TongYiChatClient(Generation generation, TongYiChatOptions options, FunctionCallbackContext functionCallbackContext) {
+	public TongYiChatClient(Generation generation, TongYiChatOptions options,
+			FunctionCallbackContext functionCallbackContext) {
 
 		super(functionCallbackContext);
 		this.generation = generation;
 		this.defaultOptions = options;
 	}
 
+	public TongYiChatOptions getDefaultOptions() {
+
+		return this.defaultOptions;
+	}
+
 	@Override
 	public ChatResponse call(Prompt prompt) {
 
-		GenerationResult res = null;
+		ConversationParam params = toTongYiChatParams(prompt);
 
-		try {
-			res = generation.call(toTongYiChatParams(prompt));
-			msgManager.add(res);
-		}
-		catch (NoApiKeyException | InputRequiredException e) {
-			logger.warn("TongYi chat client: " + e.getMessage());
-			throw new TongYiException(e.getMessage());
-		}
+		logger.trace("TongYi ConversationOptions: {}", params);
+		GenerationResult chatCompletions = this.callWithFunctionSupport(params);
+		logger.trace("TongYi ConversationOptions: {}", params);
+
+		msgManager.add(chatCompletions);
 
 		List<org.springframework.ai.chat.Generation> generations =
-				res
+				chatCompletions
 						.getOutput()
 						.getChoices()
 						.stream()
@@ -156,7 +165,7 @@ public class TongYiChatClient extends
 	@Override
 	public Flux<ChatResponse> stream(Prompt prompt) {
 
-		Flowable<GenerationResult> genRes = null;
+		Flowable<GenerationResult> genRes;
 
 		try {
 			genRes = generation.streamCall(toTongYiChatParams(prompt));
@@ -195,22 +204,60 @@ public class TongYiChatClient extends
 	 */
 	private ConversationParam toTongYiChatParams(Prompt prompt) {
 
-		Constants.apiKey = getKey();
+		try {
+			Constants.apiKey = getKey();
+		}
+		catch (NoApiKeyException e) {
+			logger.warn(e.getMessage());
+			throw new TongYiException(e.getMessage());
+		}
 
-		return ConversationParam.builder()
-				.model(this.defaultOptions.getModel())
-				.messages(msgManager.get())
-				.resultFormat(this.defaultOptions.getResultFormat())
-				.topP(this.defaultOptions.getTopP().doubleValue())
-				.topK(this.defaultOptions.getTopK())
-				.enableSearch(this.defaultOptions.getEnableSearch())
-				.seed(this.defaultOptions.getSeed())
-				.maxTokens(this.defaultOptions.getMaxTokens())
-				.repetitionPenalty(this.defaultOptions.getRepetitionPenalty())
-				.temperature(this.defaultOptions.getTemperature())
-				.incrementalOutput(this.defaultOptions.getIncrementalOutput())
-				.prompt(prompt.getContents())
-				.build();
+		Set<String> functionsForThisRequest = new HashSet<>();
+
+		List<com.alibaba.dashscope.common.Message> tongYiMessage = prompt.getInstructions().stream()
+				.map(this::fromSpringAIMessage)
+				.toList();
+
+		ConversationParam chatParams = ConversationParam.builder().messages(tongYiMessage).build();
+
+		if (this.defaultOptions != null) {
+
+			chatParams = merge(chatParams, this.defaultOptions);
+			Set<String> defaultEnabledFunctions = this.handleFunctionCallbackConfigurations(this.defaultOptions, !IS_RUNTIME_CALL);
+			functionsForThisRequest.addAll(defaultEnabledFunctions);
+		}
+		if (prompt.getOptions() != null) {
+			if (prompt.getOptions() instanceof ChatOptions runtimeOptions) {
+				TongYiChatOptions updatedRuntimeOptions = ModelOptionsUtils.copyToTarget(runtimeOptions,
+						ChatOptions.class, TongYiChatOptions.class);
+				// JSON merge doesn't due to Azure OpenAI service bug:
+				// https://github.com/Azure/azure-sdk-for-java/issues/38183
+				// options = ModelOptionsUtils.merge(runtimeOptions, options,
+				// ChatCompletionsOptions.class);
+				chatParams = merge(updatedRuntimeOptions, chatParams);
+
+				Set<String> promptEnabledFunctions = this.handleFunctionCallbackConfigurations(updatedRuntimeOptions,
+						IS_RUNTIME_CALL);
+				functionsForThisRequest.addAll(promptEnabledFunctions);
+
+			}
+			else {
+				throw new IllegalArgumentException("Prompt options are not of type ChatCompletionsOptions:"
+						+ prompt.getOptions().getClass().getSimpleName());
+			}
+		}
+
+		// Add the enabled functions definitions to the request's tools parameter.
+
+		if (!CollectionUtils.isEmpty(functionsForThisRequest)) {
+			List<ChatCompletionsFunctionToolDefinition> tools = this.getFunctionTools(functionsForThisRequest);
+			List<ChatCompletionsToolDefinition> tools2 = tools.stream()
+					.map(t -> ((ChatCompletionsToolDefinition) t))
+					.toList();
+			chatParams.setTools(tools2);
+		}
+
+		return chatParams;
 	}
 
 	private ChatGenerationMetadata generateChoiceMetadata(GenerationOutput.Choice choice) {
@@ -221,22 +268,64 @@ public class TongYiChatClient extends
 		);
 	}
 
-	private <T> List<T> nullSafeList(List<T> list) {
-		return list != null ? list : Collections.emptyList();
+	private ConversationParam merge(ConversationParam tongYiParams, TongYiChatOptions scaChatParams) {
+
+		if (scaChatParams == null) {
+
+			return tongYiParams;
+		}
+
+		return ConversationParam.builder()
+				.messages(tongYiParams.getMessages())
+				.maxTokens((tongYiParams.getMaxTokens() != null) ? tongYiParams.getMaxTokens() : scaChatParams.getMaxTokens())
+				.model((tongYiParams.getModel() != null) ? tongYiParams.getModel() : scaChatParams.getModel())
+				.resultFormat((tongYiParams.getResultFormat() != null) ? tongYiParams.getResultFormat() : scaChatParams.getResultFormat())
+				.enableSearch((tongYiParams.getEnableSearch() != null) ? tongYiParams.getEnableSearch() : scaChatParams.getEnableSearch())
+				.topK((tongYiParams.getTopK() != null) ? tongYiParams.getTopK() : scaChatParams.getTopK())
+				.topP((tongYiParams.getTopP() != null) ? tongYiParams.getTopP() : scaChatParams.getTopP())
+				.incrementalOutput((tongYiParams.getIncrementalOutput() != null) ? tongYiParams.getIncrementalOutput() : scaChatParams.getIncrementalOutput())
+				.temperature((tongYiParams.getTemperature() != null) ? tongYiParams.getTemperature() : scaChatParams.getTemperature())
+				.repetitionPenalty((tongYiParams.getRepetitionPenalty() != null) ? tongYiParams.getRepetitionPenalty() : scaChatParams.getRepetitionPenalty())
+				.seed((tongYiParams.getSeed() != null) ? tongYiParams.getSeed() : scaChatParams.getSeed())
+				.build();
+
 	}
 
+
+	private com.alibaba.dashscope.common.Message fromSpringAIMessage(Message message) {
+
+		return switch (message.getMessageType()) {
+			case USER -> com.alibaba.dashscope.common.Message.builder()
+					.role(Role.USER.getValue())
+					.content(message.getContent())
+					.build();
+			case SYSTEM -> com.alibaba.dashscope.common.Message.builder()
+					.role(Role.SYSTEM.getValue())
+					.content(message.getContent())
+					.build();
+			case ASSISTANT -> com.alibaba.dashscope.common.Message.builder()
+					.role(Role.ASSISTANT.getValue())
+					.content(message.getContent())
+					.build();
+			default -> throw new IllegalArgumentException("Unknown message type " + message.getMessageType());
+		};
+
+	}
 	/**
 	 * Get TongYi model api_key .
 	 * todo: Get key from env and env_file.
 	 * @return api_key.
 	 */
-	private String getKey() {
+	private String getKey() throws NoApiKeyException {
 
-		String apiKey = null;
+		String apiKey;
 
 		if (Objects.nonNull(this.defaultOptions.getApiKey())) {
 			apiKey = this.defaultOptions.getApiKey();
+		} else {
+			apiKey = ApiKey.getApiKey(null);
 		}
+
 		return apiKey;
 	}
 

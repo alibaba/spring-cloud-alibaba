@@ -16,26 +16,36 @@
 
 package com.alibaba.cloud.ai.tongyi;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import com.alibaba.dashscope.aigc.generation.Generation;
 import com.alibaba.dashscope.aigc.generation.GenerationParam;
 
 import org.springframework.ai.chat.prompt.ChatOptions;
+import org.springframework.ai.model.function.FunctionCallback;
+import org.springframework.ai.model.function.FunctionCallingOptions;
+import org.springframework.util.Assert;
 
 /**
  * @author yuluo
  * @since 2023.0.0.0
  */
 
-public class TongYiChatOptions implements ChatOptions {
+public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
 
 	/**
 	 * TongYi model api key.
 	 */
 	private String apiKey;
 
+	/**
+	 * TongYi Models.
+	 * {@link Generation.Models}
+	 */
 	private String model = Generation.Models.QWEN_TURBO;
 
 	/**
@@ -282,71 +292,32 @@ public class TongYiChatOptions implements ChatOptions {
 		this.tools = tools;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		TongYiChatOptions that = (TongYiChatOptions) o;
+	private List<FunctionCallback> functionCallbacks = new ArrayList<>();
 
-		return Objects.equals(apiKey, that.apiKey)
-				&& Objects.equals(model, that.model)
-				&& Objects.equals(seed, that.seed)
-				&& Objects.equals(maxTokens, that.maxTokens)
-				&& Objects.equals(topP, that.topP)
-				&& Objects.equals(topK, that.topK)
-				&& Objects.equals(repetitionPenalty, that.repetitionPenalty)
-				&& Objects.equals(temperature, that.temperature)
-				&& Objects.equals(stop, that.stop)
-				&& Objects.equals(resultFormat, that.resultFormat)
-				&& Objects.equals(stream, that.stream)
-				&& Objects.equals(enableSearch, that.enableSearch)
-				&& Objects.equals(incrementalOutput, that.incrementalOutput)
-				&& Objects.equals(tools, that.tools);
+	private Set<String> functions = new HashSet<>();
+
+	@Override
+	public List<FunctionCallback> getFunctionCallbacks() {
+
+		return this.functionCallbacks;
 	}
 
 	@Override
-	public int hashCode() {
+	public void setFunctionCallbacks(List<FunctionCallback> functionCallbacks) {
 
-		return Objects.hash(
-				apiKey,
-				model,
-				seed,
-				maxTokens,
-				topP,
-				topK,
-				repetitionPenalty,
-				temperature,
-				stop,
-				stream,
-				resultFormat,
-				enableSearch,
-				incrementalOutput,
-				tools
-		);
+		this.functionCallbacks = functionCallbacks;
 	}
 
 	@Override
-	public String toString() {
+	public Set<String> getFunctions() {
 
-		return "TongYiProperties {" + "apiKey='" + apiKey + '\''
-				+ ", model=" + model
-				+ ", seed=" + seed
-				+ ", maxTokens=" + maxTokens
-				+ ", topP=" + topP
-				+ ", topK=" + topK
-				+ ", repetitionPenalty=" + repetitionPenalty
-				+ ", temperature=" + temperature
-				+ ", stop=" + stop
-				+ ", resultFormat=" + resultFormat
-				+ ", stream=" + stream
-				+ ", enableSearch=" + enableSearch
-				+ ", incrementalOutput=" + incrementalOutput
-				+ ", tools=" + tools
-				+ '}';
+		return this.functions;
+	}
+
+	@Override
+	public void setFunctions(Set<String> functions) {
+
+		this.functions = functions;
 	}
 
 	public static Builder builder() {
@@ -388,6 +359,23 @@ public class TongYiChatOptions implements ChatOptions {
 			return this;
 		}
 
+		public Builder withFunctionCallbacks(List<FunctionCallback> functionCallbacks) {
+			this.options.functionCallbacks = functionCallbacks;
+			return this;
+		}
+
+		public Builder withFunctions(Set<String> functionNames) {
+			Assert.notNull(functionNames, "Function names must not be null");
+			this.options.functions = functionNames;
+			return this;
+		}
+
+		public Builder withFunction(String functionName) {
+			Assert.hasText(functionName, "Function name must not be empty");
+			this.options.functions.add(functionName);
+			return this;
+		}
+
 		public Builder withSeed(Integer seed) {
 			this.options.seed = seed;
 			return this;
@@ -419,4 +407,40 @@ public class TongYiChatOptions implements ChatOptions {
 		}
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		TongYiChatOptions that = (TongYiChatOptions) o;
+		return Objects.equals(apiKey, that.apiKey) && Objects.equals(model, that.model) && Objects.equals(seed, that.seed) && Objects.equals(maxTokens, that.maxTokens) && Objects.equals(topP, that.topP) && Objects.equals(topK, that.topK) && Objects.equals(repetitionPenalty, that.repetitionPenalty) && Objects.equals(temperature, that.temperature) && Objects.equals(stop, that.stop) && Objects.equals(stream, that.stream) && Objects.equals(enableSearch, that.enableSearch) && Objects.equals(resultFormat, that.resultFormat) && Objects.equals(incrementalOutput, that.incrementalOutput) && Objects.equals(tools, that.tools) && Objects.equals(SystemUser, that.SystemUser) && Objects.equals(functionCallbacks, that.functionCallbacks) && Objects.equals(functions, that.functions);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(apiKey, model, seed, maxTokens, topP, topK, repetitionPenalty, temperature, stop, stream, enableSearch, resultFormat, incrementalOutput, tools, SystemUser, functionCallbacks, functions);
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("TongYiChatOptions{");
+		sb.append("apiKey='").append(apiKey).append('\'');
+		sb.append(", model='").append(model).append('\'');
+		sb.append(", seed=").append(seed);
+		sb.append(", maxTokens=").append(maxTokens);
+		sb.append(", topP=").append(topP);
+		sb.append(", topK=").append(topK);
+		sb.append(", repetitionPenalty=").append(repetitionPenalty);
+		sb.append(", temperature=").append(temperature);
+		sb.append(", stop=").append(stop);
+		sb.append(", stream=").append(stream);
+		sb.append(", enableSearch=").append(enableSearch);
+		sb.append(", resultFormat='").append(resultFormat).append('\'');
+		sb.append(", incrementalOutput=").append(incrementalOutput);
+		sb.append(", tools=").append(tools);
+		sb.append(", SystemUser='").append(SystemUser).append('\'');
+		sb.append(", functionCallbacks=").append(functionCallbacks);
+		sb.append(", functions=").append(functions);
+		sb.append('}');
+		return sb.toString();
+	}
 }
