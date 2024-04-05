@@ -36,7 +36,7 @@ public class TongYiChatOptionsTests {
 	public void createRequestWithChatOptions() {
 
 		Generation mockClient = Mockito.mock(Generation.class);
-		Constants.apiKey="test";
+		Constants.apiKey = "test";
 
 		// Test start.
 
