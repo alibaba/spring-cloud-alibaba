@@ -140,6 +140,13 @@ public class TongYiChatClient extends
 
 		ConversationParam params = toTongYiChatParams(prompt);
 
+		// TongYi models context loader.
+		com.alibaba.dashscope.common.Message message = new com.alibaba.dashscope.common.Message();
+		message.setRole(Role.USER.getValue());
+		message.setContent(prompt.getContents());
+		msgManager.add(message);
+		params.setMessages(msgManager.get());
+
 		logger.trace("TongYi ConversationOptions: {}", params);
 		GenerationResult chatCompletions = this.callWithFunctionSupport(params);
 		logger.trace("TongYi ConversationOptions: {}", params);

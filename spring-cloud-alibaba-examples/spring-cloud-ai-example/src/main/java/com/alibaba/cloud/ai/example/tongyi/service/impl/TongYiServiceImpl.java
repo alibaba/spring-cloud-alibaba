@@ -23,9 +23,7 @@ import java.util.Map;
 import com.alibaba.cloud.ai.example.tongyi.models.ActorsFilms;
 import com.alibaba.cloud.ai.example.tongyi.models.Completion;
 import com.alibaba.cloud.ai.example.tongyi.service.TongYiService;
-import com.alibaba.dashscope.common.Message;
 import com.alibaba.dashscope.common.MessageManager;
-import com.alibaba.dashscope.common.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,13 +83,9 @@ public class TongYiServiceImpl implements TongYiService {
 	@Override
 	public String completion(String message) {
 
-		Message userMsg = Message.builder()
-				.role(Role.USER.getValue())
-				.content(message)
-				.build();
-		msgManager.add(userMsg);
+		Prompt prompt = new Prompt(new UserMessage(message));
 
-		return chatClient.call(message);
+		return chatClient.call(prompt).getResult().getOutput().getContent();
 	}
 
 	@Override

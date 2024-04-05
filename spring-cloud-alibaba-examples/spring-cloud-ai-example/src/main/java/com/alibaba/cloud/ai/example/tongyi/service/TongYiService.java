@@ -78,7 +78,7 @@ public interface TongYiService {
 	 *
 	 * @param message question.
 	 * @param stuffit is stuff.
-	 * @return
+	 * @return Completion object.
 	 */
 	Completion stuffCompletion(String message, boolean stuffit);
 }
