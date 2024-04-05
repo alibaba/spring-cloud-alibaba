@@ -29,4 +29,5 @@ public interface TongYiService {
 
 	Map<String, String> streamCompletion(String message);
 
+	String functionCall();
 }
