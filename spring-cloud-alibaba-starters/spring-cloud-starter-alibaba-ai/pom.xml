@@ -61,6 +61,12 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!-- test use -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+
 		<!-- test dependencies -->
 		<dependency>
 			<groupId>org.springframework.ai</groupId>

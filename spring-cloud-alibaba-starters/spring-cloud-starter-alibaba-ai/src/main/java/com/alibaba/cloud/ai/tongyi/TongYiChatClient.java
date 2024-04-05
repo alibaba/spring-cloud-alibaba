@@ -325,7 +325,10 @@ public class TongYiChatClient extends
 			return tongYiParams;
 		}
 
-		ConversationParam mergedTongYiParams = ConversationParam.builder().messages(tongYiParams.getMessages()).build();
+		ConversationParam mergedTongYiParams = ConversationParam.builder()
+				.model(Generation.Models.QWEN_TURBO)
+				.messages(tongYiParams.getMessages())
+				.build();
 		mergedTongYiParams = merge(tongYiParams, scaChatParams);
 
 		if (scaChatParams.getMaxTokens() != null) {
