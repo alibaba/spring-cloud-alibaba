@@ -205,10 +205,12 @@ public class TongYiChatClient extends
 
 	/**
 	 * Configuration properties to Qwen model params.
+	 * Test access.
+	 *
 	 * @param prompt {@link Prompt}
 	 * @return Qwen models params {@link ConversationParam}
 	 */
-	private ConversationParam toTongYiChatParams(Prompt prompt) {
+	ConversationParam toTongYiChatParams(Prompt prompt) {
 
 		try {
 			Constants.apiKey = getKey();
@@ -243,10 +245,7 @@ public class TongYiChatClient extends
 			if (prompt.getOptions() instanceof ChatOptions runtimeOptions) {
 				TongYiChatOptions updatedRuntimeOptions = ModelOptionsUtils.copyToTarget(runtimeOptions,
 						ChatOptions.class, TongYiChatOptions.class);
-				// JSON merge doesn't due to Azure OpenAI service bug:
-				// https://github.com/Azure/azure-sdk-for-java/issues/38183
-				// options = ModelOptionsUtils.merge(runtimeOptions, options,
-				// ChatCompletionsOptions.class);
+
 				chatParams = merge(updatedRuntimeOptions, chatParams);
 
 				Set<String> promptEnabledFunctions = this.handleFunctionCallbackConfigurations(updatedRuntimeOptions,
@@ -255,7 +254,7 @@ public class TongYiChatClient extends
 
 			}
 			else {
-				throw new IllegalArgumentException("Prompt options are not of type ChatCompletionsOptions:"
+				throw new IllegalArgumentException("Prompt options are not of type ConversationParam:"
 						+ prompt.getOptions().getClass().getSimpleName());
 			}
 		}
@@ -305,7 +304,8 @@ public class TongYiChatClient extends
 		return ConversationParam.builder()
 				.messages(tongYiParams.getMessages())
 				.maxTokens((tongYiParams.getMaxTokens() != null) ? tongYiParams.getMaxTokens() : scaChatParams.getMaxTokens())
-				.model((tongYiParams.getModel() != null) ? tongYiParams.getModel() : scaChatParams.getModel())
+				// When merge options. Because ConversationParams is must not null. So is setting.
+				.model(scaChatParams.getModel())
 				.resultFormat((tongYiParams.getResultFormat() != null) ? tongYiParams.getResultFormat() : scaChatParams.getResultFormat())
 				.enableSearch((tongYiParams.getEnableSearch() != null) ? tongYiParams.getEnableSearch() : scaChatParams.getEnableSearch())
 				.topK((tongYiParams.getTopK() != null) ? tongYiParams.getTopK() : scaChatParams.getTopK())

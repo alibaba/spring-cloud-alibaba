@@ -265,6 +265,13 @@
             </dependency>
 
             <!-- Testing Dependencies -->
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-test</artifactId>
+                <version>${spring.ai.version}</version>
+                <scope>test</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
