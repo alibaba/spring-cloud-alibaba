@@ -18,8 +18,11 @@ package com.alibaba.cloud.ai.example.tongyi.controller;
 
 import java.util.Map;
 
+import com.alibaba.cloud.ai.example.tongyi.models.ActorsFilms;
+import com.alibaba.cloud.ai.example.tongyi.models.Completion;
 import com.alibaba.cloud.ai.example.tongyi.service.TongYiService;
 
+import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,6 +59,38 @@ public class TongYiController {
 	) {
 
 		return tongyiService.streamCompletion(message);
+	}
+
+	@GetMapping("/output")
+	public ActorsFilms generate(
+			@RequestParam(value = "actor", defaultValue = "Jeff Bridges") String actor
+	) {
+
+		return tongyiService.genOutputParse(actor);
+	}
+
+	@GetMapping("/prompt-tmpl")
+	public AssistantMessage completion(@RequestParam(value = "adjective", defaultValue = "funny") String adjective,
+			@RequestParam(value = "topic", defaultValue = "cows") String topic) {
+
+		return tongyiService.genPromptTemplates(adjective, topic);
+	}
+
+	@GetMapping("/roles")
+	public AssistantMessage generate(
+			@RequestParam(value = "message", defaultValue = "Tell me about three famous pirates from the Golden Age of Piracy and why they did.  Write at least a sentence for each pirate.") String message,
+			@RequestParam(value = "name", defaultValue = "bot") String name,
+			@RequestParam(value = "voice", defaultValue = "pirate") String voice) {
+
+		return tongyiService.genRole(message, name, voice);
+	}
+
+	@GetMapping("/stuff")
+	public Completion completion(@RequestParam(value = "message",
+			defaultValue = "Which athletes won the mixed doubles gold medal in curling at the 2022 Winter Olympics?") String message,
+			@RequestParam(value = "stuffit", defaultValue = "false") boolean stuffit) {
+
+		return tongyiService.stuffCompletion(message, stuffit);
 	}
 
 }
