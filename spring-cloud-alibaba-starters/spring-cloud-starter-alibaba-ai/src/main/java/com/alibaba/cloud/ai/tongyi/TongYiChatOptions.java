@@ -102,7 +102,7 @@ public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
 	 * The stop parameter can be passed as a list of arrays of strings or token_ids to support the scenario of using multiple stops.
 	 * Explanation: Do not mix strings and token_ids in list mode, the element types should be the same in list mode.
 	 */
-	private List<Integer> stop;
+	private List<String> stop;
 
 	/**
 	 * Whether or not to use stream output. When outputting the result in stream mode, the interface returns the result as generator,
@@ -242,12 +242,12 @@ public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
 		this.repetitionPenalty = repetitionPenalty.doubleValue();
 	}
 
-	public List<Integer> getStop() {
+	public List<String> getStop() {
 
 		return stop;
 	}
 
-	public void setStop(List<Integer> stop) {
+	public void setStop(List<String> stop) {
 
 		this.stop = stop;
 	}
@@ -381,7 +381,7 @@ public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
 			return this;
 		}
 
-		public Builder withStop(List<Integer> stop) {
+		public Builder withStop(List<String> stop) {
 			this.options.stop = stop;
 			return this;
 		}

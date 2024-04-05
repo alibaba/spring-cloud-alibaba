@@ -30,11 +30,13 @@ import com.alibaba.dashscope.common.MessageManager;
 import com.alibaba.dashscope.common.Role;
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
+import com.alibaba.dashscope.tools.FunctionDefinition;
 import com.alibaba.dashscope.tools.ToolCallBase;
 import com.alibaba.dashscope.tools.ToolCallFunction;
 import com.alibaba.dashscope.utils.ApiKey;
 import com.alibaba.dashscope.utils.ApiKeywords;
 import com.alibaba.dashscope.utils.Constants;
+import com.alibaba.dashscope.utils.JsonUtils;
 import io.reactivex.Flowable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,9 +168,13 @@ public class TongYiChatClient extends
 	public Flux<ChatResponse> stream(Prompt prompt) {
 
 		Flowable<GenerationResult> genRes;
+		ConversationParam tongYiChatParams = toTongYiChatParams(prompt);
+
+		// See https://help.aliyun.com/zh/dashscope/developer-reference/api-details?spm=a2c4g.11186623.0.0.655fc11aRR0jj7#b9ad0a10cfhpe
+		// tongYiChatParams.setIncrementalOutput(true);
 
 		try {
-			genRes = generation.streamCall(toTongYiChatParams(prompt));
+			genRes = generation.streamCall(tongYiChatParams);
 		}
 		catch (NoApiKeyException | InputRequiredException e) {
 			logger.warn("TongYi chat client: " + e.getMessage());
@@ -218,7 +224,14 @@ public class TongYiChatClient extends
 				.map(this::fromSpringAIMessage)
 				.toList();
 
-		ConversationParam chatParams = ConversationParam.builder().messages(tongYiMessage).build();
+		ConversationParam chatParams = ConversationParam.builder()
+				.messages(tongYiMessage)
+				// models setting
+				// {@link HalfDuplexServiceParam#models}
+				.model(Generation.Models.QWEN_TURBO)
+				// {@link GenerationOutput}
+				.resultFormat(ConversationParam.ResultFormat.MESSAGE)
+				.build();
 
 		if (this.defaultOptions != null) {
 
@@ -250,11 +263,9 @@ public class TongYiChatClient extends
 		// Add the enabled functions definitions to the request's tools parameter.
 
 		if (!CollectionUtils.isEmpty(functionsForThisRequest)) {
-			List<ChatCompletionsFunctionToolDefinition> tools = this.getFunctionTools(functionsForThisRequest);
-			List<ChatCompletionsToolDefinition> tools2 = tools.stream()
-					.map(t -> ((ChatCompletionsToolDefinition) t))
-					.toList();
-			chatParams.setTools(tools2);
+			List<FunctionDefinition> tools = this.getFunctionTools(functionsForThisRequest);
+
+			// todo chatParams.setTools(tools)
 		}
 
 		return chatParams;
@@ -267,6 +278,22 @@ public class TongYiChatClient extends
 				choice.getMessage().getContent()
 		);
 	}
+
+	private List<FunctionDefinition> getFunctionTools(Set<String> functionNames) {
+		return this.resolveFunctionCallbacks(functionNames).stream().map(functionCallback -> {
+
+			FunctionDefinition functionDefinition = FunctionDefinition.builder()
+					.name(functionCallback.getName())
+					.description(functionCallback.getDescription())
+					.parameters(JsonUtils.parametersToJsonObject(
+							ModelOptionsUtils.jsonToMap(functionCallback.getInputTypeSchema())
+					))
+					.build();
+
+			return functionDefinition;
+		}).toList();
+	}
+
 
 	private ConversationParam merge(ConversationParam tongYiParams, TongYiChatOptions scaChatParams) {
 
@@ -291,6 +318,38 @@ public class TongYiChatClient extends
 
 	}
 
+	private ConversationParam merge(TongYiChatOptions scaChatParams, ConversationParam tongYiParams) {
+
+		if (scaChatParams == null) {
+
+			return tongYiParams;
+		}
+
+		ConversationParam mergedTongYiParams = ConversationParam.builder().messages(tongYiParams.getMessages()).build();
+		mergedTongYiParams = merge(tongYiParams, scaChatParams);
+
+		if (scaChatParams.getMaxTokens() != null) {
+			mergedTongYiParams.setMaxTokens(scaChatParams.getMaxTokens());
+		}
+
+		if (scaChatParams.getStop() != null) {
+			mergedTongYiParams.setStopStrings(scaChatParams.getStop());
+		}
+
+		if (scaChatParams.getTemperature() != null) {
+			mergedTongYiParams.setTemperature(scaChatParams.getTemperature());
+		}
+
+		if (scaChatParams.getTopK() != null) {
+			mergedTongYiParams.setTopK(scaChatParams.getTopK());
+		}
+
+		if (scaChatParams.getTopK() != null) {
+			mergedTongYiParams.setTopK(scaChatParams.getTopK());
+		}
+
+		return mergedTongYiParams;
+	}
 
 	private com.alibaba.dashscope.common.Message fromSpringAIMessage(Message message) {
 

@@ -57,7 +57,8 @@ public class TongYiAiUsage implements Usage {
 
 	@Override
 	public Long getPromptTokens() {
-		return null;
+
+		throw new UnsupportedOperationException("Unimplemented method 'getPromptTokens'");
 	}
 
 	@Override
