@@ -381,7 +381,8 @@ public class TongYiChatClient extends
 
 		if (Objects.nonNull(this.defaultOptions.getApiKey())) {
 			apiKey = this.defaultOptions.getApiKey();
-		} else {
+		}
+		else {
 			apiKey = ApiKey.getApiKey(null);
 		}
 

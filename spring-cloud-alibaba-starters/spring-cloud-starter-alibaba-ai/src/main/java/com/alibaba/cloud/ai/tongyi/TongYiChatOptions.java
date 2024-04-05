@@ -320,6 +320,47 @@ public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
 		this.functions = functions;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		TongYiChatOptions that = (TongYiChatOptions) o;
+		return Objects.equals(apiKey, that.apiKey) && Objects.equals(model, that.model) && Objects.equals(seed, that.seed) && Objects.equals(maxTokens, that.maxTokens) && Objects.equals(topP, that.topP) && Objects.equals(topK, that.topK) && Objects.equals(repetitionPenalty, that.repetitionPenalty) && Objects.equals(temperature, that.temperature) && Objects.equals(stop, that.stop) && Objects.equals(stream, that.stream) && Objects.equals(enableSearch, that.enableSearch) && Objects.equals(resultFormat, that.resultFormat) && Objects.equals(incrementalOutput, that.incrementalOutput) && Objects.equals(tools, that.tools) && Objects.equals(SystemUser, that.SystemUser) && Objects.equals(functionCallbacks, that.functionCallbacks) && Objects.equals(functions, that.functions);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(apiKey, model, seed, maxTokens, topP, topK, repetitionPenalty, temperature, stop, stream, enableSearch, resultFormat, incrementalOutput, tools, SystemUser, functionCallbacks, functions);
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("TongYiChatOptions{");
+		sb.append("apiKey='").append(apiKey).append('\'');
+		sb.append(", model='").append(model).append('\'');
+		sb.append(", seed=").append(seed);
+		sb.append(", maxTokens=").append(maxTokens);
+		sb.append(", topP=").append(topP);
+		sb.append(", topK=").append(topK);
+		sb.append(", repetitionPenalty=").append(repetitionPenalty);
+		sb.append(", temperature=").append(temperature);
+		sb.append(", stop=").append(stop);
+		sb.append(", stream=").append(stream);
+		sb.append(", enableSearch=").append(enableSearch);
+		sb.append(", resultFormat='").append(resultFormat).append('\'');
+		sb.append(", incrementalOutput=").append(incrementalOutput);
+		sb.append(", tools=").append(tools);
+		sb.append(", SystemUser='").append(SystemUser).append('\'');
+		sb.append(", functionCallbacks=").append(functionCallbacks);
+		sb.append(", functions=").append(functions);
+		sb.append('}');
+		return sb.toString();
+	}
+
 	public static Builder builder() {
 
 		return new Builder();
@@ -407,40 +448,4 @@ public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
 		}
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		TongYiChatOptions that = (TongYiChatOptions) o;
-		return Objects.equals(apiKey, that.apiKey) && Objects.equals(model, that.model) && Objects.equals(seed, that.seed) && Objects.equals(maxTokens, that.maxTokens) && Objects.equals(topP, that.topP) && Objects.equals(topK, that.topK) && Objects.equals(repetitionPenalty, that.repetitionPenalty) && Objects.equals(temperature, that.temperature) && Objects.equals(stop, that.stop) && Objects.equals(stream, that.stream) && Objects.equals(enableSearch, that.enableSearch) && Objects.equals(resultFormat, that.resultFormat) && Objects.equals(incrementalOutput, that.incrementalOutput) && Objects.equals(tools, that.tools) && Objects.equals(SystemUser, that.SystemUser) && Objects.equals(functionCallbacks, that.functionCallbacks) && Objects.equals(functions, that.functions);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(apiKey, model, seed, maxTokens, topP, topK, repetitionPenalty, temperature, stop, stream, enableSearch, resultFormat, incrementalOutput, tools, SystemUser, functionCallbacks, functions);
-	}
-
-	@Override
-	public String toString() {
-		final StringBuilder sb = new StringBuilder("TongYiChatOptions{");
-		sb.append("apiKey='").append(apiKey).append('\'');
-		sb.append(", model='").append(model).append('\'');
-		sb.append(", seed=").append(seed);
-		sb.append(", maxTokens=").append(maxTokens);
-		sb.append(", topP=").append(topP);
-		sb.append(", topK=").append(topK);
-		sb.append(", repetitionPenalty=").append(repetitionPenalty);
-		sb.append(", temperature=").append(temperature);
-		sb.append(", stop=").append(stop);
-		sb.append(", stream=").append(stream);
-		sb.append(", enableSearch=").append(enableSearch);
-		sb.append(", resultFormat='").append(resultFormat).append('\'');
-		sb.append(", incrementalOutput=").append(incrementalOutput);
-		sb.append(", tools=").append(tools);
-		sb.append(", SystemUser='").append(SystemUser).append('\'');
-		sb.append(", functionCallbacks=").append(functionCallbacks);
-		sb.append(", functions=").append(functions);
-		sb.append('}');
-		return sb.toString();
-	}
 }
