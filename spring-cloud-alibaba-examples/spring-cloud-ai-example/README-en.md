@@ -2,18 +2,17 @@
 
 ## Project description
 
-The Spring Cloud Alibaba AI module is based on [Spring AI 0.8.0](https://docs.spring.io/spring-ai/reference/0.8-SNAPSHOT/index.html) the project API to complete the access of the general series of large models. This project demonstrates how to use `spring-cloud-starter-alibaba-ai` the Spring Cloud microservice application to integrate with the generic family model.
+The Spring Cloud Alibaba AI module is based on [Spring AI 0.8.1](https://docs.spring.io/spring-ai/reference/0.8-SNAPSHOT/index.html) the project API to complete the access of the general series of large models. This project demonstrates how to use `spring-cloud-starter-alibaba-ai` the Spring Cloud microservice application to integrate with the generic family model.
 
 [model service dashscope](https://help.aliyun.com/zh/dashscope/) It is a big model application service launched by Alibaba. Based on the concept of "Model-as-a-Service" (MaaS), Lingji Model Service provides a variety of model services including model reasoning and model fine-tuning training through standardized APIs around AI models in various fields.
 
-- Current completion of spring-ai
+- Current completion of spring-ai chat api.
 
 ## Application access
 
 ### Access `spring-cloud-starter-alibaba-ai`
 
 1. Add the following dependencies to the project POM. XML:
-
 
    ```xml
    <dependency>
@@ -24,8 +23,7 @@ The Spring Cloud Alibaba AI module is based on [Spring AI 0.8.0](https://docs.sp
 
 2. Add the following configuration to the application. Yml configuration file:
 
-
-   ```yaml
+   ```yml
    spring:
      cloud:
        ai:
@@ -34,49 +32,22 @@ The Spring Cloud Alibaba AI module is based on [Spring AI 0.8.0](https://docs.sp
              options:
                # api_key is invalied.
                api-key: sk-a3d73b1709bf4a178c28ed7c8b3b5a45
-               system-user: "You are a helpful assistant."
    ```
 
 3. Add the following code:
 
-
-   ```java
-   controller:
-   
-   @GetMapping("/example")
-   public Map<String, String> completion(
-       @RequestParam(value = "message", defaultValue = "Tell me a joke")
-       String message
-   ) {
-   
-       return tongyiService.completion(message);
-   }
-   
-   service:
-   
-   @Resource
-   private MessageManager msgManager;
-   
-   private final ChatClient chatClient;
-   
-   @Autowired
-   public TongYiServiceImpl(ChatClient chatClient) {
-   
-       this.chatClient = chatClient;
-   }
-   
-   @Override
-   public Map<String, String> completion(String message) {
-   
-       Message userMsg = Message.builder()
-           .role(Role.USER.getValue())
-           .content(message)
-           .build();
-       msgManager.add(userMsg);
-   
-       return Map.of(message, chatClient.call(message));
-   }
+   ```yml
+   spring:
+     cloud:
+       ai:
+         tongyi:
+           chat:
+             options:
+               # api_key is invalied.
+               api-key: sk-a3d73b1709bf4a178c28ed7c8b3b5a45
    ```
+
+   At this point, the simplest model access is complete! It is slightly different from the code in this example, but the code in the example does not need to be modified. The corresponding function can be accomplished without modification.
 
 4. Start the application
 
@@ -106,4 +77,12 @@ cd `resources/static`，open index.html file by local browser, input your questi
 
 ## Configuration item description
 
+More configuration refer:
+
 https://help.aliyun.com/zh/dashscope/developer-reference/api-details
+
+## More examples:
+
+This example consists of 5 samples, implemented by different serviceimpl, you can refer to the readme file in each serviceimpl, use @RestController as the entry point in the controller, you can use the browser or curl tool to request the interface. You can use a browser or curl tool to request the interface.
+
+> The example is already functional and does not require any code changes. Just replace the apikey in the corresponding example, the apikey provided in the project is invalid.

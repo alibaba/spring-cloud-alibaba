@@ -24,6 +24,7 @@ import com.alibaba.cloud.ai.example.tongyi.service.TongYiService;
 
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,8 +32,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * TongYi models Spring Cloud Alibaba Controller.
+ *
  * @author yuluo
- * @since 2023.0.0.0
+ * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
+ * @since 2023.0.0.0-RC1
  */
 
 @RestController
@@ -41,7 +45,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class TongYiController {
 
 	@Autowired
-	private TongYiService tongyiService;
+	@Qualifier("tongYiSimpleServiceImpl")
+	private TongYiService tongYiSimpleService;
 
 	@GetMapping("/example")
 	public String completion(
@@ -49,7 +54,7 @@ public class TongYiController {
 			String message
 	) {
 
-		return tongyiService.completion(message);
+		return tongYiSimpleService.completion(message);
 	}
 
 	@GetMapping("/stream")
@@ -58,23 +63,35 @@ public class TongYiController {
 			String message
 	) {
 
-		return tongyiService.streamCompletion(message);
+		return tongYiSimpleService.streamCompletion(message);
 	}
+
+	@Autowired
+	@Qualifier("tongYiOutputParseServiceImpl")
+	private TongYiService tongYiOutputService;
 
 	@GetMapping("/output")
 	public ActorsFilms generate(
 			@RequestParam(value = "actor", defaultValue = "Jeff Bridges") String actor
 	) {
 
-		return tongyiService.genOutputParse(actor);
+		return tongYiOutputService.genOutputParse(actor);
 	}
+
+	@Autowired
+	@Qualifier("tongYiPromptTemplateServiceImpl")
+	private TongYiService tongYiPromptTemplateService;
 
 	@GetMapping("/prompt-tmpl")
 	public AssistantMessage completion(@RequestParam(value = "adjective", defaultValue = "funny") String adjective,
 			@RequestParam(value = "topic", defaultValue = "cows") String topic) {
 
-		return tongyiService.genPromptTemplates(adjective, topic);
+		return tongYiPromptTemplateService.genPromptTemplates(adjective, topic);
 	}
+
+	@Autowired
+	@Qualifier("tongYiRolesServiceImpl")
+	private TongYiService tongYiRolesService;
 
 	@GetMapping("/roles")
 	public AssistantMessage generate(
@@ -82,15 +99,19 @@ public class TongYiController {
 			@RequestParam(value = "name", defaultValue = "bot") String name,
 			@RequestParam(value = "voice", defaultValue = "pirate") String voice) {
 
-		return tongyiService.genRole(message, name, voice);
+		return tongYiRolesService.genRole(message, name, voice);
 	}
+
+	@Autowired
+	@Qualifier("tongYiStuffServiceImpl")
+	private TongYiService tongYiStuffService;
 
 	@GetMapping("/stuff")
 	public Completion completion(@RequestParam(value = "message",
 			defaultValue = "Which athletes won the mixed doubles gold medal in curling at the 2022 Winter Olympics?") String message,
 			@RequestParam(value = "stuffit", defaultValue = "false") boolean stuffit) {
 
-		return tongyiService.stuffCompletion(message, stuffit);
+		return tongYiStuffService.stuffCompletion(message, stuffit);
 	}
 
 }

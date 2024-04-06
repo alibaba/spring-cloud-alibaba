@@ -25,7 +25,8 @@ import org.springframework.ai.chat.messages.AssistantMessage;
 
 /**
  * @author yuluo
- * @since 2023.0.0.0
+ * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
+ * @since 2023.0.0.0-RC1
  */
 
 public interface TongYiService {

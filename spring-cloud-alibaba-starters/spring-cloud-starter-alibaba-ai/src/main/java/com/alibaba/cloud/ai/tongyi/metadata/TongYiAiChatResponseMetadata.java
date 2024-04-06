@@ -27,7 +27,8 @@ import org.springframework.util.Assert;
  * {@link ChatResponseMetadata} implementation for {@literal Alibaba DashScope}.
  *
  * @author yuluo
- * @since 2023.0.0.0
+ * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
+ * @since 2023.0.0.0-RC1
  */
 
 public class TongYiAiChatResponseMetadata implements ChatResponseMetadata {

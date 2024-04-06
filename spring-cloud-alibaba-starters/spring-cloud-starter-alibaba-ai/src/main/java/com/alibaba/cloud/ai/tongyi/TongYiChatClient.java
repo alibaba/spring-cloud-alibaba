@@ -130,6 +130,11 @@ public class TongYiChatClient extends
 		this.defaultOptions = options;
 	}
 
+	/**
+	 * Get default sca chat options.
+	 *
+	 * @return TongYiChatOptions default object.
+	 */
 	public TongYiChatOptions getDefaultOptions() {
 
 		return this.defaultOptions;

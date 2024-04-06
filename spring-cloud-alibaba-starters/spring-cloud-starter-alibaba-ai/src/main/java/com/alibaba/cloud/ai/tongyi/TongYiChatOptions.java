@@ -32,7 +32,8 @@ import org.springframework.util.Assert;
 
 /**
  * @author yuluo
- * @since 2023.0.0.0
+ * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
+ * @since 2023.0.0.0-RC1
  */
 
 public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
@@ -139,8 +140,6 @@ public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
 	 */
 	private List<String> tools;
 
-	private String SystemUser = "You are a helpful assistant.";
-
 	@Override
 	public Float getTemperature() {
 
@@ -172,14 +171,6 @@ public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
 	public void setTopK(Integer topK) {
 
 		this.topK = topK;
-	}
-
-	public String getSystemUser() {
-		return SystemUser;
-	}
-
-	public void setSystemUser(String systemUser) {
-		SystemUser = systemUser;
 	}
 
 	public String getApiKey() {
@@ -322,24 +313,63 @@ public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
 
 	@Override
 	public boolean equals(Object o) {
+
 		if (this == o) {
 			return true;
 		}
+
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
+
 		TongYiChatOptions that = (TongYiChatOptions) o;
-		return Objects.equals(apiKey, that.apiKey) && Objects.equals(model, that.model) && Objects.equals(seed, that.seed) && Objects.equals(maxTokens, that.maxTokens) && Objects.equals(topP, that.topP) && Objects.equals(topK, that.topK) && Objects.equals(repetitionPenalty, that.repetitionPenalty) && Objects.equals(temperature, that.temperature) && Objects.equals(stop, that.stop) && Objects.equals(stream, that.stream) && Objects.equals(enableSearch, that.enableSearch) && Objects.equals(resultFormat, that.resultFormat) && Objects.equals(incrementalOutput, that.incrementalOutput) && Objects.equals(tools, that.tools) && Objects.equals(SystemUser, that.SystemUser) && Objects.equals(functionCallbacks, that.functionCallbacks) && Objects.equals(functions, that.functions);
+
+		return Objects.equals(apiKey, that.apiKey)
+				&& Objects.equals(model, that.model)
+				&& Objects.equals(seed, that.seed)
+				&& Objects.equals(maxTokens, that.maxTokens)
+				&& Objects.equals(topP, that.topP)
+				&& Objects.equals(topK, that.topK)
+				&& Objects.equals(repetitionPenalty, that.repetitionPenalty)
+				&& Objects.equals(temperature, that.temperature)
+				&& Objects.equals(stop, that.stop)
+				&& Objects.equals(stream, that.stream)
+				&& Objects.equals(enableSearch, that.enableSearch)
+				&& Objects.equals(resultFormat, that.resultFormat)
+				&& Objects.equals(incrementalOutput, that.incrementalOutput)
+				&& Objects.equals(tools, that.tools)
+				&& Objects.equals(functionCallbacks, that.functionCallbacks)
+				&& Objects.equals(functions, that.functions);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(apiKey, model, seed, maxTokens, topP, topK, repetitionPenalty, temperature, stop, stream, enableSearch, resultFormat, incrementalOutput, tools, SystemUser, functionCallbacks, functions);
+
+		return Objects.hash(
+				apiKey,
+				model,
+				seed,
+				maxTokens,
+				topP,
+				topK,
+				repetitionPenalty,
+				temperature,
+				stop,
+				stream,
+				enableSearch,
+				resultFormat,
+				incrementalOutput,
+				tools,
+				functionCallbacks,
+				functions
+		);
 	}
 
 	@Override
 	public String toString() {
+
 		final StringBuilder sb = new StringBuilder("TongYiChatOptions{");
+
 		sb.append("apiKey='").append(apiKey).append('\'');
 		sb.append(", model='").append(model).append('\'');
 		sb.append(", seed=").append(seed);
@@ -354,10 +384,10 @@ public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
 		sb.append(", resultFormat='").append(resultFormat).append('\'');
 		sb.append(", incrementalOutput=").append(incrementalOutput);
 		sb.append(", tools=").append(tools);
-		sb.append(", SystemUser='").append(SystemUser).append('\'');
 		sb.append(", functionCallbacks=").append(functionCallbacks);
 		sb.append(", functions=").append(functions);
 		sb.append('}');
+
 		return sb.toString();
 	}
 
