@@ -80,16 +80,19 @@ public class FeignClientCircuitBreakerRuleIntegrationTest {
 		// the 3rd exception, circuit breaker open
 		assertThat(orderClient.defaultConfig(false)).isEqualTo("fallback");
 
+		// sleep 300, ensure circuit breaker status is open.
+		Thread.sleep(300);
+
 		// test circuit breaker open
 		assertThat(orderClient.defaultConfig(true)).isEqualTo("fallback");
-		assertThat(orderClient.defaultConfig(true)).isEqualTo("fallback");
+		assertThat(orderClient.defaultConfig(false)).isEqualTo("fallback");
 
 		// longer than timeWindow, circuit breaker half open
 		Thread.sleep(1200L);
 
 		// let circuit breaker close
 		assertThat(orderClient.defaultConfig(true)).isEqualTo("ok");
-		assertThat(orderClient.defaultConfig(true)).isEqualTo("ok");
+		assertThat(orderClient.defaultConfig(false)).isEqualTo("fallback");
 	}
 
 	@Test
@@ -109,16 +112,18 @@ public class FeignClientCircuitBreakerRuleIntegrationTest {
 		// the 3rd exception, circuit breaker open
 		assertThat(userClient.specificFeign(false)).isEqualTo("fallback");
 
+		Thread.sleep(300);
+
 		// test circuit breaker open
 		assertThat(userClient.specificFeign(true)).isEqualTo("fallback");
-		assertThat(userClient.specificFeign(true)).isEqualTo("fallback");
+		assertThat(userClient.specificFeign(false)).isEqualTo("fallback");
 
 		// longer than timeWindow, circuit breaker half open
 		Thread.sleep(1200L);
 
 		// let circuit breaker close
 		assertThat(userClient.specificFeign(true)).isEqualTo("ok");
-		assertThat(userClient.specificFeign(true)).isEqualTo("ok");
+		assertThat(userClient.specificFeign(false)).isEqualTo("fallback");
 	}
 
 	@Test
@@ -137,16 +142,18 @@ public class FeignClientCircuitBreakerRuleIntegrationTest {
 		// occur the 2nd exception, circuit breaker open
 		assertThat(userClient.specificFeignMethod(false)).isEqualTo("fallback");
 
+		Thread.sleep(300);
+
 		// test circuit breaker is open
 		assertThat(userClient.specificFeignMethod(true)).isEqualTo("fallback");
-		assertThat(userClient.specificFeignMethod(true)).isEqualTo("fallback");
+		assertThat(userClient.specificFeignMethod(false)).isEqualTo("fallback");
 
 		// longer than timeWindow, circuit breaker half open
 		Thread.sleep(1200L);
 
 		// let circuit breaker close
 		assertThat(userClient.specificFeignMethod(true)).isEqualTo("ok");
-		assertThat(userClient.specificFeignMethod(true)).isEqualTo("ok");
+		assertThat(userClient.specificFeignMethod(false)).isEqualTo("fallback");
 	}
 
 	@Configuration
