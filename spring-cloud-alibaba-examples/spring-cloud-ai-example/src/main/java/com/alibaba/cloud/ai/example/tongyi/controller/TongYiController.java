@@ -23,6 +23,7 @@ import com.alibaba.cloud.ai.example.tongyi.models.Completion;
 import com.alibaba.cloud.ai.example.tongyi.service.TongYiService;
 
 import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.image.ImageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -112,6 +113,17 @@ public class TongYiController {
 			@RequestParam(value = "stuffit", defaultValue = "false") boolean stuffit) {
 
 		return tongYiStuffService.stuffCompletion(message, stuffit);
+	}
+
+	@Autowired
+	@Qualifier("tongYiImagesServiceImpl")
+	private TongYiService tongYiImgService;
+
+	@GetMapping("/img")
+	public ImageResponse genImg(@RequestParam(value = "prompt",
+			defaultValue = "Painting a picture of blue water and blue sky.") String imgPrompt) {
+
+		return tongYiImgService.genImg(imgPrompt);
 	}
 
 }

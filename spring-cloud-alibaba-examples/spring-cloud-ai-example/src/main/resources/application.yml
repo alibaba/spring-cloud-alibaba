@@ -20,9 +20,8 @@ server:
 spring:
   application:
     name: tongyi-example
+
   cloud:
     ai:
       tongyi:
-        chat:
-          options:
-            api-key: sk-a3d73b1709bf4a178c28ed7c8b3b5a45
+        api-key: sk-a3d73b1709bf4a178c28ed7c8b3b5a54

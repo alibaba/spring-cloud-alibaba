@@ -6,7 +6,7 @@ Spring Cloud Alibaba AI 模块基于 [Spring AI 0.8.1](https://docs.spring.io/sp
 
 [模型服务灵积](https://help.aliyun.com/zh/dashscope/) 是阿里巴巴推出的一个大模型应用服务。灵积模型服务建立在“模型即服务”（Model-as-a-Service，MaaS）的理念基础之上，围绕AI各领域模型，通过标准化的API提供包括模型推理、模型微调训练在内的多种模型服务。
 
-- 目前只完成 spring-ai chat completion api 的接入。
+- 目前只完成 spring-ai chat completion api 和 image api 的接入。
 
 ## 应用接入
 
@@ -25,15 +25,13 @@ Spring Cloud Alibaba AI 模块基于 [Spring AI 0.8.1](https://docs.spring.io/sp
 
    ```yaml
    spring:
-     cloud:
+    cloud:
        ai:
          tongyi:
-           chat:
-             options:
-               # api_key is invalied.
-               api-key: sk-a3d73b1709bf4a178c28ed7c8b3b5a45
+           # apiKey is invalid.
+           api-key: sk-a3d73b1709bf4a178c28ed7c8b3b5a45
    ```
-
+   
 3. 添加如下代码：
 
    ```java
@@ -108,6 +106,6 @@ https://help.aliyun.com/zh/dashscope/developer-reference/api-details
 
 ## 更多 example 示例：
 
-本 example 由 5 个示例组成，由不同的 serviceimpl 实现，您可以参考每个 serviceimpl 中的 readme 文件，在 controller 中使用 @RestController 作为入口点，您可以使用浏览器或者 curl 工具对接口进行请求。完成对应功能接入的练习。
+本 example 由 6 个示例组成，由不同的 serviceimpl 实现，您可以参考每个 serviceimpl 中的 readme 文件，在 controller 中使用 @RestController 作为入口点，您可以使用浏览器或者 curl 工具对接口进行请求。完成对应功能接入的练习。
 
 > example 已完成功能，无需修改代码。只在对应的 example 中替换 apikey 即可，项目中提供的 apikey 无效。

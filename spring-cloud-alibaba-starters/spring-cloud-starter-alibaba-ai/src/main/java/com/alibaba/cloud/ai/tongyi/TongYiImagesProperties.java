@@ -16,35 +16,35 @@
 
 package com.alibaba.cloud.ai.tongyi;
 
-import com.alibaba.dashscope.aigc.generation.Generation;
-import com.alibaba.dashscope.aigc.generation.GenerationParam;
+import com.alibaba.dashscope.aigc.imagesynthesis.ImageSynthesis;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
+ * TongYi Image API properties.
+ *
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
  * @since 2023.0.0.0-RC1
  */
 
-@ConfigurationProperties(TongYiChatProperties.CONFIG_PREFIX)
-public class TongYiChatProperties {
+@ConfigurationProperties(TongYiImagesProperties.CONFIG_PREFIX)
+public class TongYiImagesProperties {
+
+	private final Logger logger = LoggerFactory.getLogger(TongYiImagesProperties.class);
 
 	/**
 	 * Spring Cloud Alibaba AI configuration prefix.
 	 */
-	public static final String CONFIG_PREFIX = "spring.cloud.ai.tongyi.chat";
+	public static final String CONFIG_PREFIX = "spring.cloud.ai.tongyi.images";
 
 	/**
 	 * Default TongYi Chat model.
 	 */
-	public static final String DEFAULT_DEPLOYMENT_NAME = Generation.Models.QWEN_TURBO;
-
-	/**
-	 * Default temperature speed.
-	 */
-	private static final Double DEFAULT_TEMPERATURE = 0.8;
+	public static final String DEFAULT_IMAGES_MODEL_NAME = ImageSynthesis.Models.WANX_V1;
 
 	/**
 	 * Enable TongYiQWEN ai chat client.
@@ -52,19 +52,17 @@ public class TongYiChatProperties {
 	private boolean enabled = true;
 
 	@NestedConfigurationProperty
-	private TongYiChatOptions options = TongYiChatOptions.builder()
-			.withModel(DEFAULT_DEPLOYMENT_NAME)
-			.withTemperature(DEFAULT_TEMPERATURE)
-			.withEnableSearch(true)
-			.withResultFormat(GenerationParam.ResultFormat.MESSAGE)
+	private TongYiImagesOptions options = TongYiImagesOptions.builder()
+			.withModel(DEFAULT_IMAGES_MODEL_NAME)
+			.withN(1)
 			.build();
 
-	public TongYiChatOptions getOptions() {
+	public TongYiImagesOptions getOptions() {
 
 		return this.options;
 	}
 
-	public void setOptions(TongYiChatOptions options) {
+	public void setOptions(TongYiImagesOptions options) {
 
 		this.options = options;
 	}

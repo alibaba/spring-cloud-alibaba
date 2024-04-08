@@ -22,6 +22,7 @@ import com.alibaba.cloud.ai.example.tongyi.models.ActorsFilms;
 import com.alibaba.cloud.ai.example.tongyi.models.Completion;
 
 import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.image.ImageResponse;
 
 /**
  * @author yuluo
@@ -63,6 +64,12 @@ public abstract class AbstractTongYiServiceImpl implements TongYiService {
 
 	@Override
 	public Completion stuffCompletion(String message, boolean stuffit) {
+
+		return null;
+	}
+
+	@Override
+	public ImageResponse genImg(String imgPrompt) {
 
 		return null;
 	}

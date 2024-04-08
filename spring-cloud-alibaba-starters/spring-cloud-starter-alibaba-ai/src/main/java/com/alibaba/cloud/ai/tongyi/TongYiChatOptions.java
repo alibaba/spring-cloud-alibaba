@@ -39,11 +39,6 @@ import org.springframework.util.Assert;
 public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
 
 	/**
-	 * TongYi model api key.
-	 */
-	private String apiKey;
-
-	/**
 	 * TongYi Models.
 	 * {@link Generation.Models}
 	 */
@@ -171,16 +166,6 @@ public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
 	public void setTopK(Integer topK) {
 
 		this.topK = topK;
-	}
-
-	public String getApiKey() {
-
-		return apiKey;
-	}
-
-	public void setApiKey(String apiKey) {
-
-		this.apiKey = apiKey;
 	}
 
 	public String getModel() {
@@ -324,8 +309,7 @@ public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
 
 		TongYiChatOptions that = (TongYiChatOptions) o;
 
-		return Objects.equals(apiKey, that.apiKey)
-				&& Objects.equals(model, that.model)
+		return Objects.equals(model, that.model)
 				&& Objects.equals(seed, that.seed)
 				&& Objects.equals(maxTokens, that.maxTokens)
 				&& Objects.equals(topP, that.topP)
@@ -346,7 +330,6 @@ public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
 	public int hashCode() {
 
 		return Objects.hash(
-				apiKey,
 				model,
 				seed,
 				maxTokens,
@@ -370,7 +353,6 @@ public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
 
 		final StringBuilder sb = new StringBuilder("TongYiChatOptions{");
 
-		sb.append("apiKey='").append(apiKey).append('\'');
 		sb.append(", model='").append(model).append('\'');
 		sb.append(", seed=").append(seed);
 		sb.append(", maxTokens=").append(maxTokens);

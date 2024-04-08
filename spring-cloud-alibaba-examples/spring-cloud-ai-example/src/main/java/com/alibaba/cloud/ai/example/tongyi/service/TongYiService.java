@@ -22,6 +22,7 @@ import com.alibaba.cloud.ai.example.tongyi.models.ActorsFilms;
 import com.alibaba.cloud.ai.example.tongyi.models.Completion;
 
 import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.image.ImageResponse;
 
 /**
  * @author yuluo
@@ -82,4 +83,11 @@ public interface TongYiService {
 	 * @return Completion object.
 	 */
 	Completion stuffCompletion(String message, boolean stuffit);
+
+	/**
+	 * Gen images.
+	 * @param imgPrompt prompt info.
+	 * @return {@link ImageResponse}
+	 */
+	ImageResponse genImg(String imgPrompt);
 }

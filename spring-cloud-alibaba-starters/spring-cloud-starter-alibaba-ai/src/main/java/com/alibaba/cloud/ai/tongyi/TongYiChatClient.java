@@ -33,9 +33,7 @@ import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.alibaba.dashscope.tools.FunctionDefinition;
 import com.alibaba.dashscope.tools.ToolCallBase;
 import com.alibaba.dashscope.tools.ToolCallFunction;
-import com.alibaba.dashscope.utils.ApiKey;
 import com.alibaba.dashscope.utils.ApiKeywords;
-import com.alibaba.dashscope.utils.Constants;
 import com.alibaba.dashscope.utils.JsonUtils;
 import io.reactivex.Flowable;
 import org.slf4j.Logger;
@@ -61,6 +59,7 @@ import org.springframework.util.CollectionUtils;
  * backed by {@link Generation}.
  *
  * @author yuluo
+ * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
  * @since 2023.0.0.0-RC1
  * @see ChatClient
  * @see com.alibaba.dashscope.aigc.generation
@@ -224,14 +223,6 @@ public class TongYiChatClient extends
 	 */
 	ConversationParam toTongYiChatParams(Prompt prompt) {
 
-		try {
-			Constants.apiKey = getKey();
-		}
-		catch (NoApiKeyException e) {
-			logger.warn(e.getMessage());
-			throw new TongYiException(e.getMessage());
-		}
-
 		Set<String> functionsForThisRequest = new HashSet<>();
 
 		List<com.alibaba.dashscope.common.Message> tongYiMessage = prompt.getInstructions().stream()
@@ -385,25 +376,6 @@ public class TongYiChatClient extends
 		};
 
 	}
-	/**
-	 * Get TongYi model api_key .
-	 * todo: Get key from env and env_file.
-	 * @return api_key.
-	 */
-	private String getKey() throws NoApiKeyException {
-
-		String apiKey;
-
-		if (Objects.nonNull(this.defaultOptions.getApiKey())) {
-			apiKey = this.defaultOptions.getApiKey();
-		}
-		else {
-			apiKey = ApiKey.getApiKey(null);
-		}
-
-		return apiKey;
-	}
-
 
 	@Override
 	protected ConversationParam doCreateToolResponseRequest(
@@ -437,6 +409,8 @@ public class TongYiChatClient extends
 		}
 
 		ConversationParam newRequest = ConversationParam.builder().messages(conversationHistory).build();
+
+		// todo: No @JsonProperty fields.
 		newRequest = ModelOptionsUtils.merge(newRequest, previousRequest, ConversationParam.class);
 
 		return newRequest;
