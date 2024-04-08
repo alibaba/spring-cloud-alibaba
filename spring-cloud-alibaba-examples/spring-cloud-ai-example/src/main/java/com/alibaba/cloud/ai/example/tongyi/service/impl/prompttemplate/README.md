@@ -1,4 +1,4 @@
-# Spring Cloud Alibaba AI Hello World
+# Spring Cloud Alibaba AI Prompt Template
 
 `TongYiController` 接受一个 HTTP GET 请求 `http://localhost:8080/ai/prompt-tmpl`。
 `controller` 将会调用 `TongYiService` 中的 `genPromptTemplates` 方法，完成服务请求得到响应。
