@@ -6,26 +6,26 @@
 
 [Nacos](https://github.com/alibaba/Nacos) 是阿里巴巴开源的一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
 
-## 正确配置并启动 Nacos Server 2.3.0
+## 正确配置并启动 Nacos Server 2.3.2
 
-在 Nacos 2.3.0 中，加入了用户鉴权相关的功能，在首次启动 Nacos Server 时，需要正确配置，避免出现启动失败的问题。
+在 Nacos 2.3.2 中，加入了用户鉴权相关的功能，在首次启动 Nacos Server 时，需要正确配置，避免出现启动失败的问题。
 
 ### 下载 Nacos Server
 
-> 本示例中使用 Nacos Server 版本为 2.3.0！
+> 本示例中使用 Nacos Server 版本为 2.3.2！
 
-Nacos 支持直接下载和源码构建两种方式。**推荐在 Spring Cloud Alibaba 2023.x 中使用 Nacos Server 2.3.0 版本。**
+Nacos 支持直接下载和源码构建两种方式。**推荐在 Spring Cloud Alibaba 2023.x 中使用 Nacos Server 2.3.2 版本。**
 
 1. 直接下载：[Nacos Server 下载页](https://github.com/alibaba/nacos/releases)
 2. 源码构建：进入 Nacos [Github 项目页面](https://github.com/alibaba/nacos)，将代码 git clone 到本地自行编译打包，[参考文档](https://nacos.io/zh-cn/docs/quick-start.html)。
 
 ### 配置 Nacos Server
 
-打开 `\nacos-server-2.3.0\conf\application.properties` 配置文件，修改以下配置项：
+打开 `\nacos-server-2.3.2\conf\application.properties` 配置文件，修改以下配置项：
 
 #### 配置数据源
 
-此处以 MySQL 数据库为例，使用 `nacos-server-2.3.0\conf\mysql-schema.sql` 初始化数据库表文件。同时修改以下配置
+此处以 MySQL 数据库为例，使用 `nacos-server-2.3.2\conf\mysql-schema.sql` 初始化数据库表文件。同时修改以下配置
 
 ```properties
 #*************** Config Module Related Configurations ***************#
@@ -49,7 +49,7 @@ db.pool.config.minimumIdle=2
 
 #### 开启鉴权
 
-**注意：不开启在 2.3.0 中会出现登陆失败异常！**
+**注意：不开启在 2.3.2 中会出现登陆失败异常！**
 
 ```properties
 ### The auth system to use, currently only 'nacos' and 'ldap' is supported:
@@ -77,7 +77,7 @@ nacos.core.auth.plugin.nacos.token.secret.key=SecretKey0123456789012345678901234
 
 #### Open API 鉴权
 
-在 nacos server 2.3.0 中使用 Open api 接口时需要鉴权：更多细节请参考：[Nacos api 鉴权](https://nacos.io/zh-cn/docs/auth.html)
+在 nacos server 2.3.2 中使用 Open api 接口时需要鉴权：更多细节请参考：[Nacos api 鉴权](https://nacos.io/zh-cn/docs/auth.html)
 
 1. 获取 accessToken：使用用户名和密码登陆 nacos server：
 

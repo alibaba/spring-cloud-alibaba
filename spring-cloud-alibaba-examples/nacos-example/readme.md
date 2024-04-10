@@ -6,9 +6,9 @@ This project demonstrates how to use Spring Cloud Alibaba Nacos related Starters
 
 [Nacos](https://github.com/alibaba/Nacos) It is Alibaba's open source dynamic service discovery, configuration management and service management platform that is easier to build cloud-native applications.
 
-## Nacos Server 2.3.0 is properly configured and started
+## Nacos Server 2.3.2 is properly configured and started
 
-In Nacos 2.3.0, functions related to user authentication are added. When starting Nacos Server for the first time, it needs to be configured correctly to avoid the problem of startup failure.
+In Nacos 2.3.2, functions related to user authentication are added. When starting Nacos Server for the first time, it needs to be configured correctly to avoid the problem of startup failure.
 
 ### Download Nacos Server
 
@@ -49,7 +49,7 @@ db.pool.config.minimumIdle=2
 
 #### Turn on authentication
 
-**Note: If it is not enabled, login failure exception will occur in 2.3.0!**
+**Note: If it is not enabled, login failure exception will occur in 2.3.2!**
 
 ```properties
 ### The auth system to use, currently only 'nacos' and 'ldap' is supported:
@@ -77,7 +77,7 @@ nacos.core.auth.plugin.nacos.token.secret.key=SecretKey0123456789012345678901234
 
 #### Open API authentication
 
-Authentication is required when using the Open api interface in nacos server 2.3.0: For more details, please refer to: [Nacos api authentication](https://nacos.io/zh-cn/docs/auth.html)
+Authentication is required when using the Open api interface in nacos server 2.3.2: For more details, please refer to: [Nacos api authentication](https://nacos.io/zh-cn/docs/auth.html)
 
 1. Obtain accessToken: Use username and password to log in to the nacos server:
 

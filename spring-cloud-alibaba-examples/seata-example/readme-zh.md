@@ -220,7 +220,7 @@ seata:
 ```
 
 > **注意：**
-> Nacos 2.3.0 开启鉴权，需要配置 `username` 和 `password` 属性，否则登陆失败。更多 Nacos 2.3.0 版本相关配置，参考 `nacos-example`。
+> Nacos 2.3.2 开启鉴权，需要配置 `username` 和 `password` 属性，否则登陆失败。更多 Nacos 2.3.2 版本相关配置，参考 `nacos-example`。
 > **Seata-server 启动时的 Nacos 服务注册分组需要和示例应用中的分组保持一致，否则出现无法找到 seata-server 的错误！**
 > 更多 Seata-server 以 Nacos 作为配置中心的配置请参考：https://seata.io/zh-cn/docs/ops/deploy-by-docker-compose/#nacos-db
 
