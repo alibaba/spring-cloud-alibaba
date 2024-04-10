@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi;
+package com.alibaba.cloud.ai.tongyi.image;
 
 import com.alibaba.dashscope.aigc.imagesynthesis.ImageSynthesis;
 import org.slf4j.Logger;

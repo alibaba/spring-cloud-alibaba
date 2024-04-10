@@ -18,7 +18,11 @@ package com.alibaba.cloud.ai.tongyi;
 
 import java.util.Objects;
 
+import com.alibaba.cloud.ai.tongyi.chat.TongYiChatClient;
+import com.alibaba.cloud.ai.tongyi.chat.TongYiChatProperties;
 import com.alibaba.cloud.ai.tongyi.exception.TongYiException;
+import com.alibaba.cloud.ai.tongyi.image.TongYiImagesClient;
+import com.alibaba.cloud.ai.tongyi.image.TongYiImagesProperties;
 import com.alibaba.dashscope.aigc.generation.Generation;
 import com.alibaba.dashscope.aigc.imagesynthesis.ImageSynthesis;
 import com.alibaba.dashscope.common.MessageManager;

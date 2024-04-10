@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi;
+package com.alibaba.cloud.ai.tongyi.image;
 
 import java.util.Objects;
 
