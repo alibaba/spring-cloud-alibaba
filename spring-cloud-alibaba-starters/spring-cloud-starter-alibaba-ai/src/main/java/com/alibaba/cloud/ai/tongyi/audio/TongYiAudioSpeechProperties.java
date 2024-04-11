@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi.image;
+package com.alibaba.cloud.ai.tongyi.audio;
 
-import com.alibaba.dashscope.aigc.imagesynthesis.ImageSynthesis;
+import com.alibaba.cloud.ai.tongyi.image.TongYiImagesProperties;
+import com.alibaba.dashscope.audio.tts.SpeechSynthesisAudioFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,45 +25,44 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
- * TongYi Image API properties.
+ * TongYi audio speech configuration properties.
  *
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
  * @since 2023.0.0.0-RC1
  */
 
-@ConfigurationProperties(TongYiImagesProperties.CONFIG_PREFIX)
-public class TongYiImagesProperties {
+@ConfigurationProperties(TongYiAudioSpeechProperties.CONFIG_PREFIX)
+public class TongYiAudioSpeechProperties {
 
 	private final Logger logger = LoggerFactory.getLogger(TongYiImagesProperties.class);
 
 	/**
 	 * Spring Cloud Alibaba AI configuration prefix.
 	 */
-	public static final String CONFIG_PREFIX = "spring.cloud.ai.tongyi.images";
-
+	public static final String CONFIG_PREFIX = "spring.cloud.ai.tongyi.audio";
 	/**
 	 * Default TongYi Chat model.
 	 */
-	public static final String DEFAULT_IMAGES_MODEL_NAME = ImageSynthesis.Models.WANX_V1;
+	public static final String DEFAULT_AUDIO_MODEL_NAME = AudioModels.SAMBERT_ZHICHU_V1;
 
 	/**
-	 * Enable TongYiQWEN ai images client.
+	 * Enable TongYiQWEN ai audio client.
 	 */
 	private boolean enabled = true;
 
 	@NestedConfigurationProperty
-	private TongYiImagesOptions options = TongYiImagesOptions.builder()
-			.withModel(DEFAULT_IMAGES_MODEL_NAME)
-			.withN(1)
+	private TongYiAudioSpeechOptions options = TongYiAudioSpeechOptions.builder()
+			.withModel(DEFAULT_AUDIO_MODEL_NAME)
+			.withFormat(SpeechSynthesisAudioFormat.WAV)
 			.build();
 
-	public TongYiImagesOptions getOptions() {
+	public TongYiAudioSpeechOptions getOptions() {
 
 		return this.options;
 	}
 
-	public void setOptions(TongYiImagesOptions options) {
+	public void setOptions(TongYiAudioSpeechOptions options) {
 
 		this.options = options;
 	}

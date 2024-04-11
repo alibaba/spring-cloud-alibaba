@@ -126,4 +126,15 @@ public class TongYiController {
 		return tongYiImgService.genImg(imgPrompt);
 	}
 
+	@Autowired
+	@Qualifier("tongYiAudioSimpleServiceImpl")
+	private TongYiService tongYiAudioService;
+
+	@GetMapping("/audio")
+	public String genAudio(@RequestParam(value = "prompt",
+			defaultValue = "你好，Spring Cloud Alibaba AI 框架！") String prompt) {
+
+		return tongYiAudioService.genAudio(prompt);
+	}
+
 }

@@ -1,0 +1,192 @@
+/*
+ * Copyright 2023-2024 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.alibaba.cloud.ai.tongyi.audio;
+
+import java.nio.ByteBuffer;
+
+import com.alibaba.cloud.ai.tongyi.audio.api.Speech;
+import com.alibaba.cloud.ai.tongyi.audio.api.SpeechClient;
+import com.alibaba.cloud.ai.tongyi.audio.api.SpeechPrompt;
+import com.alibaba.cloud.ai.tongyi.audio.api.SpeechResponse;
+import com.alibaba.cloud.ai.tongyi.audio.api.SpeechStreamClient;
+import com.alibaba.cloud.ai.tongyi.metadata.TongYiAudioSpeechResponseMetadata;
+import com.alibaba.dashscope.audio.tts.SpeechSynthesisParam;
+import com.alibaba.dashscope.audio.tts.SpeechSynthesisResult;
+import com.alibaba.dashscope.audio.tts.SpeechSynthesizer;
+import com.alibaba.dashscope.common.ResultCallback;
+import io.reactivex.Flowable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
+
+import org.springframework.util.Assert;
+
+/**
+ * @author yuluo
+ * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
+ * @since 2023.0.0.0-RC1
+ */
+
+public class TongYiAudioSpeechClient implements SpeechClient, SpeechStreamClient {
+
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+
+	/**
+	 * Default speed rate.
+	 */
+	private static final float SPEED_RATE = 1.0f;
+
+	/**
+	 * TongYi models api.
+	 */
+	private final SpeechSynthesizer speechSynthesizer;
+
+	/**
+	 * TongYi models options.
+	 */
+	private final TongYiAudioSpeechOptions defaultOptions;
+
+	public TongYiAudioSpeechClient(SpeechSynthesizer speechSynthesizer) {
+
+		this(speechSynthesizer, null);
+	}
+
+	public TongYiAudioSpeechClient(SpeechSynthesizer speechSynthesizer, TongYiAudioSpeechOptions tongYiAudioOptions) {
+
+		Assert.notNull(speechSynthesizer, "speechSynthesizer must not be null");
+		Assert.notNull(tongYiAudioOptions, "tongYiAudioOptions must not be null");
+
+		this.speechSynthesizer = speechSynthesizer;
+		this.defaultOptions = tongYiAudioOptions;
+	}
+
+	@Override
+	public ByteBuffer call(String text) {
+
+		var speechRequest = new SpeechPrompt(text);
+
+		return call(speechRequest).getResult().getOutput();
+	}
+
+	@Override
+	public SpeechResponse call(SpeechPrompt prompt) {
+
+		var SCASpeechParam = merge(prompt.getOptions());
+		var speechSynthesisParams = toSpeechSynthesisParams(SCASpeechParam);
+		speechSynthesisParams.setText(prompt.getInstructions().getText());
+		logger.info(speechSynthesisParams.toString());
+
+		var res = speechSynthesizer.call(speechSynthesisParams);
+
+		return convert(res, null);
+	}
+
+	public void call(SpeechPrompt prompt, ResultCallback<SpeechSynthesisResult> callback) {
+
+		var SCASpeechParam = merge(prompt.getOptions());
+		var speechSynthesisParams = toSpeechSynthesisParams(SCASpeechParam);
+		speechSynthesisParams.setText(prompt.getInstructions().getText());
+
+		speechSynthesizer.call(speechSynthesisParams, callback);
+	}
+
+	@Override
+	public Flux<SpeechResponse> stream(SpeechPrompt prompt) {
+
+		var SCASpeechParam = merge(prompt.getOptions());
+
+		Flowable<SpeechSynthesisResult> resultFlowable = speechSynthesizer
+				.streamCall(toSpeechSynthesisParams(SCASpeechParam));
+
+		return Flux.from(resultFlowable)
+				.flatMap(
+						res -> Flux.just(res.getAudioFrame())
+								.map(audio -> {
+									var speech = new Speech(audio);
+									var respMetadata = TongYiAudioSpeechResponseMetadata.from(res);
+									return new SpeechResponse(speech, respMetadata);
+								})
+				).publishOn(Schedulers.parallel());
+	}
+
+	public TongYiAudioSpeechOptions merge(TongYiAudioSpeechOptions target) {
+
+		var mergeBuilder = TongYiAudioSpeechOptions.builder();
+
+		mergeBuilder.withModel(defaultOptions.getModel() != null ? defaultOptions.getModel() : target.getModel());
+		mergeBuilder.withPitch(defaultOptions.getPitch() != null ? defaultOptions.getPitch() : target.getPitch());
+		mergeBuilder.withRate(defaultOptions.getRate() != null ? defaultOptions.getRate() : target.getRate());
+		mergeBuilder.withFormat(defaultOptions.getFormat() != null ? defaultOptions.getFormat() : target.getFormat());
+		mergeBuilder.withSampleRate(defaultOptions.getSampleRate() != null ? defaultOptions.getSampleRate() : target.getSampleRate());
+		mergeBuilder.withTextType(defaultOptions.getTextType() != null ? defaultOptions.getTextType() : target.getTextType());
+		mergeBuilder.withVolume(defaultOptions.getVolume() != null ? defaultOptions.getVolume() : target.getVolume());
+		mergeBuilder.withEnablePhonemeTimestamp(defaultOptions.isEnablePhonemeTimestamp() != null ? defaultOptions.isEnablePhonemeTimestamp() : target.isEnablePhonemeTimestamp());
+		mergeBuilder.withEnableWordTimestamp(defaultOptions.isEnableWordTimestamp() != null ? defaultOptions.isEnableWordTimestamp() : target.isEnableWordTimestamp());
+
+		return mergeBuilder.build();
+	}
+
+	public SpeechSynthesisParam toSpeechSynthesisParams(TongYiAudioSpeechOptions source) {
+
+		var mergeBuilder = SpeechSynthesisParam.builder();
+
+		mergeBuilder.model(source.getModel() != null ? source.getModel() : AudioModels.SAMBERT_ZHICHU_V1);
+		mergeBuilder.text(source.getText() != null ? source.getText() : "");
+
+		if (source.getFormat() != null) {
+			mergeBuilder.format(source.getFormat());
+		}
+		if (source.getRate() != null) {
+			mergeBuilder.rate(source.getRate());
+		}
+		if (source.getPitch() != null) {
+			mergeBuilder.pitch(source.getPitch());
+		}
+		if (source.getTextType() != null) {
+			mergeBuilder.textType(source.getTextType());
+		}
+		if (source.getSampleRate() != null) {
+			mergeBuilder.sampleRate(source.getSampleRate());
+		}
+		if (source.isEnablePhonemeTimestamp() != null) {
+			mergeBuilder.enablePhonemeTimestamp(source.isEnablePhonemeTimestamp());
+		}
+		if (source.isEnableWordTimestamp() != null) {
+			mergeBuilder.enableWordTimestamp(source.isEnableWordTimestamp());
+		}
+		if (source.getVolume() != null) {
+			mergeBuilder.volume(source.getVolume());
+		}
+
+		return mergeBuilder.build();
+	}
+
+	private SpeechResponse convert(ByteBuffer result, SpeechSynthesisResult synthesisResult) {
+
+		if (synthesisResult == null) {
+
+			return new SpeechResponse(new Speech(result));
+		}
+
+		var responseMetadata = TongYiAudioSpeechResponseMetadata.from(synthesisResult);
+		var speech = new Speech(synthesisResult.getAudioFrame());
+
+		return new SpeechResponse(speech, responseMetadata);
+	}
+
+}

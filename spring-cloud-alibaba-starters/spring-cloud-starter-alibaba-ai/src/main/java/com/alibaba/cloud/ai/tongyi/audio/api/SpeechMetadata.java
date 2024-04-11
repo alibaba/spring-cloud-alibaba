@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi.audio;
+package com.alibaba.cloud.ai.tongyi.audio.api;
+
+import org.springframework.ai.model.ResultMetadata;
 
 /**
  * @author yuluo
@@ -22,5 +24,17 @@ package com.alibaba.cloud.ai.tongyi.audio;
  * @since 2023.0.0.0-RC1
  */
 
-public class TongYiAudioOptions {
+public interface SpeechMetadata extends ResultMetadata {
+
+	SpeechMetadata NULL = SpeechMetadata.create();
+
+	/**
+	 * Factory method used to construct a new {@link SpeechMetadata}
+	 * @return a new {@link SpeechMetadata}
+	 */
+	static SpeechMetadata create() {
+		return new SpeechMetadata() {
+		};
+	}
+
 }

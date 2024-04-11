@@ -221,7 +221,7 @@ public class TongYiChatClient extends
 	 * @param prompt {@link Prompt}
 	 * @return Qwen models params {@link ConversationParam}
 	 */
-	ConversationParam toTongYiChatParams(Prompt prompt) {
+	public ConversationParam toTongYiChatParams(Prompt prompt) {
 
 		Set<String> functionsForThisRequest = new HashSet<>();
 

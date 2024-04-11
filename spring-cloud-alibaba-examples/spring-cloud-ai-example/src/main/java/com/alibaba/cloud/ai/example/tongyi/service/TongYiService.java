@@ -90,4 +90,12 @@ public interface TongYiService {
 	 * @return {@link ImageResponse}
 	 */
 	ImageResponse genImg(String imgPrompt);
+
+	/**
+	 * Gen audio.
+	 * @param text prompt info.
+	 * @return ByteBuffer object.
+	 */
+	String genAudio(String text);
+
 }

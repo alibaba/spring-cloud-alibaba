@@ -33,7 +33,8 @@ import org.springframework.ai.parser.BeanOutputParser;
 import org.springframework.stereotype.Service;
 
 /**
- * The BeanOutputParser generates an OpenAI JSON compliant schema for a JavaBean and provides instructions to use that schema when replying to a request.
+ * The BeanOutputParser generates an TongYI JSON compliant schema for a
+ * JavaBean and provides instructions to use that schema when replying to a request.
  *
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>

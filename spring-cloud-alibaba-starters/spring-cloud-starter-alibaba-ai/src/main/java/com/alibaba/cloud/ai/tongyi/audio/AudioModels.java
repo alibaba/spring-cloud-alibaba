@@ -22,5 +22,12 @@ package com.alibaba.cloud.ai.tongyi.audio;
  * @since 2023.0.0.0-RC1
  */
 
-public class TongYiAudioProperties {
+public class AudioModels {
+
+	public static final String SAMBERT_ZHICHU_V1 = "sambert-zhichu-v1";
+
+
+
 }
+
+
