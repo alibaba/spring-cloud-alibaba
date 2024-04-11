@@ -26,10 +26,13 @@ import org.springframework.ai.model.ResultMetadata;
 
 public interface SpeechMetadata extends ResultMetadata {
 
+	/**
+	 * Null Object.
+	 */
 	SpeechMetadata NULL = SpeechMetadata.create();
 
 	/**
-	 * Factory method used to construct a new {@link SpeechMetadata}
+	 * Factory method used to construct a new {@link SpeechMetadata}.
 	 * @return a new {@link SpeechMetadata}
 	 */
 	static SpeechMetadata create() {

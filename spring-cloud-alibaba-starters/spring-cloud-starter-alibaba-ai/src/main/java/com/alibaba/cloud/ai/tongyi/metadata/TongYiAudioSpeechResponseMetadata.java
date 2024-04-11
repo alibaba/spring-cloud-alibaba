@@ -42,6 +42,9 @@ public class TongYiAudioSpeechResponseMetadata implements ResponseMetadata {
 
 	protected static final String AI_METADATA_STRING = "{ @type: %1$s, requestsLimit: %2$s }";
 
+	/**
+	 * NULL objects.
+	 */
 	public static final TongYiAudioSpeechResponseMetadata NULL = new TongYiAudioSpeechResponseMetadata() {
 	};
 

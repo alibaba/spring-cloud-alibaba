@@ -1,3 +1,19 @@
+/*
+ * Copyright 2023-2024 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.alibaba.cloud.ai.example.tongyi.service.impl.audio;
 
 import java.io.File;
@@ -40,9 +56,10 @@ public class TongYiAudioSimpleServiceImpl extends AbstractTongYiServiceImpl {
 	public String genAudio(String text) {
 
 		logger.info("gen audio prompt is: {}", text);
+
 		var resWAV = speechClient.call(text);
 
-		return save(resWAV, SpeechSynthesisAudioFormat.MP3.getValue());
+		return save(resWAV, SpeechSynthesisAudioFormat.WAV.getValue());
 	}
 
 	private String save(ByteBuffer audio, String type) {
@@ -55,7 +72,8 @@ public class TongYiAudioSimpleServiceImpl extends AbstractTongYiServiceImpl {
 
 		try (FileOutputStream fos = new FileOutputStream(file)) {
 			fos.write(audio.array());
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 
