@@ -151,7 +151,7 @@ public class TongYiImagesClient implements ImageClient {
 
 		builder.model(this.defaultOptions.getModel() != null ? this.defaultOptions.getModel() : target.getModel());
 		builder.n(this.defaultOptions.getN() != null ? this.defaultOptions.getN() : target.getN());
-		builder.size((this.defaultOptions.getHeight() != null && this.defaultOptions.getWidth() != null )
+		builder.size((this.defaultOptions.getHeight() != null && this.defaultOptions.getWidth() != null)
 				? this.defaultOptions.getHeight() + "*" + this.defaultOptions.getWidth()
 				: target.getHeight() + "*" + target.getWidth()
 		);

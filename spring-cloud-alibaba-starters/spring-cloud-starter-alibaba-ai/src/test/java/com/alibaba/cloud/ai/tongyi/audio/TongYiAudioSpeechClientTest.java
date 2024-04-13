@@ -30,6 +30,7 @@ import org.mockito.MockitoAnnotations;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -47,6 +48,7 @@ class TongYiAudioSpeechClientTest {
 
 	@BeforeEach
 	void setUp() {
+
 		MockitoAnnotations.openMocks(this);
 		client = new TongYiAudioSpeechClient(speechSynthesizer, new TongYiAudioSpeechOptions());
 	}
@@ -58,7 +60,7 @@ class TongYiAudioSpeechClientTest {
 		when(speechSynthesizer.call(any())).thenReturn(buffer);
 		ByteBuffer result = client.call("test");
 
-		assert(result.equals(buffer));
+		assertThat(result).isEqualTo(buffer);
 	}
 
 	@Test
@@ -71,7 +73,7 @@ class TongYiAudioSpeechClientTest {
 		when(speechSynthesizer.call(any())).thenReturn(synthesisResult.getAudioFrame());
 		SpeechResponse result = client.call(prompt);
 
-		assert(result.getResult().getOutput().equals(synthesisResult.getAudioFrame()));
+		assertThat(result.getResult().getOutput()).isEqualTo(synthesisResult.getAudioFrame());
 	}
 
 	@Test
@@ -86,6 +88,7 @@ class TongYiAudioSpeechClientTest {
 		StepVerifier.create(result)
 				.expectNextMatches(response -> response.getResult().getOutput().equals(synthesisResult.getAudioFrame()))
 				.verifyComplete();
+
 	}
 
 }
