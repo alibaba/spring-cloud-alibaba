@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi;
+package com.alibaba.cloud.ai.tongyi.audio;
 
-import com.alibaba.cloud.ai.tongyi.audio.AudioModels;
-import com.alibaba.cloud.ai.tongyi.audio.TongYiAudioSpeechClient;
-import com.alibaba.cloud.ai.tongyi.audio.TongYiAudioSpeechOptions;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisAudioFormat;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisParam;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesizer;
@@ -34,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @since 2023.0.0.0-RC1
  */
 
-public class TongYiAudioSpeechOptionsTests {
+class TongYiAudioSpeechOptionsTests {
 
 	@Test
 	public void testSpeechOptions() {
@@ -51,6 +48,7 @@ public class TongYiAudioSpeechOptionsTests {
 				);
 
 		var tongYiAudioSpeechOptions = speechClient.merge(null);
+
 		assertThat(tongYiAudioSpeechOptions.getModel()).isEqualTo(AudioModels.SAMBERT_ZHICHU_V1);
 		assertThat(tongYiAudioSpeechOptions.getFormat()).isEqualTo(SpeechSynthesisAudioFormat.MP3);
 		assertThat(tongYiAudioSpeechOptions.getRate()).isEqualTo(333f);
@@ -64,6 +62,7 @@ public class TongYiAudioSpeechOptionsTests {
 						.withSampleRate(1)
 						.build()
 		);
+
 		assertThat(modelParams).isInstanceOf(SpeechSynthesisParam.class);
 		assertThat(modelParams.getModel()).isEqualTo("test");
 		assertThat(modelParams.getVolume()).isEqualTo(11);

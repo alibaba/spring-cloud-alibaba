@@ -35,7 +35,8 @@ public class TongYiConnectionProperties {
 	public static final String CONFIG_PREFIX = "spring.cloud.ai.tongyi";
 
 	/**
-	 * ApiKey.
+	 * API key.
+
 	 */
 	private String apiKey;
 

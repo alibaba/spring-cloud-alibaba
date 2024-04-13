@@ -37,6 +37,8 @@ import reactor.core.scheduler.Schedulers;
 import org.springframework.util.Assert;
 
 /**
+ * TongYiAudioSpeechClient is a client for TongYi audio speech service for Spring Cloud Alibaba AI.
+ *
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
  * @since 2023.0.0.0-RC1
@@ -61,11 +63,20 @@ public class TongYiAudioSpeechClient implements SpeechClient, SpeechStreamClient
 	 */
 	private final TongYiAudioSpeechOptions defaultOptions;
 
+	/**
+	 * TongYiAudioSpeechClient constructor.
+	 * @param speechSynthesizer the speech synthesizer
+	 */
 	public TongYiAudioSpeechClient(SpeechSynthesizer speechSynthesizer) {
 
 		this(speechSynthesizer, null);
 	}
 
+	/**
+	 * TongYiAudioSpeechClient constructor.
+	 * @param speechSynthesizer the speech synthesizer
+	 * @param tongYiAudioOptions the tongYi audio options
+	 */
 	public TongYiAudioSpeechClient(SpeechSynthesizer speechSynthesizer, TongYiAudioSpeechOptions tongYiAudioOptions) {
 
 		Assert.notNull(speechSynthesizer, "speechSynthesizer must not be null");
@@ -75,6 +86,11 @@ public class TongYiAudioSpeechClient implements SpeechClient, SpeechStreamClient
 		this.defaultOptions = tongYiAudioOptions;
 	}
 
+	/**
+	 * Call the TongYi audio speech service.
+	 * @param text the text message to be converted to audio.
+	 * @return the audio byte buffer.
+	 */
 	@Override
 	public ByteBuffer call(String text) {
 
@@ -83,6 +99,12 @@ public class TongYiAudioSpeechClient implements SpeechClient, SpeechStreamClient
 		return call(speechRequest).getResult().getOutput();
 	}
 
+
+	/**
+	 * Call the TongYi audio speech service.
+	 * @param prompt the speech prompt.
+	 * @return the speech response.
+	 */
 	@Override
 	public SpeechResponse call(SpeechPrompt prompt) {
 
@@ -96,6 +118,12 @@ public class TongYiAudioSpeechClient implements SpeechClient, SpeechStreamClient
 		return convert(res, null);
 	}
 
+	/**
+	 * Call the TongYi audio speech service.
+	 * @param prompt the speech prompt.
+	 * @param callback the result callback.
+	 * {@link SpeechSynthesizer#call(SpeechSynthesisParam, ResultCallback)}
+	 */
 	public void call(SpeechPrompt prompt, ResultCallback<SpeechSynthesisResult> callback) {
 
 		var SCASpeechParam = merge(prompt.getOptions());
@@ -105,6 +133,12 @@ public class TongYiAudioSpeechClient implements SpeechClient, SpeechStreamClient
 		speechSynthesizer.call(speechSynthesisParams, callback);
 	}
 
+	/**
+	 * Stream the TongYi audio speech service.
+	 * @param prompt the speech prompt.
+	 * @return the speech response.
+	 * {@link SpeechSynthesizer#streamCall(SpeechSynthesisParam)}
+	 */
 	@Override
 	public Flux<SpeechResponse> stream(SpeechPrompt prompt) {
 
@@ -176,6 +210,12 @@ public class TongYiAudioSpeechClient implements SpeechClient, SpeechStreamClient
 		return mergeBuilder.build();
 	}
 
+	/**
+	 * Convert the TongYi audio speech service result to the speech response.
+	 * @param result the audio byte buffer.
+	 * @param synthesisResult the synthesis result.
+	 * @return the speech response.
+	 */
 	private SpeechResponse convert(ByteBuffer result, SpeechSynthesisResult synthesisResult) {
 
 		if (synthesisResult == null) {

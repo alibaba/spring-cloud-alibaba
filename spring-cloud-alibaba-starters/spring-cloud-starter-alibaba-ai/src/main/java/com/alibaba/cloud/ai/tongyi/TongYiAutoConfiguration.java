@@ -154,7 +154,8 @@ public class TongYiAutoConfiguration {
 	}
 
 	/**
-	 * Setting TongYi model apiKey .
+	 * Setting the API key.
+	 * @param connectionProperties {@link TongYiConnectionProperties}
 	 */
 	public void settingApiKey(TongYiConnectionProperties connectionProperties) {
 

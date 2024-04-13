@@ -77,6 +77,11 @@ public class TongYiImagesClient implements ImageClient {
 		return this.defaultOptions;
 	}
 
+	/**
+	 * TongYiImagesClient constructor.
+	 * @param imageSynthesis the image synthesis
+	 * {@link ImageSynthesis}
+	 */
 	public TongYiImagesClient(ImageSynthesis imageSynthesis) {
 
 		this(imageSynthesis, TongYiImagesOptions.
@@ -87,6 +92,11 @@ public class TongYiImagesClient implements ImageClient {
 		);
 	}
 
+	/**
+	 * TongYiImagesClient constructor.
+	 * @param imageSynthesis {@link ImageSynthesis}
+	 * @param imagesOptions {@link TongYiImagesOptions}
+	 */
 	public TongYiImagesClient(ImageSynthesis imageSynthesis, TongYiImagesOptions imagesOptions) {
 
 		Assert.notNull(imageSynthesis, "ImageSynthesis must not be null");
@@ -96,6 +106,12 @@ public class TongYiImagesClient implements ImageClient {
 		this.defaultOptions = imagesOptions;
 	}
 
+	/**
+	 * Call the TongYi images service.
+	 * @param imagePrompt the image prompt.
+	 * @return the image response.
+	 * {@link ImageSynthesis#call(ImageSynthesisParam)}
+	 */
 	@Override
 	public ImageResponse call(ImagePrompt imagePrompt) {
 
@@ -107,17 +123,13 @@ public class TongYiImagesClient implements ImageClient {
 				.build();
 
 		if (this.defaultOptions != null) {
-			imgParams = merge(
-					this.defaultOptions,
-					imgParams
-			);
+
+			imgParams = merge(this.defaultOptions);
 		}
 
 		if (imagePrompt.getOptions() != null) {
-			imgParams = merge(
-					toTingYiImageOptions(imagePrompt.getOptions()),
-					imgParams
-			);
+
+			imgParams = merge(toTingYiImageOptions(imagePrompt.getOptions()));
 		}
 		imgParams.setPrompt(prompt);
 
@@ -125,6 +137,7 @@ public class TongYiImagesClient implements ImageClient {
 			result = imageSynthesis.call(imgParams);
 		}
 		catch (NoApiKeyException e) {
+
 			logger.error("TongYi models gen images failed: {}.", e.getMessage());
 			throw new TongYiImagesException(e.getMessage());
 		}
@@ -132,25 +145,16 @@ public class TongYiImagesClient implements ImageClient {
 		return convert(result);
 	}
 
-	private ImageSynthesisParam merge(TongYiImagesOptions source, ImageSynthesisParam target) {
+	public ImageSynthesisParam merge(TongYiImagesOptions target) {
 
 		var builder = ImageSynthesisParam.builder();
 
-		if (source != null) {
-			if (
-					source.getHeight() != null
-					&&
-					source.getWidth() != null
-			) {
-				builder.size(source.getHeight() + sizeConnection + source.getWidth());
-			}
-			if (source.getModel() != null) {
-				builder.model(source.getModel());
-			}
-			if (source.getN() != null) {
-				builder.n(source.getN());
-			}
-		}
+		builder.model(this.defaultOptions.getModel() != null ? this.defaultOptions.getModel() : target.getModel());
+		builder.n(this.defaultOptions.getN() != null ? this.defaultOptions.getN() : target.getN());
+		builder.size((this.defaultOptions.getHeight() != null && this.defaultOptions.getWidth() != null )
+				? this.defaultOptions.getHeight() + "*" + this.defaultOptions.getWidth()
+				: target.getHeight() + "*" + target.getWidth()
+		);
 
 		// prompt is marked non-null but is null.
 		builder.prompt("");
@@ -180,7 +184,7 @@ public class TongYiImagesClient implements ImageClient {
 		);
 	}
 
-	private TongYiImagesOptions toTingYiImageOptions(ImageOptions runtimeImageOptions) {
+	public TongYiImagesOptions toTingYiImageOptions(ImageOptions runtimeImageOptions) {
 
 		var builder = TongYiImagesOptions.builder();
 
@@ -208,6 +212,12 @@ public class TongYiImagesClient implements ImageClient {
 		return builder.build();
 	}
 
+	/**
+	 * Convert image to base64.
+	 * @param imageUrl the image url.
+	 * @return the base64 image.
+	 * @throws Exception the exception.
+	 */
 	public String convertImageToBase64(String imageUrl) throws Exception {
 
 		var url = new URL(imageUrl);

@@ -236,6 +236,7 @@ public class TongYiChatClient extends
 				.model(Generation.Models.QWEN_TURBO)
 				// {@link GenerationOutput}
 				.resultFormat(ConversationParam.ResultFormat.MESSAGE)
+
 				.build();
 
 		if (this.defaultOptions != null) {

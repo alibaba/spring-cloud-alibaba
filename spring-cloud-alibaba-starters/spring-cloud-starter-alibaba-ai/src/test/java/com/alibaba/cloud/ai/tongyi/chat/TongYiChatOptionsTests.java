@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi;
+package com.alibaba.cloud.ai.tongyi.chat;
 
-import com.alibaba.cloud.ai.tongyi.chat.TongYiChatClient;
-import com.alibaba.cloud.ai.tongyi.chat.TongYiChatOptions;
 import com.alibaba.dashscope.aigc.generation.Generation;
 import com.alibaba.dashscope.utils.Constants;
 import org.junit.jupiter.api.Test;
@@ -33,10 +31,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @since 2023.0.0.0-RC1
  */
 
-public class TongYiChatOptionsTests {
+class TongYiChatOptionsTests {
 
 	@Test
-	public void createRequestWithChatOptions() {
+	public void testChatOptions() {
 
 		Generation mockClient = Mockito.mock(Generation.class);
 		Constants.apiKey = "test";
