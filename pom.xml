@@ -80,10 +80,10 @@
 
     <properties>
         <!-- Project revision -->
-        <revision>2022.0.0.0</revision>
+        <revision>2022.0.0.1</revision>
 
         <!-- Spring Cloud -->
-        <spring.cloud.version>2022.0.0</spring.cloud.version>
+        <spring.cloud.version>2022.0.5</spring.cloud.version>
 
         <!-- Spring Boot -->
         <spring-boot.version>3.0.2</spring-boot.version>
