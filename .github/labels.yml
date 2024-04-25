@@ -1,0 +1,23 @@
+area:
+  - 'ai'
+  - 'ci'
+  - 'nacos'
+  - 'sentinel'
+  - 'rocketmq'
+  - 'community'
+  - 'example'
+  - 'seata'
+  - 'openSergo'
+  - 'spring cloud'
+  - 'testing'
+
+kind:
+  - 'bug'
+  - 'chore'
+  - 'discussion'
+  - 'documention'
+  - 'question'
+  - 'refactor'
+  - 'invalid'
+  - 'enhancement'
+  
