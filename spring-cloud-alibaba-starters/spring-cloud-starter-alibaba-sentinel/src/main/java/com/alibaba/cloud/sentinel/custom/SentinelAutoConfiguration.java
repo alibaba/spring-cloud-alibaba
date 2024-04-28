@@ -18,6 +18,7 @@ package com.alibaba.cloud.sentinel.custom;
 
 
 import com.alibaba.cloud.commons.lang.StringUtils;
+import com.alibaba.cloud.sentinel.SentinelConstants;
 import com.alibaba.cloud.sentinel.SentinelProperties;
 import com.alibaba.cloud.sentinel.datasource.converter.JsonConverter;
 import com.alibaba.cloud.sentinel.datasource.converter.XmlConverter;
@@ -48,7 +49,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
-import static com.alibaba.cloud.sentinel.SentinelConstants.BLOCK_PAGE_URL_CONF_KEY;
 import static com.alibaba.csp.sentinel.config.SentinelConfig.setConfig;
 
 /**
@@ -95,7 +95,7 @@ public class SentinelAutoConfiguration {
 		}
 		if (StringUtils.isEmpty(System.getProperty(TransportConfig.HEARTBEAT_INTERVAL_MS))
 				&& StringUtils
-						.isNotBlank(properties.getTransport().getHeartbeatIntervalMs())) {
+				.isNotBlank(properties.getTransport().getHeartbeatIntervalMs())) {
 			System.setProperty(TransportConfig.HEARTBEAT_INTERVAL_MS,
 					properties.getTransport().getHeartbeatIntervalMs());
 		}
@@ -127,7 +127,7 @@ public class SentinelAutoConfiguration {
 					properties.getFlow().getColdFactor());
 		}
 		if (StringUtils.isNotBlank(properties.getBlockPage())) {
-			setConfig(BLOCK_PAGE_URL_CONF_KEY, properties.getBlockPage());
+			setConfig(SentinelConstants.BLOCK_PAGE_URL_CONF_KEY, properties.getBlockPage());
 		}
 
 		// earlier initialize
