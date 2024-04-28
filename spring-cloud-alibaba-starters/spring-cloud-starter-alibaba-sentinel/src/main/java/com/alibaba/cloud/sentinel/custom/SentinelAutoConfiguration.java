@@ -17,28 +17,19 @@
 package com.alibaba.cloud.sentinel.custom;
 
 
-import com.alibaba.cloud.commons.lang.StringUtils;
-import com.alibaba.cloud.sentinel.SentinelConstants;
 import com.alibaba.cloud.sentinel.SentinelProperties;
 import com.alibaba.cloud.sentinel.datasource.converter.JsonConverter;
 import com.alibaba.cloud.sentinel.datasource.converter.XmlConverter;
 import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
-import com.alibaba.csp.sentinel.config.SentinelConfig;
-import com.alibaba.csp.sentinel.init.InitExecutor;
-import com.alibaba.csp.sentinel.log.LogBase;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRule;
-import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import jakarta.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -48,8 +39,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-
-import static com.alibaba.csp.sentinel.config.SentinelConfig.setConfig;
 
 /**
  * @author xiaojing
