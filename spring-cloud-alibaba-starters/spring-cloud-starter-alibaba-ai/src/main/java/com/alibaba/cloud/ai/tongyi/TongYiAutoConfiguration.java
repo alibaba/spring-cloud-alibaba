@@ -22,6 +22,7 @@ import com.alibaba.cloud.ai.tongyi.audio.TongYiAudioSpeechClient;
 import com.alibaba.cloud.ai.tongyi.audio.TongYiAudioSpeechProperties;
 import com.alibaba.cloud.ai.tongyi.chat.TongYiChatClient;
 import com.alibaba.cloud.ai.tongyi.chat.TongYiChatProperties;
+import com.alibaba.cloud.ai.tongyi.constants.TongYiConstants;
 import com.alibaba.cloud.ai.tongyi.exception.TongYiException;
 import com.alibaba.cloud.ai.tongyi.image.TongYiImagesClient;
 import com.alibaba.cloud.ai.tongyi.image.TongYiImagesProperties;
@@ -114,6 +115,7 @@ public class TongYiAutoConfiguration {
 	) {
 
 		settingApiKey(connectionProperties);
+
 		return new TongYiChatClient(generation, chatOptions.getOptions());
 	}
 
@@ -157,11 +159,17 @@ public class TongYiAutoConfiguration {
 	 * Setting the API key.
 	 * @param connectionProperties {@link TongYiConnectionProperties}
 	 */
-	public void settingApiKey(TongYiConnectionProperties connectionProperties) {
+	private void settingApiKey(TongYiConnectionProperties connectionProperties) {
 
 		String apiKey;
 
 		try {
+			// It is recommended to set the key by defining the api-key in an environment variable.
+			var envKey = System.getenv(TongYiConstants.SCA_AI_TONGYI_API_KEY);
+			if (Objects.nonNull(envKey)) {
+				Constants.apiKey = envKey;
+				return;
+			}
 			if (Objects.nonNull(connectionProperties.getApiKey())) {
 				apiKey = connectionProperties.getApiKey();
 			}
