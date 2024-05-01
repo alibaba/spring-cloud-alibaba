@@ -23,6 +23,12 @@ Spring Cloud Alibaba AI 模块基于 [Spring AI 0.8.1](https://docs.spring.io/sp
 
 2. 在 application.yml 配置文件中加入以下配置：
 
+   > Note: 推荐使用环境变量的方式设置 api-key，避免 api-key 泄露。
+   >
+   > ```shell
+   > export SPRING_CLOUD_AI_TONGYI_API_KEY=sk-a3d73b1709bf4a178c28ed7c8b3b5a45
+   > ```
+   
    ```yaml
    spring:
     cloud:
