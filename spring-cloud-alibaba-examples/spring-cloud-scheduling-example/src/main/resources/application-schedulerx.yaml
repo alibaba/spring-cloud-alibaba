@@ -1,0 +1,17 @@
+spring:
+  cloud:
+    scheduling:
+      # Distributed mode: shedlock, schedulerx
+      distributed-mode: schedulerx
+      schedulerx:
+        # This configuration is required, Please get it from aliyun schedulerx console
+        endpoint: acm.aliyun.com
+        namespace: aad167f6-xxxx-xxxx-xxxx-xxxxxxxxx
+        groupId: xxxxx
+        appKey: PZm1XXXXXXXXXXXX
+        # Optional config, if you need to sync task to schedulerx
+#        task-sync: true
+#        region-id: public
+#        aliyun-access-key: XXXXXXXXXXXX
+#        aliyun-secret-key: XXXXXXXXXXXX
+#        task-model-default: standalone

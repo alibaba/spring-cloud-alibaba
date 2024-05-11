@@ -1,0 +1,16 @@
+server:
+  port: 18080
+spring:
+  profiles:
+    active: shedlock
+  application:
+    name: spring-cloud-alibaba-schedule-example
+  # Spring task scheduling config
+  task:
+    scheduling:
+      thread-name-prefix: sca-schedule-
+      pool:
+        size: 5
+      shutdown:
+        await-termination: true
+        await-termination-period: 60s

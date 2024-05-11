@@ -53,7 +53,8 @@
         <module>integrated-example/integrated-praise-consumer</module>
         <module>integrated-example/integrated-common</module>
 		<module>integrated-example/integrated-frontend</module>
-	</modules>
+        <module>spring-cloud-scheduling-example</module>
+    </modules>
 
     <build>
         <plugins>
