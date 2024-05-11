@@ -23,6 +23,8 @@
         <seata.version>1.6.1</seata.version>
         <sentinel.version>1.8.6</sentinel.version>
         <spring.context.support.version>1.0.11</spring.context.support.version>
+        <shedlock.version>4.23.0</shedlock.version>
+        <schedulerx.worker.version>1.11.4</schedulerx.worker.version>
 
         <!-- Maven Plugin Versions -->
         <maven-source-plugin.version>2.2.1</maven-source-plugin.version>
@@ -160,6 +162,23 @@
                 <version>${seata.version}</version>
             </dependency>
 
+            <!-- Alibaba scheduling -->
+            <dependency>
+                <groupId>net.javacrumbs.shedlock</groupId>
+                <artifactId>shedlock-spring</artifactId>
+                <version>${shedlock.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.javacrumbs.shedlock</groupId>
+                <artifactId>shedlock-provider-jdbc-template</artifactId>
+                <version>${shedlock.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aliyun.schedulerx</groupId>
+                <artifactId>schedulerx2-worker</artifactId>
+                <version>${schedulerx.worker.version}</version>
+            </dependency>
+
             <!-- Own dependencies  -->
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
@@ -248,6 +267,12 @@
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-commons</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-schedulerx</artifactId>
                 <version>${revision}</version>
             </dependency>
 
