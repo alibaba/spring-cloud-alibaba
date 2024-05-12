@@ -146,7 +146,8 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 				if (CollectionUtils.isEmpty(sameClusterInstances)) {
 					log.warn("Not filtering to the specified cluster instance node，name = {}, clusterName = {}, instance = {}",
 							serviceId, clusterName, serviceInstances);
-				} else {
+				}
+				else {
 					instancesToChoose = sameClusterInstances;
 					log.info("Calling to filter cluster instance nodes, name = {}, clusterName = {}, instance = {}",
 							serviceId, clusterName, serviceInstances);
