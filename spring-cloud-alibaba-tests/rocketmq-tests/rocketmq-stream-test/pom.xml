@@ -10,7 +10,7 @@
 
   <artifactId>rocketmq-stream-test</artifactId>
   <modelVersion>4.0.0</modelVersion>
-  <name>Rocketmq Stream Test</name>
+  <name>Spring Cloud Alibaba Rocketmq Stream Test</name>
 
   <dependencies>
     <dependency>

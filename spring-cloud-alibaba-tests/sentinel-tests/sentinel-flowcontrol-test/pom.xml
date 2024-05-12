@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sentinel-flowcontrol-test</artifactId>
-    <name>Sentinel Flowcontrol Test</name>
+    <name>Spring Cloud Alibaba Sentinel Flowcontrol Test</name>
 
     <dependencies>
         <dependency>
