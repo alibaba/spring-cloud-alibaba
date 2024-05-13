@@ -37,14 +37,14 @@ class TongYiChatOptionsTests {
 	public void testChatOptions() {
 
 		Generation mockClient = Mockito.mock(Generation.class);
-		Constants.apiKey = "test";
+		Constants.apiKey = "sk-xxx";
 
 		// Test start.
 
 		var tongYiChatClient = new TongYiChatClient(mockClient,
 				TongYiChatOptions.builder().withModel(Generation.Models.QWEN_TURBO).withTemperature(88.8).build());
 
-		var tongYiChatParams = tongYiChatClient.toTongYiChatParams(new Prompt("This is a test message"));
+		var tongYiChatParams = tongYiChatClient.toTongYiChatParams(new Prompt("你好"));
 
 		assertThat(tongYiChatParams.getMessages()).hasSize(1);
 
@@ -54,7 +54,7 @@ class TongYiChatOptionsTests {
 		tongYiChatClient = new TongYiChatClient(mockClient,
 				TongYiChatOptions.builder().withModel(Generation.Models.QWEN_MAX).withTemperature(77.7).build());
 
-		tongYiChatParams = tongYiChatClient.toTongYiChatParams(new Prompt("This is a test message"));
+		tongYiChatParams = tongYiChatClient.toTongYiChatParams(new Prompt("你是谁"));
 
 		assertThat(tongYiChatParams.getMessages()).hasSize(1);
 

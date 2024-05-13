@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.ai.example.tongyi.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.ai.example.tongyi.models.ActorsFilms;
@@ -136,5 +137,16 @@ public class TongYiController {
 
 		return tongYiAudioService.genAudio(prompt);
 	}
+
+	@Autowired
+	@Qualifier("tongYiAudioTranscriptionServiceImpl")
+	private TongYiService tongYiAudioTranscriptionService;
+
+	@GetMapping("/audio/transcription")
+	public String audioTranscription(@RequestParam(value = "audioUrls") List<String> audioUrls) {
+		return tongYiAudioTranscriptionService.audioTranscription(audioUrls);
+	}
+
+
 
 }

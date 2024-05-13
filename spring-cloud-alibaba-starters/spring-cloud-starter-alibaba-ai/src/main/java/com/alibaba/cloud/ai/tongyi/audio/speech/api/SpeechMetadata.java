@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi.audio.api;
+package com.alibaba.cloud.ai.tongyi.audio.speech.api;
 
 import org.springframework.ai.model.ResultMetadata;
 

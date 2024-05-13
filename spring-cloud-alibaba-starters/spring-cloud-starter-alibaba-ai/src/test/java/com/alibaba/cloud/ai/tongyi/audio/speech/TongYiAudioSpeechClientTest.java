@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi.audio;
+package com.alibaba.cloud.ai.tongyi.audio.speech;
 
 import java.nio.ByteBuffer;
 
-import com.alibaba.cloud.ai.tongyi.audio.api.SpeechPrompt;
-import com.alibaba.cloud.ai.tongyi.audio.api.SpeechResponse;
+import com.alibaba.cloud.ai.tongyi.audio.speech.api.SpeechPrompt;
+import com.alibaba.cloud.ai.tongyi.audio.speech.api.SpeechResponse;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisResult;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesizer;
 import io.reactivex.Flowable;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi.audio.api;
+package com.alibaba.cloud.ai.tongyi.audio.speech.api;
 
 import java.util.Collections;
 import java.util.List;

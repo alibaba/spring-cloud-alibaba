@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi.audio;
+package com.alibaba.cloud.ai.tongyi.audio.speech;
 
+import com.alibaba.cloud.ai.tongyi.audio.AudioModels;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisAudioFormat;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisTextType;
 

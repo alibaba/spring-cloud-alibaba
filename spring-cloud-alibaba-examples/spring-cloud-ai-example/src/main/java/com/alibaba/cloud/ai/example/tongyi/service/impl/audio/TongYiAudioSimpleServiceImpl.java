@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter;
 
 import com.alibaba.cloud.ai.example.tongyi.service.AbstractTongYiServiceImpl;
 import com.alibaba.cloud.ai.example.tongyi.service.TongYiService;
-import com.alibaba.cloud.ai.tongyi.audio.api.SpeechClient;
+import com.alibaba.cloud.ai.tongyi.audio.speech.api.SpeechClient;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisAudioFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;

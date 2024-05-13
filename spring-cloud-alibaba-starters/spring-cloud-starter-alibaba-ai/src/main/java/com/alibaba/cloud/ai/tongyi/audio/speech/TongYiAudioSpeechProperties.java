@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi.audio;
+package com.alibaba.cloud.ai.tongyi.audio.speech;
 
+import com.alibaba.cloud.ai.tongyi.audio.AudioModels;
 import com.alibaba.cloud.ai.tongyi.image.TongYiImagesProperties;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisAudioFormat;
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ public class TongYiAudioSpeechProperties {
 	/**
 	 * Spring Cloud Alibaba AI configuration prefix.
 	 */
-	public static final String CONFIG_PREFIX = "spring.cloud.ai.tongyi.audio";
+	public static final String CONFIG_PREFIX = "spring.cloud.ai.tongyi.audio.speech";
 	/**
 	 * Default TongYi Chat model.
 	 */

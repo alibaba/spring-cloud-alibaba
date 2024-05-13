@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi.audio.api;
+package com.alibaba.cloud.ai.tongyi.audio.speech.api;
 
 import java.util.Objects;
 
-import com.alibaba.cloud.ai.tongyi.audio.TongYiAudioSpeechOptions;
+import com.alibaba.cloud.ai.tongyi.audio.speech.TongYiAudioSpeechOptions;
 
 import org.springframework.ai.model.ModelRequest;
 
