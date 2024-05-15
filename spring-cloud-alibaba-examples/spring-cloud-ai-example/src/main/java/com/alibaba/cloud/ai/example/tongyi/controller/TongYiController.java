@@ -143,10 +143,7 @@ public class TongYiController {
 	private TongYiService tongYiAudioTranscriptionService;
 
 	@GetMapping("/audio/transcription")
-	public String audioTranscription(@RequestParam(value = "audioUrls") List<String> audioUrls) {
+	public String audioTranscription(@RequestParam("audioUrls") List<String> audioUrls) {
 		return tongYiAudioTranscriptionService.audioTranscription(audioUrls);
 	}
-
-
-
 }

@@ -85,7 +85,7 @@ public abstract class AbstractTongYiServiceImpl implements TongYiService {
 	}
 
 	@Override
-	public String audioTranscription(List<String> path){
+	public String audioTranscription(List<String> path) {
 		throw new RuntimeException(INFO_PREFIX + Thread.currentThread().getStackTrace()[2].getMethodName() + INFO_SUFFIX);
 	}
 

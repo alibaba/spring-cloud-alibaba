@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.example.tongyi.service.impl.audio;
+package com.alibaba.cloud.ai.example.tongyi.service.impl.audio.speech;
 
 import java.io.File;
 import java.io.FileOutputStream;
