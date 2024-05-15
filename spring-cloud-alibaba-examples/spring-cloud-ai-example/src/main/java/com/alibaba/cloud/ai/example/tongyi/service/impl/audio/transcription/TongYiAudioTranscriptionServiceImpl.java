@@ -62,57 +62,40 @@ public class TongYiAudioTranscriptionServiceImpl extends AbstractTongYiServiceIm
 
 	private String save(List<TranscriptionTaskResult> taskResultList) {
 		String currentPath = System.getProperty("user.dir");
-
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-HH-mm-ss");
-
 		StringBuilder retPaths = new StringBuilder();
-
 		for (TranscriptionTaskResult taskResult : taskResultList) {
 			String transcriptionUrl = taskResult.getTranscriptionUrl();
-
 			LocalDateTime now = LocalDateTime.now();
-
 			String fileName = currentPath + File.separator + now.format(formatter) + ".txt";
-
 			retPaths.append(fileName).append("\n");
-
 			try {
 				URL url = new URL(transcriptionUrl);
-
 				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
 				connection.setRequestMethod("GET");
-
 				int responseCode = connection.getResponseCode();
-
 				if (responseCode == HttpURLConnection.HTTP_OK) {
 					try (BufferedInputStream in = new BufferedInputStream(connection.getInputStream()); FileOutputStream fileOutputStream = new FileOutputStream(fileName)) {
 						byte[] dataBuffer = new byte[1024];
-
 						int bytesRead;
-
 						while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
-
 							fileOutputStream.write(dataBuffer, 0, bytesRead);
-
 						}
-
-						logger.info("文件下载成功：{}", fileName);
-
+						logger.info("File downloaded successfully：{}", fileName);
 						System.out.println();
 					}
 				}
 				else {
-					logger.error("下载失败，响应码：{}", responseCode);
+					logger.error("The download failed, and the response code：{}",
+							responseCode);
 				}
 				connection.disconnect();
 			}
 			catch (IOException e) {
 				e.printStackTrace();
-				logger.error("文件下载过程中发生错误");
+				logger.error("An error occurred during the file download process.");
 			}
 		}
-
 		return retPaths.toString();
 	}
 }

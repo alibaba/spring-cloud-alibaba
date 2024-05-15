@@ -13,6 +13,7 @@
 ## 访问接口
 
 使用 curl 工具对接口发起请求：
+
 ```shell
 $ curl -X GET "http://localhost:8080/ai/audio/transcription?audioUrls=url1&audioUrls=url2"
 
@@ -20,4 +21,5 @@ $ curl -X GET "http://localhost:8080/ai/audio/transcription?audioUrls=url1&audio
 D:\Code\spring-cloud-alibaba\05-13-20-47-08.txt
 D:\Code\spring-cloud-alibaba\05-13-20-47-09.txt
 ```
+
 返回参数为保存到当前根路径下的音频转录文本文件的路径。
