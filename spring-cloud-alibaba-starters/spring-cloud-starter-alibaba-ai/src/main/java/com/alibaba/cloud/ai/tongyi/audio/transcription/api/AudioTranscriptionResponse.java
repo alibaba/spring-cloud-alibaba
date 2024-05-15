@@ -20,8 +20,6 @@ import java.util.Objects;
 
 import com.alibaba.dashscope.audio.asr.transcription.TranscriptionTaskResult;
 
-
-
 /**
  * @author: xYLiu
  * @date: 2024/5/4

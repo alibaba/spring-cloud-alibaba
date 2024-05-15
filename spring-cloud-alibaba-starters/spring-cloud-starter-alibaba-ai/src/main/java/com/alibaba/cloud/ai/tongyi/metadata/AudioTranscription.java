@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi.audio.transcription.api;
+package com.alibaba.cloud.ai.tongyi.metadata;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -33,8 +33,6 @@ import com.google.gson.annotations.SerializedName;
 
 import org.springframework.ai.model.ModelResult;
 import org.springframework.ai.model.ResultMetadata;
-
-
 
 /**
  * @author: xYLiu
@@ -188,138 +186,5 @@ public class AudioTranscription implements ModelResult<Object> {
 				+ this.getTaskStatus() + ", setTaskId=" + this.getsetTaskId()
 				+ ", results=" + this.getResults() + ", metrics=" + this.getMetrics()
 				+ ")";
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (o == this) {
-			return true;
-		}
-		else if (!(o instanceof TranscriptionResult)) {
-			return false;
-		}
-		else {
-			TranscriptionResult other = (TranscriptionResult) o;
-			if (!other.equals(this)) {
-				return false;
-			}
-			else {
-				label95: {
-					Object this$requestId = this.getRequestId();
-					Object other$requestId = other.getRequestId();
-					if (this$requestId == null) {
-						if (other$requestId == null) {
-							break label95;
-						}
-					}
-					else if (this$requestId.equals(other$requestId)) {
-						break label95;
-					}
-
-					return false;
-				}
-
-				Object this$output = this.getOutput();
-				Object other$output = other.getOutput();
-				if (this$output == null) {
-					if (other$output != null) {
-						return false;
-					}
-				}
-				else if (!this$output.equals(other$output)) {
-					return false;
-				}
-
-				Object this$usage = this.getUsage();
-				Object other$usage = other.getUsage();
-				if (this$usage == null) {
-					if (other$usage != null) {
-						return false;
-					}
-				}
-				else if (!this$usage.equals(other$usage)) {
-					return false;
-				}
-
-				label74: {
-					Object this$taskStatus = this.getTaskStatus();
-					Object other$taskStatus = other.getTaskStatus();
-					if (this$taskStatus == null) {
-						if (other$taskStatus == null) {
-							break label74;
-						}
-					}
-					else if (this$taskStatus.equals(other$taskStatus)) {
-						break label74;
-					}
-
-					return false;
-				}
-
-				label67: {
-					Object this$setTaskId = this.getsetTaskId();
-					Object other$setTaskId = other.getRequestId();
-					if (this$setTaskId == null) {
-						if (other$setTaskId == null) {
-							break label67;
-						}
-					}
-					else if (this$setTaskId.equals(other$setTaskId)) {
-						break label67;
-					}
-
-					return false;
-				}
-
-				Object this$results = this.getResults();
-				Object other$results = other.getResults();
-				if (this$results == null) {
-					if (other$results != null) {
-						return false;
-					}
-				}
-				else if (!this$results.equals(other$results)) {
-					return false;
-				}
-
-				Object this$metrics = this.getMetrics();
-				Object other$metrics = other.getMetrics();
-				if (this$metrics == null) {
-					if (other$metrics != null) {
-						return false;
-					}
-				}
-				else if (!this$metrics.equals(other$metrics)) {
-					return false;
-				}
-
-				return true;
-			}
-		}
-	}
-
-	protected boolean canEqual(Object other) {
-		return other instanceof TranscriptionResult;
-	}
-
-	@Override
-	public int hashCode() {
-		boolean PRIME = true;
-		int result = 1;
-		Object $requestId = this.getRequestId();
-		result = result * 59 + ($requestId == null ? 43 : $requestId.hashCode());
-		Object $output = this.getOutput();
-		result = result * 59 + ($output == null ? 43 : $output.hashCode());
-		Object $usage = this.getUsage();
-		result = result * 59 + ($usage == null ? 43 : $usage.hashCode());
-		Object $taskStatus = this.getTaskStatus();
-		result = result * 59 + ($taskStatus == null ? 43 : $taskStatus.hashCode());
-		Object $setTaskId = this.getsetTaskId();
-		result = result * 59 + ($setTaskId == null ? 43 : $setTaskId.hashCode());
-		Object $results = this.getResults();
-		result = result * 59 + ($results == null ? 43 : $results.hashCode());
-		Object $metrics = this.getMetrics();
-		result = result * 59 + ($metrics == null ? 43 : $metrics.hashCode());
-		return result;
 	}
 }

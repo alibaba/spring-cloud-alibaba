@@ -81,8 +81,7 @@ public class TongYiAudioTranscriptionServiceImpl extends AbstractTongYiServiceIm
 						while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
 							fileOutputStream.write(dataBuffer, 0, bytesRead);
 						}
-						logger.info("File downloaded successfully：{}", fileName);
-						System.out.println();
+						logger.info("File downloaded successfully：{}\n", fileName);
 					}
 				}
 				else {

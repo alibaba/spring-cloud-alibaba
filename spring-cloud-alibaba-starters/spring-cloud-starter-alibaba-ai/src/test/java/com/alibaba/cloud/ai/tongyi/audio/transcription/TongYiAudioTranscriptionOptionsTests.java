@@ -32,20 +32,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TongYiAudioTranscriptionOptionsTests {
 	@Test
-	public void testSpeechOptions() {
+	public void testTranscriptionOptions() {
 
 		Transcription mockClient = Mockito.mock(Transcription.class);
 		Constants.apiKey = "test";
 
 		var transcription = new TongYiAudioTranscriptionClient(
-				TongYiAudioTranscriptionOptions.builder().withSpeakerCount(2).build(),
+				TongYiAudioTranscriptionOptions.builder().withDiarizationEnabled(false)
+						.withAudioEventDetectionEnabled(false)
+						.withTimestampAlignmentEnabled(false)
+						.withDisfluencyRemovalEnabled(false).build(),
 				mockClient);
 
 		var tongYiAudioTranscriptionOptions = transcription.merge(null);
 
 		assertThat(tongYiAudioTranscriptionOptions.getModel())
 				.isEqualTo(ParaformerModels.Paraformer_V1);
-		assertThat(tongYiAudioTranscriptionOptions.getSpeakerCount()).isEqualTo(2);
+		assertThat(tongYiAudioTranscriptionOptions.getDiarizationEnabled())
+				.isEqualTo(false);
+		assertThat(tongYiAudioTranscriptionOptions.getAudioEventDetectionEnabled())
+				.isEqualTo(false);
+		assertThat(tongYiAudioTranscriptionOptions.getTimestampAlignmentEnabled())
+				.isEqualTo(false);
+		assertThat(tongYiAudioTranscriptionOptions.getDisfluencyRemovalEnabled())
+				.isEqualTo(false);
 
 		var modelParams = transcription
 				.toTranscriptionParam(TongYiAudioTranscriptionOptions.builder()

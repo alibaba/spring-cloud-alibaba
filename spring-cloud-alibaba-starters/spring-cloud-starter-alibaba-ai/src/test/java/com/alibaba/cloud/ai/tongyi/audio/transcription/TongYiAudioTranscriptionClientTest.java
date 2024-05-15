@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
  * @date: 2024/5/12
  */
 
-public class TongYiAudioTranscriptionClientTest {
+class TongYiAudioTranscriptionClientTest {
 	@Test
 	public void test() {
 		// Transcription mockClient = Mockito.mock(Transcription.class);
@@ -59,10 +59,10 @@ public class TongYiAudioTranscriptionClientTest {
 		var options = new TongYiAudioTranscriptionOptions();
 		var client = new TongYiAudioTranscriptionClient(options, mockClient);
 
-		// 假设AudioTranscriptionPrompt需要一个构造函数或工厂方法来创建
 		AudioTranscriptionPrompt prompt = new AudioTranscriptionPrompt(Arrays.asList(
 				"https://dashscope.oss-cn-beijing.aliyuncs.com/samples/audio/paraformer/hello_world_female2.wav"));
 
 		AudioTranscriptionResponse call = client.call(prompt);
+		System.out.println(call.getTranscriptionList());
 	}
 }

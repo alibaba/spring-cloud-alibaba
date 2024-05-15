@@ -33,8 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.util.Assert;
 
-
-
 /**
  * TongYiAudioTranscriptionClient is a client for TongYi audio transcription service for
  * Spring Cloud Alibaba AI.
@@ -75,21 +73,22 @@ public class TongYiAudioTranscriptionClient implements TranscriptionClient {
 		List<String> urls = prompt.getAudioUrl().getfileUrls();
 		TranscriptionParam transcriptionParam = toTranscriptionParam(param);
 		transcriptionParam.setFileUrls(urls);
+		transcriptionParam.setApiKey("sk-0e6c387446ff45d0924111475a82462e");
 		logger.info(transcriptionParam.toString());
 
 		List<TranscriptionTaskResult> taskResultList = null;
 		try {
-			// 提交转写请求
+			// Submit a transcription request
 			TranscriptionResult result = transcription.asyncCall(transcriptionParam);
-			// 等待转写完成
+			// Wait for the transcription to complete
 			result = transcription.wait(TranscriptionQueryParam
 					.FromTranscriptionParam(transcriptionParam, result.getTaskId()));
-			// 获取转写结果
+			// Get the transcription results
 			taskResultList = result.getResults();
 			return new AudioTranscriptionResponse(taskResultList);
 		}
 		catch (Exception e) {
-			System.out.println("error: " + e);
+			e.printStackTrace();
 		}
 		return new AudioTranscriptionResponse(taskResultList);
 	}
@@ -100,18 +99,12 @@ public class TongYiAudioTranscriptionClient implements TranscriptionClient {
 		mergeBuilder
 				.withModel(defaultOptions.getModel() != null ? defaultOptions.getModel()
 						: target.getModel());
-		mergeBuilder.withPhraseId(
-				defaultOptions.getPhraseId() != null ? defaultOptions.getPhraseId()
-						: target.getPhraseId());
 		mergeBuilder.withChannelId(
 				defaultOptions.getChannelId() != null ? defaultOptions.getChannelId()
 						: target.getChannelId());
 		mergeBuilder.withDiarizationEnabled(defaultOptions.getDiarizationEnabled() != null
 				? defaultOptions.getDiarizationEnabled()
 				: target.getDiarizationEnabled());
-		mergeBuilder.withSpeakerCount(defaultOptions.getSpeakerCount() != null
-				? defaultOptions.getSpeakerCount()
-				: target.getSpeakerCount());
 		mergeBuilder.withDisfluencyRemovalEnabled(
 				defaultOptions.getDisfluencyRemovalEnabled() != null
 						? defaultOptions.getDisfluencyRemovalEnabled()
