@@ -73,7 +73,6 @@ public class TongYiAudioTranscriptionClient implements TranscriptionClient {
 		List<String> urls = prompt.getAudioUrl().getfileUrls();
 		TranscriptionParam transcriptionParam = toTranscriptionParam(param);
 		transcriptionParam.setFileUrls(urls);
-		transcriptionParam.setApiKey("sk-0e6c387446ff45d0924111475a82462e");
 		logger.info(transcriptionParam.toString());
 
 		List<TranscriptionTaskResult> taskResultList = null;
