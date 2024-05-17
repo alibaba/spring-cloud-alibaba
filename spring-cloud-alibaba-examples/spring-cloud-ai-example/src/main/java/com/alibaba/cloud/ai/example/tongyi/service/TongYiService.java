@@ -16,7 +16,6 @@
 
 package com.alibaba.cloud.ai.example.tongyi.service;
 
-import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.ai.example.tongyi.models.ActorsFilms;
@@ -105,6 +104,6 @@ public interface TongYiService {
 	 * @param audioUrls url of the audio file to be transcribed.
 	 * @return the result file Path.
 	 */
-	String audioTranscription(List<String> audioUrls);
+	String audioTranscription(String audioUrls);
 
 }

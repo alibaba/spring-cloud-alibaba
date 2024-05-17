@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi.audio.transcription.api;
+package com.alibaba.cloud.ai.tongyi.metadata.audio;
 
-import java.util.Arrays;
-import java.util.List;
+import org.springframework.ai.model.ResultMetadata;
 
-@FunctionalInterface
-public interface TranscriptionClient {
-	default AudioTranscriptionResponse call(String fileUrl) {
-		AudioTranscriptionPrompt prompt = new AudioTranscriptionPrompt(
-				Arrays.asList(fileUrl));
-		return call(prompt);
+/**
+ * @author xYLiu
+ * @author yuluo
+ * @since 2023.0.0.0
+ */
+
+public interface TongYiAudioTranscriptionMetadata extends ResultMetadata {
+
+	TongYiAudioTranscriptionMetadata NULL = TongYiAudioTranscriptionMetadata.create();
+
+	/**
+	 * Factory method for creating a new instance of {@link TongYiAudioTranscriptionMetadata}.
+	 * @return a new instance of {@link TongYiAudioTranscriptionMetadata}
+	 */
+	static TongYiAudioTranscriptionMetadata create() {
+		return new TongYiAudioTranscriptionMetadata() {
+		};
 	}
 
-	default AudioTranscriptionResponse call(List<String> fileUrls) {
-		AudioTranscriptionPrompt prompt = new AudioTranscriptionPrompt(fileUrls);
-		return call(prompt);
-	}
-
-	AudioTranscriptionResponse call(AudioTranscriptionPrompt request);
 }

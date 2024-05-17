@@ -15,41 +15,54 @@
  */
 
 package com.alibaba.cloud.ai.tongyi.audio.transcription.api;
-import java.util.List;
-import java.util.Objects;
 
-import com.alibaba.dashscope.audio.asr.transcription.TranscriptionTaskResult;
+import java.util.List;
+
+import com.alibaba.cloud.ai.tongyi.metadata.audio.TongYiAudioTranscriptionResponseMetadata;
+
+import org.springframework.ai.model.ModelResponse;
+import org.springframework.ai.model.ResponseMetadata;
 
 /**
- * @author: xYLiu
- * @date: 2024/5/4
+ * @author xYLiu
+ * @author yuluo
+ * @since 2023.0.0.0
  */
 
-public class AudioTranscriptionResponse {
-	private final List<TranscriptionTaskResult> transcriptionList;
+public class AudioTranscriptionResponse implements ModelResponse<AudioTranscriptionResult> {
 
-	public AudioTranscriptionResponse(List<TranscriptionTaskResult> transcriptionList) {
-		this.transcriptionList = transcriptionList;
+	private List<AudioTranscriptionResult> resultList;
+
+	private TongYiAudioTranscriptionResponseMetadata transcriptionResponseMetadata;
+
+	public AudioTranscriptionResponse(List<AudioTranscriptionResult> result) {
+
+		this(result, TongYiAudioTranscriptionResponseMetadata.NULL);
 	}
 
-	public List<TranscriptionTaskResult> getTranscriptionList() {
-		return transcriptionList;
-	}
+	public AudioTranscriptionResponse(List<AudioTranscriptionResult> result,
+			TongYiAudioTranscriptionResponseMetadata transcriptionResponseMetadata) {
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		AudioTranscriptionResponse that = (AudioTranscriptionResponse) o;
-		return Objects.equals(transcriptionList, that.transcriptionList);
+		this.resultList = List.copyOf(result);
+		this.transcriptionResponseMetadata = transcriptionResponseMetadata;
 	}
 
 	@Override
-	public int hashCode() {
-		return Objects.hashCode(transcriptionList);
+	public AudioTranscriptionResult getResult() {
+
+		return this.resultList.get(0);
 	}
+
+	@Override
+	public List<AudioTranscriptionResult> getResults() {
+
+		return this.resultList;
+	}
+
+	@Override
+	public ResponseMetadata getMetadata() {
+
+		return this.transcriptionResponseMetadata;
+	}
+
 }

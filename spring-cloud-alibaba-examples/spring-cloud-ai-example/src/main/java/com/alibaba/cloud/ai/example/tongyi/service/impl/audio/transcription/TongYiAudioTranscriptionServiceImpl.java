@@ -28,14 +28,19 @@ import java.util.List;
 
 import com.alibaba.cloud.ai.example.tongyi.service.AbstractTongYiServiceImpl;
 import com.alibaba.cloud.ai.example.tongyi.service.TongYiService;
-import com.alibaba.cloud.ai.tongyi.audio.transcription.api.AudioTranscriptionResponse;
-import com.alibaba.cloud.ai.tongyi.audio.transcription.api.TranscriptionClient;
-import com.alibaba.dashscope.audio.asr.transcription.TranscriptionTaskResult;
+import com.alibaba.cloud.ai.tongyi.audio.transcription.TongYiAudioTranscriptionClient;
+import com.alibaba.cloud.ai.tongyi.audio.transcription.api.AudioTranscriptionPrompt;
+import com.alibaba.cloud.ai.tongyi.audio.transcription.api.AudioTranscriptionResult;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
 /**
@@ -46,40 +51,58 @@ import org.springframework.stereotype.Service;
 @Service
 public class TongYiAudioTranscriptionServiceImpl extends AbstractTongYiServiceImpl {
 	private static final Logger logger = LoggerFactory.getLogger(TongYiService.class);
-	private final TranscriptionClient audioTranscriptionClient;
+	private final TongYiAudioTranscriptionClient audioTranscriptionClient;
 
 	@Autowired
-	public TongYiAudioTranscriptionServiceImpl(final TranscriptionClient audioTranscriptionClient) {
+	public TongYiAudioTranscriptionServiceImpl(final TongYiAudioTranscriptionClient audioTranscriptionClient) {
 		this.audioTranscriptionClient = audioTranscriptionClient;
 	}
 
 	@Override
-	public String audioTranscription(List<String> audioUrls) {
-		AudioTranscriptionResponse res = audioTranscriptionClient.call(audioUrls);
-		List<TranscriptionTaskResult> taskResultList = res.getTranscriptionList();
-		return save(taskResultList);
+	public String audioTranscription(String audioUrls) {
+
+		Resource resource;
+
+		try {
+			resource = new UrlResource(audioUrls);
+		} catch (IOException e) {
+			logger.error("Failed to create resource.");
+			throw new RuntimeException(e);
+		}
+		AudioTranscriptionPrompt audioTranscriptionPrompt = new AudioTranscriptionPrompt(resource);
+
+		return save(audioTranscriptionClient.call(audioTranscriptionPrompt).getResults());
 	}
 
-	private String save(List<TranscriptionTaskResult> taskResultList) {
+	private String save(List<AudioTranscriptionResult> resultList) {
 		String currentPath = System.getProperty("user.dir");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-HH-mm-ss");
 		StringBuilder retPaths = new StringBuilder();
-		for (TranscriptionTaskResult taskResult : taskResultList) {
-			String transcriptionUrl = taskResult.getTranscriptionUrl();
+		for (AudioTranscriptionResult audioTranscriptionResult : resultList) {
+			String tUrl = audioTranscriptionResult.getOutput();
 			LocalDateTime now = LocalDateTime.now();
 			String fileName = currentPath + File.separator + now.format(formatter) + ".txt";
 			retPaths.append(fileName).append("\n");
 			try {
-				URL url = new URL(transcriptionUrl);
+				URL url = new URL(tUrl);
 				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 				connection.setRequestMethod("GET");
+				StringBuilder sb = new StringBuilder();
 				int responseCode = connection.getResponseCode();
 				if (responseCode == HttpURLConnection.HTTP_OK) {
 					try (BufferedInputStream in = new BufferedInputStream(connection.getInputStream()); FileOutputStream fileOutputStream = new FileOutputStream(fileName)) {
 						byte[] dataBuffer = new byte[1024];
 						int bytesRead;
 						while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
-							fileOutputStream.write(dataBuffer, 0, bytesRead);
+							sb.append(new String(dataBuffer, 0, bytesRead));
+						}
+						JsonObject rootObj = JsonParser.parseString(sb.toString()).getAsJsonObject();
+						JsonArray transcriptsArray = rootObj.getAsJsonArray("transcripts");
+
+						for (var transcriptElement : transcriptsArray) {
+							JsonObject transcriptObj = transcriptElement.getAsJsonObject();
+							String text = transcriptObj.get("text").getAsString();
+							fileOutputStream.write(text.getBytes());
 						}
 						logger.info("File downloaded successfully：{}\n", fileName);
 					}
@@ -91,7 +114,6 @@ public class TongYiAudioTranscriptionServiceImpl extends AbstractTongYiServiceIm
 				connection.disconnect();
 			}
 			catch (IOException e) {
-				e.printStackTrace();
 				logger.error("An error occurred during the file download process.");
 			}
 		}

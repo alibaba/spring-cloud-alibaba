@@ -20,28 +20,40 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.alibaba.cloud.ai.tongyi.audio.ParaformerModels;
+import com.alibaba.cloud.ai.tongyi.audio.AudioTranscriptionModels;
 
 import org.springframework.ai.model.ModelOptions;
 
 /**
- * @author: xYLiu
- * @date: 2024/5/4
+ * @author xYLiu
+ * @author yuluo
+ * @since 2023.0.0.0
  */
 
 public class TongYiAudioTranscriptionOptions implements ModelOptions {
-	private String model = ParaformerModels.Paraformer_V1;
+
+	private String model = AudioTranscriptionModels.Paraformer_V1;
+
 	private List<String> fileUrls = new ArrayList<>();
+
 	private String phraseId = null;
+
 	private List<Integer> channelId = Collections.singletonList(0);
+
 	private Boolean diarizationEnabled = false;
+
 	private Integer speakerCount = null;
+
 	private Boolean disfluencyRemovalEnabled = false;
+
 	private Boolean timestampAlignmentEnabled = false;
+
 	private String specialWordFilter = "";
+
 	private Boolean audioEventDetectionEnabled = false;
 
 	public static TongYiAudioTranscriptionOptions.Builder builder() {
+
 		return new TongYiAudioTranscriptionOptions.Builder();
 	}
 
@@ -188,4 +200,5 @@ public class TongYiAudioTranscriptionOptions implements ModelOptions {
 			return options;
 		}
 	}
+
 }

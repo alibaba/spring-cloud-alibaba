@@ -16,33 +16,38 @@
 
 package com.alibaba.cloud.ai.tongyi.audio.transcription;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import com.alibaba.cloud.ai.tongyi.audio.ParaformerModels;
+import com.alibaba.cloud.ai.tongyi.audio.AudioTranscriptionModels;
 import com.alibaba.cloud.ai.tongyi.audio.transcription.api.AudioTranscriptionPrompt;
 import com.alibaba.cloud.ai.tongyi.audio.transcription.api.AudioTranscriptionResponse;
-import com.alibaba.cloud.ai.tongyi.audio.transcription.api.TranscriptionClient;
+import com.alibaba.cloud.ai.tongyi.audio.transcription.api.AudioTranscriptionResult;
+import com.alibaba.cloud.ai.tongyi.exception.TongYiException;
+import com.alibaba.cloud.ai.tongyi.metadata.audio.TongYiAudioTranscriptionResponseMetadata;
 import com.alibaba.dashscope.audio.asr.transcription.Transcription;
 import com.alibaba.dashscope.audio.asr.transcription.TranscriptionParam;
 import com.alibaba.dashscope.audio.asr.transcription.TranscriptionQueryParam;
 import com.alibaba.dashscope.audio.asr.transcription.TranscriptionResult;
 import com.alibaba.dashscope.audio.asr.transcription.TranscriptionTaskResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import org.springframework.ai.model.ModelClient;
+import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
 /**
  * TongYiAudioTranscriptionClient is a client for TongYi audio transcription service for
  * Spring Cloud Alibaba AI.
- * @author: xYLiu
- * @date: 2024/5/4
+ * @author xYLiu
+ * @author yuluo
+ * @since 2023.0.0.0
  */
 
-public class TongYiAudioTranscriptionClient implements TranscriptionClient {
-
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+public class TongYiAudioTranscriptionClient
+		implements ModelClient<AudioTranscriptionPrompt, AudioTranscriptionResponse> {
 
 	/**
 	 * TongYi models options.
@@ -69,13 +74,27 @@ public class TongYiAudioTranscriptionClient implements TranscriptionClient {
 
 	@Override
 	public AudioTranscriptionResponse call(AudioTranscriptionPrompt prompt) {
-		var param = merge(prompt.getOptions());
-		List<String> urls = prompt.getAudioUrl().getfileUrls();
-		TranscriptionParam transcriptionParam = toTranscriptionParam(param);
-		transcriptionParam.setFileUrls(urls);
-		logger.info(transcriptionParam.toString());
 
-		List<TranscriptionTaskResult> taskResultList = null;
+		TranscriptionParam transcriptionParam;
+
+		if (prompt.getOptions() != null) {
+			var param = merge(prompt.getOptions());
+			transcriptionParam = toTranscriptionParam(param);
+			transcriptionParam.setFileUrls(prompt.getOptions().getFileUrls());
+		} else {
+			Resource instructions = prompt.getInstructions();
+			try {
+				transcriptionParam = TranscriptionParam.builder()
+						.model(AudioTranscriptionModels.Paraformer_V1)
+						.fileUrls(List.of(String.valueOf(instructions.getURL())))
+						.build();
+			}
+			catch (IOException e) {
+				throw new TongYiException("Failed to create resource", e);
+			}
+		}
+
+		List<TranscriptionTaskResult> taskResultList;
 		try {
 			// Submit a transcription request
 			TranscriptionResult result = transcription.asyncCall(transcriptionParam);
@@ -83,13 +102,21 @@ public class TongYiAudioTranscriptionClient implements TranscriptionClient {
 			result = transcription.wait(TranscriptionQueryParam
 					.FromTranscriptionParam(transcriptionParam, result.getTaskId()));
 			// Get the transcription results
+			System.out.println(result.getOutput().getAsJsonObject());
 			taskResultList = result.getResults();
-			return new AudioTranscriptionResponse(taskResultList);
+			System.out.println(Arrays.toString(taskResultList.toArray()));
+
+			return new AudioTranscriptionResponse(
+					taskResultList.stream().map(taskResult ->
+							new AudioTranscriptionResult(taskResult.getTranscriptionUrl())
+					).collect(Collectors.toList()),
+					TongYiAudioTranscriptionResponseMetadata.from(result)
+			);
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			throw new TongYiException("Failed to call audio transcription", e);
 		}
-		return new AudioTranscriptionResponse(taskResultList);
+
 	}
 
 	public TongYiAudioTranscriptionOptions merge(TongYiAudioTranscriptionOptions target) {
@@ -128,10 +155,9 @@ public class TongYiAudioTranscriptionClient implements TranscriptionClient {
 		var mergeBuilder = TranscriptionParam.builder();
 
 		mergeBuilder.model(source.getModel() != null ? source.getModel()
-				: ParaformerModels.Paraformer_V1);
+				: AudioTranscriptionModels.Paraformer_V1);
 		mergeBuilder.fileUrls(
 				source.getFileUrls() != null ? source.getFileUrls() : new ArrayList<>());
-
 		if (source.getPhraseId() != null) {
 			mergeBuilder.phraseId(source.getPhraseId());
 		}

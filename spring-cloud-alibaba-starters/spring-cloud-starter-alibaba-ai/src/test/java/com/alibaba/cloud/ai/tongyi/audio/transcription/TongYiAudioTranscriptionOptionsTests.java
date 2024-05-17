@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.ai.tongyi.audio.transcription;
 
-import com.alibaba.cloud.ai.tongyi.audio.ParaformerModels;
+import com.alibaba.cloud.ai.tongyi.audio.AudioTranscriptionModels;
 import com.alibaba.dashscope.audio.asr.transcription.Transcription;
 import com.alibaba.dashscope.audio.asr.transcription.TranscriptionParam;
 import com.alibaba.dashscope.utils.Constants;
@@ -47,7 +47,7 @@ public class TongYiAudioTranscriptionOptionsTests {
 		var tongYiAudioTranscriptionOptions = transcription.merge(null);
 
 		assertThat(tongYiAudioTranscriptionOptions.getModel())
-				.isEqualTo(ParaformerModels.Paraformer_V1);
+				.isEqualTo(AudioTranscriptionModels.Paraformer_V1);
 		assertThat(tongYiAudioTranscriptionOptions.getDiarizationEnabled())
 				.isEqualTo(false);
 		assertThat(tongYiAudioTranscriptionOptions.getAudioEventDetectionEnabled())

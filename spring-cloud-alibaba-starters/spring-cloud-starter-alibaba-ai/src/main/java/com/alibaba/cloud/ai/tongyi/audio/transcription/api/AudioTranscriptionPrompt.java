@@ -16,64 +16,42 @@
 
 package com.alibaba.cloud.ai.tongyi.audio.transcription.api;
 
-import java.util.List;
-import java.util.Objects;
-
 import com.alibaba.cloud.ai.tongyi.audio.transcription.TongYiAudioTranscriptionOptions;
 
+import org.springframework.ai.model.ModelRequest;
+import org.springframework.core.io.Resource;
+
 /**
- * @author: xYLiu
- * @date: 2024/5/4
+ * @author xYLiu
+ * @author yuluo
+ * @since 2023.0.0.0
  */
 
-public class AudioTranscriptionPrompt {
+public class AudioTranscriptionPrompt implements ModelRequest<Resource> {
+
+	private Resource audioResource;
 
 	private TongYiAudioTranscriptionOptions transcriptionOptions;
 
-	private final AudioUrl audioUrl;
-
-	public AudioTranscriptionPrompt(List<String> urls) {
-		this(new AudioUrl(urls), TongYiAudioTranscriptionOptions.builder().build());
+	public AudioTranscriptionPrompt(Resource resource) {
+		this.audioResource = resource;
 	}
 
-	public AudioTranscriptionPrompt(List<String> urls,
-			TongYiAudioTranscriptionOptions transcriptionOptions) {
-		this(new AudioUrl(urls), transcriptionOptions);
-	}
-
-	public AudioTranscriptionPrompt(AudioUrl audioUrl) {
-		this.audioUrl = audioUrl;
-	}
-	public AudioTranscriptionPrompt(AudioUrl audioUrl,
-			TongYiAudioTranscriptionOptions transcriptionOptions) {
-		this.audioUrl = audioUrl;
+	public AudioTranscriptionPrompt(Resource resource, TongYiAudioTranscriptionOptions transcriptionOptions) {
+		this.audioResource = resource;
 		this.transcriptionOptions = transcriptionOptions;
 	}
 
-	public AudioUrl getAudioUrl() {
-		return audioUrl;
+	@Override
+	public Resource getInstructions() {
+
+		return audioResource;
 	}
 
+	@Override
 	public TongYiAudioTranscriptionOptions getOptions() {
+
 		return transcriptionOptions;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		AudioTranscriptionPrompt that = (AudioTranscriptionPrompt) o;
-		return Objects.equals(transcriptionOptions, that.transcriptionOptions)
-				&& Objects.equals(audioUrl, that.audioUrl);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(transcriptionOptions, audioUrl);
 	}
 
 }

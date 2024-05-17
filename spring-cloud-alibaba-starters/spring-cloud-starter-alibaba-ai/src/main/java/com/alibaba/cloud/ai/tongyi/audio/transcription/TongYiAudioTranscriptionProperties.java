@@ -16,31 +16,29 @@
 
 package com.alibaba.cloud.ai.tongyi.audio.transcription;
 
-import com.alibaba.cloud.ai.tongyi.audio.ParaformerModels;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.alibaba.cloud.ai.tongyi.audio.AudioTranscriptionModels;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
- * @author: xYLiu
- * @date: 2024/5/4
+ * @author xYLiu
+ * @author yuluo
+ * @since 2023.0.0.0
  */
 
 @ConfigurationProperties(TongYiAudioTranscriptionProperties.CONFIG_PREFIX)
 public class TongYiAudioTranscriptionProperties {
-	private final Logger logger = LoggerFactory
-			.getLogger(TongYiAudioTranscriptionProperties.class);
 
 	/**
 	 * Spring Cloud Alibaba AI configuration prefix.
 	 */
 	public static final String CONFIG_PREFIX = "spring.cloud.ai.tongyi.audio.transcription";
+
 	/**
 	 * Default TongYi Chat model.
 	 */
-	public static final String DEFAULT_AUDIO_MODEL_NAME = ParaformerModels.Paraformer_V1;
+	public static final String DEFAULT_AUDIO_MODEL_NAME = AudioTranscriptionModels.Paraformer_V1;
 
 	/**
 	 * Enable TongYiQWEN ai audio client.

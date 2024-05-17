@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.ai.tongyi.audio.speech;
 
-import com.alibaba.cloud.ai.tongyi.audio.AudioModels;
+import com.alibaba.cloud.ai.tongyi.audio.AudioSpeechModels;
 import com.alibaba.cloud.ai.tongyi.image.TongYiImagesProperties;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisAudioFormat;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class TongYiAudioSpeechProperties {
 	/**
 	 * Default TongYi Chat model.
 	 */
-	public static final String DEFAULT_AUDIO_MODEL_NAME = AudioModels.SAMBERT_ZHICHU_V1;
+	public static final String DEFAULT_AUDIO_MODEL_NAME = AudioSpeechModels.SAMBERT_ZHICHU_V1;
 
 	/**
 	 * Enable TongYiQWEN ai audio client.

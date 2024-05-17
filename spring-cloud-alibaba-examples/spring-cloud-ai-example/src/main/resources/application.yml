@@ -21,7 +21,6 @@ spring:
   application:
     name: tongyi-example
 
-  cloud:
-    ai:
-      tongyi:
-        api-key: sk-xxxxx
+# please setting api-key. suggestion by environment variable.
+# Note: api-key is invalid, please apply for a new one.
+# export SPRING_CLOUD_AI_TONGYI_API_KEY=sk-a3d73b1709bf4a178c28ed7c8b3b5a345

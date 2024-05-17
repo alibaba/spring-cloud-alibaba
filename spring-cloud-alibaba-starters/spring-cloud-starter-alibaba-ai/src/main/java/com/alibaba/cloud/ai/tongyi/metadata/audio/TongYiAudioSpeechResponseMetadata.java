@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi.metadata;
+package com.alibaba.cloud.ai.tongyi.metadata.audio;
 
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisResult;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisUsage;
@@ -126,6 +126,5 @@ public class TongYiAudioSpeechResponseMetadata implements ResponseMetadata {
 	public String toString() {
 		return AI_METADATA_STRING.formatted(getClass().getName(), getRateLimit());
 	}
-
 
 }

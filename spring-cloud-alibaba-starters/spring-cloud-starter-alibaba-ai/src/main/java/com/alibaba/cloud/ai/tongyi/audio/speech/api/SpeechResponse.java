@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import com.alibaba.cloud.ai.tongyi.metadata.TongYiAudioSpeechResponseMetadata;
+import com.alibaba.cloud.ai.tongyi.metadata.audio.TongYiAudioSpeechResponseMetadata;
 
 import org.springframework.ai.model.ModelResponse;
 

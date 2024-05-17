@@ -17,12 +17,14 @@
 package com.alibaba.cloud.ai.tongyi.audio;
 
 /**
- * @author: xYLiu
- * @since: 2024/5/12
+ * @author xYLiu
+ * @author yuluo
+ * @since 2023.0.0.0
  */
 
-public final class ParaformerModels {
-	private ParaformerModels() {
+public final class AudioTranscriptionModels {
+
+	private AudioTranscriptionModels() {
 	}
 
 	/**

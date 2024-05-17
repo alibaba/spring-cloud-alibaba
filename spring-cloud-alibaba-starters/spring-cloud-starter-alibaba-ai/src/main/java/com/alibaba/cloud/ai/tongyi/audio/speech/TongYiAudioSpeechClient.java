@@ -18,13 +18,13 @@ package com.alibaba.cloud.ai.tongyi.audio.speech;
 
 import java.nio.ByteBuffer;
 
-import com.alibaba.cloud.ai.tongyi.audio.AudioModels;
+import com.alibaba.cloud.ai.tongyi.audio.AudioSpeechModels;
 import com.alibaba.cloud.ai.tongyi.audio.speech.api.Speech;
 import com.alibaba.cloud.ai.tongyi.audio.speech.api.SpeechClient;
 import com.alibaba.cloud.ai.tongyi.audio.speech.api.SpeechPrompt;
 import com.alibaba.cloud.ai.tongyi.audio.speech.api.SpeechResponse;
 import com.alibaba.cloud.ai.tongyi.audio.speech.api.SpeechStreamClient;
-import com.alibaba.cloud.ai.tongyi.metadata.TongYiAudioSpeechResponseMetadata;
+import com.alibaba.cloud.ai.tongyi.metadata.audio.TongYiAudioSpeechResponseMetadata;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisParam;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisResult;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesizer;
@@ -180,7 +180,7 @@ public class TongYiAudioSpeechClient implements SpeechClient, SpeechStreamClient
 
 		var mergeBuilder = SpeechSynthesisParam.builder();
 
-		mergeBuilder.model(source.getModel() != null ? source.getModel() : AudioModels.SAMBERT_ZHICHU_V1);
+		mergeBuilder.model(source.getModel() != null ? source.getModel() : AudioSpeechModels.SAMBERT_ZHICHU_V1);
 		mergeBuilder.text(source.getText() != null ? source.getText() : "");
 
 		if (source.getFormat() != null) {

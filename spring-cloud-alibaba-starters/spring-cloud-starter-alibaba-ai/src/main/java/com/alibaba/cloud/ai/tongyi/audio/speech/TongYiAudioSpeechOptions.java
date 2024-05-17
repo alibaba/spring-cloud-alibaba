@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.ai.tongyi.audio.speech;
 
-import com.alibaba.cloud.ai.tongyi.audio.AudioModels;
+import com.alibaba.cloud.ai.tongyi.audio.AudioSpeechModels;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisAudioFormat;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisTextType;
 
@@ -34,7 +34,7 @@ public class TongYiAudioSpeechOptions implements ModelOptions {
 	/**
 	 * Audio Speech models.
 	 */
-	private String model = AudioModels.SAMBERT_ZHICHU_V1;
+	private String model = AudioSpeechModels.SAMBERT_ZHICHU_V1;
 
 	/**
 	 * Text content.

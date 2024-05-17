@@ -16,7 +16,6 @@
 
 package com.alibaba.cloud.ai.example.tongyi.service;
 
-import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.ai.example.tongyi.models.ActorsFilms;
@@ -85,7 +84,7 @@ public abstract class AbstractTongYiServiceImpl implements TongYiService {
 	}
 
 	@Override
-	public String audioTranscription(List<String> path) {
+	public String audioTranscription(String url) {
 		throw new RuntimeException(INFO_PREFIX + Thread.currentThread().getStackTrace()[2].getMethodName() + INFO_SUFFIX);
 	}
 

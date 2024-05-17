@@ -16,17 +16,18 @@
 
 package com.alibaba.cloud.ai.example.tongyi.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.ai.example.tongyi.models.ActorsFilms;
 import com.alibaba.cloud.ai.example.tongyi.models.Completion;
 import com.alibaba.cloud.ai.example.tongyi.service.TongYiService;
+import com.alibaba.dashscope.audio.asr.transcription.TranscriptionParam;
 
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.image.ImageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -142,8 +143,18 @@ public class TongYiController {
 	@Qualifier("tongYiAudioTranscriptionServiceImpl")
 	private TongYiService tongYiAudioTranscriptionService;
 
+	/**
+	 * audio transcription. Support urls audio resource.
+	 * {@link Resource}
+	 * {@link TranscriptionParam}
+	 * @param url audio url.
+	 * @return transcription result, is String type.
+	 */
 	@GetMapping("/audio/transcription")
-	public String audioTranscription(@RequestParam("audioUrls") List<String> audioUrls) {
-		return tongYiAudioTranscriptionService.audioTranscription(audioUrls);
+	public String audioTranscription(@RequestParam(value = "audioUrls",
+			defaultValue = "https://dashscope.oss-cn-beijing.aliyuncs.com/samples/audio/paraformer/realtime_asr_example.wav") String url) {
+
+		return tongYiAudioTranscriptionService.audioTranscription(url);
 	}
+
 }

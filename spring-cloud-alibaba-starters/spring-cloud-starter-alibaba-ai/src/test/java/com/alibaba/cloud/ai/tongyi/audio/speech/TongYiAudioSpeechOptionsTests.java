@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.ai.tongyi.audio.speech;
 
-import com.alibaba.cloud.ai.tongyi.audio.AudioModels;
+import com.alibaba.cloud.ai.tongyi.audio.AudioSpeechModels;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisAudioFormat;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisParam;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesizer;
@@ -50,7 +50,7 @@ class TongYiAudioSpeechOptionsTests {
 
 		var tongYiAudioSpeechOptions = speechClient.merge(null);
 
-		assertThat(tongYiAudioSpeechOptions.getModel()).isEqualTo(AudioModels.SAMBERT_ZHICHU_V1);
+		assertThat(tongYiAudioSpeechOptions.getModel()).isEqualTo(AudioSpeechModels.SAMBERT_ZHICHU_V1);
 		assertThat(tongYiAudioSpeechOptions.getFormat()).isEqualTo(SpeechSynthesisAudioFormat.MP3);
 		assertThat(tongYiAudioSpeechOptions.getRate()).isEqualTo(333f);
 		assertThat(tongYiAudioSpeechOptions.getVolume()).isEqualTo(10);
