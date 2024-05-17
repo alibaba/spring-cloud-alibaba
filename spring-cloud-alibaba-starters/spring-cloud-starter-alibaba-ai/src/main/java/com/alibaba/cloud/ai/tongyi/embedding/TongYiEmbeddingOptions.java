@@ -24,61 +24,62 @@ import org.springframework.ai.embedding.EmbeddingOptions;
 
 /**
  * @author why_ohh
+ * @author yuluo
  * @author <a href="mailto:550588941@qq.com">why_ohh</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.0.0
  */
 
 public final class TongYiEmbeddingOptions implements EmbeddingOptions {
 
-    private List<String> texts;
+	private List<String> texts;
 
-    private TextEmbeddingParam.TextType textType;
+	private TextEmbeddingParam.TextType textType;
 
-    public List<String> getTexts() {
-        return texts;
-    }
+	public List<String> getTexts() {
+		return texts;
+	}
 
-    public void setTexts(List<String> texts) {
-        this.texts = texts;
-    }
+	public void setTexts(List<String> texts) {
+		this.texts = texts;
+	}
 
-    public TextEmbeddingParam.TextType getTextType() {
-        return textType;
-    }
+	public TextEmbeddingParam.TextType getTextType() {
+		return textType;
+	}
 
-    public void setTextType(TextEmbeddingParam.TextType textType) {
-        this.textType = textType;
-    }
+	public void setTextType(TextEmbeddingParam.TextType textType) {
+		this.textType = textType;
+	}
 
-    public static Builder builder() {
-        return new Builder();
-    }
+	public static Builder builder() {
+		return new Builder();
+	}
 
-    public final static class Builder {
+	public final static class Builder {
 
-        private final TongYiEmbeddingOptions options;
+		private final TongYiEmbeddingOptions options;
 
-        private Builder() {
-            this.options = new TongYiEmbeddingOptions();
-        }
+		private Builder() {
+			this.options = new TongYiEmbeddingOptions();
+		}
 
-        public Builder withtexts(List<String> texts) {
+		public Builder withtexts(List<String> texts) {
 
-            options.setTexts(texts);
-            return this;
-        }
+			options.setTexts(texts);
+			return this;
+		}
 
-        public Builder withtextType(TextEmbeddingParam.TextType textType) {
+		public Builder withtextType(TextEmbeddingParam.TextType textType) {
 
-            options.setTextType(textType);
-            return this;
-        }
+			options.setTextType(textType);
+			return this;
+		}
 
-        public TongYiEmbeddingOptions build() {
+		public TongYiEmbeddingOptions build() {
 
-            return options;
-        }
+			return options;
+		}
 
-    }
+	}
 
 }

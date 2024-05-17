@@ -20,25 +20,29 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author why_ohh
+ * @author yuluo
  * @author <a href="mailto:550588941@qq.com">why_ohh</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.0.0
  */
 
 @ConfigurationProperties(TongYiTextEmbeddingProperties.CONFIG_PREFIX)
 public class TongYiTextEmbeddingProperties {
 
-    public static final String CONFIG_PREFIX = "spring.cloud.ai.tongyi.embedding";
+	/**
+	 * Prefix of TongYi Text Embedding properties.
+	 */
+	public static final String CONFIG_PREFIX = "spring.cloud.ai.tongyi.embedding";
 
-    private boolean enabled = true;
+	private boolean enabled = true;
 
-    public boolean isEnabled() {
+	public boolean isEnabled() {
 
-        return this.enabled;
-    }
+		return this.enabled;
+	}
 
-    public void setEnabled(boolean enabled) {
+	public void setEnabled(boolean enabled) {
 
-        this.enabled = enabled;
-    }
+		this.enabled = enabled;
+	}
 
 }

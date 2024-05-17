@@ -23,7 +23,6 @@ import com.alibaba.cloud.ai.example.tongyi.models.ActorsFilms;
 import com.alibaba.cloud.ai.example.tongyi.models.Completion;
 
 import org.springframework.ai.chat.messages.AssistantMessage;
-import org.springframework.ai.embedding.EmbeddingResponse;
 import org.springframework.ai.image.ImageResponse;
 
 /**
@@ -46,49 +45,57 @@ public abstract class AbstractTongYiServiceImpl implements TongYiService {
 	@Override
 	public Map<String, String> streamCompletion(String message) {
 
-		throw new RuntimeException(INFO_PREFIX + Thread.currentThread().getStackTrace()[2].getMethodName() + INFO_SUFFIX);
+		throw new RuntimeException(INFO_PREFIX + Thread.currentThread()
+				.getStackTrace()[2].getMethodName() + INFO_SUFFIX);
 	}
 
 	@Override
 	public ActorsFilms genOutputParse(String actor) {
 
-		throw new RuntimeException(INFO_PREFIX + Thread.currentThread().getStackTrace()[2].getMethodName() + INFO_SUFFIX);
+		throw new RuntimeException(INFO_PREFIX + Thread.currentThread()
+				.getStackTrace()[2].getMethodName() + INFO_SUFFIX);
 	}
 
 	@Override
 	public AssistantMessage genPromptTemplates(String adjective, String topic) {
 
-		throw new RuntimeException(INFO_PREFIX + Thread.currentThread().getStackTrace()[2].getMethodName() + INFO_SUFFIX);
+		throw new RuntimeException(INFO_PREFIX + Thread.currentThread()
+				.getStackTrace()[2].getMethodName() + INFO_SUFFIX);
 	}
 
 	@Override
 	public AssistantMessage genRole(String message, String name, String voice) {
 
-		throw new RuntimeException(INFO_PREFIX + Thread.currentThread().getStackTrace()[2].getMethodName() + INFO_SUFFIX);
+		throw new RuntimeException(INFO_PREFIX + Thread.currentThread()
+				.getStackTrace()[2].getMethodName() + INFO_SUFFIX);
 	}
 
 	@Override
 	public Completion stuffCompletion(String message, boolean stuffit) {
 
-		throw new RuntimeException(INFO_PREFIX + Thread.currentThread().getStackTrace()[2].getMethodName() + INFO_SUFFIX);
+		throw new RuntimeException(INFO_PREFIX + Thread.currentThread()
+				.getStackTrace()[2].getMethodName() + INFO_SUFFIX);
 	}
 
 	@Override
 	public ImageResponse genImg(String imgPrompt) {
 
-		throw new RuntimeException(INFO_PREFIX + Thread.currentThread().getStackTrace()[2].getMethodName() + INFO_SUFFIX);
+		throw new RuntimeException(INFO_PREFIX + Thread.currentThread()
+				.getStackTrace()[2].getMethodName() + INFO_SUFFIX);
 	}
 
 	@Override
 	public String genAudio(String text) {
 
-		throw new RuntimeException(INFO_PREFIX + Thread.currentThread().getStackTrace()[2].getMethodName() + INFO_SUFFIX);
+		throw new RuntimeException(INFO_PREFIX + Thread.currentThread()
+				.getStackTrace()[2].getMethodName() + INFO_SUFFIX);
 	}
 
 	@Override
 	public List<Double> textEmbedding(String text) {
 
-		throw new RuntimeException(INFO_PREFIX + Thread.currentThread().getStackTrace()[2].getMethodName() + INFO_SUFFIX);
+		throw new RuntimeException(INFO_PREFIX + Thread.currentThread()
+				.getStackTrace()[2].getMethodName() + INFO_SUFFIX);
 	}
 
 }

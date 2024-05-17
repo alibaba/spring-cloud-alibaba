@@ -17,7 +17,6 @@
 package com.alibaba.cloud.ai.example.tongyi.service.impl.textembedding;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.alibaba.cloud.ai.example.tongyi.service.AbstractTongYiServiceImpl;
 
@@ -32,8 +31,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class TongYiTextEmbeddingServiceImpl extends AbstractTongYiServiceImpl {
 
-	private final Logger logger = Logger.getLogger(TongYiTextEmbeddingServiceImpl.class.getName());
-
 	private final EmbeddingClient embeddingClient;
 
 	public TongYiTextEmbeddingServiceImpl(EmbeddingClient embeddingClient) {
@@ -46,4 +43,5 @@ public class TongYiTextEmbeddingServiceImpl extends AbstractTongYiServiceImpl {
 
 		return embeddingClient.embed(text);
 	}
+
 }
