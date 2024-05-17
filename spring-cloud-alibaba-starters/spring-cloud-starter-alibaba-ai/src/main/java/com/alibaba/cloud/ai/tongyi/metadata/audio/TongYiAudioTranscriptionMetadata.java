@@ -26,6 +26,9 @@ import org.springframework.ai.model.ResultMetadata;
 
 public interface TongYiAudioTranscriptionMetadata extends ResultMetadata {
 
+	/**
+	 * A constant instance of {@link TongYiAudioTranscriptionMetadata} that represents a null or empty metadata.
+	 */
 	TongYiAudioTranscriptionMetadata NULL = TongYiAudioTranscriptionMetadata.create();
 
 	/**

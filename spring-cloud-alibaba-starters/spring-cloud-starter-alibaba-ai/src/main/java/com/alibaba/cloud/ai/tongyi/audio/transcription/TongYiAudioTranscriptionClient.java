@@ -81,7 +81,8 @@ public class TongYiAudioTranscriptionClient
 			var param = merge(prompt.getOptions());
 			transcriptionParam = toTranscriptionParam(param);
 			transcriptionParam.setFileUrls(prompt.getOptions().getFileUrls());
-		} else {
+		}
+		else {
 			Resource instructions = prompt.getInstructions();
 			try {
 				transcriptionParam = TranscriptionParam.builder()
