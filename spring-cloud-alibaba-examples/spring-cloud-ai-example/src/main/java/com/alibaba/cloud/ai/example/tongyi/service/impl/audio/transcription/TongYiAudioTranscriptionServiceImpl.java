@@ -65,7 +65,8 @@ public class TongYiAudioTranscriptionServiceImpl extends AbstractTongYiServiceIm
 
 		try {
 			resource = new UrlResource(audioUrls);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			logger.error("Failed to create resource.");
 			throw new RuntimeException(e);
 		}
