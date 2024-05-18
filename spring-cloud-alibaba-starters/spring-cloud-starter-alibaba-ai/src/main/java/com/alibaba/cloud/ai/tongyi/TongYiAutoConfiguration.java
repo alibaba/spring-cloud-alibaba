@@ -63,7 +63,6 @@ import org.springframework.context.annotation.Bean;
 		TongYiChatProperties.class,
 		TongYiImagesProperties.class,
 		TongYiAudioSpeechProperties.class,
-		TongYiConnectionProperties.class
 		TongYiConnectionProperties.class,
 		TongYiTextEmbeddingProperties.class
 })
