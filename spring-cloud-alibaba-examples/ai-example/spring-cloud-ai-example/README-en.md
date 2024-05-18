@@ -103,7 +103,7 @@ The following response is returned:
 
 cd `resources/static`，open index.html file by local browser, input your question. then you get ai-models output(make api-keys effective):
 
-![ai-example](images/sca-ai-example-front.gif)
+![ai-example](./images/sca-ai-example-front.gif)
 
 ## Configuration item description
 
