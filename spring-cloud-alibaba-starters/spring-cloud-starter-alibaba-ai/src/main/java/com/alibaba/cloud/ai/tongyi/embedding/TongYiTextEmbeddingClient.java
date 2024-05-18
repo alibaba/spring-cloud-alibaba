@@ -39,141 +39,138 @@ import org.springframework.ai.embedding.EmbeddingResponse;
 import org.springframework.util.Assert;
 
 /**
-// * {@link TongYiTextEmbeddingClient} implementation for {@literal Alibaba DashScope}
- * backed by {@link Generation}.
- *
+ * {@link TongYiTextEmbeddingClient} implementation for {@literal Alibaba DashScope}.
  * @author why_ohh
+ * @author yuluo
  * @author <a href="mailto:550588941@qq.com">why_ohh</a>
- * @since 2023.0.0.0-RC1
- * @see TextEmbeddingClient
- * @see com.alibaba.dashscope.aigc.generation
+ * @since 2023.0.0.0
+ * {@see TextEmbeddingClient}
  */
 
 public class TongYiTextEmbeddingClient extends AbstractEmbeddingClient {
 
-    private final Logger logger = LoggerFactory.getLogger(TongYiTextEmbeddingClient.class);
+	private final Logger logger = LoggerFactory.getLogger(TongYiTextEmbeddingClient.class);
 
-    /**
-     * TongYi Text Embedding client.
-     */
-    private final TextEmbedding textEmbedding;
+	/**
+	 * TongYi Text Embedding client.
+	 */
+	private final TextEmbedding textEmbedding;
 
-    /**
-     * {@link MetadataMode}
-     */
-    private final MetadataMode metadataMode;
+	/**
+	 * {@link MetadataMode}.
+	 */
+	private final MetadataMode metadataMode;
 
-    private final TongYiEmbeddingOptions defaultOptions;
+	private final TongYiEmbeddingOptions defaultOptions;
 
-    public TongYiTextEmbeddingClient(TextEmbedding textEmbedding) {
+	public TongYiTextEmbeddingClient(TextEmbedding textEmbedding) {
 
-        this(textEmbedding, MetadataMode.EMBED);
-    }
+		this(textEmbedding, MetadataMode.EMBED);
+	}
 
-    public TongYiTextEmbeddingClient(TextEmbedding textEmbedding, MetadataMode metadataMode) {
+	public TongYiTextEmbeddingClient(TextEmbedding textEmbedding, MetadataMode metadataMode) {
 
-        this(textEmbedding, metadataMode,
-                TongYiEmbeddingOptions.builder()
-                        .withtextType(TextEmbeddingParam.TextType.DOCUMENT)
-                        .build()
-        );
-    }
+		this(textEmbedding, metadataMode,
+				TongYiEmbeddingOptions.builder()
+						.withtextType(TextEmbeddingParam.TextType.DOCUMENT)
+						.build()
+		);
+	}
 
-    public TongYiTextEmbeddingClient(
-            TextEmbedding textEmbedding,
-            MetadataMode metadataMode,
-            TongYiEmbeddingOptions options
-    ){
+	public TongYiTextEmbeddingClient(
+			TextEmbedding textEmbedding,
+			MetadataMode metadataMode,
+			TongYiEmbeddingOptions options
+	) {
+		Assert.notNull(textEmbedding, "textEmbedding must not be null");
+		Assert.notNull(metadataMode, "Metadata mode must not be null");
+		Assert.notNull(options, "TongYiEmbeddingOptions must not be null");
 
-        Assert.notNull(textEmbedding, "textEmbedding must not be null");
-        Assert.notNull(metadataMode, "Metadata mode must not be null");
-        Assert.notNull(options, "TongYiEmbeddingOptions must not be null");
+		this.metadataMode = metadataMode;
+		this.textEmbedding = textEmbedding;
+		this.defaultOptions = options;
+	}
 
-        this.metadataMode = metadataMode;
-        this.textEmbedding = textEmbedding;
-        this.defaultOptions = options;
-    }
+	public TongYiEmbeddingOptions getDefaultOptions() {
 
-    public TongYiEmbeddingOptions getDefaultOptions(){
+		return this.defaultOptions;
+	}
 
-        return this.defaultOptions;
-    }
+	@Override
+	public List<Double> embed(Document document) {
 
-    @Override
-    public List<Double> embed(Document document) {
+		return this.call(
+						new EmbeddingRequest(
+								List.of(document.getFormattedContent(this.metadataMode)),
+								null)
+				).getResults().stream()
+				.map(Embedding::getOutput)
+				.flatMap(List::stream)
+				.toList();
+	}
 
-        return this.call(
-                new EmbeddingRequest(
-                        List.of(document.getFormattedContent(this.metadataMode)),
-                        null)
-        ).getResults().stream()
-                .map(Embedding::getOutput)
-                .flatMap(List::stream)
-                .toList();
-    }
+	@Override
+	public EmbeddingResponse call(EmbeddingRequest request) {
 
-    @Override
-    public EmbeddingResponse call(EmbeddingRequest request) {
+		TextEmbeddingParam embeddingParams = toEmbeddingParams(request);
+		logger.debug("Embedding request: {}", embeddingParams);
+		TextEmbeddingResult resp;
 
-        TextEmbeddingParam embeddingParams = toEmbeddingParams(request);
-        logger.debug("Embedding request: {}", embeddingParams);
-        TextEmbeddingResult resp;
+		try {
+			resp = textEmbedding.call(embeddingParams);
+		}
+		catch (NoApiKeyException e) {
+			throw new TongYiException(e.getMessage());
+		}
 
-        try {
-            resp = textEmbedding.call(embeddingParams);
-        }
-        catch (NoApiKeyException e) {
-            throw new TongYiException(e.getMessage());
-        }
+		return genEmbeddingResp(resp);
+	}
 
-        return genEmbeddingResp(resp);
-    }
+	private EmbeddingResponse genEmbeddingResp(TextEmbeddingResult result) {
 
-    private EmbeddingResponse genEmbeddingResp(TextEmbeddingResult result) {
+		return new EmbeddingResponse(
+				genEmbeddingList(result.getOutput().getEmbeddings()),
+				TongYiTextEmbeddingResponseMetadata.from(result.getUsage())
+		);
+	}
 
-        return new EmbeddingResponse(
-                genEmbeddingList(result.getOutput().getEmbeddings()),
-                TongYiTextEmbeddingResponseMetadata.from(result.getUsage())
-        );
-    }
+	private List<Embedding> genEmbeddingList(List<TextEmbeddingResultItem> embeddings) {
 
-    private List<Embedding> genEmbeddingList(List<TextEmbeddingResultItem> embeddings) {
+		return embeddings.stream()
+				.map(embedding ->
+						new Embedding(
+								embedding.getEmbedding(),
+								embedding.getTextIndex()
+						))
+				.collect(Collectors.toList());
+	}
 
-        return embeddings.stream()
-            .map(embedding ->
-                    new Embedding(
-                            embedding.getEmbedding(),
-                            embedding.getTextIndex()
-                    ))
-                .collect(Collectors.toList());
-    }
+	/**
+	 * We recommend setting the model parameters by passing the embedding parameters through the code;
+	 * yml configuration compatibility is not considered here.
+	 * It is not recommended that users set parameters from yml,
+	 * as this reduces the flexibility of the configuration.
+	 * Because the model name keeps changing, strings are used here and constants are undefined:
+	 * Model list: <a href="https://help.aliyun.com/zh/dashscope/developer-reference/text-embedding-quick-start">Text Embedding Model List</a>
+	 * @param requestOptions Client params. {@link EmbeddingRequest}
+	 * @return {@link TextEmbeddingParam}
+	 */
+	private TextEmbeddingParam toEmbeddingParams(EmbeddingRequest requestOptions) {
 
-    /**
-     * We recommend setting the model parameters by passing the embedding parameters through the code;
-     * yml configuration compatibility is not considered here.
-     * It is not recommended that users set parameters from yml,
-     * as this reduces the flexibility of the configuration.
-     * Because the model name keeps changing, strings are used here and constants are undefined:
-     * Model list: <a href="https://help.aliyun.com/zh/dashscope/developer-reference/text-embedding-quick-start">Text Embedding Model List</a>
-     * @param requestOptions Client params. {@link EmbeddingRequest}
-     * @return {@link TextEmbeddingParam}
-     */
-    private TextEmbeddingParam toEmbeddingParams(EmbeddingRequest requestOptions) {
+		TextEmbeddingParam tongYiEmbeddingParams = TextEmbeddingParam.builder()
+				.texts(requestOptions.getInstructions())
+				.textType(defaultOptions.getTextType() != null ? defaultOptions.getTextType() : TextEmbeddingParam.TextType.DOCUMENT)
+				.model("text-embedding-v1")
+				.build();
 
-        TextEmbeddingParam tongYiEmbeddingParams = TextEmbeddingParam.builder()
-                .texts(requestOptions.getInstructions())
-                .textType(defaultOptions.getTextType() != null ? defaultOptions.getTextType() : TextEmbeddingParam.TextType.DOCUMENT)
-                .model("text-embedding-v1")
-                .build();
+		try {
+			tongYiEmbeddingParams.validate();
+		}
+		catch (InputRequiredException e) {
+			throw new TongYiException(e.getMessage());
+		}
 
-        try {
-            tongYiEmbeddingParams.validate();
-        }
-        catch (InputRequiredException e) {
-            throw new TongYiException(e.getMessage());
-        }
-
-        return tongYiEmbeddingParams;
-    }
+		return tongYiEmbeddingParams;
+	}
 
 }

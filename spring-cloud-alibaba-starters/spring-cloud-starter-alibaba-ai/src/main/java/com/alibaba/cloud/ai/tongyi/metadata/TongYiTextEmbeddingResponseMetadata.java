@@ -22,6 +22,7 @@ import org.springframework.ai.embedding.EmbeddingResponseMetadata;
 
 /**
  * @author why_ohh
+ * @author yuluo
  * @author <a href="mailto:550588941@qq.com">why_ohh</a>
  */
 
@@ -48,4 +49,5 @@ public class TongYiTextEmbeddingResponseMetadata extends EmbeddingResponseMetada
 
 		this.totalTokens = totalTokens;
 	}
+
 }
