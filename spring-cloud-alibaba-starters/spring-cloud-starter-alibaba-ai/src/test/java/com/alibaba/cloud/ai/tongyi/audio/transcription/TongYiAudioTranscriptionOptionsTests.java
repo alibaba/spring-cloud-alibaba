@@ -68,6 +68,5 @@ class TongYiAudioTranscriptionOptionsTests {
 		assertThat(modelParams).isInstanceOf(TranscriptionParam.class);
 		assertThat(modelParams.getModel()).isEqualTo("test");
 		assertThat(modelParams.getSpeakerCount()).isEqualTo(2);
-
 	}
 }
