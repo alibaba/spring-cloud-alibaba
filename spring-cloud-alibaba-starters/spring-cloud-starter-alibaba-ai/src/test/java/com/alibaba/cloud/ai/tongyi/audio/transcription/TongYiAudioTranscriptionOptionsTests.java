@@ -26,13 +26,14 @@ import org.mockito.Mockito;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author: xYLiu
- * @date: 2024/5/12
+ * @author xYLiu
+ * @author yuluo
  */
 
-public class TongYiAudioTranscriptionOptionsTests {
+class TongYiAudioTranscriptionOptionsTests {
+
 	@Test
-	public void testTranscriptionOptions() {
+	void testTranscriptionOptions() {
 
 		Transcription mockClient = Mockito.mock(Transcription.class);
 		Constants.apiKey = "test";
@@ -57,9 +58,12 @@ public class TongYiAudioTranscriptionOptionsTests {
 		assertThat(tongYiAudioTranscriptionOptions.getDisfluencyRemovalEnabled())
 				.isEqualTo(false);
 
-		var modelParams = transcription
-				.toTranscriptionParam(TongYiAudioTranscriptionOptions.builder()
-						.withModel("test").withSpeakerCount(2).build());
+		var modelParams = transcription.toTranscriptionParam(TongYiAudioTranscriptionOptions
+						.builder()
+						.withModel("test")
+						.withSpeakerCount(2)
+						.build()
+				);
 
 		assertThat(modelParams).isInstanceOf(TranscriptionParam.class);
 		assertThat(modelParams.getModel()).isEqualTo("test");

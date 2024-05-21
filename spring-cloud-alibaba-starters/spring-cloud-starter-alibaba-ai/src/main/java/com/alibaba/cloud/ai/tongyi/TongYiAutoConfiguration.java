@@ -24,6 +24,9 @@ import com.alibaba.cloud.ai.tongyi.audio.transcription.TongYiAudioTranscriptionC
 import com.alibaba.cloud.ai.tongyi.audio.transcription.TongYiAudioTranscriptionProperties;
 import com.alibaba.cloud.ai.tongyi.chat.TongYiChatClient;
 import com.alibaba.cloud.ai.tongyi.chat.TongYiChatProperties;
+import com.alibaba.cloud.ai.tongyi.constants.TongYiConstants;
+import com.alibaba.cloud.ai.tongyi.embedding.TongYiTextEmbeddingClient;
+import com.alibaba.cloud.ai.tongyi.embedding.TongYiTextEmbeddingProperties;
 import com.alibaba.cloud.ai.tongyi.exception.TongYiException;
 import com.alibaba.cloud.ai.tongyi.image.TongYiImagesClient;
 import com.alibaba.cloud.ai.tongyi.image.TongYiImagesProperties;
@@ -32,6 +35,7 @@ import com.alibaba.dashscope.aigc.imagesynthesis.ImageSynthesis;
 import com.alibaba.dashscope.audio.asr.transcription.Transcription;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesizer;
 import com.alibaba.dashscope.common.MessageManager;
+import com.alibaba.dashscope.embeddings.TextEmbedding;
 import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.alibaba.dashscope.utils.ApiKey;
 import com.alibaba.dashscope.utils.Constants;
@@ -44,6 +48,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 
 /**
  * @author yuluo
@@ -64,11 +69,13 @@ import org.springframework.context.annotation.Bean;
 		TongYiImagesProperties.class,
 		TongYiAudioSpeechProperties.class,
 		TongYiConnectionProperties.class,
+		TongYiTextEmbeddingProperties.class,
 		TongYiAudioTranscriptionProperties.class
 })
 public class TongYiAutoConfiguration {
 
 	@Bean
+	@Scope("prototype")
 	@ConditionalOnMissingBean
 	public Generation generation() {
 
@@ -76,6 +83,7 @@ public class TongYiAutoConfiguration {
 	}
 
 	@Bean
+	@Scope("prototype")
 	@ConditionalOnMissingBean
 	public MessageManager msgManager() {
 
@@ -83,6 +91,7 @@ public class TongYiAutoConfiguration {
 	}
 
 	@Bean
+	@Scope("prototype")
 	@ConditionalOnMissingBean
 	public ImageSynthesis imageSynthesis() {
 
@@ -90,6 +99,7 @@ public class TongYiAutoConfiguration {
 	}
 
 	@Bean
+	@Scope("prototype")
 	@ConditionalOnMissingBean
 	public SpeechSynthesizer speechSynthesizer() {
 
@@ -101,6 +111,13 @@ public class TongYiAutoConfiguration {
 	public Transcription transcription() {
 
 		return new Transcription();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public TextEmbedding textEmbedding() {
+
+		return new TextEmbedding();
 	}
 
 	@Bean
@@ -126,6 +143,7 @@ public class TongYiAutoConfiguration {
 	) {
 
 		settingApiKey(connectionProperties);
+
 		return new TongYiChatClient(generation, chatOptions.getOptions());
 	}
 
@@ -167,7 +185,7 @@ public class TongYiAutoConfiguration {
 
 	@Bean
 	@ConditionalOnProperty(
-			prefix = TongYiAudioSpeechProperties.CONFIG_PREFIX,
+			prefix = TongYiAudioTranscriptionProperties.CONFIG_PREFIX,
 			name = "enabled",
 			havingValue = "true",
 			matchIfMissing = true
@@ -175,23 +193,47 @@ public class TongYiAutoConfiguration {
 	public TongYiAudioTranscriptionClient tongYiAudioTranscriptionClient(
 			Transcription transcription,
 			TongYiAudioTranscriptionProperties transcriptionProperties,
+			TongYiConnectionProperties connectionProperties) {
+
+		settingApiKey(connectionProperties);
+
+		return new TongYiAudioTranscriptionClient(
+				transcriptionProperties.getOptions(),
+				transcription
+		);
+	}
+
+	@Bean
+	@ConditionalOnProperty(
+			prefix = TongYiTextEmbeddingProperties.CONFIG_PREFIX,
+			name = "enabled",
+			havingValue = "true",
+			matchIfMissing = true
+	)
+	public TongYiTextEmbeddingClient tongYiTextEmbeddingClient(
+			TextEmbedding textEmbedding,
 			TongYiConnectionProperties connectionProperties
 	) {
 
 		settingApiKey(connectionProperties);
-
-		return new TongYiAudioTranscriptionClient(transcriptionProperties.getOptions(), transcription);
+		return new TongYiTextEmbeddingClient(textEmbedding);
 	}
 
 	/**
 	 * Setting the API key.
 	 * @param connectionProperties {@link TongYiConnectionProperties}
 	 */
-	public void settingApiKey(TongYiConnectionProperties connectionProperties) {
+	private void settingApiKey(TongYiConnectionProperties connectionProperties) {
 
 		String apiKey;
 
 		try {
+			// It is recommended to set the key by defining the api-key in an environment variable.
+			var envKey = System.getenv(TongYiConstants.SCA_AI_TONGYI_API_KEY);
+			if (Objects.nonNull(envKey)) {
+				Constants.apiKey = envKey;
+				return;
+			}
 			if (Objects.nonNull(connectionProperties.getApiKey())) {
 				apiKey = connectionProperties.getApiKey();
 			}
