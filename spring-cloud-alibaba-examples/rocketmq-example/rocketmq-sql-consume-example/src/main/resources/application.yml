@@ -4,9 +4,9 @@ spring:
   application:
     name: rocketmq-sql-consume-example
   cloud:
-    function:
-      definition: consumer;
     stream:
+      function:
+        definition: consumer;
       rocketmq:
         binder:
           name-server: localhost:9876
