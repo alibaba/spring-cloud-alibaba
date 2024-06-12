@@ -454,6 +454,11 @@ public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
 			return this;
 		}
 
+		public Builder withRepetitionPenalty(Double repetitionPenalty) {
+			this.options.repetitionPenalty = repetitionPenalty;
+			return this;
+		}
+
 		public TongYiChatOptions build() {
 
 			return this.options;
