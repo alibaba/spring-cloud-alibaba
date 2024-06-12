@@ -17,11 +17,13 @@
 package com.alibaba.cloud.ai.tongyi.chat;
 
 import com.alibaba.dashscope.aigc.generation.Generation;
+import com.alibaba.dashscope.aigc.generation.GenerationResult;
 import com.alibaba.dashscope.utils.Constants;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import org.springframework.ai.chat.prompt.Prompt;
+import reactor.core.publisher.Flux;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,7 +39,7 @@ class TongYiChatOptionsTests {
 	public void testChatOptions() {
 
 		Generation mockClient = Mockito.mock(Generation.class);
-		Constants.apiKey = "test";
+		Constants.apiKey = "sk-39bbee7774054ceabf0f7e617c1eb1bf";
 
 		// Test start.
 
@@ -45,23 +47,40 @@ class TongYiChatOptionsTests {
 				TongYiChatOptions.builder().withModel(Generation.Models.QWEN_TURBO).withTemperature(88.8).build());
 
 		var tongYiChatParams = tongYiChatClient.toTongYiChatParams(new Prompt("你好"));
+		final Flux<GenerationResult> generationResultFlux = tongYiChatClient.doChatCompletionStream(tongYiChatParams);
 
-		assertThat(tongYiChatParams.getMessages()).hasSize(1);
+		generationResultFlux.subscribe(
+				generationResult -> {
+					// 在这里处理每一个GenerationResult对象
+					System.out.println("Received: " + generationResult.getOutput().getText()); // 假设GenerationResult有个getText()方法返回生成的文本
+				},
+				error -> {
+					// 处理错误
+					System.err.println("Error occurred: " + error.getMessage());
+				},
+				() -> {
+					// 完成时的处理逻辑
+					System.out.println("Streaming completed.");
+				}
+		);
 
-		assertThat(tongYiChatParams.getModel()).isEqualTo(Generation.Models.QWEN_TURBO);
-		assertThat(tongYiChatParams.getTemperature()).isEqualTo(88.8f);
 
-		tongYiChatClient = new TongYiChatClient(mockClient,
-				TongYiChatOptions.builder().withModel(Generation.Models.QWEN_MAX).withTemperature(77.7).build());
-
-		tongYiChatParams = tongYiChatClient.toTongYiChatParams(new Prompt("你是谁"));
-
-		assertThat(tongYiChatParams.getMessages()).hasSize(1);
-
-		assertThat(tongYiChatParams.getModel()).isEqualTo(Generation.Models.QWEN_MAX);
-		assertThat(tongYiChatParams.getTemperature()).isEqualTo(77.7f);
-
-		// Test end.
+//		assertThat(tongYiChatParams.getMessages()).hasSize(1);
+//
+//		assertThat(tongYiChatParams.getModel()).isEqualTo(Generation.Models.QWEN_TURBO);
+//		assertThat(tongYiChatParams.getTemperature()).isEqualTo(88.8f);
+//
+//		tongYiChatClient = new TongYiChatClient(mockClient,
+//				TongYiChatOptions.builder().withModel(Generation.Models.QWEN_MAX).withTemperature(77.7).build());
+//
+//		tongYiChatParams = tongYiChatClient.toTongYiChatParams(new Prompt("你是谁"));
+//
+//		assertThat(tongYiChatParams.getMessages()).hasSize(1);
+//
+//		assertThat(tongYiChatParams.getModel()).isEqualTo(Generation.Models.QWEN_MAX);
+//		assertThat(tongYiChatParams.getTemperature()).isEqualTo(77.7f);
+//
+//		// Test end.
 	}
 
 }

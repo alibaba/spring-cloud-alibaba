@@ -20,7 +20,7 @@ import java.nio.ByteBuffer;
 
 import reactor.core.publisher.Flux;
 
-import org.springframework.ai.model.StreamingModelClient;
+import org.springframework.ai.model.StreamingModel;
 
 /**
  * @author yuluo
@@ -29,7 +29,7 @@ import org.springframework.ai.model.StreamingModelClient;
  */
 
 @FunctionalInterface
-public interface SpeechStreamClient extends StreamingModelClient<SpeechPrompt, SpeechResponse> {
+public interface SpeechStreamClient extends StreamingModel<SpeechPrompt, SpeechResponse> {
 
 	/**
 	 * Generates a stream of audio bytes from the provided text message.

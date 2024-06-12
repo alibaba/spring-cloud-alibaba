@@ -34,7 +34,7 @@ import com.alibaba.dashscope.audio.asr.transcription.TranscriptionQueryParam;
 import com.alibaba.dashscope.audio.asr.transcription.TranscriptionResult;
 import com.alibaba.dashscope.audio.asr.transcription.TranscriptionTaskResult;
 
-import org.springframework.ai.model.ModelClient;
+import org.springframework.ai.model.Model;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
@@ -47,7 +47,7 @@ import org.springframework.util.Assert;
  */
 
 public class TongYiAudioTranscriptionClient
-		implements ModelClient<AudioTranscriptionPrompt, AudioTranscriptionResponse> {
+		implements Model<AudioTranscriptionPrompt, AudioTranscriptionResponse> {
 
 	/**
 	 * TongYi models options.

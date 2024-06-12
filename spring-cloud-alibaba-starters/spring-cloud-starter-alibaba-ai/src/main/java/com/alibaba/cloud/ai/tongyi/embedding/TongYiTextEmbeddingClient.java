@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.ai.document.Document;
 import org.springframework.ai.document.MetadataMode;
-import org.springframework.ai.embedding.AbstractEmbeddingClient;
+import org.springframework.ai.embedding.AbstractEmbeddingModel;
 import org.springframework.ai.embedding.Embedding;
 import org.springframework.ai.embedding.EmbeddingRequest;
 import org.springframework.ai.embedding.EmbeddingResponse;
@@ -47,7 +47,7 @@ import org.springframework.util.Assert;
  * {@see TextEmbeddingClient}
  */
 
-public class TongYiTextEmbeddingClient extends AbstractEmbeddingClient {
+public class TongYiTextEmbeddingClient extends AbstractEmbeddingModel {
 
 	private final Logger logger = LoggerFactory.getLogger(TongYiTextEmbeddingClient.class);
 
