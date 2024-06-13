@@ -25,9 +25,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,10 +46,10 @@ public class TongYiRolesServiceImpl extends AbstractTongYiServiceImpl {
 
 	private static final Logger logger = LoggerFactory.getLogger(TongYiService.class);
 
-	private final ChatClient chatClient;
+	private final ChatModel chatModel;
 
-	public TongYiRolesServiceImpl(ChatClient chatClient) {
-		this.chatClient = chatClient;
+	public TongYiRolesServiceImpl(ChatModel chatModel) {
+		this.chatModel = chatModel;
 	}
 
 	@Value("classpath:/prompts/assistant-message.st")
@@ -74,6 +74,6 @@ public class TongYiRolesServiceImpl extends AbstractTongYiServiceImpl {
 
 		Prompt prompt = new Prompt(List.of(systemPromptTemplateMessage, userMessage));
 
-		return chatClient.call(prompt).getResult().getOutput();
+		return chatModel.call(prompt).getResult().getOutput();
 	}
 }

@@ -16,12 +16,16 @@
 
 package com.alibaba.cloud.ai.tongyi.metadata;
 
+import java.util.HashMap;
+
 import com.alibaba.dashscope.aigc.generation.GenerationResult;
 
 import org.springframework.ai.chat.metadata.ChatResponseMetadata;
 import org.springframework.ai.chat.metadata.PromptMetadata;
 import org.springframework.ai.chat.metadata.Usage;
 import org.springframework.util.Assert;
+
+
 
 /**
  * {@link ChatResponseMetadata} implementation for {@literal Alibaba DashScope}.
@@ -31,7 +35,7 @@ import org.springframework.util.Assert;
  * @since 2023.0.0.0-RC1
  */
 
-public class TongYiAiChatResponseMetadata implements ChatResponseMetadata {
+public class TongYiAiChatResponseMetadata  extends HashMap<String, Object> implements ChatResponseMetadata {
 
 	protected static final String AI_METADATA_STRING = "{ @type: %1$s, id: %2$s, usage: %3$s, rateLimit: %4$s }";
 

@@ -20,11 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.ai.chat.ChatClient;
-import org.springframework.ai.chat.ChatResponse;
-import org.springframework.ai.chat.Generation;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.document.Document;
@@ -48,13 +48,13 @@ public class RAGService {
 	@Value("${topk:10}")
 	private int topK;
 
-	private final ChatClient client;
+	private final ChatModel chatModel;
 
 	private final VectorStore store;
 
-	public RAGService(ChatClient client, VectorStore store) {
+	public RAGService(ChatModel chatModel, VectorStore store) {
 
-		this.client = client;
+		this.chatModel = chatModel;
 		this.store = store;
 	}
 
@@ -67,7 +67,7 @@ public class RAGService {
 		UserMessage userMessage = new UserMessage(message);
 
 		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
-		ChatResponse response = client.call(prompt);
+		ChatResponse response = chatModel.call(prompt);
 
 		return response.getResult();
 	}
