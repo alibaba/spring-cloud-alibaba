@@ -25,8 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.ai.chat.ChatClient;
-import org.springframework.ai.chat.Generation;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.parser.BeanOutputParser;
@@ -47,10 +47,10 @@ public class TongYiOutputParseServiceImpl extends AbstractTongYiServiceImpl {
 
 	private static final Logger logger = LoggerFactory.getLogger(TongYiService.class);
 
-	private final ChatClient chatClient;
+	private final ChatModel chatModel;
 
-	public TongYiOutputParseServiceImpl(ChatClient chatClient) {
-		this.chatClient = chatClient;
+	public TongYiOutputParseServiceImpl(ChatModel chatModel) {
+		this.chatModel = chatModel;
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class TongYiOutputParseServiceImpl extends AbstractTongYiServiceImpl {
 				""";
 		PromptTemplate promptTemplate = new PromptTemplate(userMessage, Map.of("actor", actor, "format", format));
 		Prompt prompt = promptTemplate.create();
-		Generation generation = chatClient.call(prompt).getResult();
+		Generation generation = chatModel.call(prompt).getResult();
 
 		// {@link BeanOutputParser#getFormat}
 		// simple solve.

@@ -26,8 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.ai.chat.ChatClient;
-import org.springframework.ai.chat.Generation;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,10 +48,10 @@ public class TongYiStuffServiceImpl extends AbstractTongYiServiceImpl {
 
 	private static final Logger logger = LoggerFactory.getLogger(TongYiService.class);
 
-	private final ChatClient chatClient;
+	private final ChatModel chatModel;
 
-	public TongYiStuffServiceImpl(ChatClient chatClient) {
-		this.chatClient = chatClient;
+	public TongYiStuffServiceImpl(ChatModel chatModel) {
+		this.chatModel = chatModel;
 	}
 
 	@Value("classpath:/docs/wikipedia-curling.md")
@@ -76,7 +76,7 @@ public class TongYiStuffServiceImpl extends AbstractTongYiServiceImpl {
 		}
 
 		Prompt prompt = promptTemplate.create(map);
-		Generation generation = chatClient.call(prompt).getResult();
+		Generation generation = chatModel.call(prompt).getResult();
 		return new Completion(generation.getOutput().getContent());
 	}
 }

@@ -18,7 +18,7 @@ package com.alibaba.cloud.ai.tongyi.audio.speech.api;
 
 import java.nio.ByteBuffer;
 
-import org.springframework.ai.model.ModelClient;
+import org.springframework.ai.model.Model;
 
 /**
  * @author yuluo
@@ -27,7 +27,7 @@ import org.springframework.ai.model.ModelClient;
  */
 
 @FunctionalInterface
-public interface SpeechClient extends ModelClient<SpeechPrompt, SpeechResponse> {
+public interface SpeechClient extends Model<SpeechPrompt, SpeechResponse> {
 
 	/**
 	 * Generates spoken audio from the provided text message.

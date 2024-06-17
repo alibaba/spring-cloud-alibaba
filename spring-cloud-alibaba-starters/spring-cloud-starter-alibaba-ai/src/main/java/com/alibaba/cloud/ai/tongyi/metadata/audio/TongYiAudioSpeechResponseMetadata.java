@@ -15,6 +15,7 @@
  */
 
 package com.alibaba.cloud.ai.tongyi.metadata.audio;
+import java.util.HashMap;
 
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisResult;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisUsage;
@@ -26,13 +27,15 @@ import org.springframework.ai.model.ResponseMetadata;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
+
+
 /**
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
  * @since 2023.0.0.0-RC1
  */
 
-public class TongYiAudioSpeechResponseMetadata implements ResponseMetadata {
+public class TongYiAudioSpeechResponseMetadata extends HashMap<String, Object>  implements ResponseMetadata {
 
 	private SpeechSynthesisUsage usage;
 

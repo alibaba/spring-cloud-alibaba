@@ -30,8 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.ai.image.Image;
-import org.springframework.ai.image.ImageClient;
 import org.springframework.ai.image.ImageGeneration;
+import org.springframework.ai.image.ImageModel;
 import org.springframework.ai.image.ImageOptions;
 import org.springframework.ai.image.ImagePrompt;
 import org.springframework.ai.image.ImageResponse;
@@ -48,7 +48,7 @@ import static com.alibaba.cloud.ai.tongyi.metadata.TongYiImagesResponseMetadata.
  * @since 2023.0.0.0-RC1
  */
 
-public class TongYiImagesClient implements ImageClient {
+public class TongYiImagesClient implements ImageModel {
 
 	private final Logger logger = LoggerFactory.getLogger(TongYiImagesClient.class);
 

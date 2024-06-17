@@ -20,7 +20,7 @@ import java.util.List;
 
 import com.alibaba.cloud.ai.example.tongyi.service.AbstractTongYiServiceImpl;
 
-import org.springframework.ai.embedding.EmbeddingClient;
+import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,17 +31,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class TongYiTextEmbeddingServiceImpl extends AbstractTongYiServiceImpl {
 
-	private final EmbeddingClient embeddingClient;
+	private final EmbeddingModel embeddingModel;
 
-	public TongYiTextEmbeddingServiceImpl(EmbeddingClient embeddingClient) {
+	public TongYiTextEmbeddingServiceImpl(EmbeddingModel embeddingModel) {
 
-		this.embeddingClient = embeddingClient;
+		this.embeddingModel = embeddingModel;
 	}
 
 	@Override
 	public List<Double> textEmbedding(String text) {
 
-		return embeddingClient.embed(text);
+		return embeddingModel.embed(text);
 	}
 
 }

@@ -27,7 +27,7 @@
         <rocketmq.version>5.1.4</rocketmq.version>
 
         <!-- Spring AI -->
-        <spring.ai.version>0.8.1</spring.ai.version>
+        <spring.ai.version>1.0.0-M1</spring.ai.version>
         <dashscope-sdk-java.version>2.14.0</dashscope-sdk-java.version>
 
         <!-- scheduling -->

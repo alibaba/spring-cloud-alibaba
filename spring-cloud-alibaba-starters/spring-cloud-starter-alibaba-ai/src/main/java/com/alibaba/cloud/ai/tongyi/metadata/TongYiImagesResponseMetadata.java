@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.ai.tongyi.metadata;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 import com.alibaba.dashscope.aigc.imagesynthesis.ImageSynthesisResult;
@@ -31,7 +32,7 @@ import org.springframework.util.Assert;
  * @since 2023.0.0.0-RC1
  */
 
-public class TongYiImagesResponseMetadata implements ImageResponseMetadata {
+public class TongYiImagesResponseMetadata  extends HashMap<String, Object> implements ImageResponseMetadata {
 
 	private final Long created;
 
@@ -74,6 +75,7 @@ public class TongYiImagesResponseMetadata implements ImageResponseMetadata {
 		this.usage = usage;
 	}
 
+	@Override
 	public Long getCreated() {
 		return created;
 	}
@@ -94,7 +96,7 @@ public class TongYiImagesResponseMetadata implements ImageResponseMetadata {
 		this.metrics = metrics;
 	}
 
-	@Override
+
 	public Long created() {
 		return this.created;
 	}

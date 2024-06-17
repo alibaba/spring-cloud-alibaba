@@ -24,8 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,13 +47,13 @@ public class TongYiPromptTemplateServiceImpl extends AbstractTongYiServiceImpl {
 
 	private static final Logger logger = LoggerFactory.getLogger(TongYiService.class);
 
-	private final ChatClient chatClient;
+	private final ChatModel chatModel;
 
 	@Value("classpath:/prompts/joke-prompt.st")
 	private Resource jokeResource;
 
-	public TongYiPromptTemplateServiceImpl(ChatClient chatClient) {
-		this.chatClient = chatClient;
+	public TongYiPromptTemplateServiceImpl(ChatModel chatModel) {
+		this.chatModel = chatModel;
 	}
 
 	@Override
@@ -62,6 +62,6 @@ public class TongYiPromptTemplateServiceImpl extends AbstractTongYiServiceImpl {
 		PromptTemplate promptTemplate = new PromptTemplate(jokeResource);
 
 		Prompt prompt = promptTemplate.create(Map.of("adjective", adjective, "topic", topic));
-		return chatClient.call(prompt).getResult().getOutput();
+		return chatModel.call(prompt).getResult().getOutput();
 	}
 }
