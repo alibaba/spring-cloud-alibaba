@@ -134,7 +134,7 @@ public class NacosDiscoveryProperties {
 	/**
 	 * cluster name for nacos .
 	 */
-	private String clusterName = "DEFAULT";
+	private String clusterName;
 
 	/**
 	 * group name for nacos.
@@ -692,7 +692,8 @@ public class NacosDiscoveryProperties {
 
 		properties.put(ACCESS_KEY, accessKey);
 		properties.put(SECRET_KEY, secretKey);
-		properties.put(CLUSTER_NAME, clusterName);
+		// only used for instance.setClusterName()
+//		properties.put(CLUSTER_NAME, clusterName);
 		properties.put(NAMING_LOAD_CACHE_AT_START, namingLoadCacheAtStart);
 
 		enrichNacosDiscoveryProperties(properties);

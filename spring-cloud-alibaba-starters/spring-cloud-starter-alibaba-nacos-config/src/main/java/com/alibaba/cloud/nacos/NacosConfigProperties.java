@@ -565,7 +565,7 @@ public class NacosConfigProperties {
 	 */
 	public Properties assembleConfigServiceProperties() {
 		Properties properties = new Properties();
-		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, DEFAULT_ADDRESS));
+		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, ""));
 		properties.put(USERNAME, Objects.toString(this.username, ""));
 		properties.put(PASSWORD, Objects.toString(this.password, ""));
 		properties.put(ENCODE, Objects.toString(this.encode, ""));
@@ -591,6 +591,12 @@ public class NacosConfigProperties {
 		}
 
 		enrichNacosConfigProperties(properties);
+
+		// set default value when serverAddr and endpoint is empty
+		if (StringUtils.isEmpty(this.serverAddr) && StringUtils.isEmpty(this.endpoint)) {
+			properties.put(SERVER_ADDR, DEFAULT_ADDRESS);
+		}
+
 		return properties;
 	}
 
