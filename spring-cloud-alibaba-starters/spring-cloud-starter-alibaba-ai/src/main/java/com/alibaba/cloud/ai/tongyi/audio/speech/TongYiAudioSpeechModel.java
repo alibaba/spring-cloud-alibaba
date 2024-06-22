@@ -20,10 +20,10 @@ import java.nio.ByteBuffer;
 
 import com.alibaba.cloud.ai.tongyi.audio.AudioSpeechModels;
 import com.alibaba.cloud.ai.tongyi.audio.speech.api.Speech;
-import com.alibaba.cloud.ai.tongyi.audio.speech.api.SpeechClient;
+import com.alibaba.cloud.ai.tongyi.audio.speech.api.SpeechModel;
 import com.alibaba.cloud.ai.tongyi.audio.speech.api.SpeechPrompt;
 import com.alibaba.cloud.ai.tongyi.audio.speech.api.SpeechResponse;
-import com.alibaba.cloud.ai.tongyi.audio.speech.api.SpeechStreamClient;
+import com.alibaba.cloud.ai.tongyi.audio.speech.api.SpeechStreamModel;
 import com.alibaba.cloud.ai.tongyi.metadata.audio.TongYiAudioSpeechResponseMetadata;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisParam;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisResult;
@@ -42,10 +42,10 @@ import org.springframework.util.Assert;
  *
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.1.0
  */
 
-public class TongYiAudioSpeechClient implements SpeechClient, SpeechStreamClient {
+public class TongYiAudioSpeechModel implements SpeechModel, SpeechStreamModel {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -68,7 +68,7 @@ public class TongYiAudioSpeechClient implements SpeechClient, SpeechStreamClient
 	 * TongYiAudioSpeechClient constructor.
 	 * @param speechSynthesizer the speech synthesizer
 	 */
-	public TongYiAudioSpeechClient(SpeechSynthesizer speechSynthesizer) {
+	public TongYiAudioSpeechModel(SpeechSynthesizer speechSynthesizer) {
 
 		this(speechSynthesizer, null);
 	}
@@ -78,7 +78,7 @@ public class TongYiAudioSpeechClient implements SpeechClient, SpeechStreamClient
 	 * @param speechSynthesizer the speech synthesizer
 	 * @param tongYiAudioOptions the tongYi audio options
 	 */
-	public TongYiAudioSpeechClient(SpeechSynthesizer speechSynthesizer, TongYiAudioSpeechOptions tongYiAudioOptions) {
+	public TongYiAudioSpeechModel(SpeechSynthesizer speechSynthesizer, TongYiAudioSpeechOptions tongYiAudioOptions) {
 
 		Assert.notNull(speechSynthesizer, "speechSynthesizer must not be null");
 		Assert.notNull(tongYiAudioOptions, "tongYiAudioOptions must not be null");

@@ -21,7 +21,7 @@ import java.util.Objects;
 import java.util.Set;
 
 
-import com.alibaba.cloud.ai.tongyi.exception.TongYiException;
+import com.alibaba.cloud.ai.tongyi.common.exception.TongYiException;
 import com.alibaba.dashscope.aigc.conversation.ConversationParam;
 import com.alibaba.dashscope.aigc.generation.Generation;
 import com.alibaba.dashscope.aigc.generation.GenerationOutput;
@@ -61,19 +61,19 @@ import org.springframework.util.CollectionUtils;
  *
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.1.0
  * @see ChatModel
  * @see com.alibaba.dashscope.aigc.generation
  */
 
-public class TongYiChatClient extends
+public class TongYiChatModel extends
 		AbstractFunctionCallSupport<
 				com.alibaba.dashscope.common.Message,
 				ConversationParam,
 				GenerationResult>
 		implements ChatModel, StreamingChatModel {
 
-	private static final Logger logger = LoggerFactory.getLogger(TongYiChatClient.class);
+	private static final Logger logger = LoggerFactory.getLogger(TongYiChatModel.class);
 
 	/**
 	 * DashScope generation client.
@@ -95,7 +95,7 @@ public class TongYiChatClient extends
 	 * Initializes an instance of the TongYiChatClient.
 	 * @param generation DashScope generation client.
 	 */
-	public TongYiChatClient(Generation generation) {
+	public TongYiChatModel(Generation generation) {
 
 		this(generation,
 				TongYiChatOptions.builder()
@@ -112,7 +112,7 @@ public class TongYiChatClient extends
 	 * @param generation DashScope generation client.
 	 * @param options TongYi model params.
 	 */
-	public TongYiChatClient(Generation generation, TongYiChatOptions options) {
+	public TongYiChatModel(Generation generation, TongYiChatOptions options) {
 
 		this(generation, options, null);
 	}
@@ -122,7 +122,7 @@ public class TongYiChatClient extends
 	 * @param generation DashScope model generation client.
 	 * @param options TongYi default chat completion api.
 	 */
-	public TongYiChatClient(Generation generation, TongYiChatOptions options,
+	public TongYiChatModel(Generation generation, TongYiChatOptions options,
 			FunctionCallbackContext functionCallbackContext) {
 
 		super(functionCallbackContext);

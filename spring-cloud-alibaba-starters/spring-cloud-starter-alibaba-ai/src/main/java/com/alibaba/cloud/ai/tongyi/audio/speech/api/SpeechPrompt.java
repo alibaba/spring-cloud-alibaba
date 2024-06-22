@@ -25,7 +25,7 @@ import org.springframework.ai.model.ModelRequest;
 /**
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.1.0
  */
 
 public class SpeechPrompt implements ModelRequest<SpeechMessage> {

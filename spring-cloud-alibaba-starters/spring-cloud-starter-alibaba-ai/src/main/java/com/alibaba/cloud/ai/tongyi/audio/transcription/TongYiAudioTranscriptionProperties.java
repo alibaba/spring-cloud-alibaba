@@ -21,10 +21,12 @@ import com.alibaba.cloud.ai.tongyi.audio.AudioTranscriptionModels;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
+import static com.alibaba.cloud.ai.tongyi.common.constants.TongYiConstants.SCA_AI_CONFIGURATION;
+
 /**
  * @author xYLiu
  * @author yuluo
- * @since 2023.0.0.0
+ * @since 2023.0.1.0
  */
 
 @ConfigurationProperties(TongYiAudioTranscriptionProperties.CONFIG_PREFIX)
@@ -33,7 +35,7 @@ public class TongYiAudioTranscriptionProperties {
 	/**
 	 * Spring Cloud Alibaba AI configuration prefix.
 	 */
-	public static final String CONFIG_PREFIX = "spring.cloud.ai.tongyi.audio.transcription";
+	public static final String CONFIG_PREFIX = SCA_AI_CONFIGURATION + "audio.transcription";
 
 	/**
 	 * Default TongYi Chat model.

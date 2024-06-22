@@ -33,7 +33,7 @@ import org.springframework.util.Assert;
 /**
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0
+ * @since 2023.0.1.0
  */
 
 public class TongYiAudioTranscriptionResponseMetadata extends HashMap<String, Object>  implements ResponseMetadata {

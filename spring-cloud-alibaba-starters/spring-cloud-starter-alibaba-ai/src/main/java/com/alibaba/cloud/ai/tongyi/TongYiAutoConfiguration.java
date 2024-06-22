@@ -18,17 +18,17 @@ package com.alibaba.cloud.ai.tongyi;
 
 import java.util.Objects;
 
-import com.alibaba.cloud.ai.tongyi.audio.speech.TongYiAudioSpeechClient;
+import com.alibaba.cloud.ai.tongyi.audio.speech.TongYiAudioSpeechModel;
 import com.alibaba.cloud.ai.tongyi.audio.speech.TongYiAudioSpeechProperties;
-import com.alibaba.cloud.ai.tongyi.audio.transcription.TongYiAudioTranscriptionClient;
+import com.alibaba.cloud.ai.tongyi.audio.transcription.TongYiAudioTranscriptionModel;
 import com.alibaba.cloud.ai.tongyi.audio.transcription.TongYiAudioTranscriptionProperties;
-import com.alibaba.cloud.ai.tongyi.chat.TongYiChatClient;
+import com.alibaba.cloud.ai.tongyi.chat.TongYiChatModel;
 import com.alibaba.cloud.ai.tongyi.chat.TongYiChatProperties;
-import com.alibaba.cloud.ai.tongyi.constants.TongYiConstants;
-import com.alibaba.cloud.ai.tongyi.embedding.TongYiTextEmbeddingClient;
+import com.alibaba.cloud.ai.tongyi.common.constants.TongYiConstants;
+import com.alibaba.cloud.ai.tongyi.common.exception.TongYiException;
+import com.alibaba.cloud.ai.tongyi.embedding.TongYiTextEmbeddingModel;
 import com.alibaba.cloud.ai.tongyi.embedding.TongYiTextEmbeddingProperties;
-import com.alibaba.cloud.ai.tongyi.exception.TongYiException;
-import com.alibaba.cloud.ai.tongyi.image.TongYiImagesClient;
+import com.alibaba.cloud.ai.tongyi.image.TongYiImagesModel;
 import com.alibaba.cloud.ai.tongyi.image.TongYiImagesProperties;
 import com.alibaba.dashscope.aigc.generation.Generation;
 import com.alibaba.dashscope.aigc.imagesynthesis.ImageSynthesis;
@@ -53,16 +53,17 @@ import org.springframework.context.annotation.Scope;
 /**
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.1.0
  */
 
 @AutoConfiguration
 @ConditionalOnClass({
 		MessageManager.class,
-		TongYiChatClient.class,
-		TongYiImagesClient.class,
-		TongYiAudioSpeechClient.class,
-		TongYiAudioTranscriptionClient.class
+		TongYiChatModel.class,
+		TongYiImagesModel.class,
+		TongYiAudioSpeechModel.class,
+		TongYiTextEmbeddingModel.class,
+		TongYiAudioTranscriptionModel.class
 })
 @EnableConfigurationProperties({
 		TongYiChatProperties.class,
@@ -137,14 +138,14 @@ public class TongYiAutoConfiguration {
 			havingValue = "true",
 			matchIfMissing = true
 	)
-	public TongYiChatClient tongYiChatClient(Generation generation,
+	public TongYiChatModel tongYiChatClient(Generation generation,
 			TongYiChatProperties chatOptions,
 			TongYiConnectionProperties connectionProperties
 	) {
 
 		settingApiKey(connectionProperties);
 
-		return new TongYiChatClient(generation, chatOptions.getOptions());
+		return new TongYiChatModel(generation, chatOptions.getOptions());
 	}
 
 	@Bean
@@ -154,7 +155,7 @@ public class TongYiAutoConfiguration {
 			havingValue = "true",
 			matchIfMissing = true
 	)
-	public TongYiImagesClient tongYiImagesClient(
+	public TongYiImagesModel tongYiImagesClient(
 			ImageSynthesis imageSynthesis,
 			TongYiImagesProperties imagesOptions,
 			TongYiConnectionProperties connectionProperties
@@ -162,7 +163,7 @@ public class TongYiAutoConfiguration {
 
 		settingApiKey(connectionProperties);
 
-		return new TongYiImagesClient(imageSynthesis, imagesOptions.getOptions());
+		return new TongYiImagesModel(imageSynthesis, imagesOptions.getOptions());
 	}
 
 	@Bean
@@ -172,7 +173,7 @@ public class TongYiAutoConfiguration {
 			havingValue = "true",
 			matchIfMissing = true
 	)
-	public TongYiAudioSpeechClient tongYiAudioSpeechClient(
+	public TongYiAudioSpeechModel tongYiAudioSpeechClient(
 			SpeechSynthesizer speechSynthesizer,
 			TongYiAudioSpeechProperties speechProperties,
 			TongYiConnectionProperties connectionProperties
@@ -180,7 +181,7 @@ public class TongYiAutoConfiguration {
 
 		settingApiKey(connectionProperties);
 
-		return new TongYiAudioSpeechClient(speechSynthesizer, speechProperties.getOptions());
+		return new TongYiAudioSpeechModel(speechSynthesizer, speechProperties.getOptions());
 	}
 
 	@Bean
@@ -190,14 +191,14 @@ public class TongYiAutoConfiguration {
 			havingValue = "true",
 			matchIfMissing = true
 	)
-	public TongYiAudioTranscriptionClient tongYiAudioTranscriptionClient(
+	public TongYiAudioTranscriptionModel tongYiAudioTranscriptionClient(
 			Transcription transcription,
 			TongYiAudioTranscriptionProperties transcriptionProperties,
 			TongYiConnectionProperties connectionProperties) {
 
 		settingApiKey(connectionProperties);
 
-		return new TongYiAudioTranscriptionClient(
+		return new TongYiAudioTranscriptionModel(
 				transcriptionProperties.getOptions(),
 				transcription
 		);
@@ -210,13 +211,13 @@ public class TongYiAutoConfiguration {
 			havingValue = "true",
 			matchIfMissing = true
 	)
-	public TongYiTextEmbeddingClient tongYiTextEmbeddingClient(
+	public TongYiTextEmbeddingModel tongYiTextEmbeddingClient(
 			TextEmbedding textEmbedding,
 			TongYiConnectionProperties connectionProperties
 	) {
 
 		settingApiKey(connectionProperties);
-		return new TongYiTextEmbeddingClient(textEmbedding);
+		return new TongYiTextEmbeddingModel(textEmbedding);
 	}
 
 	/**

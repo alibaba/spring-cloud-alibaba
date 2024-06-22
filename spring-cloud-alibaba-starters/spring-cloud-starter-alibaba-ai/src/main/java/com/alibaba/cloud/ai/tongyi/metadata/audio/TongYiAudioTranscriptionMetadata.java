@@ -21,7 +21,7 @@ import org.springframework.ai.model.ResultMetadata;
 /**
  * @author xYLiu
  * @author yuluo
- * @since 2023.0.0.0
+ * @since 2023.0.1.0
  */
 
 public interface TongYiAudioTranscriptionMetadata extends ResultMetadata {

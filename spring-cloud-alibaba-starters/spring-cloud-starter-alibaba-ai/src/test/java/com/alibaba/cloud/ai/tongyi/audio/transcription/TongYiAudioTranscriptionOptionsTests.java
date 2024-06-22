@@ -28,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author xYLiu
  * @author yuluo
+ * @since 2023.0.1.0
  */
 
 class TongYiAudioTranscriptionOptionsTests {
@@ -38,7 +39,7 @@ class TongYiAudioTranscriptionOptionsTests {
 		Transcription mockClient = Mockito.mock(Transcription.class);
 		Constants.apiKey = "test";
 
-		var transcription = new TongYiAudioTranscriptionClient(
+		var transcription = new TongYiAudioTranscriptionModel(
 				TongYiAudioTranscriptionOptions.builder().withDiarizationEnabled(false)
 						.withAudioEventDetectionEnabled(false)
 						.withTimestampAlignmentEnabled(false)

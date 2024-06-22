@@ -24,6 +24,7 @@ import org.springframework.ai.embedding.EmbeddingResponseMetadata;
  * @author why_ohh
  * @author yuluo
  * @author <a href="mailto:550588941@qq.com">why_ohh</a>
+ * @since 2023.0.1.0
  */
 
 public class TongYiTextEmbeddingResponseMetadata extends EmbeddingResponseMetadata {

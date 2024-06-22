@@ -25,11 +25,11 @@ import org.springframework.ai.model.StreamingModel;
 /**
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.1.0
  */
 
 @FunctionalInterface
-public interface SpeechStreamClient extends StreamingModel<SpeechPrompt, SpeechResponse> {
+public interface SpeechStreamModel extends StreamingModel<SpeechPrompt, SpeechResponse> {
 
 	/**
 	 * Generates a stream of audio bytes from the provided text message.
@@ -40,7 +40,6 @@ public interface SpeechStreamClient extends StreamingModel<SpeechPrompt, SpeechR
 	default Flux<ByteBuffer> stream(String message) {
 
 		SpeechPrompt prompt = new SpeechPrompt(message);
-
 		return stream(prompt).map(SpeechResponse::getResult).map(Speech::getOutput);
 	}
 

@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.0.0
  */
 
 @RestController
@@ -133,7 +133,7 @@ public class TongYiController {
 	@Qualifier("tongYiAudioSimpleServiceImpl")
 	private TongYiService tongYiAudioService;
 
-	@GetMapping("/audio")
+	@GetMapping("/audio/speech")
 	public String genAudio(@RequestParam(value = "prompt",
 			defaultValue = "你好，Spring Cloud Alibaba AI 框架！") String prompt) {
 

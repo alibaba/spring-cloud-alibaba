@@ -17,31 +17,28 @@
 package com.alibaba.cloud.ai.tongyi.audio.speech;
 
 import com.alibaba.cloud.ai.tongyi.audio.AudioSpeechModels;
-import com.alibaba.cloud.ai.tongyi.image.TongYiImagesProperties;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisAudioFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+
+import static com.alibaba.cloud.ai.tongyi.common.constants.TongYiConstants.SCA_AI_CONFIGURATION;
 
 /**
  * TongYi audio speech configuration properties.
  *
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.1.0
  */
 
 @ConfigurationProperties(TongYiAudioSpeechProperties.CONFIG_PREFIX)
 public class TongYiAudioSpeechProperties {
 
-	private final Logger logger = LoggerFactory.getLogger(TongYiImagesProperties.class);
-
 	/**
 	 * Spring Cloud Alibaba AI configuration prefix.
 	 */
-	public static final String CONFIG_PREFIX = "spring.cloud.ai.tongyi.audio.speech";
+	public static final String CONFIG_PREFIX = SCA_AI_CONFIGURATION + "audio.speech";
 	/**
 	 * Default TongYi Chat model.
 	 */

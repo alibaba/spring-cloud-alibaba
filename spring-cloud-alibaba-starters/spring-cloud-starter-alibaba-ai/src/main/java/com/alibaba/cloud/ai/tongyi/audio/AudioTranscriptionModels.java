@@ -19,7 +19,7 @@ package com.alibaba.cloud.ai.tongyi.audio;
 /**
  * @author xYLiu
  * @author yuluo
- * @since 2023.0.0.0
+ * @since 2023.0.1.0
  */
 
 public final class AudioTranscriptionModels {

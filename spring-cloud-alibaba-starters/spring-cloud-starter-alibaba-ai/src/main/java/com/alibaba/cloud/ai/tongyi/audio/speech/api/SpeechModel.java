@@ -27,7 +27,7 @@ import org.springframework.ai.model.Model;
  */
 
 @FunctionalInterface
-public interface SpeechClient extends Model<SpeechPrompt, SpeechResponse> {
+public interface SpeechModel extends Model<SpeechPrompt, SpeechResponse> {
 
 	/**
 	 * Generates spoken audio from the provided text message.

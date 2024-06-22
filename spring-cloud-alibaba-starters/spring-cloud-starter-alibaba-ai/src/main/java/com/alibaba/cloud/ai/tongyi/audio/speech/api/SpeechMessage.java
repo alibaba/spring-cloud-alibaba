@@ -19,9 +19,12 @@ package com.alibaba.cloud.ai.tongyi.audio.speech.api;
 import java.util.Objects;
 
 /**
+ * The {@link SpeechMessage} class represents a single text message to
+ * be converted to speech by the TongYi LLM TTS.
+ *
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.1.0
  */
 
 public class SpeechMessage {

@@ -17,10 +17,6 @@
 package com.alibaba.cloud.ai.example.tongyi.service.impl.images;
 
 import com.alibaba.cloud.ai.example.tongyi.service.AbstractTongYiServiceImpl;
-import com.alibaba.cloud.ai.example.tongyi.service.TongYiService;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.springframework.ai.image.ImageModel;
 import org.springframework.ai.image.ImagePrompt;
@@ -33,14 +29,11 @@ import org.springframework.stereotype.Service;
  *
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.0.0
  */
 
-@Slf4j
 @Service
 public class TongYiImagesServiceImpl extends AbstractTongYiServiceImpl {
-
-	private static final Logger logger = LoggerFactory.getLogger(TongYiService.class);
 
 	private final ImageModel imageModel;
 
@@ -54,7 +47,6 @@ public class TongYiImagesServiceImpl extends AbstractTongYiServiceImpl {
 	public ImageResponse genImg(String imgPrompt) {
 
 		var prompt = new ImagePrompt(imgPrompt);
-
 		return imageModel.call(prompt);
 	}
 

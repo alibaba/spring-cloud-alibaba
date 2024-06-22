@@ -18,11 +18,13 @@ package com.alibaba.cloud.ai.tongyi.embedding;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import static com.alibaba.cloud.ai.tongyi.common.constants.TongYiConstants.SCA_AI_CONFIGURATION;
+
 /**
  * @author why_ohh
  * @author yuluo
  * @author <a href="mailto:550588941@qq.com">why_ohh</a>
- * @since 2023.0.0.0
+ * @since 2023.0.1.0
  */
 
 @ConfigurationProperties(TongYiTextEmbeddingProperties.CONFIG_PREFIX)
@@ -31,7 +33,7 @@ public class TongYiTextEmbeddingProperties {
 	/**
 	 * Prefix of TongYi Text Embedding properties.
 	 */
-	public static final String CONFIG_PREFIX = "spring.cloud.ai.tongyi.embedding";
+	public static final String CONFIG_PREFIX = SCA_AI_CONFIGURATION + "embedding";
 
 	private boolean enabled = true;
 

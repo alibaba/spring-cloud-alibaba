@@ -26,7 +26,7 @@ import org.springframework.ai.model.ResponseMetadata;
 /**
  * @author xYLiu
  * @author yuluo
- * @since 2023.0.0.0
+ * @since 2023.0.1.0
  */
 
 public class AudioTranscriptionResponse implements ModelResponse<AudioTranscriptionResult> {
