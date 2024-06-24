@@ -61,7 +61,9 @@ public class NacosContextRefresher
 
 	private final NacosRefreshHistory nacosRefreshHistory;
 
-	private final ConfigService configService;
+	private ConfigService configService;
+
+	private NacosConfigManager configManager;
 
 	private ApplicationContext applicationContext;
 
@@ -71,9 +73,9 @@ public class NacosContextRefresher
 
 	public NacosContextRefresher(NacosConfigManager nacosConfigManager,
 			NacosRefreshHistory refreshHistory) {
+		this.configManager = nacosConfigManager;
 		this.nacosConfigProperties = nacosConfigManager.getNacosConfigProperties();
 		this.nacosRefreshHistory = refreshHistory;
-		this.configService = nacosConfigManager.getConfigService();
 		this.isRefreshEnabled = this.nacosConfigProperties.isRefreshEnabled();
 	}
 
@@ -127,6 +129,9 @@ public class NacosContextRefresher
 					}
 				});
 		try {
+			if (configService == null && configManager != null) {
+				configService = configManager.getConfigService();
+			}
 			configService.addListener(dataKey, groupKey, listener);
 			log.info("[Nacos Config] Listening config: dataId={}, group={}", dataKey,
 					groupKey);
