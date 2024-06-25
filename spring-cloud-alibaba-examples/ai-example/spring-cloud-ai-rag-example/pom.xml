@@ -34,7 +34,7 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<spring.ai.version>0.8.1</spring.ai.version>
+		<spring.ai.version>1.0.0-M1</spring.ai.version>
 		<redis.jedis.version>5.1.0</redis.jedis.version>
 	</properties>
 
@@ -47,7 +47,7 @@
 
 		<dependency>
 			<groupId>org.springframework.ai</groupId>
-			<artifactId>spring-ai-redis-spring-boot-starter</artifactId>
+			<artifactId>spring-ai-redis-store-spring-boot-starter</artifactId>
 			<version>${spring.ai.version}</version>
 			<exclusions>
 				<exclusion>

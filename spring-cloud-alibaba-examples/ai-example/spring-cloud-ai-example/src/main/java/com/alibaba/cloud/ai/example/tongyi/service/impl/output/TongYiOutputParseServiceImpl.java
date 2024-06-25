@@ -29,7 +29,7 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
-import org.springframework.ai.parser.BeanOutputParser;
+import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.stereotype.Service;
 
 /**
@@ -56,7 +56,7 @@ public class TongYiOutputParseServiceImpl extends AbstractTongYiServiceImpl {
 	@Override
 	public ActorsFilms genOutputParse(String actor) {
 
-		var outputParser = new BeanOutputParser<>(ActorsFilms.class);
+		var outputParser = new BeanOutputConverter<>(ActorsFilms.class);
 
 		String format = outputParser.getFormat();
 		logger.info("format: " + format);
