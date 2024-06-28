@@ -54,14 +54,12 @@ public class NacosContextRefresher
 			.getLogger(NacosContextRefresher.class);
 
 	private static final AtomicLong REFRESH_COUNT = new AtomicLong(0);
-
-	private NacosConfigProperties nacosConfigProperties;
-
 	private final boolean isRefreshEnabled;
-
 	private final NacosRefreshHistory nacosRefreshHistory;
+	private NacosConfigProperties nacosConfigProperties;
+	private ConfigService configService;
 
-	private final ConfigService configService;
+	private NacosConfigManager configManager;
 
 	private ApplicationContext applicationContext;
 
@@ -73,8 +71,16 @@ public class NacosContextRefresher
 			NacosRefreshHistory refreshHistory) {
 		this.nacosConfigProperties = nacosConfigManager.getNacosConfigProperties();
 		this.nacosRefreshHistory = refreshHistory;
-		this.configService = nacosConfigManager.getConfigService();
+		this.configManager = nacosConfigManager;
 		this.isRefreshEnabled = this.nacosConfigProperties.isRefreshEnabled();
+	}
+
+	public static long getRefreshCount() {
+		return REFRESH_COUNT.get();
+	}
+
+	public static void refreshCountIncrement() {
+		REFRESH_COUNT.incrementAndGet();
 	}
 
 	@Override
@@ -127,6 +133,10 @@ public class NacosContextRefresher
 					}
 				});
 		try {
+			if (configService == null && configManager != null) {
+				configService = configManager.getConfigService();
+			}
+
 			configService.addListener(dataKey, groupKey, listener);
 			log.info("[Nacos Config] Listening config: dataId={}, group={}", dataKey,
 					groupKey);
@@ -157,14 +167,6 @@ public class NacosContextRefresher
 			return false;
 		}
 		return isRefreshEnabled;
-	}
-
-	public static long getRefreshCount() {
-		return REFRESH_COUNT.get();
-	}
-
-	public static void refreshCountIncrement() {
-		REFRESH_COUNT.incrementAndGet();
 	}
 
 }

@@ -45,6 +45,7 @@ public class BeanAutoRefreshConfigExample {
 		result.put("prefix", nacosConfigInfo.getPrefix());
 		result.put("group", nacosConfigInfo.getGroup());
 		result.put("namespace", nacosConfigInfo.getNamespace());
+		result.put("extendKey", nacosConfigInfo.getExtendKey());
 		return result;
 	}
 }

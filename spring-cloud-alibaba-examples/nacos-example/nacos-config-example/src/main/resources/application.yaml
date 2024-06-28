@@ -10,6 +10,7 @@ spring:
         serverAddr: 127.0.0.1:8848
         username: 'nacos'
         password: 'nacos'
+        extendKey: value
   config:
     import:
       - nacos:nacos-config-example.properties?refresh=true

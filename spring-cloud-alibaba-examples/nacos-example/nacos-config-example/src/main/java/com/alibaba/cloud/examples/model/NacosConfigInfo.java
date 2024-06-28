@@ -46,6 +46,8 @@ public class NacosConfigInfo {
 	 */
 	private String namespace;
 
+	private String extendKey;
+
 	public String getServerAddr() {
 		return serverAddr;
 	}
@@ -76,5 +78,13 @@ public class NacosConfigInfo {
 
 	public void setNamespace(String namespace) {
 		this.namespace = namespace;
+	}
+
+	public String getExtendKey() {
+		return extendKey;
+	}
+
+	public void setExtendKey(String extendKey) {
+		this.extendKey = extendKey;
 	}
 }

@@ -49,7 +49,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 
 import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
 import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
 import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
 import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
@@ -70,14 +69,12 @@ import static com.alibaba.nacos.api.PropertyKeyConst.USERNAME;
 @ConfigurationProperties("spring.cloud.nacos.discovery")
 public class NacosDiscoveryProperties {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(NacosDiscoveryProperties.class);
-
 	/**
 	 * Prefix of {@link NacosDiscoveryProperties}.
 	 */
 	public static final String PREFIX = "spring.cloud.nacos.discovery";
-
+	private static final Logger log = LoggerFactory
+			.getLogger(NacosDiscoveryProperties.class);
 	private static final Pattern PATTERN = Pattern.compile("-(\\w)");
 
 	private static final String IPV4 = "IPv4";
@@ -134,7 +131,7 @@ public class NacosDiscoveryProperties {
 	/**
 	 * cluster name for nacos .
 	 */
-	private String clusterName = "DEFAULT";
+	private String clusterName;
 
 	/**
 	 * group name for nacos.
@@ -692,7 +689,7 @@ public class NacosDiscoveryProperties {
 
 		properties.put(ACCESS_KEY, accessKey);
 		properties.put(SECRET_KEY, secretKey);
-		properties.put(CLUSTER_NAME, clusterName);
+//		properties.put(CLUSTER_NAME, clusterName);
 		properties.put(NAMING_LOAD_CACHE_AT_START, namingLoadCacheAtStart);
 
 		enrichNacosDiscoveryProperties(properties);
