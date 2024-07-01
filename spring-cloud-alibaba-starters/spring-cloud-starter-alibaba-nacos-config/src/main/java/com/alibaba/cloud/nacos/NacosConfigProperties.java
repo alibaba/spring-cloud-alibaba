@@ -592,7 +592,7 @@ public class NacosConfigProperties {
 		}
 	}
 
-	private void enrichNacosConfigProperties(Properties nacosConfigProperties) {
+	protected void enrichNacosConfigProperties(Properties nacosConfigProperties) {
 		if (environment == null) {
 			return;
 		}
@@ -602,7 +602,7 @@ public class NacosConfigProperties {
 				String.valueOf(v)));
 	}
 
-	private String resolveKey(String key) {
+	protected String resolveKey(String key) {
 		Matcher matcher = PATTERN.matcher(key);
 		StringBuffer sb = new StringBuffer();
 		while (matcher.find()) {
