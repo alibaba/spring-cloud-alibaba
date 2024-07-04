@@ -1,6 +1,6 @@
 # Spring Cloud Alibaba AI Text Embedding
 
-`TongYiController` 接受一个 HTTP GET 请求 `http://localhost:8080/ai/audio`。
+`TongYiController` 接受一个 HTTP GET 请求 `http://localhost:8080/ai/textEmbedding`。
 `controller` 将会调用 `TongYiService` 中的 `genAudio` 方法，完成服务请求得到响应。
 
 有一个可选的 `text` 参数，其默认值为“Spring Cloud Alibaba AI 框架！”。 请求响应来自 Alibaba TongYi Text Embedding 服务。

@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi.exception;
+package com.alibaba.cloud.ai.tongyi.common.exception;
 
 /**
- * TongYi models images exception.
+ * TongYi models runtime exception.
  *
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.1.0
  */
 
-public class TongYiImagesException extends TongYiException {
+public class TongYiException extends RuntimeException {
 
-	public TongYiImagesException(String message) {
+	public TongYiException(String message) {
 
 		super(message);
 	}
 
-	public TongYiImagesException(String message, Throwable cause) {
+	public TongYiException(String message, Throwable cause) {
 
 		super(message, cause);
 	}
-
 }

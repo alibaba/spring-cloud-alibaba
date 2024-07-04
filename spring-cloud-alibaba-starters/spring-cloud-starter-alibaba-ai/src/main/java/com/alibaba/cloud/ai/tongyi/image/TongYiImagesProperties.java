@@ -17,29 +17,27 @@
 package com.alibaba.cloud.ai.tongyi.image;
 
 import com.alibaba.dashscope.aigc.imagesynthesis.ImageSynthesis;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+
+import static com.alibaba.cloud.ai.tongyi.common.constants.TongYiConstants.SCA_AI_CONFIGURATION;
 
 /**
  * TongYi Image API properties.
  *
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.1.0
  */
 
 @ConfigurationProperties(TongYiImagesProperties.CONFIG_PREFIX)
 public class TongYiImagesProperties {
 
-	private final Logger logger = LoggerFactory.getLogger(TongYiImagesProperties.class);
-
 	/**
 	 * Spring Cloud Alibaba AI configuration prefix.
 	 */
-	public static final String CONFIG_PREFIX = "spring.cloud.ai.tongyi.images";
+	public static final String CONFIG_PREFIX = SCA_AI_CONFIGURATION + "images";
 
 	/**
 	 * Default TongYi Chat model.

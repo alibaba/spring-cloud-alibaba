@@ -22,7 +22,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.0.0
  */
 
 @SpringBootApplication

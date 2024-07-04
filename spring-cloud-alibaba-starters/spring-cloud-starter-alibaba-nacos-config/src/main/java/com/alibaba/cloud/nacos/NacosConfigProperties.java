@@ -101,6 +101,105 @@ public class NacosConfigProperties {
 	@Autowired
 	@JsonIgnore
 	private Environment environment;
+	/**
+	 * nacos config server address.
+	 */
+	private String serverAddr;
+	/**
+	 * the nacos authentication username.
+	 */
+	private String username;
+	/**
+	 * the nacos authentication password.
+	 */
+	private String password;
+	/**
+	 * encode for nacos config content.
+	 */
+	private String encode;
+	/**
+	 * nacos config group, group is config data meta info.
+	 */
+	private String group = "DEFAULT_GROUP";
+	/**
+	 * nacos config dataId prefix.
+	 */
+	private String prefix;
+	/**
+	 * the suffix of nacos config dataId, also the file extension of config content.
+	 */
+	private String fileExtension = "properties";
+	/**
+	 * timeout for get config from nacos.
+	 */
+	private int timeout = 3000;
+	/**
+	 * nacos maximum number of tolerable server reconnection errors.
+	 */
+	private String maxRetry;
+	/**
+	 * nacos get config long poll timeout.
+	 */
+	private String configLongPollTimeout;
+	/**
+	 * nacos get config failure retry time.
+	 */
+	private String configRetryTime;
+	/**
+	 * If you want to pull it yourself when the program starts to get the configuration
+	 * for the first time, and the registered Listener is used for future configuration
+	 * updates, you can keep the original code unchanged, just add the system parameter:
+	 * enableRemoteSyncConfig = "true" ( But there is network overhead); therefore we
+	 * recommend that you use {@link ConfigService#getConfigAndSignListener} directly.
+	 */
+	private boolean enableRemoteSyncConfig = false;
+	/**
+	 * endpoint for Nacos, the domain name of a service, through which the server address
+	 * can be dynamically obtained.
+	 */
+	private String endpoint;
+	/**
+	 * namespace, separation configuration of different environments.
+	 */
+	private String namespace;
+	/**
+	 * access key for namespace.
+	 */
+	private String accessKey;
+	/**
+	 * secret key for namespace.
+	 */
+	private String secretKey;
+	/**
+	 * role name for aliyun ram.
+	 */
+	private String ramRoleName;
+	/**
+	 * context path for nacos config server.
+	 */
+	private String contextPath;
+	/**
+	 * nacos config cluster name.
+	 */
+	private String clusterName;
+	/**
+	 * nacos config dataId name.
+	 */
+	private String name;
+	/**
+	 * a set of shared configurations .e.g:
+	 * spring.cloud.nacos.config.shared-configs[0]=xxx .
+	 */
+	private List<Config> sharedConfigs;
+	/**
+	 * a set of extensional configurations .e.g:
+	 * spring.cloud.nacos.config.extension-configs[0]=xxx .
+	 */
+	private List<Config> extensionConfigs;
+	/**
+	 * the master switch for refresh configuration, it default opened(true).
+	 */
+	private boolean refreshEnabled = true;
 
 	@PostConstruct
 	public void init() {
@@ -129,128 +228,6 @@ public class NacosConfigProperties {
 					environment.resolvePlaceholders("${spring.cloud.nacos.password:}"));
 		}
 	}
-
-	/**
-	 * nacos config server address.
-	 */
-	private String serverAddr;
-
-	/**
-	 * the nacos authentication username.
-	 */
-	private String username;
-
-	/**
-	 * the nacos authentication password.
-	 */
-	private String password;
-
-	/**
-	 * encode for nacos config content.
-	 */
-	private String encode;
-
-	/**
-	 * nacos config group, group is config data meta info.
-	 */
-	private String group = "DEFAULT_GROUP";
-
-	/**
-	 * nacos config dataId prefix.
-	 */
-	private String prefix;
-
-	/**
-	 * the suffix of nacos config dataId, also the file extension of config content.
-	 */
-	private String fileExtension = "properties";
-
-	/**
-	 * timeout for get config from nacos.
-	 */
-	private int timeout = 3000;
-
-	/**
-	 * nacos maximum number of tolerable server reconnection errors.
-	 */
-	private String maxRetry;
-
-	/**
-	 * nacos get config long poll timeout.
-	 */
-	private String configLongPollTimeout;
-
-	/**
-	 * nacos get config failure retry time.
-	 */
-	private String configRetryTime;
-
-	/**
-	 * If you want to pull it yourself when the program starts to get the configuration
-	 * for the first time, and the registered Listener is used for future configuration
-	 * updates, you can keep the original code unchanged, just add the system parameter:
-	 * enableRemoteSyncConfig = "true" ( But there is network overhead); therefore we
-	 * recommend that you use {@link ConfigService#getConfigAndSignListener} directly.
-	 */
-	private boolean enableRemoteSyncConfig = false;
-
-	/**
-	 * endpoint for Nacos, the domain name of a service, through which the server address
-	 * can be dynamically obtained.
-	 */
-	private String endpoint;
-
-	/**
-	 * namespace, separation configuration of different environments.
-	 */
-	private String namespace;
-
-	/**
-	 * access key for namespace.
-	 */
-	private String accessKey;
-
-	/**
-	 * secret key for namespace.
-	 */
-	private String secretKey;
-
-	/**
-	 * role name for aliyun ram.
-	 */
-	private String ramRoleName;
-
-	/**
-	 * context path for nacos config server.
-	 */
-	private String contextPath;
-
-	/**
-	 * nacos config cluster name.
-	 */
-	private String clusterName;
-
-	/**
-	 * nacos config dataId name.
-	 */
-	private String name;
-
-	/**
-	 * a set of shared configurations .e.g:
-	 * spring.cloud.nacos.config.shared-configs[0]=xxx .
-	 */
-	private List<Config> sharedConfigs;
-
-	/**
-	 * a set of extensional configurations .e.g:
-	 * spring.cloud.nacos.config.extension-configs[0]=xxx .
-	 */
-	private List<Config> extensionConfigs;
-
-	/**
-	 * the master switch for refresh configuration, it default opened(true).
-	 */
-	private boolean refreshEnabled = true;
 
 	// todo sts support
 
@@ -565,7 +542,7 @@ public class NacosConfigProperties {
 	 */
 	public Properties assembleConfigServiceProperties() {
 		Properties properties = new Properties();
-		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, DEFAULT_ADDRESS));
+		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, ""));
 		properties.put(USERNAME, Objects.toString(this.username, ""));
 		properties.put(PASSWORD, Objects.toString(this.password, ""));
 		properties.put(ENCODE, Objects.toString(this.encode, ""));
@@ -591,6 +568,12 @@ public class NacosConfigProperties {
 		}
 
 		enrichNacosConfigProperties(properties);
+
+		// set default value when serverAddr and endpoint is empty
+		if (StringUtils.isEmpty(this.serverAddr) && StringUtils.isEmpty(this.endpoint)) {
+			properties.put(SERVER_ADDR, DEFAULT_ADDRESS);
+		}
+
 		return properties;
 	}
 
@@ -609,7 +592,7 @@ public class NacosConfigProperties {
 		}
 	}
 
-	private void enrichNacosConfigProperties(Properties nacosConfigProperties) {
+	protected void enrichNacosConfigProperties(Properties nacosConfigProperties) {
 		if (environment == null) {
 			return;
 		}
@@ -619,7 +602,7 @@ public class NacosConfigProperties {
 				String.valueOf(v)));
 	}
 
-	private String resolveKey(String key) {
+	protected String resolveKey(String key) {
 		Matcher matcher = PATTERN.matcher(key);
 		StringBuffer sb = new StringBuffer();
 		while (matcher.find()) {

@@ -19,7 +19,7 @@ package com.alibaba.cloud.ai.tongyi.embedding;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.alibaba.cloud.ai.tongyi.exception.TongYiException;
+import com.alibaba.cloud.ai.tongyi.common.exception.TongYiException;
 import com.alibaba.cloud.ai.tongyi.metadata.TongYiTextEmbeddingResponseMetadata;
 import com.alibaba.dashscope.embeddings.TextEmbedding;
 import com.alibaba.dashscope.embeddings.TextEmbeddingParam;
@@ -39,17 +39,17 @@ import org.springframework.ai.embedding.EmbeddingResponse;
 import org.springframework.util.Assert;
 
 /**
- * {@link TongYiTextEmbeddingClient} implementation for {@literal Alibaba DashScope}.
+ * {@link TongYiTextEmbeddingModel} implementation for {@literal Alibaba DashScope}.
+ *
  * @author why_ohh
  * @author yuluo
  * @author <a href="mailto:550588941@qq.com">why_ohh</a>
- * @since 2023.0.0.0
- * {@see TextEmbeddingClient}
+ * @since 2023.0.1.0
  */
 
-public class TongYiTextEmbeddingClient extends AbstractEmbeddingModel {
+public class TongYiTextEmbeddingModel extends AbstractEmbeddingModel {
 
-	private final Logger logger = LoggerFactory.getLogger(TongYiTextEmbeddingClient.class);
+	private final Logger logger = LoggerFactory.getLogger(TongYiTextEmbeddingModel.class);
 
 	/**
 	 * TongYi Text Embedding client.
@@ -63,12 +63,12 @@ public class TongYiTextEmbeddingClient extends AbstractEmbeddingModel {
 
 	private final TongYiEmbeddingOptions defaultOptions;
 
-	public TongYiTextEmbeddingClient(TextEmbedding textEmbedding) {
+	public TongYiTextEmbeddingModel(TextEmbedding textEmbedding) {
 
 		this(textEmbedding, MetadataMode.EMBED);
 	}
 
-	public TongYiTextEmbeddingClient(TextEmbedding textEmbedding, MetadataMode metadataMode) {
+	public TongYiTextEmbeddingModel(TextEmbedding textEmbedding, MetadataMode metadataMode) {
 
 		this(textEmbedding, metadataMode,
 				TongYiEmbeddingOptions.builder()
@@ -77,7 +77,7 @@ public class TongYiTextEmbeddingClient extends AbstractEmbeddingModel {
 		);
 	}
 
-	public TongYiTextEmbeddingClient(
+	public TongYiTextEmbeddingModel(
 			TextEmbedding textEmbedding,
 			MetadataMode metadataMode,
 			TongYiEmbeddingOptions options

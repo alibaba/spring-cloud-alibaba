@@ -18,12 +18,12 @@ package com.alibaba.cloud.sentinel;
 
 import java.util.Optional;
 
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.SentinelWebInterceptor;
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler;
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.DefaultBlockExceptionHandler;
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.RequestOriginParser;
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.UrlCleaner;
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.config.SentinelWebMvcConfig;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.SentinelWebInterceptor;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.callback.BlockExceptionHandler;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.callback.DefaultBlockExceptionHandler;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.callback.RequestOriginParser;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.config.SentinelWebMvcConfig;
+import com.alibaba.csp.sentinel.adapter.web.common.UrlCleaner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,8 +86,10 @@ public class SentinelWebAutoConfiguration implements WebMvcConfigurer {
 		}
 		else {
 			if (StringUtils.hasText(properties.getBlockPage())) {
-				sentinelWebMvcConfig.setBlockExceptionHandler(((request, response,
-						e) -> response.sendRedirect(properties.getBlockPage())));
+				sentinelWebMvcConfig.setBlockExceptionHandler(
+						(request, response, resourceName, e) ->
+								response.sendRedirect(properties.getBlockPage())
+				);
 			}
 			else {
 				sentinelWebMvcConfig

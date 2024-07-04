@@ -59,16 +59,12 @@ public class NacosConfigDataLocationResolver
 	 * Prefix for Config Server imports.
 	 */
 	public static final String PREFIX = "nacos:";
-
-	private final Log log;
-
-	// support params
-
 	private static final String GROUP = "group";
 
+	// support params
 	private static final String REFRESH_ENABLED = "refreshEnabled";
-
 	private static final String PREFERENCE = "preference";
+	private final Log log;
 
 	public NacosConfigDataLocationResolver(DeferredLogFactory logFactory) {
 		this.log = logFactory.getLog(getClass());
@@ -85,22 +81,22 @@ public class NacosConfigDataLocationResolver
 		BindHandler bindHandler = getBindHandler(context);
 
 		NacosConfigProperties nacosConfigProperties;
-		if (context.getBootstrapContext().isRegistered(NacosConfigProperties.class)) {
+		if (context.getBootstrapContext().isRegistered(NacosConfigDataLoadProperties.class)) {
 			nacosConfigProperties = context.getBootstrapContext()
-					.get(NacosConfigProperties.class);
+					.get(NacosConfigDataLoadProperties.class);
 		}
 		else {
 			nacosConfigProperties = binder
-					.bind("spring.cloud.nacos", Bindable.of(NacosConfigProperties.class),
+					.bind("spring.cloud.nacos", Bindable.of(NacosConfigDataLoadProperties.class),
 							bindHandler)
 					.map(properties -> binder
-							.bind(NacosConfigProperties.PREFIX,
+							.bind(NacosConfigDataLoadProperties.PREFIX,
 									Bindable.ofInstance(properties), bindHandler)
 							.orElse(properties))
 					.orElseGet(() -> binder
-							.bind(NacosConfigProperties.PREFIX,
-									Bindable.of(NacosConfigProperties.class), bindHandler)
-							.orElseGet(NacosConfigProperties::new));
+							.bind(NacosConfigDataLoadProperties.PREFIX,
+									Bindable.of(NacosConfigDataLoadProperties.class), bindHandler)
+							.orElseGet(NacosConfigDataLoadProperties::new));
 		}
 
 		return nacosConfigProperties;

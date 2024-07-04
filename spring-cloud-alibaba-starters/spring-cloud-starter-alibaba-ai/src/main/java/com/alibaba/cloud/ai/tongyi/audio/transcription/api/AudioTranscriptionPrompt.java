@@ -24,7 +24,7 @@ import org.springframework.core.io.Resource;
 /**
  * @author xYLiu
  * @author yuluo
- * @since 2023.0.0.0
+ * @since 2023.0.1.0
  */
 
 public class AudioTranscriptionPrompt implements ModelRequest<Resource> {

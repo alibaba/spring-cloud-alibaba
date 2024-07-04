@@ -21,7 +21,7 @@ import java.net.URL;
 import java.util.Base64;
 import java.util.stream.Collectors;
 
-import com.alibaba.cloud.ai.tongyi.exception.TongYiImagesException;
+import com.alibaba.cloud.ai.tongyi.common.exception.TongYiImagesException;
 import com.alibaba.dashscope.aigc.imagesynthesis.ImageSynthesis;
 import com.alibaba.dashscope.aigc.imagesynthesis.ImageSynthesisParam;
 import com.alibaba.dashscope.aigc.imagesynthesis.ImageSynthesisResult;
@@ -45,12 +45,12 @@ import static com.alibaba.cloud.ai.tongyi.metadata.TongYiImagesResponseMetadata.
  *
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.1.0
  */
 
-public class TongYiImagesClient implements ImageModel {
+public class TongYiImagesModel implements ImageModel {
 
-	private final Logger logger = LoggerFactory.getLogger(TongYiImagesClient.class);
+	private final Logger logger = LoggerFactory.getLogger(TongYiImagesModel.class);
 
 	/**
 	 * Gen Images API.
@@ -82,7 +82,7 @@ public class TongYiImagesClient implements ImageModel {
 	 * @param imageSynthesis the image synthesis
 	 * {@link ImageSynthesis}
 	 */
-	public TongYiImagesClient(ImageSynthesis imageSynthesis) {
+	public TongYiImagesModel(ImageSynthesis imageSynthesis) {
 
 		this(imageSynthesis, TongYiImagesOptions.
 				builder()
@@ -97,7 +97,7 @@ public class TongYiImagesClient implements ImageModel {
 	 * @param imageSynthesis {@link ImageSynthesis}
 	 * @param imagesOptions {@link TongYiImagesOptions}
 	 */
-	public TongYiImagesClient(ImageSynthesis imageSynthesis, TongYiImagesOptions imagesOptions) {
+	public TongYiImagesModel(ImageSynthesis imageSynthesis, TongYiImagesOptions imagesOptions) {
 
 		Assert.notNull(imageSynthesis, "ImageSynthesis must not be null");
 		Assert.notNull(imagesOptions, "TongYiImagesOptions must not be null");

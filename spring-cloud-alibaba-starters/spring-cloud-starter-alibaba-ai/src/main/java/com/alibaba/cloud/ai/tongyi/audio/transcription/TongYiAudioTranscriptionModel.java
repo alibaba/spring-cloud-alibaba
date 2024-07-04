@@ -26,7 +26,7 @@ import com.alibaba.cloud.ai.tongyi.audio.AudioTranscriptionModels;
 import com.alibaba.cloud.ai.tongyi.audio.transcription.api.AudioTranscriptionPrompt;
 import com.alibaba.cloud.ai.tongyi.audio.transcription.api.AudioTranscriptionResponse;
 import com.alibaba.cloud.ai.tongyi.audio.transcription.api.AudioTranscriptionResult;
-import com.alibaba.cloud.ai.tongyi.exception.TongYiException;
+import com.alibaba.cloud.ai.tongyi.common.exception.TongYiException;
 import com.alibaba.cloud.ai.tongyi.metadata.audio.TongYiAudioTranscriptionResponseMetadata;
 import com.alibaba.dashscope.audio.asr.transcription.Transcription;
 import com.alibaba.dashscope.audio.asr.transcription.TranscriptionParam;
@@ -39,14 +39,14 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
 /**
- * TongYiAudioTranscriptionClient is a client for TongYi audio transcription service for
+ * TongYiAudioTranscriptionModel is a client for TongYi audio transcription service for
  * Spring Cloud Alibaba AI.
  * @author xYLiu
  * @author yuluo
- * @since 2023.0.0.0
+ * @since 2023.0.1.0
  */
 
-public class TongYiAudioTranscriptionClient
+public class TongYiAudioTranscriptionModel
 		implements Model<AudioTranscriptionPrompt, AudioTranscriptionResponse> {
 
 	/**
@@ -59,11 +59,11 @@ public class TongYiAudioTranscriptionClient
 	 */
 	private final Transcription transcription;
 
-	public TongYiAudioTranscriptionClient(Transcription transcription) {
+	public TongYiAudioTranscriptionModel(Transcription transcription) {
 		this(null, transcription);
 	}
 
-	public TongYiAudioTranscriptionClient(TongYiAudioTranscriptionOptions defaultOptions,
+	public TongYiAudioTranscriptionModel(TongYiAudioTranscriptionOptions defaultOptions,
 			Transcription transcription) {
 		Assert.notNull(transcription, "transcription must not be null");
 		Assert.notNull(defaultOptions, "defaultOptions must not be null");

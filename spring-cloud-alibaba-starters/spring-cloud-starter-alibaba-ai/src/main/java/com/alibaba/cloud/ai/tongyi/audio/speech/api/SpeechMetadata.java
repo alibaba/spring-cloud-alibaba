@@ -21,7 +21,7 @@ import org.springframework.ai.model.ResultMetadata;
 /**
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.1.0
  */
 
 public interface SpeechMetadata extends ResultMetadata {

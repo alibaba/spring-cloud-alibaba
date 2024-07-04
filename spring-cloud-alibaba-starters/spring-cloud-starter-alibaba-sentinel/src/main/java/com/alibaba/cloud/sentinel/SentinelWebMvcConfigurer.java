@@ -18,7 +18,7 @@ package com.alibaba.cloud.sentinel;
 
 import java.util.Optional;
 
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.SentinelWebInterceptor;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.SentinelWebInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

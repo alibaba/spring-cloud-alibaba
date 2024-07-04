@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.1.0
  */
 
 class TongYiAudioSpeechOptionsTests {
@@ -40,7 +40,7 @@ class TongYiAudioSpeechOptionsTests {
 		SpeechSynthesizer mockClient = Mockito.mock(SpeechSynthesizer.class);
 		Constants.apiKey = "test";
 
-		var speechClient = new TongYiAudioSpeechClient(mockClient,
+		var speechClient = new TongYiAudioSpeechModel(mockClient,
 				TongYiAudioSpeechOptions.builder()
 						.withFormat(SpeechSynthesisAudioFormat.MP3)
 						.withRate(333f)

@@ -37,6 +37,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
+ * @since 2023.0.1.0
  */
 
 class TongYiAudioSpeechClientTest {
@@ -44,13 +45,13 @@ class TongYiAudioSpeechClientTest {
 	@Mock
 	private SpeechSynthesizer speechSynthesizer;
 
-	private TongYiAudioSpeechClient client;
+	private TongYiAudioSpeechModel client;
 
 	@BeforeEach
 	void setUp() {
 
 		MockitoAnnotations.openMocks(this);
-		client = new TongYiAudioSpeechClient(speechSynthesizer, new TongYiAudioSpeechOptions());
+		client = new TongYiAudioSpeechModel(speechSynthesizer, new TongYiAudioSpeechOptions());
 	}
 
 	@Test

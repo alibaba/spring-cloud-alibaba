@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.1.0
  */
 
 class TongYiChatOptionsTests {
@@ -41,7 +41,7 @@ class TongYiChatOptionsTests {
 
 		// Test start.
 
-		var tongYiChatClient = new TongYiChatClient(mockClient,
+		var tongYiChatClient = new TongYiChatModel(mockClient,
 				TongYiChatOptions.builder().withModel(Generation.Models.QWEN_TURBO).withTemperature(88.8).build());
 
 		var tongYiChatParams = tongYiChatClient.toTongYiChatParams(new Prompt("你好"));
@@ -51,7 +51,7 @@ class TongYiChatOptionsTests {
 		assertThat(tongYiChatParams.getModel()).isEqualTo(Generation.Models.QWEN_TURBO);
 		assertThat(tongYiChatParams.getTemperature()).isEqualTo(88.8f);
 
-		tongYiChatClient = new TongYiChatClient(mockClient,
+		tongYiChatClient = new TongYiChatModel(mockClient,
 				TongYiChatOptions.builder().withModel(Generation.Models.QWEN_MAX).withTemperature(77.7).build());
 
 		tongYiChatParams = tongYiChatClient.toTongYiChatParams(new Prompt("你是谁"));

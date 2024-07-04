@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.ai.tongyi.images;
 
-import com.alibaba.cloud.ai.tongyi.image.TongYiImagesClient;
+import com.alibaba.cloud.ai.tongyi.image.TongYiImagesModel;
 import com.alibaba.cloud.ai.tongyi.image.TongYiImagesOptions;
 import com.alibaba.dashscope.aigc.imagesynthesis.ImageSynthesis;
 import com.alibaba.dashscope.aigc.imagesynthesis.ImageSynthesisParam;
@@ -29,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
+ * @since 2023.0.1.0
  */
 
 class TongYiImagesOptionsTests {
@@ -39,7 +40,7 @@ class TongYiImagesOptionsTests {
 		ImageSynthesis mockClient = Mockito.mock(ImageSynthesis.class);
 		Constants.apiKey = "test";
 
-		var tongYiImagesClient = new TongYiImagesClient(mockClient,
+		var tongYiImagesClient = new TongYiImagesModel(mockClient,
 				TongYiImagesOptions.
 						builder()
 						.withModel("test")

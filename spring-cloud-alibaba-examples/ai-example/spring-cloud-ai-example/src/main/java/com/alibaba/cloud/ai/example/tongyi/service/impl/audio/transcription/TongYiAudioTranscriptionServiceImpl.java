@@ -28,13 +28,12 @@ import java.util.List;
 
 import com.alibaba.cloud.ai.example.tongyi.service.AbstractTongYiServiceImpl;
 import com.alibaba.cloud.ai.example.tongyi.service.TongYiService;
-import com.alibaba.cloud.ai.tongyi.audio.transcription.TongYiAudioTranscriptionClient;
+import com.alibaba.cloud.ai.tongyi.audio.transcription.TongYiAudioTranscriptionModel;
 import com.alibaba.cloud.ai.tongyi.audio.transcription.api.AudioTranscriptionPrompt;
 import com.alibaba.cloud.ai.tongyi.audio.transcription.api.AudioTranscriptionResult;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,17 +44,21 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author xYLiu
- * @since 2024/5/15 14:55
+ * @author yuluo
+ * @since 2023.0.1.0
  */
-@Slf4j
+
 @Service
 public class TongYiAudioTranscriptionServiceImpl extends AbstractTongYiServiceImpl {
+
 	private static final Logger logger = LoggerFactory.getLogger(TongYiService.class);
-	private final TongYiAudioTranscriptionClient audioTranscriptionClient;
+
+	private final TongYiAudioTranscriptionModel audioTranscriptionModel;
 
 	@Autowired
-	public TongYiAudioTranscriptionServiceImpl(final TongYiAudioTranscriptionClient audioTranscriptionClient) {
-		this.audioTranscriptionClient = audioTranscriptionClient;
+	public TongYiAudioTranscriptionServiceImpl(final TongYiAudioTranscriptionModel transcriptionModel) {
+
+		this.audioTranscriptionModel = transcriptionModel;
 	}
 
 	@Override
@@ -72,7 +75,7 @@ public class TongYiAudioTranscriptionServiceImpl extends AbstractTongYiServiceIm
 		}
 		AudioTranscriptionPrompt audioTranscriptionPrompt = new AudioTranscriptionPrompt(resource);
 
-		return save(audioTranscriptionClient.call(audioTranscriptionPrompt).getResults());
+		return save(audioTranscriptionModel.call(audioTranscriptionPrompt).getResults());
 	}
 
 	private String save(List<AudioTranscriptionResult> resultList) {

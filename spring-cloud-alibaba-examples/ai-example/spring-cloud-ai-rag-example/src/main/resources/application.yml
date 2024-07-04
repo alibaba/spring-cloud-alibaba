@@ -20,9 +20,13 @@ server:
 spring:
   application:
     name: sca-ai-rag-example
-
+  cloud:
+    ai:
+      tongyi:
+        api-key: sk-xxxxxx
   ai:
     vectorstore:
       redis:
+        uri: your redis addr  # eg：redis://127.0.0.1:6379
         index: peer
         prefix: peer

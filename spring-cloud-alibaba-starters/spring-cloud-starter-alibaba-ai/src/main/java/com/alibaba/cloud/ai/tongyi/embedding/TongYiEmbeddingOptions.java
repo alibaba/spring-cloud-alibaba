@@ -26,7 +26,7 @@ import org.springframework.ai.embedding.EmbeddingOptions;
  * @author why_ohh
  * @author yuluo
  * @author <a href="mailto:550588941@qq.com">why_ohh</a>
- * @since 2023.0.0.0
+ * @since 2023.0.1.0
  */
 
 public final class TongYiEmbeddingOptions implements EmbeddingOptions {

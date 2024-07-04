@@ -18,25 +18,26 @@ package com.alibaba.cloud.ai.tongyi;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import static com.alibaba.cloud.ai.tongyi.common.constants.TongYiConstants.SCA_AI_CONFIGURATION;
+
 /**
- * TongYi connection API properties.
+ * Spring Cloud Alibaba AI TongYi LLM connection properties.
  *
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.1.0
  */
 
 @ConfigurationProperties(TongYiConnectionProperties.CONFIG_PREFIX)
 public class TongYiConnectionProperties {
 
 	/**
-	 * Spring Cloud Alibaba AI configuration prefix.
+	 * Spring Cloud Alibaba AI connection configuration Prefix.
 	 */
-	public static final String CONFIG_PREFIX = "spring.cloud.ai.tongyi";
+	public static final String CONFIG_PREFIX = SCA_AI_CONFIGURATION + "tongyi";
 
 	/**
-	 * API key.
-
+	 * TongYi LLM API key.
 	 */
 	private String apiKey;
 
@@ -47,4 +48,5 @@ public class TongYiConnectionProperties {
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
 	}
+
 }

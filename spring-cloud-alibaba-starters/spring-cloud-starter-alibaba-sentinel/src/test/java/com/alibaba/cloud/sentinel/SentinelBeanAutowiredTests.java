@@ -17,11 +17,11 @@
 package com.alibaba.cloud.sentinel;
 
 import com.alibaba.cloud.sentinel.custom.SentinelAutoConfiguration;
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler;
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.DefaultBlockExceptionHandler;
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.RequestOriginParser;
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.UrlCleaner;
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.config.SentinelWebMvcConfig;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.callback.BlockExceptionHandler;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.callback.DefaultBlockExceptionHandler;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.callback.RequestOriginParser;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.config.SentinelWebMvcConfig;
+import com.alibaba.csp.sentinel.adapter.web.common.UrlCleaner;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;

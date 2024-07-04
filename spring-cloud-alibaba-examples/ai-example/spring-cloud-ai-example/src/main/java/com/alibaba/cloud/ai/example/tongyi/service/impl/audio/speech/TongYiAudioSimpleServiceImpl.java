@@ -24,9 +24,8 @@ import java.time.format.DateTimeFormatter;
 
 import com.alibaba.cloud.ai.example.tongyi.service.AbstractTongYiServiceImpl;
 import com.alibaba.cloud.ai.example.tongyi.service.TongYiService;
-import com.alibaba.cloud.ai.tongyi.audio.speech.api.SpeechClient;
+import com.alibaba.cloud.ai.tongyi.audio.speech.api.SpeechModel;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisAudioFormat;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,19 +34,19 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author yuluo
- * @author 1481556636@qq.com
+ * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
+ * @since 2023.0.1.0
  */
 
-@Slf4j
 @Service
 public class TongYiAudioSimpleServiceImpl extends AbstractTongYiServiceImpl {
 
 	private static final Logger logger = LoggerFactory.getLogger(TongYiService.class);
 
-	private final SpeechClient speechClient;
+	private final SpeechModel speechClient;
 
 	@Autowired
-	public TongYiAudioSimpleServiceImpl(SpeechClient client) {
+	public TongYiAudioSimpleServiceImpl(SpeechModel client) {
 
 		this.speechClient = client;
 	}

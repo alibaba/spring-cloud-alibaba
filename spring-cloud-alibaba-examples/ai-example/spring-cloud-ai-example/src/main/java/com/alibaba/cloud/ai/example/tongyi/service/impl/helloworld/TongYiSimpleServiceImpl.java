@@ -19,8 +19,6 @@ package com.alibaba.cloud.ai.example.tongyi.service.impl.helloworld;
 import java.util.Map;
 
 import com.alibaba.cloud.ai.example.tongyi.service.AbstractTongYiServiceImpl;
-import com.alibaba.cloud.ai.example.tongyi.service.TongYiService;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
@@ -33,19 +31,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Simple example.
- * There is optional message parameter whose default value is "Tell me a joke". pl The response to the request is from the TongYi models Service.
+ * The Chat simple example service implementation.
+ * There is optional message parameter whose default value is "Tell me a joke".
+ * pl The response to the request is from the TongYi models Service.
  *
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.0.0
  */
 
-@Slf4j
 @Service
 public class TongYiSimpleServiceImpl extends AbstractTongYiServiceImpl {
 
-	private static final Logger logger = LoggerFactory.getLogger(TongYiService.class);
+	private static final Logger logger = LoggerFactory.getLogger(TongYiSimpleServiceImpl.class);
 
 	private final ChatModel chatModel;
 
@@ -79,7 +77,7 @@ public class TongYiSimpleServiceImpl extends AbstractTongYiServiceImpl {
 				.map(lastContent -> Map.of(message, fullContent.toString()))
 				.block();
 
-		log.info(fullContent.toString());
+		logger.info(fullContent.toString());
 
 		return Map.of(message, fullContent.toString());
 	}

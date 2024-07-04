@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.ai.tongyi.constants;
+package com.alibaba.cloud.ai.tongyi.common.constants;
 
 /**
  * @author yuluo
@@ -25,6 +25,11 @@ public final class TongYiConstants {
 
 	private TongYiConstants() {
 	}
+
+	/**
+	 * Spring Cloud Alibaba AI configuration prefix.
+	 */
+	public static final String SCA_AI_CONFIGURATION = "spring.cloud.ai.tongyi.";
 
 	/**
 	 * Spring Cloud Alibaba AI constants prefix.

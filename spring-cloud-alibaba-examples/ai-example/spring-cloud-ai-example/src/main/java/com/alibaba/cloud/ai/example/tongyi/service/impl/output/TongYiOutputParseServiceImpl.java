@@ -20,8 +20,6 @@ import java.util.Map;
 
 import com.alibaba.cloud.ai.example.tongyi.models.ActorsFilms;
 import com.alibaba.cloud.ai.example.tongyi.service.AbstractTongYiServiceImpl;
-import com.alibaba.cloud.ai.example.tongyi.service.TongYiService;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +27,7 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
-import org.springframework.ai.parser.BeanOutputParser;
+import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.stereotype.Service;
 
 /**
@@ -38,14 +36,13 @@ import org.springframework.stereotype.Service;
  *
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
- * @since 2023.0.0.0-RC1
+ * @since 2023.0.0.0
  */
 
-@Slf4j
 @Service
 public class TongYiOutputParseServiceImpl extends AbstractTongYiServiceImpl {
 
-	private static final Logger logger = LoggerFactory.getLogger(TongYiService.class);
+	private static final Logger logger = LoggerFactory.getLogger(TongYiOutputParseServiceImpl.class);
 
 	private final ChatModel chatModel;
 
@@ -56,7 +53,7 @@ public class TongYiOutputParseServiceImpl extends AbstractTongYiServiceImpl {
 	@Override
 	public ActorsFilms genOutputParse(String actor) {
 
-		var outputParser = new BeanOutputParser<>(ActorsFilms.class);
+		var outputParser = new BeanOutputConverter<>(ActorsFilms.class);
 
 		String format = outputParser.getFormat();
 		logger.info("format: " + format);
