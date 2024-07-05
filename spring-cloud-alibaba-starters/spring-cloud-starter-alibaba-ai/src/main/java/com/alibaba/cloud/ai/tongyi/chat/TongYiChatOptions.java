@@ -459,6 +459,11 @@ public class TongYiChatOptions implements FunctionCallingOptions, ChatOptions {
 			return this;
 		}
 
+		public Builder withIncrementalOutput(Boolean isIncrementalOutput) {
+			this.options.incrementalOutput = isIncrementalOutput;
+			return this;
+		}
+
 		public TongYiChatOptions build() {
 
 			return this.options;
