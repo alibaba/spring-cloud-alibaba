@@ -32,9 +32,9 @@ import static com.alibaba.cloud.ai.tongyi.common.constants.TongYiConstants.SCA_A
 public class TongYiConnectionProperties {
 
 	/**
-	 * Spring Cloud Alibaba AI connection configuration Prefix.
+	 * Spring Cloud Alibaba AI connection configuration prefix.
 	 */
-	public static final String CONFIG_PREFIX = SCA_AI_CONFIGURATION + "tongyi";
+	public static final String CONFIG_PREFIX = SCA_AI_CONFIGURATION + "connection";
 
 	/**
 	 * TongYi LLM API key.

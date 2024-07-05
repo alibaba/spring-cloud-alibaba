@@ -124,7 +124,7 @@ public class SentinelInvocationHandler implements InvocationHandler {
 							throw new AssertionError(e);
 						}
 						catch (InvocationTargetException e) {
-							throw new AssertionError(e.getCause());
+							throw e.getCause();
 						}
 					}
 					else {

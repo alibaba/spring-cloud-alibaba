@@ -35,7 +35,7 @@ import org.springframework.web.client.RestTemplate;
  * @author xiaojing
  */
 @SpringBootApplication
-public class ServiceApplication {
+public class SentinelCoreApplication {
 
 	@Bean
 	@SentinelRestTemplate(blockHandler = "handleException",
@@ -67,7 +67,7 @@ public class ServiceApplication {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(ServiceApplication.class, args);
+		SpringApplication.run(SentinelCoreApplication.class, args);
 	}
 
 }

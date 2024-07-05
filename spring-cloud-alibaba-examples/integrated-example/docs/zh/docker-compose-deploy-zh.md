@@ -140,9 +140,8 @@ docker-compose-env.yml 文件运行成功之后，添加 Nacos 配置：
 当然各个组件的功能特性不仅仅只包含最佳实践中演示的这些，如果您感兴趣或是想要深入了解，欢迎学习各个组件的独立 example 相关文档。
 
 - Nacos examples
-  - [Nacos config example](../../../nacos-example/readme-zh.md)
-  - [Nacos discovery example](../../../nacos-example/readme-zh.md)
-- [Sentinel core example](../../../sentinel-example/sentinel-core-example/readme-zh.md)
-- [Seata example](../../../seata-example/readme-zh.md)
-- [RocketMQ example](../../../rocketmq-example/readme-zh.md)
-
+  - [Nacos config example](../../../nacos-example/readme.md)
+  - [Nacos discovery example](../../../nacos-example/readme.md)
+- [Sentinel core example](../../../sentinel-example/README-zh.md)
+- [Seata example](../../../seata-example/readme.md)
+- [RocketMQ example](../../../rocketmq-example/readme.md)

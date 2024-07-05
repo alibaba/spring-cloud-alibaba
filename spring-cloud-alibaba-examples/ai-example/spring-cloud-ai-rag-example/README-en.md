@@ -40,22 +40,27 @@ You need to introduce the following dependencies in the POM. XML:
 
 <dependency>
     <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-redis-spring-boot-starter</artifactId>
+    <artifactId>spring-ai-redis-store-spring-boot-starter</artifactId>
     <version>${spring.ai.version}</version>
 </dependency>
 ```
 
 ## 3. Configuration
 
-Configure the following information in the application. Yml:
+Configure the following information in application.yml: > Note: It is recommended that you configure apiKey via an environment variable for apiKey security.
+
+> Note: It is recommended to configure the apiKey via environment variables for apiKey security.
+> Reference: https://github.com/alibaba/spring-cloud-alibaba/tree/2023.x/spring-cloud-alibaba-examples/ai-example/spring-cloud-ai-example#% E6%8E%A5%E5%85%A5-spring-cloud-starter-alibaba-ai:
 
 ```yaml
 spring:
   ai:
     vectorstore:
       redis:
+        # Configure Redis connection URI, default value is redis://127.0.0.1:6379
+        # uri: redis://127.0.0.1:6379
         index: peer
-        prefix: peer
+        Prefix: peer
 ```
 
 ## 4. Write the code
@@ -120,7 +125,7 @@ You can start the SprigBoot main class and then use a browser to access:
 
 ```shell
 # request params is prompt，the default value：What ber pairs well with smoked meats?"
-http://localhost:8080/rag/chat
+http://localhost:8081/rag/chat
 ```
 
 To experience the RAG application.
