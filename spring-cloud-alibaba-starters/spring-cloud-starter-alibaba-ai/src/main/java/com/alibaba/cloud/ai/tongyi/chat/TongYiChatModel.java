@@ -356,6 +356,14 @@ public class TongYiChatModel extends
 			mergedTongYiParams.setTopK(scaChatParams.getTopK());
 		}
 
+		if (scaChatParams.getRepetitionPenalty() != null) {
+			mergedTongYiParams.setRepetitionPenalty(scaChatParams.getRepetitionPenalty());
+		}
+
+		if (scaChatParams.getIncrementalOutput() != null) {
+			mergedTongYiParams.setIncrementalOutput(scaChatParams.getIncrementalOutput());
+		}
+
 		return mergedTongYiParams;
 	}
 
