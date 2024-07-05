@@ -19,6 +19,7 @@ package com.alibaba.cloud.ai.example.tongyi.service.impl.helloworld;
 import java.util.Map;
 
 import com.alibaba.cloud.ai.example.tongyi.service.AbstractTongYiServiceImpl;
+import com.alibaba.cloud.ai.tongyi.chat.TongYiChatOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
@@ -59,7 +60,8 @@ public class TongYiSimpleServiceImpl extends AbstractTongYiServiceImpl {
 	@Override
 	public String completion(String message) {
 
-		Prompt prompt = new Prompt(new UserMessage(message));
+		final TongYiChatOptions options = TongYiChatOptions.builder().withRepetitionPenalty(2.0).build();
+		Prompt prompt = new Prompt(new UserMessage(message),options);
 
 		return chatModel.call(prompt).getResult().getOutput().getContent();
 	}

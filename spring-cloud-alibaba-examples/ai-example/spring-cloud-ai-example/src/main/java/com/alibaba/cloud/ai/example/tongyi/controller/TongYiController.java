@@ -154,7 +154,6 @@ public class TongYiController {
 	@GetMapping("/audio/transcription")
 	public String audioTranscription(@RequestParam(value = "audioUrls",
 			defaultValue = "https://dashscope.oss-cn-beijing.aliyuncs.com/samples/audio/paraformer/realtime_asr_example.wav") String url) {
-
 		return tongYiAudioTranscriptionService.audioTranscription(url);
 	}
 
