@@ -36,7 +36,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class SentinelRulesConfiguration {
 	/**
-	 * You can configure sentinel rules by referring https://github.com/alibaba/Sentinel/wiki/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8#%E6%9F%A5%E8%AF%A2%E6%9B%B4%E6%94%B9%E8%A7%84%E5%88%99.
+	 * You can configure sentinel rules by referring.
+	 * https://sca.aliyun.com/docs/2023/user-guide/sentinel/advanced-guide/#%E6%9B%B4%E5%A4%9A%E9%85%8D%E7%BD%AE%E9%A1%B9
 	 */
 	@PostConstruct
 	public void init() {

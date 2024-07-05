@@ -21,12 +21,17 @@ spring:
   application:
     name: sca-ai-rag-example
   cloud:
-    ai:
-      tongyi:
-        api-key: sk-xxxxxx
+    # We recommend configuring the api-key via an environment variable.
+    # Please see https://github.com/alibaba/spring-cloud-alibaba/tree/2023.x/spring-cloud-alibaba-examples/ai-example/spring-cloud-ai-example#%E6%8E%A5%E5%85%A5-spring-cloud-starter-alibaba-ai:
+    # ai:
+    #  tongyi:
+    #    connection:
+    #      api-key: sk-xxxxxx
+
   ai:
     vectorstore:
       redis:
-        uri: your redis addr  # eg：redis://127.0.0.1:6379
+        # Configure the Redis connection URI, default value is redis://127.0.0.1:6379
+        # uri: redis://127.0.0.1:6379
         index: peer
         prefix: peer

@@ -15,27 +15,26 @@
 #
 
 server:
-  port: 18088
+  port: 18084
 
 spring:
   application:
-    name: sentinel-resttemplate-example
+    name: sentinel-webflux-example
 
   cloud:
     sentinel:
       transport:
         dashboard: localhost:8080
       eager: true
+      datasource:
+        ds1:
+          file:
+            file: classpath:flowrule.json
+            data-type: json
+            rule-type: flow
 
-#  Don't support run in jar by using configuration file method now, refer to https://github.com/alibaba/spring-cloud-alibaba/issues/3033
-#  cloud:
-#    sentinel:
-#      datasource:
-#        ds1.file:
-#          file: "classpath: degraderule.json"
-#          ruleType: "degrade"
-#          dataType: "json"
-#        ds2.file:
-#          file: "classpath: flowrule.json"
-#          ruleType: "flow"
-#          dataType: "json"
+management:
+  endpoints:
+    web:
+      exposure:
+        include=*:

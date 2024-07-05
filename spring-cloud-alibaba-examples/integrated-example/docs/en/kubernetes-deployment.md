@@ -119,6 +119,6 @@ Of course, there is more to each component than just what is demonstrated in the
 - Nacos examples
   - [Nacos config example](../../../nacos-example/readme.md)
   - [Nacos discovery example](../../../nacos-example/readme.md)
-- [Sentinel core example](../../../sentinel-example/sentinel-core-example/readme.md)
+- [Sentinel core example](../../../sentinel-example/README.md)
 - [Seata example](../../../seata-example/readme.md)
 - [RocketMQ example](../../../rocketmq-example/readme.md)

@@ -18,19 +18,19 @@ package com.alibaba.cloud.examples;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * @author raozihao
  * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
  */
+
 @EnableFeignClients
 @SpringBootApplication
-@EnableDiscoveryClient
 public class OpenFeignApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(OpenFeignApplication.class, args);
 	}
 

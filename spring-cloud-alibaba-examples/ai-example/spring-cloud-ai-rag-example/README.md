@@ -40,7 +40,7 @@ services:
 
 <dependency>
     <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-redis-spring-boot-starter</artifactId>
+    <artifactId>spring-ai-redis-store-spring-boot-starter</artifactId>
     <version>${spring.ai.version}</version>
 </dependency>
 ```
@@ -49,11 +49,16 @@ services:
 
 在 application.yml 中配置如下信息：
 
+> 注意：为了保证 apiKey 安全，建议通过环境变量的方式配置 apiKey。
+> 参考：https://github.com/alibaba/spring-cloud-alibaba/tree/2023.x/spring-cloud-alibaba-examples/ai-example/spring-cloud-ai-example#%E6%8E%A5%E5%85%A5-spring-cloud-starter-alibaba-ai:
+
 ```yaml
 spring:
   ai:
     vectorstore:
       redis:
+        # Configure the Redis connection URI, default value is redis://127.0.0.1:6379
+        # uri: redis://127.0.0.1:6379
         index: peer
         prefix: peer
 ```
@@ -120,7 +125,7 @@ private Message getSystemMessage(List<Document> similarDocuments) {
 
 ```shell
 # 参数为 prompt，默认值为：What ber pairs well with smoked meats?"
-http://localhost:8080/rag/chat
+http://localhost:8081/rag/chat
 ```
 
 来体验 RAG 应用。

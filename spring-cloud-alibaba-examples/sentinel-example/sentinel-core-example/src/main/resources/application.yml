@@ -1,0 +1,80 @@
+#
+#  Copyright 2023-2024 the original author or authors.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#       https://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+
+spring:
+  application:
+    name: sentinel-core-example
+
+  cloud:
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+      datasource:
+        ds1:
+          file:
+            file: classpath:flowrule.json
+            data-type: json
+            rule-type: flow
+        ds2:
+          file:
+            file: classpath:degraderule.json
+            data-type: json
+            rule-type: degrade
+        ds3:
+          file:
+              file: classpath:authority.json
+              data-type: json
+              rule-type: authority
+        ds4:
+          file:
+              file: classpath:system.json
+              data-type: json
+              rule-type: system
+        ds5:
+          file:
+              file: classpath:param-flow.json
+              data-type: json
+              rule-type: param_flow
+        ds6:
+          nacos:
+              server-addr: 127.0.0.1:8848
+              username: nacos
+              password: nacos
+              data-id: flowrule.json
+              data-type: json
+              rule-type: flow
+
+      block-page: /errorPage
+      # filter:
+      #   enabled: false
+      # http-method-specify: false
+      eager: true
+
+server:
+  port: 18083
+
+management:
+  endpoint:
+    web:
+        exposure:
+            include: "*"
+    health:
+      show-details: always
+      diskSpace:
+        # we can disable health check, default is enable
+        enabled: false
+      # sentinel:
+      #  enabled: false
