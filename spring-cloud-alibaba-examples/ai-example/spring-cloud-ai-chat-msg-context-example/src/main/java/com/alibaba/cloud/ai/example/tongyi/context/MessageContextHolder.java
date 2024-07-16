@@ -27,6 +27,10 @@ import org.springframework.ai.chat.messages.Message;
 
 public interface MessageContextHolder {
 
+	/**
+	 * Th default session id key.
+	 * Can use session_id request_id &etc.
+	 */
 	String SCA_SESSION_ID = "SCA_SESSION_ID";
 
 	void addMsg(String sessionId, Message msg);
