@@ -28,7 +28,7 @@ import org.springframework.ai.chat.messages.Message;
  */
 
 //@Component
-public class RedisMessageContextHolder implements MessageContextHolder{
+public class RedisMessageContextHolder implements MessageContextHolder {
 
 	@Override
 	public void addMsg(String sessionId, Message msg) {
