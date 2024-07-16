@@ -20,6 +20,7 @@ import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClients;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -32,5 +33,8 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnNacosDiscoveryEnabled
 @LoadBalancerClients(defaultConfiguration = NacosLoadBalancerClientConfiguration.class)
 public class LoadBalancerNacosAutoConfiguration {
-
+	@Bean
+	public LoadBalancerAlgorithm defaultLoadBalancerAlgorithm() {
+		return new DefaultLoadBalancerAlgorithm();
+	}
 }
