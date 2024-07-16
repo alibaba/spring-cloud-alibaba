@@ -34,7 +34,6 @@ import com.alibaba.dashscope.aigc.generation.Generation;
 import com.alibaba.dashscope.aigc.imagesynthesis.ImageSynthesis;
 import com.alibaba.dashscope.audio.asr.transcription.Transcription;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesizer;
-import com.alibaba.dashscope.common.MessageManager;
 import com.alibaba.dashscope.embeddings.TextEmbedding;
 import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.alibaba.dashscope.utils.ApiKey;
@@ -58,7 +57,6 @@ import org.springframework.context.annotation.Scope;
 
 @AutoConfiguration
 @ConditionalOnClass({
-		MessageManager.class,
 		TongYiChatModel.class,
 		TongYiImagesModel.class,
 		TongYiAudioSpeechModel.class,
@@ -81,14 +79,6 @@ public class TongYiAutoConfiguration {
 	public Generation generation() {
 
 		return new Generation();
-	}
-
-	@Bean
-	@Scope("prototype")
-	@ConditionalOnMissingBean
-	public MessageManager msgManager() {
-
-		return new MessageManager(10);
 	}
 
 	@Bean

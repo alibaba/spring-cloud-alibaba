@@ -28,7 +28,7 @@
 
         <!-- Spring AI -->
         <spring.ai.version>1.0.0-M1</spring.ai.version>
-        <dashscope-sdk-java.version>2.14.0</dashscope-sdk-java.version>
+        <dashscope-sdk-java.version>2.15.1</dashscope-sdk-java.version>
 
         <!-- scheduling -->
         <shedlock.version>4.23.0</shedlock.version>

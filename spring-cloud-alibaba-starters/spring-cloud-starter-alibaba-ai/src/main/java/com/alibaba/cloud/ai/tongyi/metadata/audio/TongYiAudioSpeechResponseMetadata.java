@@ -27,8 +27,6 @@ import org.springframework.ai.model.ResponseMetadata;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
-
-
 /**
  * @author yuluo
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>

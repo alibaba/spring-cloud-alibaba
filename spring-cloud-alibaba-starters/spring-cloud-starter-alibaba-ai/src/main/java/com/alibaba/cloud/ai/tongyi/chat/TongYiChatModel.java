@@ -15,18 +15,17 @@
  */
 
 package com.alibaba.cloud.ai.tongyi.chat;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
 
 import com.alibaba.cloud.ai.tongyi.common.exception.TongYiException;
 import com.alibaba.dashscope.aigc.conversation.ConversationParam;
 import com.alibaba.dashscope.aigc.generation.Generation;
 import com.alibaba.dashscope.aigc.generation.GenerationOutput;
 import com.alibaba.dashscope.aigc.generation.GenerationResult;
-import com.alibaba.dashscope.common.MessageManager;
 import com.alibaba.dashscope.common.Role;
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
@@ -51,7 +50,6 @@ import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.model.ModelOptionsUtils;
 import org.springframework.ai.model.function.AbstractFunctionCallSupport;
 import org.springframework.ai.model.function.FunctionCallbackContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 
@@ -84,12 +82,6 @@ public class TongYiChatModel extends
 	 * The TongYi models default chat completion api.
 	 */
 	private TongYiChatOptions defaultOptions;
-
-	/**
-	 * User role message manager.
-	 */
-	@Autowired
-	private MessageManager msgManager;
 
 	/**
 	 * Initializes an instance of the TongYiChatClient.
@@ -144,19 +136,7 @@ public class TongYiChatModel extends
 	public ChatResponse call(Prompt prompt) {
 
 		ConversationParam params = toTongYiChatParams(prompt);
-
-		// TongYi models context loader.
-		com.alibaba.dashscope.common.Message message = new com.alibaba.dashscope.common.Message();
-		message.setRole(Role.USER.getValue());
-		message.setContent(prompt.getContents());
-		msgManager.add(message);
-		params.setMessages(msgManager.get());
-
-		logger.trace("TongYi ConversationOptions: {}", params);
 		GenerationResult chatCompletions = this.callWithFunctionSupport(params);
-		logger.trace("TongYi ConversationOptions: {}", params);
-
-		msgManager.add(chatCompletions);
 
 		List<org.springframework.ai.chat.model.Generation> generations =
 				chatCompletions
@@ -183,7 +163,8 @@ public class TongYiChatModel extends
 		ConversationParam tongYiChatParams = toTongYiChatParams(prompt);
 
 		// See https://help.aliyun.com/zh/dashscope/developer-reference/api-details?spm=a2c4g.11186623.0.0.655fc11aRR0jj7#b9ad0a10cfhpe
-		// tongYiChatParams.setIncrementalOutput(true);
+		// enable incremental output
+		tongYiChatParams.setIncrementalOutput(true);
 
 		try {
 			genRes = generation.streamCall(tongYiChatParams);
@@ -226,7 +207,9 @@ public class TongYiChatModel extends
 
 		Set<String> functionsForThisRequest = new HashSet<>();
 
-		List<com.alibaba.dashscope.common.Message> tongYiMessage = prompt.getInstructions().stream()
+		List<com.alibaba.dashscope.common.Message> tongYiMessage = prompt
+				.getInstructions()
+				.stream()
 				.map(this::fromSpringAIMessage)
 				.toList();
 

@@ -18,17 +18,14 @@ package com.alibaba.cloud.ai.tongyi.metadata.audio;
 
 import java.util.HashMap;
 
-import javax.annotation.Nullable;
-
 import com.alibaba.dashscope.audio.asr.transcription.TranscriptionResult;
 import com.google.gson.JsonObject;
 
 import org.springframework.ai.chat.metadata.EmptyRateLimit;
 import org.springframework.ai.chat.metadata.RateLimit;
 import org.springframework.ai.model.ResponseMetadata;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
-
-
 
 /**
  * @author yuluo

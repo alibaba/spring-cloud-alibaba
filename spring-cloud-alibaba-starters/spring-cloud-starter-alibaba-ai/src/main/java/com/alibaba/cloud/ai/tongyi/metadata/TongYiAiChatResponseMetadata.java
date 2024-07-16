@@ -25,8 +25,6 @@ import org.springframework.ai.chat.metadata.PromptMetadata;
 import org.springframework.ai.chat.metadata.Usage;
 import org.springframework.util.Assert;
 
-
-
 /**
  * {@link ChatResponseMetadata} implementation for {@literal Alibaba DashScope}.
  *
