@@ -22,7 +22,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
-            <version>3.1.1</version>
+            <version>4.1.4</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
