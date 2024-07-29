@@ -22,7 +22,6 @@
         <sentinel.version>1.8.8</sentinel.version>
         <nacos.client.version>2.3.2</nacos.client.version>
         <seata.version>2.0.0</seata.version>
-        <spring.context.support.version>1.0.11</spring.context.support.version>
         <!-- Apache RocketMQ -->
         <rocketmq.version>5.1.4</rocketmq.version>
 
@@ -283,12 +282,6 @@
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-schedulerx</artifactId>
                 <version>${revision}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.alibaba.spring</groupId>
-                <artifactId>spring-context-support</artifactId>
-                <version>${spring.context.support.version}</version>
             </dependency>
 
             <!-- Testing Dependencies -->

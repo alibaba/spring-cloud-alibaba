@@ -27,9 +27,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.alibaba.cloud.commons.context.support.PropertySourcesUtils;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.nacos.api.config.ConfigService;
-import com.alibaba.spring.util.PropertySourcesUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
