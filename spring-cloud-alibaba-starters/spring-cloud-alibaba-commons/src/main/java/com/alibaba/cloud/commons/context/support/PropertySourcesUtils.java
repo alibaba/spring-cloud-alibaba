@@ -42,15 +42,15 @@ public final class PropertySourcesUtils {
 	}
 
 	/**
-	 * Empty String array
+	 * Empty String array.
 	 */
 	public static final String[] EMPTY_STRING_ARRAY = {};
 
 	/**
-	 * Get Sub {@link Properties}
+	 * Get Sub {@link Properties}.
 	 *
-	 * @param propertySources {@link PropertySource} Iterable
-	 * @param prefix          the prefix of property name
+	 * @param propertySources {@link PropertySource} Iterable.
+	 * @param prefix          the prefix of property name.
 	 * @return Map
 	 * @see Properties
 	 */
@@ -67,10 +67,10 @@ public final class PropertySourcesUtils {
 	}
 
 	/**
-	 * Get Sub {@link Properties}
+	 * Get Sub {@link Properties}.
 	 *
-	 * @param environment {@link ConfigurableEnvironment}
-	 * @param prefix      the prefix of property name
+	 * @param environment {@link ConfigurableEnvironment}.
+	 * @param prefix      the prefix of property name.
 	 * @return Map
 	 * @see Properties
 	 */
@@ -80,23 +80,22 @@ public final class PropertySourcesUtils {
 	}
 
 	/**
-	 * Normalize the prefix
+	 * Normalize the prefix.
 	 *
-	 * @param prefix the prefix
-	 * @return the prefix
+	 * @param prefix the prefix.
+	 * @return the prefix.
 	 */
 	public static String normalizePrefix(String prefix) {
 		return prefix.endsWith(".") ? prefix : prefix + ".";
 	}
 
 	/**
-	 * Get prefixed {@link Properties}
+	 * Get prefixed {@link Properties}.
 	 *
-	 * @param propertySources {@link PropertySources}
-	 * @param prefix          the prefix of property name
+	 * @param propertySources {@link PropertySources}.
+	 * @param prefix          the prefix of property name.
 	 * @return Map
 	 * @see Properties
-	 * @since 1.0.3
 	 */
 	public static Map<String, Object> getSubProperties(PropertySources propertySources, String prefix) {
 
@@ -104,14 +103,13 @@ public final class PropertySourcesUtils {
 	}
 
 	/**
-	 * Get prefixed {@link Properties}
+	 * Get prefixed {@link Properties}.
 	 *
-	 * @param propertySources  {@link PropertySources}
-	 * @param propertyResolver {@link PropertyResolver} to resolve the placeholder if present
-	 * @param prefix           the prefix of property name
+	 * @param propertySources  {@link PropertySources}.
+	 * @param propertyResolver {@link PropertyResolver} to resolve the placeholder if present.
+	 * @param prefix           the prefix of property name.
 	 * @return Map
 	 * @see Properties
-	 * @since 1.0.3
 	 */
 	public static Map<String, Object> getSubProperties(PropertySources propertySources, PropertyResolver propertyResolver, String prefix) {
 
@@ -141,9 +139,8 @@ public final class PropertySourcesUtils {
 	/**
 	 * Get the property names as the array from the specified {@link PropertySource} instance.
 	 *
-	 * @param propertySource {@link PropertySource} instance
+	 * @param propertySource {@link PropertySource} instance.
 	 * @return non-null
-	 * @since 1.0.10
 	 */
 	public static String[] getPropertyNames(PropertySource propertySource) {
 
