@@ -31,7 +31,7 @@ import org.springframework.core.env.PropertySourcesPropertyResolver;
 import static java.util.Collections.unmodifiableMap;
 
 /**
- * @author yuluo
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @author <a href="mailto:yuluo08290126@gmail.com">yuluo</a>
  * {@link PropertySources} Utilities
  * {@see PropertySources}
