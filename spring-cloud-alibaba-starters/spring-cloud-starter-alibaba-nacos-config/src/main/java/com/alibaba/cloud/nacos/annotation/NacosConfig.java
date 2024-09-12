@@ -37,4 +37,6 @@ public @interface NacosConfig {
 	String dataId();
 
 	String key() default "";
+
+	String defaultValue() default "";
 }

@@ -55,6 +55,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 	private final static Logger log = LoggerFactory
 			.getLogger(NacosAnnotationProcessor.class);
+
 	@Override
 	public int getOrder() {
 		return 0;
@@ -153,7 +154,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 						@Override
 						public String toString() {
-							return String.format("sca nacos config listener on bean method %s", beanName + "#" + method.getName());
+							return String.format("sca nacos config listener on bean method %s", beanName + "@" + bean.hashCode() + "#" + method.getName());
 						}
 					});
 		}
@@ -197,7 +198,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 						@Override
 						public String toString() {
-							return String.format("sca nacos config listener on bean method %s", beanName + "#" + method.getName());
+							return String.format("sca nacos config listener on bean method %s", beanName + "@" + bean.hashCode() + "#" + method.getName());
 						}
 					});
 
@@ -228,7 +229,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 				@Override
 				public String toString() {
-					return String.format("sca nacos config listener on bean method %s", beanName + "#" + method.getName());
+					return String.format("sca nacos config listener on bean method %s", beanName + "@" + bean.hashCode() + "#" + method.getName());
 				}
 			});
 
@@ -246,10 +247,10 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			ReflectionUtils.makeAccessible(field);
 
 			if (StringUtils.isBlank(key)) {
-				handleFiledNacosConfigAnnotationWithoutKey(dataId, group, beanName, bean, field);
+				handleFiledNacosConfigAnnotationWithoutKey(dataId, group, beanName, bean, field, annotation.defaultValue());
 			}
 			else {
-				handleFiledNacosConfigAnnotationWithKey(dataId, group, key, beanName, bean, field);
+				handleFiledNacosConfigAnnotationWithKey(dataId, group, key, beanName, bean, field, annotation.defaultValue());
 			}
 
 		}
@@ -258,13 +259,15 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 		}
 	}
 
-	private void handleFiledNacosConfigAnnotationWithoutKey(String dataId, String group, String beanName, Object bean, Field field) {
+	private void handleFiledNacosConfigAnnotationWithoutKey(String dataId, String group, String beanName, Object bean, Field field, String defaultValue) {
 
 		try {
 			ReflectionUtils.makeAccessible(field);
 
 			String config = getGroupKeyContent(dataId, group);
-
+			if (config == null) {
+				config = defaultValue;
+			}
 			// annotation on string.
 			if (String.class.isAssignableFrom(field.getType())) {
 				ReflectionUtils.setField(field, bean, config);
@@ -281,7 +284,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 					@Override
 					public String toString() {
-						return String.format("sca nacos config listener on bean filed %s", beanName + "#" + field.getName());
+						return String.format("sca nacos config listener on bean filed %s", beanName + "@" + bean.hashCode() + "#" + field.getName());
 					}
 				});
 				return;
@@ -317,7 +320,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 					@Override
 					public String toString() {
-						return String.format("sca nacos config properties listener on bean filed %s", beanName + "#" + field.getName());
+						return String.format("sca nacos config properties listener on bean filed %s", beanName + "@" + bean.hashCode() + "#" + field.getName());
 					}
 
 				});
@@ -352,7 +355,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 				@Override
 				public String toString() {
-					return String.format("sca nacos config object listener on bean filed %s", beanName + "#" + field.getName());
+					return String.format("sca nacos config object listener on bean filed %s", beanName + "@" + bean.hashCode() + "#" + field.getName());
 				}
 
 			});
@@ -364,12 +367,14 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 	}
 
 	private void handleFiledNacosConfigAnnotationWithKey(String dataId, String group, String key, String beanName, Object bean,
-			Field field) {
+			Field field, String defaultValue) {
 		try {
 			ReflectionUtils.makeAccessible(field);
 
 			String config = getDestContent(getGroupKeyContent(dataId, group), key);
-
+			if (config == null) {
+				config = defaultValue;
+			}
 			// annotation on string.
 			if (String.class.isAssignableFrom(field.getType())) {
 				ReflectionUtils.setField(field, bean, config);
@@ -385,7 +390,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 							@Override
 							public String toString() {
-								return String.format("[spring cloud alibaba nacos config key listener , key %s , target %s ] ", key, beanName + "#" + field.getName());
+								return String.format("[spring cloud alibaba nacos config key listener , key %s , target %s ] ", key, beanName + "@" + bean.hashCode() + "#" + field.getName());
 							}
 
 						});
@@ -428,7 +433,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 							@Override
 							public String toString() {
-								return String.format("[spring cloud alibaba nacos config key listener for properties , key %s , target %s ] ", key, beanName + "#" + field.getName());
+								return String.format("[spring cloud alibaba nacos config key listener for properties , key %s , target %s ] ", key, beanName + "@" + bean.hashCode() + "#" + field.getName());
 							}
 
 						});
@@ -456,7 +461,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 							@Override
 							public String toString() {
-								return String.format("[spring cloud alibaba nacos config key listener , key %s , target %s ] ", key, beanName + "#" + field.getName());
+								return String.format("[spring cloud alibaba nacos config key listener , key %s , target %s ] ", key, beanName + "@" + bean.hashCode() + "#" + field.getName());
 							}
 						});
 				return;
@@ -526,7 +531,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			ReflectionUtils.setField(filed, bean, Double.valueOf(value));
 		}
 		else if (filed.getType() == float.class) {
-			filed.setDouble(bean, Float.valueOf(value));
+			filed.setFloat(bean, Float.valueOf(value));
 		}
 		else if (filed.getType() == Float.class) {
 			ReflectionUtils.setField(filed, bean, Float.valueOf(value));
