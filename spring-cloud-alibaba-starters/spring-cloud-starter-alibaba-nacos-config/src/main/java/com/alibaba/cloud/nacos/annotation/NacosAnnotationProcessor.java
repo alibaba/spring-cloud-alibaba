@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -61,6 +62,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 		return 0;
 	}
 
+	private Map<String, TargetRefreshable> targetListenerMap = new ConcurrentHashMap<>();
 	private Map<String, AtomicReference<String>> groupKeyCache = new ConcurrentHashMap<>();
 
 	private String getGroupKeyContent(String dataId, String group) throws Exception {
@@ -141,20 +143,31 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			}
 
 			ReflectionUtils.makeAccessible(method);
+			String refreshTargetKey = beanName + "#" + method.getName();
+			TargetRefreshable currentTarget = targetListenerMap.get(refreshTargetKey);
+			if (currentTarget != null) {
+				log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
+						currentTarget.hashCode(), bean.hashCode());
+				targetListenerMap.get(refreshTargetKey).setTarget(bean);
+				return;
+			}
 
+			log.info("[Nacos Config] register {} listener on {} ", refreshTargetKey,
+					bean.hashCode());
 			// annotation on string.
 			nacosConfigManager.getConfigService().addListener(dataId, group,
-					new NacosPropertiesKeyListener(wrapArrayToSet(annotation.interestedKeys()),
+					new NacosPropertiesKeyListener(bean, wrapArrayToSet(annotation.interestedKeys()),
 							wrapArrayToSet(annotation.interestedKeyPrefixes())) {
 
 						@Override
 						public void configChanged(ConfigChangeEvent event) {
-							ReflectionUtils.invokeMethod(method, bean, event);
+							ReflectionUtils.invokeMethod(method, this.getTarget(), event);
 						}
 
 						@Override
 						public String toString() {
-							return String.format("sca nacos config listener on bean method %s", beanName + "@" + bean.hashCode() + "#" + method.getName());
+							return String.format("sca nacos config listener on bean method %s", beanName + "@" + this.getTarget()
+									.hashCode() + "#" + method.getName());
 						}
 					});
 		}
@@ -180,10 +193,20 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			}
 
 			ReflectionUtils.makeAccessible(method);
+			String refreshTargetKey = beanName + "#" + method.getName();
+			TargetRefreshable currentTarget = targetListenerMap.get(refreshTargetKey);
+			if (currentTarget != null) {
+				log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
+						currentTarget.hashCode(), bean.hashCode());
+				targetListenerMap.get(refreshTargetKey).setTarget(bean);
+				return;
+			}
 
+			log.info("[Nacos Config] register {} listener on {} ", refreshTargetKey,
+					bean.hashCode());
 			// annotation on string.
 			nacosConfigManager.getConfigService()
-					.addListener(dataId, group, new NacosPropertiesKeyListener(wrapArrayToSet(key)) {
+					.addListener(dataId, group, new NacosPropertiesKeyListener(bean, wrapArrayToSet(key)) {
 
 						@Override
 						public void configChanged(ConfigChangeEvent event) {
@@ -191,14 +214,14 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 							List<ConfigChangeItem> collect = changeItems.stream().filter(a -> a.getKey().equals(key))
 									.collect(Collectors.toList());
 							if (!collect.isEmpty()) {
-								ReflectionUtils.invokeMethod(method, bean, collect.get(0));
+								ReflectionUtils.invokeMethod(method, this.getTarget(), collect.get(0));
 							}
 
 						}
 
 						@Override
 						public String toString() {
-							return String.format("sca nacos config listener on bean method %s", beanName + "@" + bean.hashCode() + "#" + method.getName());
+							return String.format("sca nacos config listener on bean method %s", beanName + "@" + getTarget().hashCode() + "#" + method.getName());
 						}
 					});
 
@@ -220,16 +243,33 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			}
 
 			ReflectionUtils.makeAccessible(method);
+			String refreshTargetKey = beanName + "#" + method.getName();
+			TargetRefreshable currentTarget = targetListenerMap.get(refreshTargetKey);
+			if (currentTarget != null) {
+				log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
+						currentTarget.hashCode(), bean.hashCode());
+				targetListenerMap.get(refreshTargetKey).setTarget(bean);
+				return;
+			}
 
-			nacosConfigManager.getConfigService().addListener(dataId, group, new AbstractListener() {
+			log.info("[Nacos Config] register {} listener on {} ", refreshTargetKey,
+					bean.hashCode());
+			nacosConfigManager.getConfigService().addListener(dataId, group, new NacosConfigRefreshableListener(bean) {
+
+				@Override
+				public Executor getExecutor() {
+					return null;
+				}
+
 				@Override
 				public void receiveConfigInfo(String configInfo) {
-					ReflectionUtils.invokeMethod(method, bean, configInfo);
+					ReflectionUtils.invokeMethod(method, getTarget(), configInfo);
 				}
 
 				@Override
 				public String toString() {
-					return String.format("sca nacos config listener on bean method %s", beanName + "@" + bean.hashCode() + "#" + method.getName());
+					return String.format("sca nacos config listener on bean method %s", beanName + "@" + getTarget()
+							.hashCode() + "#" + method.getName());
 				}
 			});
 
@@ -271,22 +311,35 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			// annotation on string.
 			if (String.class.isAssignableFrom(field.getType())) {
 				ReflectionUtils.setField(field, bean, config);
-				nacosConfigManager.getConfigService().addListener(dataId, group, new AbstractListener() {
-					@Override
-					public void receiveConfigInfo(String configInfo) {
-						try {
-							ReflectionUtils.setField(field, bean, configInfo);
-						}
-						catch (Exception e) {
-							throw new RuntimeException(e);
-						}
-					}
 
-					@Override
-					public String toString() {
-						return String.format("sca nacos config listener on bean filed %s", beanName + "@" + bean.hashCode() + "#" + field.getName());
-					}
-				});
+				String refreshTargetKey = beanName + "#" + field.getName();
+				TargetRefreshable currentTarget = targetListenerMap.get(refreshTargetKey);
+				if (currentTarget != null) {
+					log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
+							currentTarget.hashCode(), bean.hashCode());
+					targetListenerMap.get(refreshTargetKey).setTarget(bean);
+					return;
+				}
+
+				log.info("[Nacos Config] register {} listener on {} ", refreshTargetKey,
+						bean.hashCode());
+				nacosConfigManager.getConfigService()
+						.addListener(dataId, group, new NacosConfigRefreshableListener(bean) {
+							@Override
+							public void receiveConfigInfo(String configInfo) {
+								try {
+									ReflectionUtils.setField(field, getTarget(), configInfo);
+								}
+								catch (Exception e) {
+									throw new RuntimeException(e);
+								}
+							}
+
+							@Override
+							public String toString() {
+								return String.format("sca nacos config listener on bean filed %s", beanName + "@" + getTarget().hashCode() + "#" + field.getName());
+							}
+						});
 				return;
 			}
 
@@ -303,27 +356,39 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 					throw new RuntimeException(e);
 				}
 				ReflectionUtils.setField(field, bean, properties);
-				nacosConfigManager.getConfigService().addListener(dataId, group, new AbstractListener() {
-					@Override
-					public void receiveConfigInfo(String configInfo) {
-						try {
-							Properties properties = new Properties();
-							if (StringUtils.isNotBlank(configInfo)) {
-								properties = PropertiesUtils.convertToProperties(configInfo);
+				String refreshTargetKey = beanName + "#" + field.getName();
+				TargetRefreshable currentTarget = targetListenerMap.get(refreshTargetKey);
+				if (currentTarget != null) {
+					log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
+							currentTarget.hashCode(), bean.hashCode());
+					targetListenerMap.get(refreshTargetKey).setTarget(bean);
+					return;
+				}
+
+				log.info("[Nacos Config] register {} listener on {} ", refreshTargetKey,
+						bean.hashCode());
+				nacosConfigManager.getConfigService()
+						.addListener(dataId, group, new NacosConfigRefreshableListener(bean) {
+							@Override
+							public void receiveConfigInfo(String configInfo) {
+								try {
+									Properties properties = new Properties();
+									if (StringUtils.isNotBlank(configInfo)) {
+										properties = PropertiesUtils.convertToProperties(configInfo);
+									}
+									ReflectionUtils.setField(field, getTarget(), properties);
+								}
+								catch (Throwable e) {
+									throw new RuntimeException(e);
+								}
 							}
-							ReflectionUtils.setField(field, bean, properties);
-						}
-						catch (Throwable e) {
-							throw new RuntimeException(e);
-						}
-					}
 
-					@Override
-					public String toString() {
-						return String.format("sca nacos config properties listener on bean filed %s", beanName + "@" + bean.hashCode() + "#" + field.getName());
-					}
+							@Override
+							public String toString() {
+								return String.format("sca nacos config properties listener on bean filed %s", beanName + "@" + getTarget().hashCode() + "#" + field.getName());
+							}
 
-				});
+						});
 				return;
 			}
 
@@ -338,7 +403,18 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			//yaml and json to object
 			Object o = ObjectUtils.convertToObject(config, field.getType());
 			ReflectionUtils.setField(field, bean, o);
-			nacosConfigManager.getConfigService().addListener(dataId, group, new AbstractListener() {
+			String refreshTargetKey = beanName + "#" + field.getName();
+			TargetRefreshable currentTarget = targetListenerMap.get(refreshTargetKey);
+			if (currentTarget != null) {
+				log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
+						currentTarget.hashCode(), bean.hashCode());
+				targetListenerMap.get(refreshTargetKey).setTarget(bean);
+				return;
+			}
+
+			log.info("[Nacos Config] register {} listener on {} ", refreshTargetKey,
+					bean.hashCode());
+			nacosConfigManager.getConfigService().addListener(dataId, group, new NacosConfigRefreshableListener(bean) {
 				@Override
 				public void receiveConfigInfo(String configInfo) {
 					try {
@@ -346,7 +422,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 							configInfo = "{}";
 						}
 						Object o = ObjectUtils.convertToObject(configInfo, field.getType());
-						ReflectionUtils.setField(field, bean, o);
+						ReflectionUtils.setField(field, getTarget(), o);
 					}
 					catch (Exception e) {
 						throw new RuntimeException(e);
@@ -355,7 +431,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 				@Override
 				public String toString() {
-					return String.format("sca nacos config object listener on bean filed %s", beanName + "@" + bean.hashCode() + "#" + field.getName());
+					return String.format("sca nacos config object listener on bean filed %s", beanName + "@" + getTarget().hashCode() + "#" + field.getName());
 				}
 
 			});
@@ -378,19 +454,30 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			// annotation on string.
 			if (String.class.isAssignableFrom(field.getType())) {
 				ReflectionUtils.setField(field, bean, config);
+				String refreshTargetKey = beanName + "#" + field.getName();
+				TargetRefreshable currentTarget = targetListenerMap.get(refreshTargetKey);
+				if (currentTarget != null) {
+					log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
+							currentTarget.hashCode(), bean.hashCode());
+					targetListenerMap.get(refreshTargetKey).setTarget(bean);
+					return;
+				}
+
+				log.info("[Nacos Config] register {} listener on {} ", refreshTargetKey,
+						bean.hashCode());
 				nacosConfigManager.getConfigService()
-						.addListener(dataId, group, new NacosPropertiesKeyListener(wrapArrayToSet(key)) {
+						.addListener(dataId, group, new NacosPropertiesKeyListener(bean, wrapArrayToSet(key)) {
 
 							@Override
 							public void configChanged(ConfigChangeEvent event) {
 								ConfigChangeItem changeItem = event.getChangeItem(key);
 								String newConfig = changeItem == null ? null : changeItem.getNewValue();
-								ReflectionUtils.setField(field, bean, newConfig);
+								ReflectionUtils.setField(field, getTarget(), newConfig);
 							}
 
 							@Override
 							public String toString() {
-								return String.format("[spring cloud alibaba nacos config key listener , key %s , target %s ] ", key, beanName + "@" + bean.hashCode() + "#" + field.getName());
+								return String.format("[spring cloud alibaba nacos config key listener , key %s , target %s ] ", key, beanName + "@" + getTarget().hashCode() + "#" + field.getName());
 							}
 
 						});
@@ -411,8 +498,19 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 					throw new RuntimeException(e);
 				}
 				ReflectionUtils.setField(field, bean, properties);
+				String refreshTargetKey = beanName + "#" + field.getName();
+				TargetRefreshable currentTarget = targetListenerMap.get(refreshTargetKey);
+				if (currentTarget != null) {
+					log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
+							currentTarget.hashCode(), bean.hashCode());
+					targetListenerMap.get(refreshTargetKey).setTarget(bean);
+					return;
+				}
+
+				log.info("[Nacos Config] register {} listener on {} ", refreshTargetKey,
+						bean.hashCode());
 				nacosConfigManager.getConfigService()
-						.addListener(dataId, group, new NacosPropertiesKeyListener(wrapArrayToSet(key)) {
+						.addListener(dataId, group, new NacosPropertiesKeyListener(bean, wrapArrayToSet(key)) {
 
 							@Override
 							public void configChanged(ConfigChangeEvent event) {
@@ -424,7 +522,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 									if (StringUtils.isNotBlank(newConfig)) {
 										properties = PropertiesUtils.convertToProperties(newConfig);
 									}
-									ReflectionUtils.setField(field, bean, properties);
+									ReflectionUtils.setField(field, getTarget(), properties);
 								}
 								catch (Throwable e) {
 									throw new RuntimeException(e);
@@ -433,7 +531,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 							@Override
 							public String toString() {
-								return String.format("[spring cloud alibaba nacos config key listener for properties , key %s , target %s ] ", key, beanName + "@" + bean.hashCode() + "#" + field.getName());
+								return String.format("[spring cloud alibaba nacos config key listener for properties , key %s , target %s ] ", key, beanName + "@" + getTarget().hashCode() + "#" + field.getName());
 							}
 
 						});
@@ -442,8 +540,19 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 			if (field.getType().isPrimitive() && setPrimitiveFiled(field, bean, config)) {
 
+				String refreshTargetKey = beanName + "#" + field.getName();
+				TargetRefreshable currentTarget = targetListenerMap.get(refreshTargetKey);
+				if (currentTarget != null) {
+					log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
+							currentTarget.hashCode(), bean.hashCode());
+					targetListenerMap.get(refreshTargetKey).setTarget(bean);
+					return;
+				}
+
+				log.info("[Nacos Config] register {} listener on {} ", refreshTargetKey,
+						bean.hashCode());
 				nacosConfigManager.getConfigService()
-						.addListener(dataId, group, new NacosPropertiesKeyListener(wrapArrayToSet(key)) {
+						.addListener(dataId, group, new NacosPropertiesKeyListener(bean, wrapArrayToSet(key)) {
 
 							@Override
 							public void configChanged(ConfigChangeEvent event) {
@@ -451,7 +560,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 									ConfigChangeItem changeItem = event.getChangeItem(key);
 									String newConfig = changeItem == null ? null : changeItem.getNewValue();
 									if (StringUtils.isNotBlank(newConfig)) {
-										setPrimitiveFiled(field, bean, newConfig);
+										setPrimitiveFiled(field, getTarget(), newConfig);
 									}
 								}
 								catch (Exception e) {
@@ -461,7 +570,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 							@Override
 							public String toString() {
-								return String.format("[spring cloud alibaba nacos config key listener , key %s , target %s ] ", key, beanName + "@" + bean.hashCode() + "#" + field.getName());
+								return String.format("[spring cloud alibaba nacos config key listener , key %s , target %s ] ", key, beanName + "@" + getTarget().hashCode() + "#" + field.getName());
 							}
 						});
 				return;
@@ -474,8 +583,19 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			//yaml and json to object
 			Object o = ObjectUtils.convertToObject(config, field.getType());
 			ReflectionUtils.setField(field, bean, o);
+			String refreshTargetKey = beanName + "#" + field.getName();
+			TargetRefreshable currentTarget = targetListenerMap.get(refreshTargetKey);
+			if (currentTarget != null) {
+				log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
+						currentTarget.hashCode(), bean.hashCode());
+				targetListenerMap.get(refreshTargetKey).setTarget(bean);
+				return;
+			}
+
+			log.info("[Nacos Config] register {} listener on {} ", refreshTargetKey,
+					bean.hashCode());
 			nacosConfigManager.getConfigService()
-					.addListener(dataId, group, new NacosPropertiesKeyListener(wrapArrayToSet(key)) {
+					.addListener(dataId, group, new NacosPropertiesKeyListener(bean, wrapArrayToSet(key)) {
 
 						@Override
 						public void configChanged(ConfigChangeEvent event) {
@@ -486,7 +606,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 									newConfig = "{}";
 								}
 								Object o = ObjectUtils.convertToObject(newConfig, field.getType());
-								ReflectionUtils.setField(field, bean, o);
+								ReflectionUtils.setField(field, getTarget(), o);
 							}
 							catch (Exception e) {
 								throw new RuntimeException(e);
@@ -495,7 +615,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 						@Override
 						public String toString() {
-							return String.format("[spring cloud alibaba nacos config key listener , key %s , target %s ] ", key, beanName + "#" + field.getName());
+							return String.format("[spring cloud alibaba nacos config key listener , key %s , target %s ] ", key, beanName + "@" + getTarget().hashCode() + "#" + field.getName());
 						}
 					});
 

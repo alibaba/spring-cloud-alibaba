@@ -28,14 +28,17 @@ public abstract class NacosPropertiesKeyListener extends AbstractConfigChangeLis
 
 	Set<String> interestedKeyPrefixes;
 
-	NacosPropertiesKeyListener() {
+	NacosPropertiesKeyListener(Object target) {
+		super(target);
 	}
 
-	NacosPropertiesKeyListener(Set<String> interestedKeys) {
+	NacosPropertiesKeyListener(Object target, Set<String> interestedKeys) {
+		this(target);
 		this.interestedKeys = interestedKeys;
 	}
 
-	public NacosPropertiesKeyListener(Set<String> interestedKeys, Set<String> interestedKeyPrefixes) {
+	public NacosPropertiesKeyListener(Object target, Set<String> interestedKeys, Set<String> interestedKeyPrefixes) {
+		this(target);
 		this.interestedKeys = interestedKeys;
 		this.interestedKeyPrefixes = interestedKeyPrefixes;
 	}

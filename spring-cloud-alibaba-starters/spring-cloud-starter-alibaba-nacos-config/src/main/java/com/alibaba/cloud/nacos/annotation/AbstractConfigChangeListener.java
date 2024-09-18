@@ -23,9 +23,26 @@ import com.alibaba.nacos.api.config.ConfigChangeItem;
 import com.alibaba.nacos.api.config.listener.AbstractSharedListener;
 import com.alibaba.nacos.client.config.impl.ConfigChangeHandler;
 
-public abstract class AbstractConfigChangeListener extends AbstractSharedListener {
+public abstract class AbstractConfigChangeListener extends AbstractSharedListener implements TargetRefreshable {
 
 	String lastContent;
+
+	Object target;
+
+	@Override
+	public Object getTarget() {
+		return target;
+	}
+
+	@Override
+	public void setTarget(Object target) {
+		this.target = target;
+	}
+
+	public AbstractConfigChangeListener(Object target) {
+		this.target = target;
+	}
+
 
 	@Override
 	public void innerReceive(String dataId, String group, String configInfo) {
