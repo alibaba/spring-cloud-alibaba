@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos;
 
+import com.alibaba.cloud.nacos.annotation.NacosAnnotationProcessor;
 import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
 import com.alibaba.cloud.nacos.refresh.SmartConfigurationPropertiesRebinder;
@@ -49,6 +50,11 @@ public class NacosConfigAutoConfiguration {
 					NacosConfigProperties.class);
 		}
 		return new NacosConfigProperties();
+	}
+
+	@Bean
+	public NacosAnnotationProcessor nacosAnnotation() {
+		return new NacosAnnotationProcessor();
 	}
 
 	@Bean
