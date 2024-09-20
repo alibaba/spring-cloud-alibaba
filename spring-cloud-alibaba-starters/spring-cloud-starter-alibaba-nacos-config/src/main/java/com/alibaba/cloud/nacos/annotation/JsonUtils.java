@@ -17,12 +17,14 @@
 package com.alibaba.cloud.nacos.annotation;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 
 import com.alibaba.nacos.api.exception.runtime.NacosDeserializationException;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 
 final class JsonUtils {
 
@@ -56,4 +58,12 @@ final class JsonUtils {
 		}
 	}
 
+	public static <T> T toObj(String json, Type type) {
+		try {
+			return mapper.readValue(json, TypeFactory.defaultInstance().constructType(type));
+		}
+		catch (IOException e) {
+			throw new NacosDeserializationException(type, e);
+		}
+	}
 }

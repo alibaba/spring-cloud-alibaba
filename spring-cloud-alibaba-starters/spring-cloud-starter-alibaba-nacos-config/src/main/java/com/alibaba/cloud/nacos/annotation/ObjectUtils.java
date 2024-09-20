@@ -16,20 +16,25 @@
 
 package com.alibaba.cloud.nacos.annotation;
 
+import java.lang.reflect.Type;
+
+import org.springframework.util.StringUtils;
+
 final class ObjectUtils {
 
 	private ObjectUtils() {
 	}
 
-	public static Object convertToObject(String content, Class clazz) {
-		if (content == null) {
+	public static Object convertToObject(String content, Type clazz) {
+		if (!StringUtils.hasText(content)) {
 			return null;
 		}
 
 		return convertFormJsonContent(content, clazz);
 	}
 
-	private static Object convertFormJsonContent(String content, Class clazz) {
+	private static Object convertFormJsonContent(String content, Type clazz) {
+
 		return JsonUtils.toObj(content, clazz);
 	}
 }

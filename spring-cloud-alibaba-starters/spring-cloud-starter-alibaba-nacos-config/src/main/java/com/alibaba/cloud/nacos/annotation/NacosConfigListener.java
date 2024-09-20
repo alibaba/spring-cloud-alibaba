@@ -29,4 +29,5 @@ public @interface NacosConfigListener {
 
 	String group();
 
+	boolean initNotify() default false;
 }
