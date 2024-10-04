@@ -50,7 +50,7 @@ public class NacosConfigAutoConfiguration {
 	public NacosConfigProperties nacosConfigProperties(ApplicationContext context) {
 		if (context.getParent() != null
 				&& BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
-				context.getParent(), NacosConfigProperties.class).length > 0) {
+						context.getParent(), NacosConfigProperties.class).length > 0) {
 			return BeanFactoryUtils.beanOfTypeIncludingAncestors(context.getParent(),
 					NacosConfigProperties.class);
 		}
