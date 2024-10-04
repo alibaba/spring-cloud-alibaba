@@ -16,12 +16,18 @@
 
 package com.alibaba.cloud.nacos;
 
+import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
 import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
 import com.alibaba.cloud.nacos.refresh.SmartConfigurationPropertiesRebinder;
 import com.alibaba.cloud.nacos.refresh.condition.ConditionalOnNonDefaultBehavior;
+import com.alibaba.nacos.api.common.Constants;
+import com.alibaba.nacos.common.utils.StringUtils;
 
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.SearchStrategy;
@@ -44,11 +50,30 @@ public class NacosConfigAutoConfiguration {
 	public NacosConfigProperties nacosConfigProperties(ApplicationContext context) {
 		if (context.getParent() != null
 				&& BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
-						context.getParent(), NacosConfigProperties.class).length > 0) {
+				context.getParent(), NacosConfigProperties.class).length > 0) {
 			return BeanFactoryUtils.beanOfTypeIncludingAncestors(context.getParent(),
 					NacosConfigProperties.class);
 		}
 		return new NacosConfigProperties();
+	}
+
+	@Bean
+	@ConditionalOnBean(NacosConfigProperties.class)
+	public BeanPostProcessor nacosConfigBeanPostProcessor() {
+		return new BeanPostProcessor() {
+
+			@Override
+			public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+				if (bean instanceof NacosConfigProperties nacosConfigProperties) {
+					String encode = nacosConfigProperties.getEncode();
+					if (StringUtils.isBlank(encode)) {
+						encode = Constants.ENCODE;
+					}
+					NacosDataParserHandler.getInstance().setEncode(encode);
+				}
+				return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
+			}
+		};
 	}
 
 	@Bean
