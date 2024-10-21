@@ -24,8 +24,8 @@
         <awaitility.version>4.2.2</awaitility.version>
         <kotlin.version>1.9.24</kotlin.version>
         <slf4j-api.version>2.0.16</slf4j-api.version>
-        <log4j-slf4j2-impl.version>2.24.0</log4j-slf4j2-impl.version>
-        <guava.version>33.3.0-jre</guava.version>
+        <log4j-slf4j2-impl.version>2.24.1</log4j-slf4j2-impl.version>
+        <guava.version>33.3.1-jre</guava.version>
         <hamcrest.version>3.0</hamcrest.version>
     </properties>
 

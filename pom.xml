@@ -92,10 +92,10 @@
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-deploy-plugin.version>3.1.3</maven-deploy-plugin.version>
         <!-- JUnit 5 requires Surefire version 2.22.0 or higher -->
-        <maven-surefire-plugin.version>3.5.0</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.5.1</maven-surefire-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.10.0</maven-javadoc-plugin.version>
-        <maven-gpg-plugin.version>3.2.5</maven-gpg-plugin.version>
+        <maven-javadoc-plugin.version>3.10.1</maven-javadoc-plugin.version>
+        <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
         <flatten-maven-plugin.version>1.6.0</flatten-maven-plugin.version>
         <jacoco.version>0.8.12</jacoco.version>
         <native-maven-plugin.version>0.10.3</native-maven-plugin.version>

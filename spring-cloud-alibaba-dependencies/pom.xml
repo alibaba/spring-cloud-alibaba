@@ -27,7 +27,7 @@
 
         <!-- Spring AI -->
         <spring.ai.version>1.0.0-M1</spring.ai.version>
-        <dashscope-sdk-java.version>2.16.4</dashscope-sdk-java.version>
+        <dashscope-sdk-java.version>2.16.8</dashscope-sdk-java.version>
 
         <!-- scheduling -->
         <shedlock.version>5.16.0</shedlock.version>
@@ -35,8 +35,8 @@
 
         <!-- Maven Plugin Versions -->
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.10.0</maven-javadoc-plugin.version>
-        <maven-gpg-plugin.version>3.2.5</maven-gpg-plugin.version>
+        <maven-javadoc-plugin.version>3.10.1</maven-javadoc-plugin.version>
+        <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
         <flatten-maven-plugin.version>1.6.0</flatten-maven-plugin.version>
     </properties>
 
