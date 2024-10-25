@@ -86,7 +86,7 @@
         <spring.cloud.version>2023.0.3</spring.cloud.version>
 
         <!-- Spring Boot -->
-        <spring-boot.version>3.2.10</spring-boot.version>
+        <spring-boot.version>3.3.5</spring-boot.version>
 
         <!-- Maven Plugin Versions -->
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
