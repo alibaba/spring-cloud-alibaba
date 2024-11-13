@@ -16,7 +16,7 @@
 
 本项目的各个组件版本请移步至各个社区的 release 页面进行下载并解压运行。
 
-- [Nacos: 2.1.0 版本](https://github.com/alibaba/nacos/releases)
+- [Nacos: 2.4.3 版本](https://github.com/alibaba/nacos/releases)
 - [Seata: 1.5.1 版本](https://github.com/seata/seata/releases)
 - [RocketMQ: 4.9.4 版本](https://github.com/apache/rocketmq/releases)
 - MySQL: 5.7 版本

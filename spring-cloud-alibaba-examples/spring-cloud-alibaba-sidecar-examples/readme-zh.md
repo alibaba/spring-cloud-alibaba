@@ -14,7 +14,7 @@
 
 **在接入 Sidecar 之前，首先需要启动 Nacos服务器。**
 
-1. 下载[Nacos二进制文件](https://github.com/alibaba/nacos/releases/download/2.1.0/nacos-server-2.1.0.zip) 并解压
+1. 下载[Nacos二进制文件](https://github.com/alibaba/nacos/releases/download/2.4.3/nacos-server-2.4.3.zip) 并解压
 
 2. 启动 Nacos Server
    

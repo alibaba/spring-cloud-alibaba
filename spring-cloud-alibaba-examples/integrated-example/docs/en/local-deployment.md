@@ -16,7 +16,7 @@ You can also quickly launch the component through the docker-compose file provid
 
 For each component version of this project, please go to the release page of each community to download and decompression run.
 
-- [Nacos: version 2.1.0](https://github.com/alibaba/nacos/releases)
+- [Nacos: version 2.4.3](https://github.com/alibaba/nacos/releases)
 - [Seata: version 1.5.1](https://github.com/seata/seata/releases)
 - [RocketMQ: version 4.9.4](https://github.com/apache/rocketmq/releases)
 - MySQL: version 5.7
