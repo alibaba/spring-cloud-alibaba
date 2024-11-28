@@ -18,7 +18,7 @@
     <description>Spring Cloud Alibaba Dependencies</description>
 
     <properties>
-        <revision>2021.0.6.1</revision>
+        <revision>2021.0.6.2</revision>
         <sentinel.version>1.8.6</sentinel.version>
         <seata.version>1.6.1</seata.version>
         <nacos.client.version>2.2.0</nacos.client.version>
