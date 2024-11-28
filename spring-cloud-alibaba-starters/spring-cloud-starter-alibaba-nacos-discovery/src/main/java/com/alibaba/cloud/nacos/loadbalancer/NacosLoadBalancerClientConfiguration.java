@@ -16,7 +16,12 @@
 
 package com.alibaba.cloud.nacos.loadbalancer;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.util.InetIPv6Utils;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -47,6 +52,7 @@ import org.springframework.core.env.Environment;
  * @since 2021.1
  */
 @Configuration(proxyBeanMethods = false)
+@ConditionalOnLoadBalancerNacos
 @ConditionalOnDiscoveryEnabled
 public class NacosLoadBalancerClientConfiguration {
 
@@ -56,12 +62,22 @@ public class NacosLoadBalancerClientConfiguration {
 	@ConditionalOnMissingBean
 	public ReactorLoadBalancer<ServiceInstance> nacosLoadBalancer(Environment environment,
 			LoadBalancerClientFactory loadBalancerClientFactory,
-			NacosDiscoveryProperties nacosDiscoveryProperties) {
+			NacosDiscoveryProperties nacosDiscoveryProperties,
+			InetIPv6Utils inetIPv6Utils,
+			List<ServiceInstanceFilter> serviceInstanceFilters,
+			List<LoadBalancerAlgorithm> loadBalancerAlgorithms) {
 		String name = environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);
+		Map<String, LoadBalancerAlgorithm> loadBalancerAlgorithmMap = new HashMap<>();
+		loadBalancerAlgorithms.forEach(loadBalancerAlgorithm -> {
+			if (!loadBalancerAlgorithmMap.containsKey(loadBalancerAlgorithm.getServiceId())) {
+				loadBalancerAlgorithmMap.put(loadBalancerAlgorithm.getServiceId(), loadBalancerAlgorithm);
+			}
+		});
 		return new NacosLoadBalancer(
 				loadBalancerClientFactory.getLazyProvider(name,
 						ServiceInstanceListSupplier.class),
-				name, nacosDiscoveryProperties);
+				name, nacosDiscoveryProperties, inetIPv6Utils,
+				serviceInstanceFilters, loadBalancerAlgorithmMap);
 	}
 
 	@Configuration(proxyBeanMethods = false)
@@ -115,7 +131,5 @@ public class NacosLoadBalancerClientConfiguration {
 			return ServiceInstanceListSupplier.builder().withBlockingDiscoveryClient()
 					.withZonePreference().build(context);
 		}
-
 	}
-
 }

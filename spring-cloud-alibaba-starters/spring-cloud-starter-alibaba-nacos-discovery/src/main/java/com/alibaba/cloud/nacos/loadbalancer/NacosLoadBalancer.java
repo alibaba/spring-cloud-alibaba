@@ -18,6 +18,7 @@ package com.alibaba.cloud.nacos.loadbalancer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,6 @@ import javax.annotation.PostConstruct;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.balancer.NacosBalancer;
 import com.alibaba.cloud.nacos.util.InetIPv6Utils;
 import com.alibaba.nacos.client.naming.utils.CollectionUtils;
 import org.slf4j.Logger;
@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.DefaultResponse;
 import org.springframework.cloud.client.loadbalancer.EmptyResponse;
@@ -56,7 +55,7 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 
 	private final String serviceId;
 
-	private ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider;
+	private final ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider;
 
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
@@ -68,9 +67,11 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 	 */
 	public static String ipv6;
 
-	@Autowired
-	private InetIPv6Utils inetIPv6Utils;
+	private final InetIPv6Utils inetIPv6Utils;
 
+	private final List<ServiceInstanceFilter> serviceInstanceFilters;
+
+	private final Map<String, LoadBalancerAlgorithm> loadBalancerAlgorithmMap;
 
 	@PostConstruct
 	public void init() {
@@ -97,7 +98,7 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 				}
 			}
 			// Provider has no IPv6, should use IPv4.
-			if (ipv6InstanceList.size() == 0) {
+			if (ipv6InstanceList.isEmpty()) {
 				return instances.stream()
 						.filter(instance -> Pattern.matches(IPV4_REGEX, instance.getHost()))
 						.collect(Collectors.toList());
@@ -113,23 +114,28 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 
 	public NacosLoadBalancer(
 			ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider,
-			String serviceId, NacosDiscoveryProperties nacosDiscoveryProperties) {
+			String serviceId, NacosDiscoveryProperties nacosDiscoveryProperties, InetIPv6Utils inetIPv6Utils,
+			List<ServiceInstanceFilter> serviceInstanceFilters,
+			Map<String, LoadBalancerAlgorithm> loadBalancerAlgorithmMap) {
 		this.serviceId = serviceId;
 		this.serviceInstanceListSupplierProvider = serviceInstanceListSupplierProvider;
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
+		this.inetIPv6Utils = inetIPv6Utils;
+		this.serviceInstanceFilters = serviceInstanceFilters;
+		this.loadBalancerAlgorithmMap = loadBalancerAlgorithmMap;
 	}
 
 	@Override
 	public Mono<Response<ServiceInstance>> choose(Request request) {
 		ServiceInstanceListSupplier supplier = serviceInstanceListSupplierProvider
 				.getIfAvailable(NoopServiceInstanceListSupplier::new);
-		return supplier.get(request).next().map(this::getInstanceResponse);
+		return supplier.get(request).next().map(serviceInstances -> getInstanceResponse(request, serviceInstances));
 	}
 
-	private Response<ServiceInstance> getInstanceResponse(
+	private Response<ServiceInstance> getInstanceResponse(Request<?> request,
 			List<ServiceInstance> serviceInstances) {
 		if (serviceInstances.isEmpty()) {
-			log.warn("No servers available for service: " + this.serviceId);
+			log.warn("No servers available for service: {}", this.serviceId);
 			return new EmptyResponse();
 		}
 
@@ -155,8 +161,20 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 			}
 			instancesToChoose = this.filterInstanceByIpType(instancesToChoose);
 
-			ServiceInstance instance = NacosBalancer
-					.getHostByRandomWeight3(instancesToChoose);
+			// Filter the service list sequentially based on the order number
+			for (ServiceInstanceFilter filter : serviceInstanceFilters) {
+				instancesToChoose = filter.filterInstance(request, instancesToChoose);
+			}
+
+			ServiceInstance instance;
+			// Find the corresponding load balancing algorithm through the service ID and select the final service instance
+			if (loadBalancerAlgorithmMap.containsKey(serviceId)) {
+				instance = loadBalancerAlgorithmMap.get(serviceId).getInstance(request, instancesToChoose);
+			}
+			else {
+				instance = loadBalancerAlgorithmMap.get(LoadBalancerAlgorithm.DEFAULT_SERVICE_ID)
+						.getInstance(request, instancesToChoose);
+			}
 
 			return new DefaultResponse(instance);
 		}
