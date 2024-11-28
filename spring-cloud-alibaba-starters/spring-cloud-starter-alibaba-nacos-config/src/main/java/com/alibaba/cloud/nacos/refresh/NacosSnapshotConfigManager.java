@@ -61,8 +61,13 @@ public final class NacosSnapshotConfigManager {
 				iterator.next();
 				iterator.remove();
 			}
-			CONFIG_INFO_SNAPSHOT_MAP.put(formatConfigSnapshotKey(dataId, group),
-					configInfo);
+			String snapshotKey = formatConfigSnapshotKey(dataId, group);
+			if (configInfo == null) {
+				CONFIG_INFO_SNAPSHOT_MAP.remove(snapshotKey);
+			}
+			else {
+				CONFIG_INFO_SNAPSHOT_MAP.put(snapshotKey, configInfo);
+			}
 		}
 		catch (Exception e) {
 			log.warn("remove nacos config snapshot error", e);
