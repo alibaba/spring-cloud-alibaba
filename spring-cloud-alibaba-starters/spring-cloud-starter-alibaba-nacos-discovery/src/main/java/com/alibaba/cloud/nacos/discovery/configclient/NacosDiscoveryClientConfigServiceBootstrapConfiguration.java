@@ -20,6 +20,7 @@ import com.alibaba.cloud.nacos.NacosServiceAutoConfiguration;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
 import com.alibaba.cloud.nacos.discovery.reactive.NacosReactiveDiscoveryClientConfiguration;
+import com.alibaba.cloud.nacos.util.UtilIPv6AutoConfiguration;
 
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -38,7 +39,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 @ImportAutoConfiguration({ NacosDiscoveryAutoConfiguration.class,
 		NacosServiceAutoConfiguration.class, NacosDiscoveryClientConfiguration.class,
-		NacosReactiveDiscoveryClientConfiguration.class })
+		NacosReactiveDiscoveryClientConfiguration.class, UtilIPv6AutoConfiguration.class })
 public class NacosDiscoveryClientConfigServiceBootstrapConfiguration {
 
 }
