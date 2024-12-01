@@ -58,11 +58,18 @@ public class NacosDataSourceFactoryBean implements FactoryBean<NacosDataSource> 
 	@Override
 	public NacosDataSource getObject() throws Exception {
 		Properties properties = new Properties();
-		if (!StringUtils.isEmpty(this.serverAddr)) {
-			properties.setProperty(PropertyKeyConst.SERVER_ADDR, this.serverAddr);
+		if (!StringUtils.isEmpty(this.endpoint)) {
+			int index = this.endpoint.indexOf(":");
+			if (index < 0) {
+				properties.setProperty(PropertyKeyConst.ENDPOINT, this.endpoint);
+			}
+			else {
+				properties.setProperty(PropertyKeyConst.ENDPOINT, this.endpoint.substring(0, index));
+				properties.setProperty(PropertyKeyConst.ENDPOINT_PORT, this.endpoint.substring(index + 1));
+			}
 		}
 		else {
-			properties.setProperty(PropertyKeyConst.ENDPOINT, this.endpoint);
+			properties.setProperty(PropertyKeyConst.SERVER_ADDR, this.serverAddr);
 		}
 
 		if (!StringUtils.isEmpty(this.contextPath)) {
