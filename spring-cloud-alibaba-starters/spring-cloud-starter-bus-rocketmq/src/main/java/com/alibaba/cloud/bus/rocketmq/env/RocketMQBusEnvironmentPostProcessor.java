@@ -19,6 +19,8 @@ package com.alibaba.cloud.bus.rocketmq.env;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.cloud.bus.BusEnvironmentPostProcessor;
@@ -68,12 +70,15 @@ public class RocketMQBusEnvironmentPostProcessor
 		String groupBindingPropertyName = createBindingPropertyName(INPUT, "group");
 		String broadcastingPropertyName = createRocketMQPropertyName(INPUT,
 				"broadcasting");
+		// adapting spring cloud stream rocketmq new properties {@link com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties }
+		String newBroadcastingPropertyName = createRocketMQPropertyName(INPUT, "messageModel");
 		source.put(groupBindingPropertyName, "rocketmq-bus-group");
 		source.put(broadcastingPropertyName, "true");
+		source.put(newBroadcastingPropertyName, MessageModel.BROADCASTING.getModeCN());
 	}
 
 	private String createRocketMQPropertyName(String channel, String propertyName) {
-		return "spring.cloud.stream.rocketmq.bindings." + INPUT + ".consumer."
+		return "spring.cloud.stream.rocketmq.bindings." + channel + ".consumer."
 				+ propertyName;
 	}
 
