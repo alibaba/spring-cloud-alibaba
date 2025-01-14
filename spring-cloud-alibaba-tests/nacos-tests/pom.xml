@@ -22,7 +22,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
-            <version>4.1.4</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

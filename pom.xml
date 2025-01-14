@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>4.1.3</version>
+        <version>4.1.5</version>
         <relativePath/>
     </parent>
 
@@ -83,10 +83,10 @@
         <revision>2023.0.3.2</revision>
 
         <!-- Spring Cloud -->
-        <spring.cloud.version>2023.0.3</spring.cloud.version>
+        <spring.cloud.version>2023.0.5</spring.cloud.version>
 
         <!-- Spring Boot -->
-        <spring-boot.version>3.2.9</spring-boot.version>
+        <spring-boot.version>3.3.7</spring-boot.version>
 
         <!-- Maven Plugin Versions -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
