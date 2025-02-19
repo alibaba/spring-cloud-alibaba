@@ -106,6 +106,90 @@
       "type": "com.alibaba.cloud.nacos.configdata.ConfigPreference",
       "defaultValue": "local",
       "description": "Config preference."
+    },
+    {
+      "name": "spring.cloud.nacos.config.group",
+      "type": "java.lang.String",
+      "defaultValue": "DEFAULT_GROUP",
+      "description": "Config group，group is config data meta info."
+    },
+    {
+      "name": "spring.cloud.nacos.config.timeout",
+      "type": "java.lang.Integer",
+      "defaultValue": "3000",
+      "description": "Config timeout."
+    },
+    {
+      "name": "spring.cloud.nacos.config.max-retry",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Config maximum number of tolerable server reconnection errors."
+    },
+    {
+      "name": "spring.cloud.nacos.config.config-long-poll-timeout",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Config long poll timeout."
+    },
+    {
+      "name": "spring.cloud.nacos.config.config-retry-time",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Config failure retry time."
+    },
+    {
+      "name": "spring.cloud.nacos.config.enable-remote-sync-config",
+      "type": "java.lang.Boolean",
+      "defaultValue": "false",
+      "description": "Config enable remote sync config."
+    },
+    {
+      "name": "spring.cloud.nacos.config.endpoint",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Config endpoint."
+    },
+    {
+      "name": "spring.cloud.nacos.config.namespace",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Config namespace."
+    },
+    {
+      "name": "spring.cloud.nacos.config.access-key",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Config access key for namespace."
+    },
+    {
+      "name": "spring.cloud.nacos.config.secret-key",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Config secret key for namespace."
+    },
+    {
+      "name": "spring.cloud.nacos.config.ram-role-name",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Config ole name for aliyun ram."
+    },
+    {
+      "name": "spring.cloud.nacos.config.context-path",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Config context path."
+    },
+    {
+      "name": "spring.cloud.nacos.config.cluster-name",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Config cluster name."
+    },
+    {
+      "name": "spring.cloud.nacos.name",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Config dataId name."
     }
   ]
 }

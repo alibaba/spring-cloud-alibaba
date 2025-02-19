@@ -1,0 +1,105 @@
+{
+  "properties": [
+    {
+      "name": "spring.nacos.server-addr",
+      "type": "java.lang.String",
+      "defaultValue": "127.0.0.1:8848",
+      "description": "nacos server address."
+    },
+    {
+      "name": "spring.nacos.config.server-addr",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.nacos.server-addr}",
+      "description": "nacos config server address."
+    },
+    {
+      "name": "spring.nacos.config.encode",
+      "type": "java.lang.String",
+      "defaultValue": "UTF-8",
+      "description": "default encode for nacos config content."
+    },
+    {
+      "name": "spring.nacos.config.prefix",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.application.name}",
+      "description": "the prefix of dataId, nacos config data meta info. dataId = prefix + '-' + ${spring.active.profile} + `.` + ${spring.cloud.nacos.config.file-extension}."
+    },
+    {
+      "name": "spring.nacos.config.file-extension",
+      "type": "java.lang.String",
+      "defaultValue": "properties",
+      "description": "the suffix of nacos config dataId, also the file extension of config content, only support properties now."
+    },
+    {
+      "name": "spring.nacos.config.shared-dataids",
+      "type": "java.lang.String",
+      "description": "the dataids for configurable multiple shared configurations , multiple separated by commas ."
+    },
+    {
+      "name": "spring.nacos.config.shared-configs",
+      "type": "java.util.List",
+      "description": "a set of shared configurations .e.g: spring.cloud.nacos.config.shared-configs[0]=xxx ."
+    },
+    {
+      "name": "spring.nacos.config.refreshable-dataids",
+      "type": "java.lang.String",
+      "description": "refreshable dataids , multiple separated by commas .Not providing support,the need to refresh is specified by the respective refresh configuration."
+    },
+    {
+      "name": "spring.nacos.config.ext-config",
+      "type": "java.util.List",
+      "description": "a set of extended configurations ."
+    },
+    {
+      "name": "spring.nacos.config.extension-configs",
+      "type": "java.util.List",
+      "description": "a set of extensional configurations .e.g: spring.cloud.nacos.config.extension-configs[0]=xxx ."
+    },
+    {
+      "name": "spring.nacos.config.refresh-enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "the master switch for refresh configuration, it default opened(true)."
+    },
+    {
+      "name": "spring.nacos.config.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "enable nacos config or not."
+    },
+    {
+      "name": "spring.nacos.config.username",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.nacos.username}",
+      "description": "nacos config service's userName to authenticate."
+    },
+    {
+      "name": "spring.nacos.config.import-check.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to enable import-check."
+    },
+    {
+      "name": "spring.nacos.config.password",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.nacos.password}",
+      "description": "nacos config service's password to authenticate."
+    },
+    {
+      "name": "spring.nacos.username",
+      "type": "java.lang.String",
+      "description": "nacos userName to authenticate."
+    },
+    {
+      "name": "spring.cloud.nacos.password",
+      "type": "java.lang.String",
+      "description": "nacos password to authenticate."
+    },
+    {
+      "name": "spring.nacos.config.preference",
+      "type": "com.alibaba.cloud.nacos.configdata.ConfigPreference",
+      "defaultValue": "local",
+      "description": "Config preference."
+    }
+  ]
+}

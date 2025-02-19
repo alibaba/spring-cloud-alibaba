@@ -1,9 +1,0 @@
-version: '3.8'
-
-services:
-  redis:
-    image: redis/redis-stack-server
-    container_name: redis
-    hostname: redis
-    ports:
-      - 6379:6379

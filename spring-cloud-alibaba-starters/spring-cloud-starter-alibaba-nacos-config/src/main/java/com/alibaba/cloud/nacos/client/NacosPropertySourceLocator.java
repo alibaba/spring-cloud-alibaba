@@ -33,7 +33,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
-import org.springframework.util.CollectionUtils;
 
 /**
  * @author xiaojing
@@ -74,7 +73,6 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	@Override
 	public PropertySource<?> locate(Environment env) {
-		nacosConfigProperties.setEnvironment(env);
 		ConfigService configService = nacosConfigManager.getConfigService();
 
 		if (null == configService) {
@@ -98,35 +96,8 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		CompositePropertySource composite = new CompositePropertySource(
 				NACOS_PROPERTY_SOURCE_NAME);
 
-		loadSharedConfiguration(composite);
-		loadExtConfiguration(composite);
 		loadApplicationConfiguration(composite, dataIdPrefix, nacosConfigProperties, env);
 		return composite;
-	}
-
-	/**
-	 * load shared configuration.
-	 */
-	private void loadSharedConfiguration(
-			CompositePropertySource compositePropertySource) {
-		List<NacosConfigProperties.Config> sharedConfigs = nacosConfigProperties
-				.getSharedConfigs();
-		if (!CollectionUtils.isEmpty(sharedConfigs)) {
-			checkConfiguration(sharedConfigs, "shared-configs");
-			loadNacosConfiguration(compositePropertySource, sharedConfigs);
-		}
-	}
-
-	/**
-	 * load extensional configuration.
-	 */
-	private void loadExtConfiguration(CompositePropertySource compositePropertySource) {
-		List<NacosConfigProperties.Config> extConfigs = nacosConfigProperties
-				.getExtensionConfigs();
-		if (!CollectionUtils.isEmpty(extConfigs)) {
-			checkConfiguration(extConfigs, "extension-configs");
-			loadNacosConfiguration(compositePropertySource, extConfigs);
-		}
 	}
 
 	/**

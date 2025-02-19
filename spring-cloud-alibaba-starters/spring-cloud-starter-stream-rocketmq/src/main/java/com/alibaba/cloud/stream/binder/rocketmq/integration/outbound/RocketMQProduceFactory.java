@@ -24,6 +24,7 @@ import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerPrope
 import com.alibaba.cloud.stream.binder.rocketmq.utils.RocketMQUtils;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
+import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.client.hook.CheckForbiddenHook;
 import org.apache.rocketmq.client.hook.SendMessageHook;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
@@ -78,11 +79,12 @@ public final class RocketMQProduceFactory {
 		if (RocketMQProducerProperties.ProducerType.Trans
 				.equalsName(producerProperties.getProducerType())) {
 			producer = new TransactionMQProducer(producerProperties.getNamespace(),
-					producerProperties.getGroup(), rpcHook);
+					producerProperties.getGroup(), rpcHook, producerProperties.getEnableMsgTrace(),
+					producerProperties.getCustomizedTraceTopic());
 			if (producerProperties.getEnableMsgTrace()) {
 				try {
 					AsyncTraceDispatcher dispatcher = new AsyncTraceDispatcher(
-							producerProperties.getGroup(), TraceDispatcher.Type.PRODUCE,
+							producerProperties.getGroup(), TraceDispatcher.Type.PRODUCE, 10,
 							producerProperties.getCustomizedTraceTopic(), rpcHook);
 					dispatcher.setHostProducer(producer.getDefaultMQProducerImpl());
 					Field field = DefaultMQProducer.class
@@ -110,6 +112,7 @@ public final class RocketMQProduceFactory {
 		producer.setInstanceName(
 				RocketMQUtils.getInstanceName(rpcHook, topic + "|" + UtilAll.getPid()));
 		producer.setNamesrvAddr(producerProperties.getNameServer());
+		producer.setNamespaceV2(producerProperties.getNamespaceV2());
 		producer.setSendMsgTimeout(producerProperties.getSendMsgTimeout());
 		producer.setRetryTimesWhenSendFailed(
 				producerProperties.getRetryTimesWhenSendFailed());
@@ -122,6 +125,7 @@ public final class RocketMQProduceFactory {
 		producer.setMaxMessageSize(producerProperties.getMaxMessageSize());
 		producer.setUseTLS(producerProperties.getUseTLS());
 		producer.setUnitName(producerProperties.getUnitName());
+		producer.setAccessChannel(AccessChannel.valueOf(producerProperties.getAccessChannel()));
 		CheckForbiddenHook checkForbiddenHook = RocketMQBeanContainerCache.getBean(
 				producerProperties.getCheckForbiddenHook(), CheckForbiddenHook.class);
 		if (null != checkForbiddenHook) {

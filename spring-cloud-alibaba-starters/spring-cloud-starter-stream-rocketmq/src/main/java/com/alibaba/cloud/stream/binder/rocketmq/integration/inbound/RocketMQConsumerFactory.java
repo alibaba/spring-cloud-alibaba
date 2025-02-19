@@ -21,6 +21,7 @@ import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerPrope
 import com.alibaba.cloud.stream.binder.rocketmq.utils.RocketMQUtils;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
+import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.client.consumer.AllocateMessageQueueStrategy;
 import org.apache.rocketmq.client.consumer.DefaultLitePullConsumer;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -76,6 +77,7 @@ public final class RocketMQConsumerFactory {
 		consumer.setInstanceName(
 				RocketMQUtils.getInstanceName(rpcHook, consumerProperties.getGroup()));
 		consumer.setNamespace(consumerProperties.getNamespace());
+		consumer.setNamespaceV2(consumerProperties.getNamespaceV2());
 		consumer.setNamesrvAddr(consumerProperties.getNameServer());
 		consumer.setMessageModel(getMessageModel(consumerProperties.getMessageModel()));
 		consumer.setUseTLS(consumerProperties.getUseTLS());
@@ -91,6 +93,10 @@ public final class RocketMQConsumerFactory {
 		consumer.setConsumeThreadMin(extendedConsumerProperties.getConcurrency());
 		consumer.setConsumeThreadMax(extendedConsumerProperties.getConcurrency());
 		consumer.setUnitName(consumerProperties.getUnitName());
+		consumer.setMaxReconsumeTimes(
+				consumerProperties.getPush().getMaxReconsumeTimes());
+		consumer.setConsumeTimeout(consumerProperties.getPush().getConsumeTimeout());
+		consumer.setAccessChannel(AccessChannel.valueOf(consumerProperties.getAccessChannel()));
 		return consumer;
 	}
 
@@ -144,6 +150,7 @@ public final class RocketMQConsumerFactory {
 		}
 		consumer.setNamesrvAddr(consumerProperties.getNameServer());
 		consumer.setMessageModel(getMessageModel(consumerProperties.getMessageModel()));
+		consumer.setNamespaceV2(consumerProperties.getNamespaceV2());
 		consumer.setUseTLS(consumerProperties.getUseTLS());
 		consumer.setPullTimeDelayMillsWhenException(
 				consumerProperties.getPullTimeDelayMillsWhenException());
@@ -162,6 +169,7 @@ public final class RocketMQConsumerFactory {
 		consumer.setPullThresholdForAll(extendedConsumerProperties.getExtension()
 				.getPull().getPullThresholdForAll());
 		consumer.setUnitName(consumerProperties.getUnitName());
+		consumer.setAccessChannel(AccessChannel.valueOf(consumerProperties.getAccessChannel()));
 		return consumer;
 	}
 

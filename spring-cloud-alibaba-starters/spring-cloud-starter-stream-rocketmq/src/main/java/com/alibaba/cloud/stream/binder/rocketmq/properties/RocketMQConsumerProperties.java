@@ -304,6 +304,12 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 		 */
 		private int consumeMessageBatchMaxSize = 1;
 
+		/**
+		 * Maximum amount of time in minutes a message may block the consuming thread.
+		 * Unit: Minutes
+		 */
+		private long consumeTimeout = 15;
+
 		public boolean getOrderly() {
 			return orderly;
 		}
@@ -368,6 +374,13 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 			this.consumeMessageBatchMaxSize = consumeMessageBatchMaxSize;
 		}
 
+		public long getConsumeTimeout() {
+			return consumeTimeout;
+		}
+
+		public void setConsumeTimeout(long consumeTimeout) {
+			this.consumeTimeout = consumeTimeout;
+		}
 	}
 
 	public static class Pull implements Serializable {

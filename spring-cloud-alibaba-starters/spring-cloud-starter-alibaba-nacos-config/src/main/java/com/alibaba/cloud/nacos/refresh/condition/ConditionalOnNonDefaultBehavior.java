@@ -35,7 +35,7 @@ import org.springframework.context.annotation.Conditional;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Documented
-@Conditional(NonDefaultBehaviorCondition.class)
+@Conditional(com.alibaba.cloud.nacos.refresh.condition.NonDefaultBehaviorCondition.class)
 public @interface ConditionalOnNonDefaultBehavior {
 
 }

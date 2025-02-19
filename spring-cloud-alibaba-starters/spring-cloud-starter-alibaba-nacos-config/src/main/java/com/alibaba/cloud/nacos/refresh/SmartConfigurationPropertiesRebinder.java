@@ -33,8 +33,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
 
-import static com.alibaba.cloud.nacos.refresh.RefreshBehavior.ALL_BEANS;
-
 /**
  * Extend {@link ConfigurationPropertiesRebinder}.
  * <p>
@@ -83,7 +81,7 @@ public class SmartConfigurationPropertiesRebinder
 		this.applicationContext = applicationContext;
 		this.refreshBehavior = this.applicationContext.getEnvironment().getProperty(
 				"spring.cloud.nacos.config.refresh-behavior", RefreshBehavior.class,
-				ALL_BEANS);
+				RefreshBehavior.ALL_BEANS);
 	}
 
 	@Override

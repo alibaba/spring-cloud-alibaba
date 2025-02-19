@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos.refresh.condition;
 
+import com.alibaba.cloud.nacos.NacosPropertiesPrefixer;
 import com.alibaba.cloud.nacos.refresh.RefreshBehavior;
 
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
@@ -23,21 +24,20 @@ import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
-import static com.alibaba.cloud.nacos.refresh.RefreshBehavior.ALL_BEANS;
-
 /**
  * @author freeman
  * @since 2021.0.1.1
  */
 public class NonDefaultBehaviorCondition extends SpringBootCondition {
 
-	private static final RefreshBehavior DEFAULT_REFRESH_BEHAVIOR = ALL_BEANS;
+	private static final RefreshBehavior DEFAULT_REFRESH_BEHAVIOR = RefreshBehavior.ALL_BEANS;
 
 	@Override
 	public ConditionOutcome getMatchOutcome(ConditionContext context,
 			AnnotatedTypeMetadata metadata) {
+		String prefix = NacosPropertiesPrefixer.getPrefix(context.getEnvironment());
 		RefreshBehavior behavior = context.getEnvironment().getProperty(
-				"spring.cloud.nacos.config.refresh-behavior", RefreshBehavior.class,
+				prefix + ".config.refresh-behavior", RefreshBehavior.class,
 				DEFAULT_REFRESH_BEHAVIOR);
 		if (DEFAULT_REFRESH_BEHAVIOR == behavior) {
 			return ConditionOutcome.noMatch("no matched");

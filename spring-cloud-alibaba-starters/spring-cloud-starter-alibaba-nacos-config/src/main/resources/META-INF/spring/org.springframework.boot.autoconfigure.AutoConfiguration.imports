@@ -1,2 +1,1 @@
-com.alibaba.cloud.nacos.NacosConfigAutoConfiguration
-com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration
+com.alibaba.cloud.nacos.NacosConfigSpringCloudAutoConfiguration

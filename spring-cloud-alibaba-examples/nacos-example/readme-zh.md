@@ -444,24 +444,15 @@ spring.cloud.nacos.discovery.ip-type=IPv6
 
 4. 配置必要的配置，在 nacos-discovery-consumer-example 项目的 `/src/main/resources/application.properties` 中添加基本配置信息
 
-   ```java
-   @RestController
-   public class TestController {
-   
-       @Autowired
-       private RestTemplate restTemplate;
-       @Autowired
-       private EchoService echoService;
-   
-       @GetMapping(value = "/echo-rest/{str}")
-       public String rest(@PathVariable String str) {
-           return restTemplate.getForObject("http://service-provider/echo/" + str, String.class);
-       }
-       @GetMapping(value = "/echo-feign/{str}")
-       public String feign(@PathVariable String str) {
-           return echoService.echo(str);
-       }
-   }
+   ```properties
+	spring.application.name=service-consumer
+	server.port=18083
+	management.endpoints.web.exposure.include=*
+	spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
+	spring.cloud.nacos.discovery.fail-fast=true
+	
+	spring.cloud.nacos.username=nacos
+	spring.cloud.nacos.password=nacos
    ```
 
 5.启动应用，支持 IDE 直接启动和编译打包后启动。
@@ -471,11 +462,11 @@ spring.cloud.nacos.discovery.ip-type=IPv6
 
 #### 验证
 
-1. 在浏览器地址栏中输入 http://127.0.0.1:18083/echo-rest/1234，点击跳转，可以看到浏览器显示了 nacos-discovery-provider-example 返回的消息 "hello Nacos Discovery 1234"，证明服务发现生效。
+1. 在浏览器地址栏中输入 [http://127.0.0.1:18083/echo-rest/1234](http://127.0.0.1:18083/echo-rest/1234)，点击跳转，可以看到浏览器显示了 nacos-discovery-provider-example 返回的消息 "hello Nacos Discovery 1234"，证明服务发现生效。
 
 ![rest](https://cdn.nlark.com/lark/0/2018/png/54319/1536986302124-ee27670d-bdcc-4210-9f5d-875acec6d3ea.png)
 
-2. 在浏览器地址栏中输入 http://127.0.0.1:18083/echo-feign/12345，点击跳转，可以看到浏览器显示 nacos-discovery-provider-example 返回的消息 "hello Nacos Discovery 12345"，证明服务发现生效。
+2. 在浏览器地址栏中输入 [http://127.0.0.1:18083/echo-feign/12345](http://127.0.0.1:18083/echo-feign/12345)，点击跳转，可以看到浏览器显示 nacos-discovery-provider-example 返回的消息 "hello Nacos Discovery 12345"，证明服务发现生效。
 
 ![feign](https://cdn.nlark.com/lark/0/2018/png/54319/1536986311685-6d0c1f9b-a453-4ec3-88ab-f7922d210f65.png)
 

@@ -51,9 +51,6 @@
         <module>integrated-example/integrated-praise-consumer</module>
         <module>integrated-example/integrated-common</module>
 		<module>integrated-example/integrated-frontend</module>
-        <module>ai-example/spring-cloud-ai-example</module>
-        <module>ai-example/spring-cloud-ai-rag-example</module>
-        <module>ai-example/spring-cloud-ai-chat-msg-context-example</module>
         <module>spring-cloud-scheduling-example</module>
     </modules>
 

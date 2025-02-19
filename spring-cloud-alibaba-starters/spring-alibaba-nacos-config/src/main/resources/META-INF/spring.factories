@@ -1,0 +1,17 @@
+org.springframework.cloud.bootstrap.BootstrapConfiguration=\
+com.alibaba.cloud.nacos.NacosConfigBootstrapConfiguration
+org.springframework.boot.diagnostics.FailureAnalyzer=\
+com.alibaba.cloud.nacos.diagnostics.analyzer.NacosConnectionFailureAnalyzer
+org.springframework.boot.env.PropertySourceLoader=\
+com.alibaba.cloud.nacos.parser.NacosJsonPropertySourceLoader,\
+com.alibaba.cloud.nacos.parser.NacosXmlPropertySourceLoader
+org.springframework.boot.SpringApplicationRunListener=\
+com.alibaba.cloud.nacos.logging.NacosLoggingAppRunListener
+
+# ConfigData Location Resolvers
+org.springframework.boot.context.config.ConfigDataLocationResolver=\
+com.alibaba.cloud.nacos.configdata.NacosConfigDataLocationResolver
+
+# ConfigData Loaders
+org.springframework.boot.context.config.ConfigDataLoader=\
+com.alibaba.cloud.nacos.configdata.NacosConfigDataLoader

@@ -73,7 +73,7 @@ public class SmartConfigurationPropertiesRebinderIntegrationTest {
 	}
 
 	@Configuration
-	@ImportAutoConfiguration({ NacosConfigAutoConfiguration.class })
+	@ImportAutoConfiguration({ NacosConfigSpringCloudAutoConfiguration.class })
 	@EnableAutoConfiguration
 	public static class RebinderConfiguration {
 

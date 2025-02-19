@@ -16,14 +16,12 @@
 
 package com.alibaba.cloud.nacos.configdata;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.mock.env.MockEnvironment;
-
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
 
 /**
  *
@@ -35,9 +33,9 @@ class NacosConfigDataMissingEnvironmentPostProcessorTest {
 	@Test
 	void noSpringConfigImport() {
 		MockEnvironment environment = new MockEnvironment();
-		SpringApplication app = mock(SpringApplication.class);
+		SpringApplication app = Mockito.mock(SpringApplication.class);
 		NacosConfigDataMissingEnvironmentPostProcessor processor = new NacosConfigDataMissingEnvironmentPostProcessor();
-		assertThatThrownBy(() -> processor.postProcessEnvironment(environment, app))
+		Assertions.assertThatThrownBy(() -> processor.postProcessEnvironment(environment, app))
 				.isInstanceOf(
 						NacosConfigDataMissingEnvironmentPostProcessor.ImportException.class);
 	}
@@ -46,9 +44,9 @@ class NacosConfigDataMissingEnvironmentPostProcessorTest {
 	void boostrap() {
 		MockEnvironment environment = new MockEnvironment();
 		environment.setProperty("spring.cloud.bootstrap.enabled", "true");
-		SpringApplication app = mock(SpringApplication.class);
+		SpringApplication app = Mockito.mock(SpringApplication.class);
 		NacosConfigDataMissingEnvironmentPostProcessor processor = new NacosConfigDataMissingEnvironmentPostProcessor();
-		assertThatCode(() -> processor.postProcessEnvironment(environment, app))
+		Assertions.assertThatCode(() -> processor.postProcessEnvironment(environment, app))
 				.doesNotThrowAnyException();
 	}
 
@@ -56,9 +54,9 @@ class NacosConfigDataMissingEnvironmentPostProcessorTest {
 	void legacy() {
 		MockEnvironment environment = new MockEnvironment();
 		environment.setProperty("spring.config.use-legacy-processing", "true");
-		SpringApplication app = mock(SpringApplication.class);
+		SpringApplication app = Mockito.mock(SpringApplication.class);
 		NacosConfigDataMissingEnvironmentPostProcessor processor = new NacosConfigDataMissingEnvironmentPostProcessor();
-		assertThatCode(() -> processor.postProcessEnvironment(environment, app))
+		Assertions.assertThatCode(() -> processor.postProcessEnvironment(environment, app))
 				.doesNotThrowAnyException();
 	}
 
@@ -66,9 +64,9 @@ class NacosConfigDataMissingEnvironmentPostProcessorTest {
 	void configNotEnabled() {
 		MockEnvironment environment = new MockEnvironment();
 		environment.setProperty("spring.cloud.nacos.config.enabled", "false");
-		SpringApplication app = mock(SpringApplication.class);
+		SpringApplication app = Mockito.mock(SpringApplication.class);
 		NacosConfigDataMissingEnvironmentPostProcessor processor = new NacosConfigDataMissingEnvironmentPostProcessor();
-		assertThatCode(() -> processor.postProcessEnvironment(environment, app))
+		Assertions.assertThatCode(() -> processor.postProcessEnvironment(environment, app))
 				.doesNotThrowAnyException();
 	}
 
@@ -77,9 +75,9 @@ class NacosConfigDataMissingEnvironmentPostProcessorTest {
 		MockEnvironment environment = new MockEnvironment();
 		environment.setProperty("spring.cloud.nacos.config.import-check.enabled",
 				"false");
-		SpringApplication app = mock(SpringApplication.class);
+		SpringApplication app = Mockito.mock(SpringApplication.class);
 		NacosConfigDataMissingEnvironmentPostProcessor processor = new NacosConfigDataMissingEnvironmentPostProcessor();
-		assertThatCode(() -> processor.postProcessEnvironment(environment, app))
+		Assertions.assertThatCode(() -> processor.postProcessEnvironment(environment, app))
 				.doesNotThrowAnyException();
 	}
 
@@ -87,9 +85,9 @@ class NacosConfigDataMissingEnvironmentPostProcessorTest {
 	void importSinglePropertySource() {
 		MockEnvironment environment = new MockEnvironment();
 		environment.setProperty("spring.config.import", "nacos:test.yml");
-		SpringApplication app = mock(SpringApplication.class);
+		SpringApplication app = Mockito.mock(SpringApplication.class);
 		NacosConfigDataMissingEnvironmentPostProcessor processor = new NacosConfigDataMissingEnvironmentPostProcessor();
-		assertThatCode(() -> processor.postProcessEnvironment(environment, app))
+		Assertions.assertThatCode(() -> processor.postProcessEnvironment(environment, app))
 				.doesNotThrowAnyException();
 	}
 
@@ -97,9 +95,9 @@ class NacosConfigDataMissingEnvironmentPostProcessorTest {
 	void importMultiplePropertySource() {
 		MockEnvironment environment = new MockEnvironment();
 		environment.setProperty("spring.config.import", "nacos:test.yml");
-		SpringApplication app = mock(SpringApplication.class);
+		SpringApplication app = Mockito.mock(SpringApplication.class);
 		NacosConfigDataMissingEnvironmentPostProcessor processor = new NacosConfigDataMissingEnvironmentPostProcessor();
-		assertThatCode(() -> processor.postProcessEnvironment(environment, app))
+		Assertions.assertThatCode(() -> processor.postProcessEnvironment(environment, app))
 				.doesNotThrowAnyException();
 	}
 
@@ -108,9 +106,9 @@ class NacosConfigDataMissingEnvironmentPostProcessorTest {
 		MockEnvironment environment = new MockEnvironment();
 		environment.setProperty("spring.config.import[0]", "nacos:test.yml");
 		environment.setProperty("spring.config.import[1]", "file:./app.properties");
-		SpringApplication app = mock(SpringApplication.class);
+		SpringApplication app = Mockito.mock(SpringApplication.class);
 		NacosConfigDataMissingEnvironmentPostProcessor processor = new NacosConfigDataMissingEnvironmentPostProcessor();
-		assertThatCode(() -> processor.postProcessEnvironment(environment, app))
+		Assertions.assertThatCode(() -> processor.postProcessEnvironment(environment, app))
 				.doesNotThrowAnyException();
 	}
 

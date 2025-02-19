@@ -16,17 +16,16 @@
 
 package com.alibaba.cloud.nacos.configdata;
 
-import com.alibaba.cloud.nacos.NacosConfigProperties;
+import com.alibaba.cloud.nacos.NacosPropertiesPrefixer;
 
 import org.springframework.boot.context.config.ConfigDataEnvironmentPostProcessor;
 import org.springframework.boot.diagnostics.AbstractFailureAnalyzer;
 import org.springframework.boot.diagnostics.FailureAnalysis;
 import org.springframework.cloud.commons.ConfigDataMissingEnvironmentPostProcessor;
+import org.springframework.cloud.util.PropertyUtils;
 import org.springframework.core.env.Environment;
 
 import static com.alibaba.cloud.nacos.configdata.NacosConfigDataLocationResolver.PREFIX;
-import static org.springframework.cloud.util.PropertyUtils.bootstrapEnabled;
-import static org.springframework.cloud.util.PropertyUtils.useLegacyProcessing;
 
 /**
  *
@@ -49,13 +48,16 @@ public class NacosConfigDataMissingEnvironmentPostProcessor
 	@Override
 	protected boolean shouldProcessEnvironment(Environment environment) {
 		// don't run if using bootstrap or legacy processing
-		if (bootstrapEnabled(environment) || useLegacyProcessing(environment)) {
+		if (PropertyUtils.bootstrapEnabled(environment) || PropertyUtils.useLegacyProcessing(environment)) {
 			return false;
 		}
+		String prefix = NacosPropertiesPrefixer.getPrefix(environment);
+		String configPrefix = prefix + ".config";
+
 		boolean configEnabled = environment.getProperty(
-				NacosConfigProperties.PREFIX + ".enabled", Boolean.class, true);
+				configPrefix + ".enabled", Boolean.class, true);
 		boolean importCheckEnabled = environment.getProperty(
-				NacosConfigProperties.PREFIX + ".import-check.enabled", Boolean.class,
+				configPrefix + ".import-check.enabled", Boolean.class,
 				true);
 		return configEnabled && importCheckEnabled;
 	}

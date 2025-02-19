@@ -56,6 +56,8 @@ public class RocketMQCommonProperties implements Serializable {
 
 	private String namespace;
 
+	private String namespaceV2;
+
 	/**
 	 * The property of "unitName".
 	 */
@@ -138,6 +140,14 @@ public class RocketMQCommonProperties implements Serializable {
 
 	public void setNamespace(String namespace) {
 		this.namespace = namespace;
+	}
+
+	public String getNamespaceV2() {
+		return namespaceV2;
+	}
+
+	public void setNamespaceV2(String namespaceV2) {
+		this.namespaceV2 = namespaceV2;
 	}
 
 	public String getAccessChannel() {

@@ -57,6 +57,9 @@ public final class RocketMQUtils {
 		if (StringUtils.isEmpty(mqProperties.getNamespace())) {
 			mqProperties.setNamespace(binderConfigurationProperties.getNamespace());
 		}
+		if (StringUtils.isEmpty(mqProperties.getNamespaceV2())) {
+			mqProperties.setNamespaceV2(binderConfigurationProperties.getNamespaceV2());
+		}
 		if (StringUtils.isEmpty(mqProperties.getGroup())) {
 			mqProperties.setGroup(binderConfigurationProperties.getGroup());
 		}
