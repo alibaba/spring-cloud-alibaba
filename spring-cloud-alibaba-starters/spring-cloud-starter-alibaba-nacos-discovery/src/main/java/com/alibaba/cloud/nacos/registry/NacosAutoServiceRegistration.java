@@ -119,10 +119,10 @@ public class NacosAutoServiceRegistration
 
 	@EventListener(ContextClosedEvent.class)
 	public void onContextClosedEvent(ContextClosedEvent event) {
+		stop();
 		NacosDiscoveryProperties configuration = (NacosDiscoveryProperties) getConfiguration();
 		Integer gracefulShutdownWaitTime = configuration.getGracefulShutdownWaitTime();
 		ThreadUtils.sleep(gracefulShutdownWaitTime);
-        stop();
 	}
 
 }
