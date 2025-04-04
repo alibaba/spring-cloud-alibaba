@@ -1,18 +1,19 @@
 server:
   port: 18084
-
 spring:
   application:
     name: nacos-config-example
   cloud:
     nacos:
       config:
-        serverAddr: 127.0.0.1:8848
+        serverAddr: 117.72.36.124:8848
         username: 'nacos'
         password: 'nacos'
   config:
     import:
-      - nacos:nacos-config-example.properties?refreshEnabled=true
+      - nacos:application-dev.yml
+  profiles:
+    active: dev
 management:
   endpoint:
     health:

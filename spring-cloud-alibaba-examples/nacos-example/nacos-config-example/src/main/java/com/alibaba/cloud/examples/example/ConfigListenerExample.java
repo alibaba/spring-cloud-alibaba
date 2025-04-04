@@ -44,7 +44,7 @@ public class ConfigListenerExample {
 	/**
 	 * Nacos dataId.
 	 */
-	public static final String DATA_ID = "nacos-config-example.properties";
+	public static final String DATA_ID = "application-dev.yml";
 
 	/**
 	 * Nacos group.
