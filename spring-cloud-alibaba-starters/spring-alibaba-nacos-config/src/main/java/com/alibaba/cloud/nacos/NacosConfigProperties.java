@@ -592,8 +592,13 @@ public class NacosConfigProperties {
 
 		Map<String, Object> properties = PropertySourcesUtils
 				.getSubProperties((ConfigurableEnvironment) environment, prefix + ".config");
-		properties.forEach((k, v) -> nacosConfigProperties.putIfAbsent(resolveKey(k),
-				String.valueOf(v)));
+
+		properties.forEach((k, v) -> {
+			final String value = String.valueOf(v);
+			if (StringUtils.isNotBlank(value)){
+				nacosConfigProperties.put(resolveKey(k), value);
+			}
+		});
 	}
 
 	protected String resolveKey(String key) {
