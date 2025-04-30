@@ -71,6 +71,7 @@ public final class RocketMQUtils {
 			mqProperties.setUnitName(binderConfigurationProperties.getUnitName());
 		}
 		mqProperties.setNameServer(getNameServerStr(mqProperties.getNameServer()));
+		mqProperties.setUseTLS(binderConfigurationProperties.getUseTLS());
 		return mqProperties;
 	}
 
