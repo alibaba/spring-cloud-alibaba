@@ -12,7 +12,7 @@ spring:
           group: praise-consumer-group-PRAISE-TOPIC-01
       rocketmq:
         binder:
-          name-server: rocketmq:9876
+          name-server: rocketmq-server:9876
         bindings:
           consumer-in-0:
             consumer:

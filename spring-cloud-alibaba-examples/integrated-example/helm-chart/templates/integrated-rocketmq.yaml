@@ -52,7 +52,7 @@ spec:
       containers:
         - name: mqbroker
           image: registry.cn-hangzhou.aliyuncs.com/sca-community/rocketmq-server
-          command: ["sh","/usr/local/rocketmq-4.8.0/bin/mqbroker", "-n","rocketmq:9876"]
+          command: ["sh","/usr/local/rocketmq-4.8.0/bin/mqbroker", "-n","rocketmq-server:9876"]
           imagePullPolicy: IfNotPresent
           env:
             - name: JAVA_OPT

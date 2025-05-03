@@ -18,10 +18,12 @@
 127.0.0.1 integrated-mysql
 127.0.0.1 nacos-server
 127.0.0.1 seata-server
-127.0.0.1 rocketmq
+127.0.0.1 rocketmq-server
 127.0.0.1 gateway-service
 127.0.0.1 integrated-frontend
 ```
+
+> 推荐直接使用宿主机ip,避免 `docker-compose-env.yaml` 和 `docker-compose-service.yaml` 运行在不同环境的情况下,出现网络无法连接的情况,例如服务部署在Linux,但在Windows上 debug 应用
 
 ### 准备 jar 包
 
@@ -75,7 +77,7 @@ docker-compose-env.yml 文件运行成功之后，添加 Nacos 配置：
 
 #### 启动测试
 
-访问 `http://integrated-frontend:8080/order` 来体验对应场景。
+访问 `http://integrated-frontend:8010/order` 来体验对应场景。
 
 直接点击下单按钮提交表单，应用模拟客户端向网关发送了一个创建订单的请求。
 
@@ -112,7 +114,7 @@ docker-compose-env.yml 文件运行成功之后，添加 Nacos 配置：
 
 - Sentinel 服务熔断降级
 
-访问 `http://integrated-frontend:8080/sentinel` 体验对应场景。
+访问 `http://integrated-frontend:8010/sentinel` 体验对应场景。
 
 ![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20221016155501290.png)
 
@@ -124,7 +126,7 @@ docker-compose-env.yml 文件运行成功之后，添加 Nacos 配置：
 
 - RocketMQ 进行流量削峰填谷
 
-访问 `http://integrated-frontend:8080/rocketmq` 体验对应场景。
+访问 `http://integrated-frontend:8010/rocketmq` 体验对应场景。
 
 由于之前在 Nacos 中配置了 `integrated-praise-consumer` 消费者模块的消费速率以及间隔，在点击按钮时应用模拟 1000 个点赞请求，针对 1000 个点赞请求，`integrated-praise-provider`
 会将 1000 次请求都向 Broker 投递消息，而在消费者模块中会根据配置的消费速率进行消费，向数据库更新点赞的商品数据，模拟大流量下 RocketMQ 削峰填谷的特性。

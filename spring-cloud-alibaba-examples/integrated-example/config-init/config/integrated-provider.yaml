@@ -7,7 +7,7 @@ spring:
           content-type: application/json
       rocketmq:
         binder:
-          name-server: rocketmq:9876
+          name-server: rocketmq-server:9876
         bindings:
           praise-output:
             producer:

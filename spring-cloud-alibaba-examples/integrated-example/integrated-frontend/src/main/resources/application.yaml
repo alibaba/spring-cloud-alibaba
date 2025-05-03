@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: integrated-frontend
+
+server:
+  port: 8010
