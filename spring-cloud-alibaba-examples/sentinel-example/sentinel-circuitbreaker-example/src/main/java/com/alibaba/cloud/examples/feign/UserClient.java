@@ -29,9 +29,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface UserClient {
 
 	@GetMapping("/feignMethod/{ok}")
-	String feignMethod(@PathVariable boolean ok);
+	String feignMethod(@PathVariable(value = "ok") boolean ok);
 
 	@GetMapping("/feign/{ok}")
-	String feign(@PathVariable boolean ok);
+	String feign(@PathVariable(value = "ok") boolean ok);
 
 }

@@ -63,7 +63,7 @@ public class EchoController {
 	}
 
 	@GetMapping("/echo/{string}")
-	public String echo(@PathVariable String string) {
+	public String echo(@PathVariable("string") String string) {
 		return "hello Nacos Discovery " + string;
 	}
 

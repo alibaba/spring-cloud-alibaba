@@ -38,7 +38,7 @@ public class PraiseController {
 	private StreamBridge streamBridge;
 
 	@GetMapping({ "/rocketmq", "/sentinel" })
-	public boolean praise(@RequestParam Integer itemId) {
+	public boolean praise(@RequestParam("itemId") Integer itemId) {
 		PraiseMessage message = new PraiseMessage();
 		message.setItemId(itemId);
 		Message<PraiseMessage> praiseMessage = MessageBuilder.withPayload(message)
