@@ -30,8 +30,8 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
-      - name: Dependies Cache
-        uses: actions/cache@v2
+      - name: Dependencies Cache
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
