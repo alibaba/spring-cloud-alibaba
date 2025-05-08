@@ -234,7 +234,7 @@ public class NacosDiscoveryProperties {
 	 * default is 10s
 	 * When the Springboot shutdown hook is executed, remove the Nacos service, wait for 10 seconds, and then Tomcat rejects the request
 	 */
-	private Integer gracefulShutdownWaitTime = 10*1000;
+	private Integer gracefulShutdownWaitTime = 10 * 1000;
 
 	@Autowired
 	private InetIPv6Utils inetIPv6Utils;
