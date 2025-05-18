@@ -32,6 +32,7 @@
                 $('#sentinelResultSection').append(`<p> [${getDateTime()}] 点赞前的点赞数： ${res} </p>`);
             }
         });
+        console.log("itemId=",itemId);
         for (let i = 0; i < 10; i++) {
             $.ajax({
                 url: "http://gateway-service:30010/praise/sentinel",
