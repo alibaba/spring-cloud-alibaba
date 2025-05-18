@@ -62,7 +62,7 @@ public class NacosConfigAutoConfiguration {
 	}
 
 	@Bean
-	public NacosAnnotationProcessor nacosAnnotationProcessor() {
+	public static NacosAnnotationProcessor nacosAnnotationProcessor() {
 		return new NacosAnnotationProcessor();
 	}
 
