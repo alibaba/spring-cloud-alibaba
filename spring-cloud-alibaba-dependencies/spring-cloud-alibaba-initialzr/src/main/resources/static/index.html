@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Cloud Alibaba 微服务向导</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%2300c853' d='M50 0C22.4 0 0 22.4 0 50s22.4 50 50 50 50-22.4 50-50S77.6 0 50 0zm0 90C28.1 90 10 71.9 10 50S28.1 10 50 10s40 18.1 40 40-18.1 40-40 40zM70 30c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zm-40 0c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zm40 30c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zm-40 0c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10z'/%3E%3C/svg%3E") no-repeat center;
+            background-size: contain;
+        }
+        .title {
+            font-size: 36px;
+            font-weight: 300;
+            color: #fff;
+            text-transform: lowercase;
+        }
+        .title span {
+            color: #00c853;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+        }
+        .left-section, .middle-section {
+            width: 30%;
+            margin-right: 20px;
+        }
+        .right-section {
+            width: 35%;
+        }
+        h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #00c853;
+            margin-bottom: 15px;
+        }
+        label {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .radio-group label {
+            font-weight: 400;
+            margin-bottom: 0;
+        }
+        input[type="radio"] {
+            margin-right: 5px;
+            accent-color: #00c853;
+        }
+        select, input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background-color: #2d2d2d;
+            color: #fff;
+            font-size: 14px;
+        }
+        select {
+            appearance: none;
+            background: #2d2d2d url("data:image/svg+xml;utf8,<svg fill='%23fff' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>") no-repeat right 8px center;
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            border: 1px solid #00c853;
+            border-radius: 4px;
+            background-color: transparent;
+            color: #00c853;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        button.primary {
+            background-color: #00c853;
+            color: #fff;
+        }
+        button:hover {
+            background-color: #00a843;
+            color: #fff;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #444;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="logo"></div>
+    <div class="title"><span>spring</span>cloudalibaba</div>
+</div>
+
+<div class="container">
+    <div class="left-section">
+        <h2>项目</h2>
+        <div class="radio-group">
+            <label><input type="radio" name="buildTool" value="Maven" checked> Maven</label>
+        </div>
+
+        <h2>语言</h2>
+        <div class="radio-group">
+            <label><input type="radio" name="language" value="Java" checked> Java</label>
+        </div>
+
+        <h2>Spring Cloud</h2>
+        <select id="springCloudVersion" onchange="updateVersions()">
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+            <option value="2020">2020</option>
+            <option value="Hoxton">Hoxton</option>
+            <option value="Greenwich">Greenwich</option>
+            <option value="Finchley">Finchley</option>
+            <option value="Edgware">Edgware</option>
+        </select>
+
+        <h2>Spring Cloud Alibaba</h2>
+        <select id="springCloudAlibabaVersion" onchange="updateVersions()">
+            <option value="2023.x">2023.x</option>
+            <option value="2022.x">2022.x</option>
+            <option value="2021.x">2021.x</option>
+            <option value="2020.0.x">2020.0.x</option>
+            <option value="2.2.x">2.2.x</option>
+            <option value="Greenwich">Greenwich</option>
+            <option value="Finchley">Finchley</option>
+            <option value="1.x">1.x</option>
+        </select>
+
+        <h2>Spring Boot</h2>
+        <select id="springBootVersion">
+            <option value="3.2.5">3.2.5</option>
+        </select>
+    </div>
+
+    <div class="middle-section">
+        <h2>项目元数据</h2>
+        <label>Group</label>
+        <input type="text" id="groupId" value="com.example">
+
+        <hr>
+
+        <label>Artifact</label>
+        <input type="text" id="artifactId" value="microservice">
+
+        <hr>
+
+        <label>名称</label>
+        <input type="text" id="projectName" value="microservice">
+
+        <hr>
+
+        <label>描述</label>
+        <input type="text" id="description" value="Spring Cloud Alibaba 微服务项目">
+
+        <hr>
+
+        <label>包名</label>
+        <input type="text" id="packageName" value="com.example.microservice">
+
+        <hr>
+
+        <label>打包方式</label>
+        <div class="radio-group">
+            <label><input type="radio" name="packaging" value="Jar" checked> Jar</label>
+            <label><input type="radio" name="packaging" value="War"> War</label>
+        </div>
+
+        <h2>Java</h2>
+        <div class="radio-group" id="javaVersionGroup">
+            <label><input type="radio" name="javaVersion" value="17" checked> 17</label>
+            <label><input type="radio" name="javaVersion" value="21"> 21</label>
+            <label><input type="radio" name="javaVersion" value="24"> 24</label>
+        </div>
+    </div>
+
+    <div class="right-section">
+    </div>
+</div>
+
+<div class="button-group">
+    <button class="primary" onclick="generateProject()">生成 Ctrl + ↵</button>
+    <button onclick="alert('浏览示例项目功能待实现')">浏览 Ctrl + Space</button>
+</div>
+
+<script>
+    function updateVersions() {
+        const springCloudVersion = document.getElementById('springCloudVersion').value;
+        const springCloudAlibabaVersion = document.getElementById('springCloudAlibabaVersion').value;
+        const springBootSelect = document.getElementById('springBootVersion');
+        const javaVersionGroup = document.getElementById('javaVersionGroup');
+
+        // 清空当前选项
+        springBootSelect.innerHTML = '';
+        javaVersionGroup.innerHTML = '';
+
+        // 根据 Spring Cloud 版本设置 Spring Boot 和 Java 版本
+        if (springCloudVersion === '2023' && springCloudAlibabaVersion === '2023.x') {
+            springBootSelect.innerHTML = '<option value="3.2.5">3.2.5</option>';
+            javaVersionGroup.innerHTML = `
+                    <label><input type="radio" name="javaVersion" value="17" checked> 17</label>
+                    <label><input type="radio" name="javaVersion" value="21"> 21</label>
+                    <label><input type="radio" name="javaVersion" value="24"> 24</label>
+                `;
+        } else if (springCloudVersion === '2022' && springCloudAlibabaVersion === '2022.x') {
+            springBootSelect.innerHTML = '<option value="3.0.7">3.0.7</option>';
+            javaVersionGroup.innerHTML = `
+                    <label><input type="radio" name="javaVersion" value="17" checked> 17</label>
+                    <label><input type="radio" name="javaVersion" value="21"> 21</label>
+                    <label><input type="radio" name="javaVersion" value="24"> 24</label>
+                `;
+        } else if (springCloudVersion === '2021' && springCloudAlibabaVersion === '2021.x') {
+            springBootSelect.innerHTML = '<option value="2.6.15">2.6.15</option>';
+            javaVersionGroup.innerHTML = `
+                    <label><input type="radio" name="javaVersion" value="8"> 8</label>
+                    <label><input type="radio" name="javaVersion" value="11"> 11</label>
+                    <label><input type="radio" name="javaVersion" value="17" checked> 17</label>
+                    <label><input type="radio" name="javaVersion" value="21"> 21</label>
+                    <label><input type="radio" name="javaVersion" value="24"> 24</label>
+                `;
+        } else if (springCloudVersion === '2020' && springCloudAlibabaVersion === '2020.0.x') {
+            springBootSelect.innerHTML = '<option value="2.4.13">2.4.13</option>';
+            javaVersionGroup.innerHTML = `
+                    <label><input type="radio" name="javaVersion" value="8"> 8</label>
+                    <label><input type="radio" name="javaVersion" value="11"> 11</label>
+                    <label><input type="radio" name="javaVersion" value="17" checked> 17</label>
+                    <label><input type="radio" name="javaVersion" value="21"> 21</label>
+                    <label><input type="radio" name="javaVersion" value="24"> 24</label>
+                `;
+        } else if (springCloudVersion === 'Hoxton' && springCloudAlibabaVersion === '2.2.x') {
+            springBootSelect.innerHTML = '<option value="2.2.9.RELEASE">2.2.9.RELEASE</option>';
+            javaVersionGroup.innerHTML = `
+                    <label><input type="radio" name="javaVersion" value="8"> 8</label>
+                    <label><input type="radio" name="javaVersion" value="11"> 11</label>
+                    <label><input type="radio" name="javaVersion" value="17" checked> 17</label>
+                    <label><input type="radio" name="javaVersion" value="21"> 21</label>
+                    <label><input type="radio" name="javaVersion" value="24"> 24</label>
+                `;
+        } else if (springCloudVersion === 'Greenwich' && springCloudAlibabaVersion === 'Greenwich') {
+            springBootSelect.innerHTML = '<option value="2.1.18.RELEASE">2.1.18.RELEASE</option>';
+            javaVersionGroup.innerHTML = `
+                    <label><input type="radio" name="javaVersion" value="8"> 8</label>
+                    <label><input type="radio" name="javaVersion" value="11"> 11</label>
+                    <label><input type="radio" name="javaVersion" value="17" checked> 17</label>
+                    <label><input type="radio" name="javaVersion" value="21"> 21</label>
+                    <label><input type="radio" name="javaVersion" value="24"> 24</label>
+                `;
+        } else if (springCloudVersion === 'Finchley' && springCloudAlibabaVersion === 'Finchley') {
+            springBootSelect.innerHTML = '<option value="2.0.4.RELEASE">2.0.4.RELEASE</option>';
+            javaVersionGroup.innerHTML = `
+                    <label><input type="radio" name="javaVersion" value="8"> 8</label>
+                    <label><input type="radio" name="javaVersion" value="11"> 11</label>
+                    <label><input type="radio" name="javaVersion" value="17" checked> 17</label>
+                    <label><input type="radio" name="javaVersion" value="21"> 21</label>
+                    <label><input type="radio" name="javaVersion" value="24"> 24</label>
+                `;
+        } else if (springCloudVersion === 'Edgware' && springCloudAlibabaVersion === '1.x') {
+            springBootSelect.innerHTML = '<option value="1.5.22.RELEASE">1.5.22.RELEASE</option>';
+            javaVersionGroup.innerHTML = `
+                    <label><input type="radio" name="javaVersion" value="7"> 7</label>
+                    <label><input type="radio" name="javaVersion" value="8"> 8</label>
+                    <label><input type="radio" name="javaVersion" value="11"> 11</label>
+                    <label><input type="radio" name="javaVersion" value="17" checked> 17</label>
+                    <label><input type="radio" name="javaVersion" value="21"> 21</label>
+                    <label><input type="radio" name="javaVersion" value="24"> 24</label>
+                `;
+        }
+
+        // 如果 Spring Cloud 和 Spring Cloud Alibaba 版本不匹配，显示警告
+        if (!isVersionMatch(springCloudVersion, springCloudAlibabaVersion)) {
+            alert('Spring Cloud 版本与 Spring Cloud Alibaba 版本不匹配，请选择匹配的版本组合！');
+        }
+    }
+
+    function isVersionMatch(springCloudVersion, springCloudAlibabaVersion) {
+        const mappings = {
+            '2023': '2023.x',
+            '2022': '2022.x',
+            '2021': '2021.x',
+            '2020': '2020.0.x',
+            'Hoxton': '2.2.x',
+            'Greenwich': 'Greenwich',
+            'Finchley': 'Finchley',
+            'Edgware': '1.x'
+        };
+        return mappings[springCloudVersion] === springCloudAlibabaVersion;
+    }
+
+    function generateProject() {
+        const config = {
+            buildTool: document.querySelector('input[name="buildTool"]:checked').value,
+            language: document.querySelector('input[name="language"]:checked').value,
+            springCloudVersion: document.getElementById('springCloudVersion').value,
+            springCloudAlibabaVersion: document.getElementById('springCloudAlibabaVersion').value,
+            springBootVersion: document.getElementById('springBootVersion').value,
+            groupId: document.getElementById('groupId').value,
+            artifactId: document.getElementById('artifactId').value,
+            projectName: document.getElementById('projectName').value,
+            description: document.getElementById('description').value,
+            packageName: document.getElementById('packageName').value,
+            packaging: document.querySelector('input[name="packaging"]:checked').value,
+            javaVersion: document.querySelector('input[name="javaVersion"]:checked').value
+        };
+        console.log('配置信息:',config);
+
+        if (!isVersionMatch(config.springCloudVersion, config.springCloudAlibabaVersion)) {
+            alert('Spring Cloud 版本与 Spring Cloud Alibaba 版本不匹配，请修正后再生成！');
+            return;
+        }
+
+        fetch('/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(config)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('生成失败');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = config.projectName + '.zip';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                alert('生成项目失败：' + error.message);
+            });
+    }
+
+    // 初始化时调用一次，确保默认版本匹配
+    window.onload = updateVersions;
+</script>
+</body>
+</html>
