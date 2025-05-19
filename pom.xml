@@ -100,6 +100,9 @@
         <gmavenplus-plugin.version>1.6</gmavenplus-plugin.version>
         <jacoco.version>0.8.8</jacoco.version>
         <native-maven-plugin.version>0.10.2</native-maven-plugin.version>
+
+        <!-- Maven Central Portal -->
+        <central.publishing.maven.version>0.7.0</central.publishing.maven.version>
     </properties>
 
     <modules>
@@ -163,6 +166,12 @@
                             </configuration>
                         </execution>
                     </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>${central.publishing.maven.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -318,21 +327,17 @@
                             </execution>
                         </executions>
                     </plugin>
+
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
-
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>sonatype-nexus-snapshots</id>
-                    <name>Sonatype Nexus Snapshots</name>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-                </snapshotRepository>
-                <repository>
-                    <id>sonatype-nexus-staging</id>
-                    <name>Nexus Release Repository</name>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
         </profile>
     </profiles>
 </project>
