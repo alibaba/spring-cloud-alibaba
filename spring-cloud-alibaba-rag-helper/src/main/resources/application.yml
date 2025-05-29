@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: SpringCloudAlibabaRagHelper
+
+  ai:
+    openai:
+      api-key: sk-fuacnJoLzVOp55Mq5PIFnpuYYemqwLDNdiyO8zW0j2fFZprd
+      base-url: https://hk.xty.app
+  servlet:
+    multipart:
+      max-file-size: 50MB
+server:
+  port: 8090
+  servlet:
+    session:
+      timeout: PT876000H

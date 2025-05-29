@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpringCloudAlibabaRagHelper</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.0.12/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'STZhongsong', 'SimSun', sans-serif;
+        }
+
+        body {
+            background-color: #F1EFE6;
+            color: #5E6C5B;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #5E6C5B;
+            text-align: center;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-box {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #5E6C5B;
+            border-radius: 8px;
+            max-height: 500px;
+        }
+
+        .message {
+            margin: 10px 0;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .user-message {
+            justify-content: flex-end;
+        }
+
+        .ai-message {
+            justify-content: flex-start;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 10px;
+            line-height: 1.5;
+        }
+
+        .user-message .message-bubble {
+            background-color: #5E6C5B;
+            color: #F1EFE6;
+            border-bottom-right-radius: 2px;
+        }
+
+        .ai-message .message-bubble {
+            background-color: #F1EFE6;
+            color: #5E6C5B;
+            border-bottom-left-radius: 2px;
+            border: 1px solid #5E6C5B;
+            overflow: auto;
+        }
+
+        .ai-message .message-bubble * {
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+        }
+
+        .loader {
+            border: 4px solid #F1EFE6;
+            border-top: 4px solid #5E6C5B;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #5E6C5B;
+            border-radius: 5px;
+            font-size: 1em;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #5E6C5B;
+            color: #F1EFE6;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #4a5647;
+        }
+
+        button:disabled {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .chat-container {
+                padding: 10px;
+            }
+
+            .message-bubble {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>SpringCloudAlibabaRagHelper</h1>
+    <div class="chat-container">
+        <div class="chat-box" id="chatBox"></div>
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="请输入您的问题..." />
+            <button id="sendButton">发送</button>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chatBox');
+        const userInput = document.getElementById('userInput');
+        const sendButton = document.getElementById('sendButton');
+
+        function addMessage(content, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.className = 'message-bubble';
+            bubbleDiv.innerHTML = isUser ? content : marked.parse(content);
+            messageDiv.appendChild(bubbleDiv);
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function addLoading() {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ai-message';
+            messageDiv.id = 'loadingMessage';
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message-bubble loading';
+            loadingDiv.innerHTML = '<div class="loader"></div>';
+            messageDiv.appendChild(loadingDiv);
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function removeLoading() {
+            const loadingMessage = document.getElementById('loadingMessage');
+            if (loadingMessage) {
+                loadingMessage.remove();
+            }
+        }
+
+        async function sendMessage() {
+            const question = userInput.value.trim();
+            if (!question) return;
+
+            addMessage(question, true);
+            userInput.value = '';
+            sendButton.disabled = true;
+            addLoading();
+
+            try {
+                const response = await fetch('/ai/chat?question=' + encodeURIComponent(question), {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) throw new Error('网络请求失败');
+
+                const data = await response.text();
+                removeLoading();
+                addMessage(data, false);
+            } catch (error) {
+                removeLoading();
+                const errorMessage = `
+**错误**
+
+无法连接到 AI 服务，请稍后再试。
+                `;
+                addMessage(errorMessage, false);
+            } finally {
+                sendButton.disabled = false;
+                userInput.focus();
+            }
+        }
+
+        sendButton.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !sendButton.disabled) {
+                sendMessage();
+            }
+        });
+
+        // 加载字体（华文中宋可能在某些系统不可用，回退到 SimSun）
+        document.fonts.load('16px STZhongsong').catch(() => {
+            console.log('华文中宋字体不可用，回退到 SimSun');
+        });
+    </script>
+</body>
+</html>
