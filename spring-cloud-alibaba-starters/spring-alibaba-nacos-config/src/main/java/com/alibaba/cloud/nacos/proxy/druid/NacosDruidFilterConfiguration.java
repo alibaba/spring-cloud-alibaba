@@ -27,7 +27,7 @@ public class NacosDruidFilterConfiguration {
 	@Bean
 	@ConditionalOnProperty(value = "spring.nacos.config.proxy.druid.enabled", havingValue = "true")
 	public NacosDruidConfigFilter nacosDruidFilter(Environment environment) {
-		String proxyDataId = environment.getProperty("spring.nacos.config.config.proxy.druid.data-id");
+		String proxyDataId = environment.getProperty("spring.nacos.config.proxy.druid.data-id");
 		return new NacosDruidConfigFilter(proxyDataId);
 	}
 
