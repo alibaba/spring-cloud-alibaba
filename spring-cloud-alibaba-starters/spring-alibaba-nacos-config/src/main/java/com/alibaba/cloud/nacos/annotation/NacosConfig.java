@@ -39,4 +39,6 @@ public @interface NacosConfig {
 	String key() default "";
 
 	String defaultValue() default "";
+
+	boolean refreshed() default true;
 }
