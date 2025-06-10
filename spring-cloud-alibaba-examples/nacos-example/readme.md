@@ -463,11 +463,11 @@ Here's a look at the code for the nacos-discovery-consumer-example project to sh
 
 #### Validate
 
-1. Enter http://127.0.0.1:18083/echo-rest/1234，点击跳转，可以看到浏览器显示了  the message "hello Nacos Discovery 1234" returned by nacos-discovery-provider-example in the browser address bar to prove that the service discovery is valid.
+1. Enter [http://127.0.0.1:18083/echo-rest/1234](http://127.0.0.1:18083/echo-rest/1234) and click Go, you can see that the message "hello Nacos Discovery 1234" returned by nacos-discovery-provider-example in the browser address bar to prove that the service discovery is valid.
 
 ![rest](https://cdn.nlark.com/lark/0/2018/png/54319/1536986302124-ee27670d-bdcc-4210-9f5d-875acec6d3ea.png)
 
-2. Enter http://127.0.0.1:18083/echo-feign/12345，点击跳转，可以看到浏览器显示  the message "hello Nacos Discovery 12345" returned by nacos-discovery-provider-example in the browser address bar to prove that the service discovery is effective.
+2. Enter [http://127.0.0.1:18083/echo-feign/12345](http://127.0.0.1:18083/echo-feign/12345) and click Go, you can see that the message "hello Nacos Discovery 12345" returned by nacos-discovery-provider-example in the browser address bar to prove that the service discovery is effective.
 
 ![feign](https://cdn.nlark.com/lark/0/2018/png/54319/1536986311685-6d0c1f9b-a453-4ec3-88ab-f7922d210f65.png)
 
