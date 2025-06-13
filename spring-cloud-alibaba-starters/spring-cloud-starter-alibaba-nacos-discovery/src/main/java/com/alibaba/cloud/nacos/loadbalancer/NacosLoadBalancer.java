@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.util.InetIPv6Utils;
-import com.alibaba.nacos.client.naming.utils.CollectionUtils;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,7 +148,7 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 									.get("nacos.cluster");
 							return StringUtils.equals(cluster, clusterName);
 						}).collect(Collectors.toList());
-				if (!CollectionUtils.isEmpty(sameClusterInstances)) {
+				if (!sameClusterInstances.isEmpty()) {
 					instancesToChoose = sameClusterInstances;
 				}
 			}

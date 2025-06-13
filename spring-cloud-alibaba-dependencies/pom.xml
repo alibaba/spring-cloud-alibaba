@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dependencies-parent</artifactId>
-        <version>4.1.0</version>
+        <version>4.3.0</version>
         <relativePath/>
     </parent>
 
@@ -18,15 +18,16 @@
     <description>Spring Cloud Alibaba Dependencies</description>
 
     <properties>
-        <revision>2023.0.3.3</revision>
+        <revision>2025.0.0.0</revision>
         <sentinel.version>1.8.8</sentinel.version>
-        <nacos.client.version>2.4.2</nacos.client.version>
-        <seata.version>2.1.0</seata.version>
+        <nacos.client.version>3.0.1</nacos.client.version>
+        <seata.version>2.3.0</seata.version>
         <!-- Apache RocketMQ -->
-        <rocketmq.version>5.3.1</rocketmq.version>
+        <rocketmq.version>5.3.3</rocketmq.version>
+        <rocketmq.acl.version>5.3.2</rocketmq.acl.version>
 
         <!-- scheduling -->
-        <shedlock.version>4.23.0</shedlock.version>
+        <shedlock.version>6.9.0</shedlock.version>
         <schedulerx.worker.version>1.11.4</schedulerx.worker.version>
 
         <!-- Maven Plugin Versions -->
@@ -167,7 +168,7 @@
             <dependency>
                 <groupId>org.apache.rocketmq</groupId>
                 <artifactId>rocketmq-acl</artifactId>
-                <version>${rocketmq.version}</version>
+                <version>${rocketmq.acl.version}</version>
             </dependency>
 
             <!-- Alibaba scheduling -->

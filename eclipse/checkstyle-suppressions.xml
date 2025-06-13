@@ -5,5 +5,7 @@
 <suppressions>
     <suppress files="[\\/]spring-cloud-alibaba-examples[\\/]" checks="HideUtilityClassConstructorCheck" />
     <suppress files="[\\/]spring-cloud-alibaba-tests[\\/]" checks="HideUtilityClassConstructorCheck" />
+    <suppress files=".java" checks="AvoidStarImport" />
+    <suppress files=".java" checks="RegexpSinglelineJava" />
     <suppress files=".*" checks="LineLength" />
 </suppressions>

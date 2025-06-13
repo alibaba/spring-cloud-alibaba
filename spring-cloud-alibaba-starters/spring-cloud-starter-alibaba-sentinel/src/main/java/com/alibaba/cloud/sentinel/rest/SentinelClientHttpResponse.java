@@ -16,66 +16,95 @@
 
 package com.alibaba.cloud.sentinel.rest;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
-import com.alibaba.cloud.sentinel.custom.SentinelProtectInterceptor;
-
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.AbstractClientHttpResponse;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.util.Assert;
 
-/**
- * Using by {@link SentinelRestTemplate} and {@link SentinelProtectInterceptor}.
- *
- * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
- */
-public class SentinelClientHttpResponse extends AbstractClientHttpResponse {
 
-	private String blockResponse = "RestTemplate request block by sentinel";
+public class SentinelClientHttpResponse extends BaseHttpInputMessage implements ClientHttpResponse {
 
+	private final HttpStatusCode statusCode;
+
+	private static final String BLOCK_RESPONSE = "RestTemplate request block by sentinel";
+	//private String blockResponse = BLOCK_RESPONSE;
+
+	/**
+	 * Create a {@code SentinelMyClientHttpResponse} with an empty response body and
+	 * HTTP status code {@link HttpStatus#OK OK}.
+	 *
+	 * @since 6.0.3
+	 */
 	public SentinelClientHttpResponse() {
+		this(BLOCK_RESPONSE.getBytes(), HttpStatus.OK);
 	}
 
 	public SentinelClientHttpResponse(String blockResponse) {
-		this.blockResponse = blockResponse;
+		this(blockResponse.getBytes(), HttpStatus.OK);
+	}
+
+	/**
+	 * Create a {@code SentinelMyClientHttpResponse} with response body as a byte array
+	 * and the supplied HTTP status code.
+	 */
+	public SentinelClientHttpResponse(byte[] body, HttpStatusCode statusCode) {
+		super(body);
+		Assert.notNull(statusCode, "HttpStatusCode must not be null");
+		this.statusCode = statusCode;
+	}
+
+	/**
+	 * Create a {@code SentinelMyClientHttpResponse} with response body as a byte array
+	 * and a custom HTTP status code.
+	 *
+	 * @since 5.3.17
+	 */
+	public SentinelClientHttpResponse(byte[] body, int statusCode) {
+		this(body, HttpStatusCode.valueOf(statusCode));
+	}
+
+	/**
+	 * Create a {@code SentinelMyClientHttpResponse} with response body as {@link InputStream}
+	 * and the supplied HTTP status code.
+	 */
+	public SentinelClientHttpResponse(InputStream body, HttpStatusCode statusCode) {
+		super(body);
+		Assert.notNull(statusCode, "HttpStatusCode must not be null");
+		this.statusCode = statusCode;
+	}
+
+	/**
+	 * Create a {@code SentinelMyClientHttpResponse} with response body as {@link InputStream}
+	 * and a custom HTTP status code.
+	 *
+	 * @since 5.3.17
+	 */
+	public SentinelClientHttpResponse(InputStream body, int statusCode) {
+		this(body, HttpStatusCode.valueOf(statusCode));
+	}
+
+
+	@Override
+	public HttpStatusCode getStatusCode() {
+		return this.statusCode;
 	}
 
 	@Override
-	public int getRawStatusCode() throws IOException {
-		return HttpStatus.OK.value();
-	}
-
-	@Override
-	public String getStatusText() throws IOException {
-		return blockResponse;
+	public String getStatusText() {
+		return (this.statusCode instanceof HttpStatus status ? status.getReasonPhrase() : "");
 	}
 
 	@Override
 	public void close() {
-		// nothing do
-	}
-
-	@Override
-	public InputStream getBody() throws IOException {
-		return new ByteArrayInputStream(blockResponse.getBytes());
-	}
-
-	@Override
-	public HttpHeaders getHeaders() {
-		Map<String, List<String>> headers = new HashMap<>();
-		headers.put(HttpHeaders.CONTENT_TYPE,
-				Arrays.asList(MediaType.APPLICATION_JSON_VALUE));
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.putAll(headers);
-		return httpHeaders;
+		try {
+			getBody().close();
+		}
+		catch (IOException ex) {
+			// ignore
+		}
 	}
 
 }
