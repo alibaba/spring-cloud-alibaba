@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba Starters</name>
     <description>Spring Cloud Alibaba Starters</description>
-    
+
     <modules>
 
         <module>spring-alibaba-nacos-config</module>
@@ -29,6 +29,7 @@
         <module>spring-cloud-alibaba-sentinel-gateway</module>
         <module>spring-cloud-alibaba-commons</module>
         <module>spring-cloud-starter-alibaba-schedulerx</module>
+        <module>spring-cloud-starter-alibaba-rpc</module>
     </modules>
 
     <build>

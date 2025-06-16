@@ -29,11 +29,16 @@
         <shedlock.version>4.23.0</shedlock.version>
         <schedulerx.worker.version>1.11.4</schedulerx.worker.version>
 
+        <!-- dubbo-->
+        <dubbo.version>3.3.0-beta.4</dubbo.version>
+
         <!-- Maven Plugin Versions -->
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
         <flatten-maven-plugin.version>1.2.7</flatten-maven-plugin.version>
+
+
     </properties>
 
     <dependencyManagement>
@@ -186,6 +191,12 @@
                 <artifactId>schedulerx2-worker</artifactId>
                 <version>${schedulerx.worker.version}</version>
             </dependency>
+            <!--  dubbo Dependencies  -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-remoting-netty4</artifactId>
+                <version>${dubbo.version}</version>
+            </dependency>
 
             <!-- Own dependencies  -->
             <dependency>
@@ -265,7 +276,19 @@
                 <artifactId>spring-cloud-starter-alibaba-schedulerx</artifactId>
                 <version>${revision}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-rpc</artifactId>
+                <version>${revision}</version>
+            </dependency>
+                 
+            <!-- Testing Dependencies -->
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-test</artifactId>
+                <version>${spring.ai.version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

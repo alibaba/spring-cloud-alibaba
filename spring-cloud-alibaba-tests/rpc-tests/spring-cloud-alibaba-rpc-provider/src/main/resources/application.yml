@@ -1,0 +1,21 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: provider
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 10.21.32.154:8848
+    rpc:
+      enabled: true
+      netty:
+        host: 127.0.0.1
+        port: 20881
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+server:
+  port: 8080

@@ -1,0 +1,3 @@
+com.alibaba.cloud.rpc.RpcConfiguration
+com.alibaba.cloud.rpc.config.RpcFeignConfiguration
+com.alibaba.cloud.rpc.config.RpcRegistryConfiguration
