@@ -16,11 +16,9 @@
 
 package com.alibaba.cloud.nacos;
 
-import com.alibaba.cloud.nacos.client.NacosPropertySourceLocator;
 import com.alibaba.cloud.nacos.configdata.NacosConfigRefreshEventListener;
 import com.alibaba.cloud.nacos.refresh.SmartConfigurationPropertiesRebinder;
 import com.alibaba.cloud.nacos.refresh.condition.ConditionalOnNonDefaultBehavior;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.SearchStrategy;
 import org.springframework.cloud.context.properties.ConfigurationPropertiesBeans;
@@ -44,12 +42,6 @@ public class NacosConfigSpringCloudAutoConfiguration {
 		// If using default behavior, not use SmartConfigurationPropertiesRebinder.
 		// Minimize te possibility of making mistakes.
 		return new SmartConfigurationPropertiesRebinder(beans);
-	}
-
-	@Bean
-	public NacosPropertySourceLocator nacosPropertySourceLocator(
-			NacosConfigManager nacosConfigManager) {
-		return new NacosPropertySourceLocator(nacosConfigManager);
 	}
 
 	@Bean(name = "nacosConfigSpringCloudRefreshEventListener")

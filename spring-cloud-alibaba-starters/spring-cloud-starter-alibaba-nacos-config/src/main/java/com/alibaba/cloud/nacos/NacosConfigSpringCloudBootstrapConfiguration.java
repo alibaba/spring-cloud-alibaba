@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos;
 
+import com.alibaba.cloud.nacos.client.NacosPropertySourceLocator;
 import com.alibaba.cloud.nacos.refresh.SmartConfigurationPropertiesRebinder;
 import com.alibaba.cloud.nacos.refresh.condition.ConditionalOnNonDefaultBehavior;
 
@@ -34,6 +35,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 @Conditional(NacosConfigEnabledCondition.class)
 public class NacosConfigSpringCloudBootstrapConfiguration {
+
+	// fix #3995
+	@Bean
+	public NacosPropertySourceLocator nacosPropertySourceLocator(
+			NacosConfigManager nacosConfigManager) {
+		return new NacosPropertySourceLocator(nacosConfigManager);
+	}
 
 	/**
 	 * Compatible with bootstrap way to start.
