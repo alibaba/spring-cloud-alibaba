@@ -19,6 +19,7 @@ package com.alibaba.cloud.nacos;
 import com.alibaba.cloud.nacos.configdata.NacosConfigRefreshEventListener;
 import com.alibaba.cloud.nacos.refresh.SmartConfigurationPropertiesRebinder;
 import com.alibaba.cloud.nacos.refresh.condition.ConditionalOnNonDefaultBehavior;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.SearchStrategy;
 import org.springframework.cloud.context.properties.ConfigurationPropertiesBeans;
