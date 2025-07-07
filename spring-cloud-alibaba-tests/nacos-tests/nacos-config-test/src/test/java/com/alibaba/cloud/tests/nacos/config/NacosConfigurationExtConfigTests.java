@@ -43,6 +43,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 
 import static com.alibaba.cloud.testsupport.Constant.TIME_OUT;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 @SpringCloudAlibaba(composeFiles = "docker/nacos-compose-test.yml", serviceName = "nacos-standalone")
@@ -127,7 +128,7 @@ public class NacosConfigurationExtConfigTests {
 
 		List<NacosConfigProperties.Config> extConfig = nacosConfigProperties
 				.getExtensionConfigs();
-		Assertions.assertArrayEquals(extConfig.toArray(), mockConfig.toArray());
+		assertThat(extConfig.toArray()).containsExactly(mockConfig.toArray());
 
 	}
 
