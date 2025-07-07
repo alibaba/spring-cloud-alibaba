@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dependencies-parent</artifactId>
-        <version>4.1.0</version>
+        <version>4.3.0</version>
         <relativePath/>
     </parent>
 
@@ -18,9 +18,9 @@
     <description>Spring Cloud Alibaba Dependencies</description>
 
     <properties>
-        <revision>2023.0.3.3</revision>
+        <revision>2025.0.0.1</revision>
         <sentinel.version>1.8.8</sentinel.version>
-        <nacos.client.version>2.4.2</nacos.client.version>
+        <nacos.client.version>3.0.2</nacos.client.version>
         <seata.version>2.1.0</seata.version>
         <!-- Apache RocketMQ -->
         <rocketmq.version>5.3.1</rocketmq.version>
@@ -29,11 +29,14 @@
         <shedlock.version>4.23.0</shedlock.version>
         <schedulerx.worker.version>1.11.4</schedulerx.worker.version>
 
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+
         <!-- Maven Plugin Versions -->
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
-        <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
-        <flatten-maven-plugin.version>1.2.7</flatten-maven-plugin.version>
+        <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
+        <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
+        <flatten-maven-plugin.version>1.7.0</flatten-maven-plugin.version>
 
         <!-- Maven Central Portal -->
         <central.publishing.maven.version>0.7.0</central.publishing.maven.version>

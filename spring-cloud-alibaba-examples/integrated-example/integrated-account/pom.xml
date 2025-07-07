@@ -14,7 +14,7 @@
 	<name>Spring Cloud Alibaba Integrated Account Example</name>
 
 	<properties>
-		<durid.version>1.1.10</durid.version>
+		<druid.version>1.2.25</druid.version>
 		<mybatis.version>3.0.3</mybatis.version>
 	</properties>
 
@@ -36,7 +36,7 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid-spring-boot-starter</artifactId>
-			<version>${durid.version}</version>
+			<version>${druid.version}</version>
 		</dependency>
 
 		<dependency>

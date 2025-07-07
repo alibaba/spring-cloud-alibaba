@@ -17,10 +17,14 @@
 package com.alibaba.cloud.nacos.registry;
 
 import java.util.Properties;
+import java.util.concurrent.Future;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
 import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.exception.NacosException;
+import com.alibaba.nacos.api.naming.listener.FuzzyWatchEventWatcher;
+import com.alibaba.nacos.api.naming.pojo.ListView;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -61,7 +65,37 @@ public class NacosAutoServiceRegistrationPortTests {
 	static {
 		nacosFactoryMockedStatic = Mockito.mockStatic(NacosFactory.class);
 		nacosFactoryMockedStatic.when(() -> NacosFactory.createNamingService((Properties) any()))
-				.thenReturn(new MockNamingService());
+				.thenReturn(new MockNamingService() {
+					@Override
+					public void fuzzyWatch(String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
+
+					}
+
+					@Override
+					public void fuzzyWatch(String serviceNamePattern, String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
+
+					}
+
+					@Override
+					public Future<ListView<String>> fuzzyWatchWithServiceKeys(String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
+						return null;
+					}
+
+					@Override
+					public Future<ListView<String>> fuzzyWatchWithServiceKeys(String serviceNamePattern, String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
+						return null;
+					}
+
+					@Override
+					public void cancelFuzzyWatch(String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
+
+					}
+
+					@Override
+					public void cancelFuzzyWatch(String serviceNamePattern, String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
+
+					}
+				});
 	}
 	@AfterAll
 	public static void finished() {

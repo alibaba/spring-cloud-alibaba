@@ -22,6 +22,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -722,7 +723,7 @@ public class NacosDiscoveryProperties {
 		Matcher matcher = PATTERN.matcher(key);
 		StringBuffer sb = new StringBuffer();
 		while (matcher.find()) {
-			matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
+			matcher.appendReplacement(sb, matcher.group(1).toUpperCase(Locale.ROOT));
 		}
 		matcher.appendTail(sb);
 		return sb.toString();

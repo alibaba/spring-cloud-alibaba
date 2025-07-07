@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import com.alibaba.csp.sentinel.Entry;
@@ -99,7 +100,7 @@ public class SentinelInvocationHandler implements InvocationHandler {
 				result = methodHandler.invoke(args);
 			}
 			else {
-				String resourceName = methodMetadata.template().method().toUpperCase()
+				String resourceName = methodMetadata.template().method().toUpperCase(Locale.ROOT)
 						+ ":" + hardCodedTarget.url() + methodMetadata.template().path();
 				Entry entry = null;
 				try {

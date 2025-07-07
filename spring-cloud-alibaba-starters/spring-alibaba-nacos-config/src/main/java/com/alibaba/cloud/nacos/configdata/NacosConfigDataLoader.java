@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
@@ -124,7 +125,7 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 		String specificPreference = resource.getConfig().getPreference();
 		if (specificPreference != null) {
 			try {
-				preference = ConfigPreference.valueOf(specificPreference.toUpperCase());
+				preference = ConfigPreference.valueOf(specificPreference.toUpperCase(Locale.ROOT));
 			}
 			catch (IllegalArgumentException ignore) {
 				// illegal preference value, just ignore.

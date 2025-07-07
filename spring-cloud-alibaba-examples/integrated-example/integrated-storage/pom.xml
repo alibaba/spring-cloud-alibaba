@@ -14,7 +14,7 @@
     <name>Spring Cloud Alibaba Integrated Storage Example</name>
 
     <properties>
-        <druid.version>1.1.10</druid.version>
+        <druid.version>1.2.25</druid.version>
         <mybatis.version>3.0.3</mybatis.version>
     </properties>
 

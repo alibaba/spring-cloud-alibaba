@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>4.1.3</version>
+        <version>4.3.0</version>
         <relativePath/>
     </parent>
 
@@ -80,26 +80,29 @@
 
     <properties>
         <!-- Project revision -->
-        <revision>2023.0.3.3</revision>
+        <revision>2025.0.0.1</revision>
 
         <!-- Spring Cloud -->
-        <spring.cloud.version>2023.0.3</spring.cloud.version>
+        <spring.cloud.version>2025.0.0</spring.cloud.version>
 
         <!-- Spring Boot -->
-        <spring-boot.version>3.2.9</spring-boot.version>
+        <spring-boot.version>3.3.13</spring-boot.version>
+
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
 
         <!-- Maven Plugin Versions -->
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
         <!-- JUnit 5 requires Surefire version 2.22.0 or higher -->
-        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
-        <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
-        <flatten-maven-plugin.version>1.2.7</flatten-maven-plugin.version>
-        <gmavenplus-plugin.version>1.6</gmavenplus-plugin.version>
-        <jacoco.version>0.8.8</jacoco.version>
-        <native-maven-plugin.version>0.10.2</native-maven-plugin.version>
+        <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
+        <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
+        <flatten-maven-plugin.version>1.7.0</flatten-maven-plugin.version>
+        <gmavenplus-plugin.version>4.4.1</gmavenplus-plugin.version>
+        <jacoco.version>0.8.13</jacoco.version>
+        <native-maven-plugin.version>0.10.6</native-maven-plugin.version>
 
         <!-- Maven Central Portal -->
         <central.publishing.maven.version>0.7.0</central.publishing.maven.version>
@@ -227,8 +230,8 @@
                 <version>${maven-compiler-plugin.version}</version>
                 <inherited>true</inherited>
                 <configuration>
-                    <source>17</source>
-                    <target>17</target>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -302,7 +305,7 @@
                         <version>${maven-javadoc-plugin.version}</version>
                         <configuration>
                             <doclint>none</doclint>
-                            <source>17</source>
+                            <source>${maven.compiler.source}</source>
                         </configuration>
                         <executions>
                             <execution>

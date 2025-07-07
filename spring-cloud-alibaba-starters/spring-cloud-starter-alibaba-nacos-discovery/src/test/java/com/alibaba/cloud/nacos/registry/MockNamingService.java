@@ -31,7 +31,7 @@ import com.alibaba.nacos.api.selector.AbstractSelector;
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-public class MockNamingService implements NamingService {
+public abstract class MockNamingService implements NamingService {
 
 	@Override
 	public void registerInstance(String serviceName, String ip, int port)

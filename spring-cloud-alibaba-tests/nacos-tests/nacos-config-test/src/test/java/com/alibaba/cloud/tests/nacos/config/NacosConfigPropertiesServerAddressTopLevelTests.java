@@ -29,7 +29,6 @@ import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigFactory;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -100,7 +99,7 @@ public class NacosConfigPropertiesServerAddressTopLevelTests {
 				"DEFAULT_GROUP", TIME_OUT);
 		String remoteContent = fetchConfig(remoteService, "nacos-config-refresh.yml",
 				"DEFAULT_GROUP", TIME_OUT);
-		Assertions.assertEquals(localContent, remoteContent);
+		assertThat(remoteContent).isEqualTo(localContent);
 
 		assertThat(nacosConfigProperties.getServerAddr()).isEqualTo("123.123.123.123:8848");
 
