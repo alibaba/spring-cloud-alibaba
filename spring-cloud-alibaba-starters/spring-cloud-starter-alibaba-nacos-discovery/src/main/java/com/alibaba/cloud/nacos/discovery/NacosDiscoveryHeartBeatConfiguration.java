@@ -66,8 +66,9 @@ public class NacosDiscoveryHeartBeatConfiguration {
 		/**
          * Spring Cloud Gateway HeartBeat .
 		 */
-		@ConditionalOnProperty(value = "spring.cloud.gateway.discovery.locator.enabled", matchIfMissing = false)
+		@ConditionalOnProperty(value = "spring.cloud.gateway.server.webflux.discovery.locator.enabled", matchIfMissing = false)
 		static class GatewayLocatorHeartBeatEnabled { }
+
 
 		/**
 		 * Spring Boot Admin HeartBeat .

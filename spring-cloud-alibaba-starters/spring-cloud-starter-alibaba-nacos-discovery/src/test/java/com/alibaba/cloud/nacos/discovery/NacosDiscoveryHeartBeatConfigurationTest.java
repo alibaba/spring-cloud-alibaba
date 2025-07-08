@@ -54,7 +54,7 @@ public class NacosDiscoveryHeartBeatConfigurationTest {
 	@Test
 	public void testNacosDiscoveryHeartBeatPublisherEnabledForGateway() {
 		contextRunner
-				.withPropertyValues("spring.cloud.gateway.discovery.locator.enabled=true")
+				.withPropertyValues("spring.cloud.gateway.server.webflux.discovery.locator.enabled=true")
 				.run(context ->
 						assertThat(context).hasSingleBean(NacosDiscoveryHeartBeatPublisher.class)
 				);

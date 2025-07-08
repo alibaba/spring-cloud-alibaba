@@ -544,11 +544,11 @@ Metadata|spring.cloud.nacos.discovery.metadata||使用Map格式配置
 3. 在应用的 `/src/main/resources/application.properties` 配置文件中配置 Spring Cloud Gateway 路由
 
    ```properties
-   spring.cloud.gateway.routes[0].id=nacos-route
-   spring.cloud.gateway.routes[0].uri=lb://service-gateway-provider
-   spring.cloud.gateway.routes[0].predicates[0].name=Path
-   spring.cloud.gateway.routes[0].predicates[0].args[pattern]=/nacos/**
-   spring.cloud.gateway.routes[0].filters[0]=StripPrefix=1
+   spring.cloud.gateway.server.webflux.routes[0].id=nacos-route
+   spring.cloud.gateway.server.webflux.routes[0].uri=lb://service-gateway-provider
+   spring.cloud.gateway.server.webflux.routes[0].predicates[0].name=Path
+   spring.cloud.gateway.server.webflux.predicates[0].args[pattern]=/nacos/**
+   spring.cloud.gateway.server.webflux.routes[0].filters[0]=StripPrefix=1
    ```
 
 4. 使用 @EnableDiscoveryClient 注解开启服务注册与发现功能

@@ -545,11 +545,11 @@ Before starting the demo, learn how Spring Cloud applications connect to Spring 
 3. Configure Spring Cloud Gateway routing in the application's `/src/main/resources/application.properties` configuration file
 
    ```properties
-   spring.cloud.gateway.routes[0].id=nacos-route
-   spring.cloud.gateway.routes[0].uri=lb://service-gateway-provider
-   spring.cloud.gateway.routes[0].predicates[0].name=Path
-   spring.cloud.gateway.routes[0].predicates[0].args[pattern]=/nacos/**
-   spring.cloud.gateway.routes[0].filters[0]=StripPrefix=1
+   spring.cloud.gateway.server.webflux.routes[0].id=nacos-route
+   spring.cloud.gateway.server.webflux.routes[0].uri=lb://service-gateway-provider
+   spring.cloud.gateway.server.webflux.routes[0].predicates[0].name=Path
+   spring.cloud.gateway.server.webflux.routes[0].predicates[0].args[pattern]=/nacos/**
+   spring.cloud.gateway.server.webflux.routes[0].filters[0]=StripPrefix=1
    ```
 
 4. Use the @ EnableDiscoveryClient annotation to turn on service registration and discovery
