@@ -16,22 +16,12 @@
 
 package com.alibaba.cloud.nacos.loadbalancer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
-
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.util.InetIPv6Utils;
 import com.alibaba.nacos.client.naming.utils.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import reactor.core.publisher.Mono;
-
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.DefaultResponse;
@@ -41,6 +31,14 @@ import org.springframework.cloud.client.loadbalancer.Response;
 import org.springframework.cloud.loadbalancer.core.NoopServiceInstanceListSupplier;
 import org.springframework.cloud.loadbalancer.core.ReactorServiceInstanceLoadBalancer;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
+import reactor.core.publisher.Mono;
+
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * see original.
@@ -152,13 +150,12 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 						}).collect(Collectors.toList());
 				if (!CollectionUtils.isEmpty(sameClusterInstances)) {
 					instancesToChoose = sameClusterInstances;
+				} else {
+					log.warn("A cross-cluster call occurs，name = {}, clusterName = {}, instance = {}",
+							serviceId, clusterName, serviceInstances);
 				}
 			}
-			else {
-				log.warn(
-						"A cross-cluster call occurs，name = {}, clusterName = {}, instance = {}",
-						serviceId, clusterName, serviceInstances);
-			}
+
 			instancesToChoose = this.filterInstanceByIpType(instancesToChoose);
 
 			// Filter the service list sequentially based on the order number
