@@ -160,7 +160,7 @@ public class SchedulerxConfigurations {
 
 		@Bean
 		public SchedulerxSchedulingConfigurer schedulerxSchedulingConfigurer() {
-			return new SchedulerxSchedulingConfigurer();
+			return new SchedulerxSchedulingConfigurer(noOpScheduler(), true);
 		}
 
 		@Bean

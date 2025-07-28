@@ -27,7 +27,7 @@
 
         <!-- scheduling -->
         <shedlock.version>4.23.0</shedlock.version>
-        <schedulerx.worker.version>1.11.4</schedulerx.worker.version>
+        <schedulerx.worker.version>1.13.1</schedulerx.worker.version>
 
         <!-- Maven Plugin Versions -->
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
