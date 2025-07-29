@@ -146,9 +146,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		}
 
 		try {
-			Properties nacosProperties = nacosDiscoveryProperties.getNacosProperties();
-			nacosServiceManager.getNamingMaintainService(nacosProperties).updateInstance(
-					serviceId, nacosDiscoveryProperties.getGroup(), instance);
+			nacosServiceManager.getNamingService().registerInstance(serviceId, nacosDiscoveryProperties.getGroup(), instance);
 		}
 		catch (Exception e) {
 			throw new RuntimeException("update nacos instance status fail", e);
