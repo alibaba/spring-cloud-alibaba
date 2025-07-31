@@ -46,6 +46,12 @@
         <dependency>
             <groupId>com.alibaba.nacos</groupId>
             <artifactId>nacos-client</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.alibaba.nacos</groupId>
+                    <artifactId>nacos-logback-adapter-12</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

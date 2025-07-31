@@ -17,7 +17,6 @@
 package com.alibaba.cloud.nacos.registry;
 
 import java.util.List;
-import java.util.Properties;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
