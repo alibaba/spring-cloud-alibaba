@@ -26,8 +26,8 @@
         <rocketmq.version>5.3.1</rocketmq.version>
 
         <!-- scheduling -->
-        <shedlock.version>4.23.0</shedlock.version>
-        <schedulerx.worker.version>1.11.4</schedulerx.worker.version>
+        <shedlock.version>5.10.0</shedlock.version>
+        <schedulerx.worker.version>1.13.1</schedulerx.worker.version>
 
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>

@@ -181,7 +181,7 @@ public class SchedulerxProperties implements InitializingBean {
 	 */
 	private String label;
 
-	private String labelPath = "/etc/podinfo/annotations";
+	private String labelPath = "/etc/podinfo/labels";
 
 	/**
 	 * enableCgroupMetrics.
