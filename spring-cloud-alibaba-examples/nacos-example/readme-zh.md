@@ -111,6 +111,49 @@ nacos.core.auth.plugin.nacos.token.secret.key=SecretKey0123456789012345678901234
 
 ### Spring Cloud Alibaba Nacos Config
 
+#### 配置方式更新说明
+
+在2023.0.1.3版本中，为了支持在SpringBoot中接入Nacos配置中心以及基于原有的nacos config模块之上支持@NacosConfig，@NacosConfigListener注解，将spring-cloud-starter-alibaba-nacos-config模块进行了拆分
+
+- **spring-alibaba-nacos-config**：仅依赖SpringBoot，支持在非SpringCloud应用中独立使用
+- **spring-cloud-starter-alibaba-nacos-config**：仅保留依赖SpringCloud的组件
+
+在模块拆分的过程中，发现随着代码不断的变更，配置的加载逻辑存在多个分支，包括最初版本中通过拼接spring.application.name以及fileExtension等参数，通过share-configs，extension-configs以及spring.config.import。多个属性源加载时机不一致且代码逻辑分叉，**不利于配置模块的扩展**。
+
+出于代码的可维护性考虑，对配置加载逻辑进行了删减，仅保留了spring在Spring Boot 2.4.0 (2020年11月12日)推出的**spring.config.import标准配置导入方式**,在该版本中Spring同时建议**废弃bootstrap模式**启动，统一迁移到**application.properties**。
+
+对于之前通过application.name拼接模式以及share-configs，extension-configs等方式导入的配置，需要**统一修改**为**spring.config.import**模式进行配置导入。
+
+**接入NacosConfig的标准用法如下**
+
+- 导入单个配置
+
+  ```
+  spring:
+  config:
+      import:nacos:application.propertise?refreshEnabled=true&group=DEFAULT_GROUP
+    cloud:
+      nacos:
+        config:
+          serverAddr: {nacos server addr}
+          namespace: {nacos namespace id}
+  ```
+
+- 导入多个配置
+
+  ```
+  spring:
+    config:
+      import:
+        - nacos:application.propertise?group=refreshEnabled=true&group=DEFAULT_GROUP
+        - nacos:{other config data id}?group={other config group}&refreshEnabled=true
+    cloud:
+      nacos:
+        config:
+          serverAddr: {nacos server addr}
+          namespace: {nacos namespace id}
+  ```
+
 #### 应用接入
 
 在启动应用示例进行项目功能演示之前，先了解一下 Spring Cloud 应用如何接入 Nacos Config 作为服务配置中心。
@@ -604,6 +647,8 @@ Metadata|spring.cloud.nacos.discovery.metadata||使用Map格式配置
 ## 更多介绍
 
 Nacos 为用户提供包括动态服务发现，配置管理，服务管理等服务基础设施，帮助用户更灵活，更轻松地构建，交付和管理他们的微服务平台，基于 Nacos, 用户可以更快速的构建以“服务”为中心的现代云原生应用。Nacos 可以和 Spring Cloud、Kubernetes/CNCF、Dubbo 等微服务生态无缝融合，为用户提供更卓越的体验。更多 Nacos 相关的信息，请参考 [Nacos 项目](https://github.com/alibaba/Nacos)。
+
+未来，Spring-Alibaba-Nacos-Config模块将承载更多职责，面向二方中间件组件，对SpringBoot(包括Spring AI)以及SpringCloud应用提供统一的配置托管以及运行时无损轮转功能，面向普通的业务组件，通过@NacosConfig，@NacosConfigListener注解提供灵活易用的配置注入和变更回调能力。
 
 如果您对 Spring Cloud Nacos Discovery 有任何建议或想法，欢迎在 issue 中或者通过其他社区渠道向我们提出。
 

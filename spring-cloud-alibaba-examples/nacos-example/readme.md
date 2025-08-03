@@ -111,6 +111,49 @@ Authentication is required when using the Open api interface in nacos server 3.0
 
 ### Spring Cloud Alibaba Nacos Config
 
+#### Configuration Update Instructions
+
+In version 2023.0.1.3, to support integration with Nacos Configuration Center in Spring Boot applications and to enable annotations such as `@NacosConfig` and `@NacosConfigListener` based on the original `nacos config` module, the `spring-cloud-starter-alibaba-nacos-config` module has been split into two:
+
+- **spring-alibaba-nacos-config**: Depends only on Spring Boot and can be used independently in non-Spring Cloud applications.
+- **spring-cloud-starter-alibaba-nacos-config**: Retains only the components that depend on Spring Cloud.
+
+During the module refactoring, it was observed that as the code evolved, multiple branches of configuration loading logic emerged. This includes the original approach of concatenating `spring.application.name` with `fileExtension` and loading configurations via `share-configs`, `extension-configs`, and `spring.config.import`. These different property sources were loaded at inconsistent times, resulting in **fragmented logic that hinders the extensibility of the configuration module**.
+
+To improve code maintainability, the configuration loading logic has been streamlined, retaining only the **`spring.config.import` standard configuration import mechanism**, which was introduced in **Spring Boot 2.4.0 (November 12, 2020)**. In that release, Spring also **recommended deprecating the bootstrap mode** and encouraged unifying configuration into **`application.properties`**.
+
+For configurations previously loaded using the `application.name` concatenation approach or via `share-configs`, `extension-configs`, etc., you now need to **migrate to using the `spring.config.import`** mechanism for configuration import.
+
+**The standard usage for integrating with NacosConfig is as follows**:
+
+- Importing a Single Configuration
+
+  ```
+  spring:
+  config:
+      import:nacos:application.propertise?refreshEnabled=true&group=DEFAULT_GROUP
+    cloud:
+      nacos:
+        config:
+          serverAddr: {nacos server addr}
+          namespace: {nacos namespace id}
+  ```
+
+- Importing Multiple Configurations
+
+  ```
+  spring:
+    config:
+      import:
+        - nacos:application.propertise?group=refreshEnabled=true&group=DEFAULT_GROUP
+        - nacos:{other config data id}?group={other config group}&refreshEnabled=true
+    cloud:
+      nacos:
+        config:
+          serverAddr: {nacos server addr}
+          namespace: {nacos namespace id}
+  ```
+
 #### Application access
 
 Before starting the application sample to demonstrate the project function, first understand how the Spring Cloud application accesses Nacos Config as the service configuration center.
@@ -605,5 +648,7 @@ Please refer to the Spring Cloud Alibaba website
 ## More introduction
 
 Nacos provides users with service infrastructure including dynamic service discovery, configuration management, service management, etc., to help users build, deliver and manage their microservice platforms more flexibly and easily. Based on Nacos, users can build modern cloud native applications centered on "services" more quickly. Nacos can be seamlessly integrated with Spring Cloud, Kubernetes/CNCF, Dubbo and other micro-service ecosystems to provide users with a better experience. For more information about Nacos, see the [Nacos 项目](https://github.com/alibaba/Nacos).
+
+In the future, the **Spring-Alibaba-Nacos-Config** module will take on more responsibilities. It will serve as a unified configuration management solution for both second-party middleware components and business components. For **Spring Boot** (including **Spring AI**) and **Spring Cloud** applications, it will provide centralized configuration hosting and seamless runtime configuration rotation. For general business components, it will offer flexible and user-friendly configuration injection and change callback capabilities through the `@NacosConfig` and `@NacosConfigListener` annotations.
 
 If you have any suggestions or ideas about Spring Cloud Nacos Discovery, please feel free to send them to us in the issue or through other community channels.
