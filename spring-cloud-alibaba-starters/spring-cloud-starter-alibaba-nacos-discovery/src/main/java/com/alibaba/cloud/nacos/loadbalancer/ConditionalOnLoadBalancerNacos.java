@@ -25,7 +25,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
-@ConditionalOnProperty(value = "spring.cloud.loadbalancer.nacos.enabled", havingValue = "true")
+@ConditionalOnProperty(value = "spring.cloud.loadbalancer.nacos.enabled", havingValue = "true", matchIfMissing = true)
 public @interface ConditionalOnLoadBalancerNacos {
 
 }
