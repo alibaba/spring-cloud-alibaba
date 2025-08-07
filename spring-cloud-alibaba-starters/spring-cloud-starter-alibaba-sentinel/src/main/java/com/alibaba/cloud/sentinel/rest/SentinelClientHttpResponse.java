@@ -29,15 +29,16 @@ import com.alibaba.cloud.sentinel.custom.SentinelProtectInterceptor;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.AbstractClientHttpResponse;
+import org.springframework.http.client.ClientHttpResponse;
 
 /**
  * Using by {@link SentinelRestTemplate} and {@link SentinelProtectInterceptor}.
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-public class SentinelClientHttpResponse extends AbstractClientHttpResponse {
+public class SentinelClientHttpResponse implements ClientHttpResponse {
 
 	private String blockResponse = "RestTemplate request block by sentinel";
 
@@ -48,7 +49,11 @@ public class SentinelClientHttpResponse extends AbstractClientHttpResponse {
 		this.blockResponse = blockResponse;
 	}
 
-	@Override
+    @Override
+    public HttpStatusCode getStatusCode() throws IOException {
+        return HttpStatusCode.valueOf(getRawStatusCode());
+    }
+
 	public int getRawStatusCode() throws IOException {
 		return HttpStatus.OK.value();
 	}

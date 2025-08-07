@@ -18,10 +18,12 @@ package com.alibaba.cloud.nacos.registry;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.listener.EventListener;
+import com.alibaba.nacos.api.naming.listener.FuzzyWatchEventWatcher;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.naming.pojo.ListView;
 import com.alibaba.nacos.api.naming.pojo.ServiceInfo;
@@ -370,4 +372,34 @@ public class MockNamingService implements NamingService {
 	public void unsubscribe(String s, String s1, NamingSelector namingSelector, EventListener eventListener) throws NacosException {
 
 	}
+
+    @Override
+    public void fuzzyWatch(String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
+
+    }
+
+    @Override
+    public void fuzzyWatch(String serviceNamePattern, String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
+
+    }
+
+    @Override
+    public Future<ListView<String>> fuzzyWatchWithServiceKeys(String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
+        return null;
+    }
+
+    @Override
+    public Future<ListView<String>> fuzzyWatchWithServiceKeys(String serviceNamePattern, String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
+        return null;
+    }
+
+    @Override
+    public void cancelFuzzyWatch(String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
+
+    }
+
+    @Override
+    public void cancelFuzzyWatch(String serviceNamePattern, String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
+
+    }
 }

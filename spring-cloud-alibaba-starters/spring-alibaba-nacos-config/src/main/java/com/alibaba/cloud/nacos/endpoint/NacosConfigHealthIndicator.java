@@ -18,9 +18,10 @@ package com.alibaba.cloud.nacos.endpoint;
 
 import com.alibaba.nacos.api.config.ConfigService;
 
-import org.springframework.boot.actuate.health.AbstractHealthIndicator;
-import org.springframework.boot.actuate.health.Health;
-import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.boot.health.contributor.AbstractHealthIndicator;
+import org.springframework.boot.health.contributor.Health;
+import org.springframework.boot.health.contributor.HealthIndicator;
+
 
 /**
  * The {@link HealthIndicator} for Nacos Config.

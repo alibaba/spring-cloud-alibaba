@@ -16,9 +16,10 @@
 
 package com.alibaba.cloud.sidecar;
 
+import org.springframework.boot.health.contributor.Status;
+
 import java.util.Objects;
 
-import org.springframework.boot.actuate.health.Status;
 
 /**
  * @author yuhuangbin

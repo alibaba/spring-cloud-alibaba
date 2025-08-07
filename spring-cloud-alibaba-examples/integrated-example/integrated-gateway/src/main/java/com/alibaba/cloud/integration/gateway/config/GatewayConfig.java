@@ -29,6 +29,9 @@ import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.BlockRequestHandler;
 import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.GatewayCallbackManager;
 import com.alibaba.csp.sentinel.adapter.gateway.sc.exception.SentinelGatewayBlockExceptionHandler;
 import jakarta.annotation.PostConstruct;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.reactive.result.view.ViewResolver;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.ObjectProvider;
@@ -43,9 +46,6 @@ import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.server.ServerResponse;
-import org.springframework.web.reactive.result.view.ViewResolver;
 import org.springframework.web.server.ServerWebExchange;
 
 /**
@@ -93,8 +93,8 @@ public class GatewayConfig {
 			public Mono<ServerResponse> handleRequest(ServerWebExchange serverWebExchange,
 					Throwable throwable) {
 				return ServerResponse.status(HttpStatus.OK)
-						.contentType(MediaType.APPLICATION_JSON_UTF8)
-						.body(BodyInserters.fromObject("此接口被限流了"));
+						.contentType(MediaType.APPLICATION_JSON)
+						.body(BodyInserters.fromValue("此接口被限流了"));
 			}
 		};
 		GatewayCallbackManager.setBlockHandler(blockRequestHandler);
