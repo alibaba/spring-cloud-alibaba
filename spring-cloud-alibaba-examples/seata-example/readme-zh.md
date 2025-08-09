@@ -164,11 +164,12 @@ CREATE TABLE `account_tbl` (
 
 > Spring Cloud Alibaba 适配了 Nacos 3.0.2 版本，在本示例中，使用 Nacos 3.0.2 作为 Seata 的配置中心组件。
 
-创建 Seata 的 Nacos 配置： data-id: `seata.properties` , Group: `SEATA_GROUP` (seata 2.1.0 默认分组) ,导入 [Seata Config](https://github.com/seata/seata/blob/2.1.0/script/config-center/config.txt)
+创建 Seata 的 Nacos 配置： data-id: `seata.properties` , Group: `SEATA_GROUP` (seata 2.x 默认分组) ,导入 [Seata Config](https://github.com/seata/seata/blob/2.1.0/script/config-center/config.txt)
 
 在 `seata.properties` 配置文件中增加应用示例中需要的以下配置项：[事务群组配置](https://seata.io/zh-cn/docs/user/configurations.html)
 
 ```properties
+   service.vgroupMapping.default_tx_group=default  # 用于指定全局事务组和本地事务组之间的映射关系
    service.vgroupMapping.order-service-tx-group=default
    service.vgroupMapping.account-service-tx-group=default
    service.vgroupMapping.business-service-tx-group=default
@@ -181,11 +182,13 @@ CREATE TABLE `account_tbl` (
 
 #### 1. 下载
 
-点击下载 [Seata 2.1.0](https://github.com/seata/seata/releases/download/v2.1.0/seata-server-2.1.0.zip) 版本。
+点击下载( [Seata 2.5.0](https://github.com/apache/incubator-seata/releases/tag/v2.5.0)) 版本。 # github链接为源码包，需要使用 Maven 进行编译构建源码并生成 Seata 服务器 JAR 文件
+
+或点击下载( [Apache-seata-2.5.0-incubating-bin.tar.gz](https://seata.apache.org/zh-cn/download/seata-server))  #二进制包，方便配备seata-server进行调试
 
 #### 2. 配置 Seata-server
 
-修改 `seata-server-2.1.0\conf\application.yml` 配置文件中的以下配置项：
+修改 `seata-server\conf\application.yml` 配置文件中的以下配置项：
 
 - 注释 `group: SEATA_GROUP`
 - 添加 Nacos 用户名和密码
@@ -194,29 +197,104 @@ CREATE TABLE `account_tbl` (
 seata:
   # nacos配置
   config:
-    type: nacos
+    type: nacos 
     nacos:
-      server-addr: 127.0.0.1:8848
-      namespace:
+      server-addr:  #  Nacos 服务地址
       # group: SEATA_GROUP
+      # namespace: public  # Nacos 命名空间（确保设置为实际值）
       username: nacos
       password: nacos
-      context-path:
-      data-id: seata.properties
+      data-id: seata.properties  # Nacos 中的配置文件名
       ##if use MSE Nacos with auth, mutex with username/password attribute
       #access-key:
       #secret-key:
   registry:
-    # nacos配置
-    type: nacos
+    # support: nacos 、 eureka 、 redis 、 zk  、 consul 、 etcd3 、 sofa 、 seata
+    type: nacos  # 使用 Nacos 作为注册中心
     nacos:
       application: seata-server
-      server-addr: 127.0.0.1:8848
       # group: SEATA_GROUP
-      namespace:
+      # namespace: public  # Nacos 命名空间（确保设置为实际值）
       cluster: default
+      server-addr:   # Nacos 注册中心地址
       username: nacos
       password: nacos
+```
+
+- 添加 store 及 server 设置（示例-非必要）
+
+```yml
+  store:
+    # 支持：file、db、redis、raft
+    mode: db  # 使用数据库模式
+    session:
+      mode: file
+    lock:
+      mode: file
+    db:
+      datasource: druid
+      db-type: mysql
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/seata?rewriteBatchedStatements=true  # MySQL 数据库连接
+      user: root  # MySQL 用户名
+      password: rootpass  # MySQL 密码
+      min-conn: 10
+      max-conn: 100
+      global-table: global_table
+      branch-table: branch_table
+      lock-table: lock_table
+      distributed-lock-table: distributed_lock
+      vgroup-table: vgroup_table
+      query-limit: 1000
+      max-wait: 5000
+  server:
+    service-port: 8091  # 配置服务端口
+    max-commit-retry-timeout: -1
+    max-rollback-retry-timeout: -1
+    rollback-failed-unlock-enable: false
+    enable-check-auth: true
+    enable-parallel-request-handle: true
+    enable-parallel-handle-branch: false
+    retry-dead-threshold: 70000
+    xaer-nota-retry-timeout: 60000
+    enableParallelRequestHandle: true
+    applicationDataLimitCheck: true
+    applicationDataLimit: 64000
+    recovery:
+      committing-retry-period: 1000
+      async-committing-retry-period: 1000
+      rollbacking-retry-period: 1000
+      end-status-retry-period: 1000
+      timeout-retry-period: 1000
+    undo:
+      log-save-days: 7
+      log-delete-period: 86400000
+    session:
+      branch-async-queue-size: 5000  # 异步分支队列大小
+      enable-branch-async-remove: false  # 启用分支异步移除
+    ratelimit:
+      enable: false
+      bucketTokenNumPerSecond: 999999
+      bucketTokenMaxNum: 999999
+      bucketTokenInitialNum: 999999
+  metrics:
+    enabled: false
+    registry-type: compact
+    exporter-list: prometheus
+    exporter-prometheus-port: 9898
+  transport:
+    rpc-tc-request-timeout: 15000
+    enable-tc-server-batch-send-response: false
+    min-http-pool-size: 10
+    max-http-pool-size: 100
+    max-http-task-queue-size: 1000
+    http-pool-keep-alive-time: 500
+    shutdown:
+      wait: 3
+    thread-factory:
+      boss-thread-prefix: NettyBoss
+      worker-thread-prefix: NettyServerNIOWorker
+      boss-thread-size: 1
 ```
 
 > **注意：**
@@ -226,7 +304,7 @@ seata:
 
 ### 3. 启动 Seata-server
 
-Windows:
+Windows: 
 
 ```cmd
 ./seata-server.bat
@@ -266,6 +344,15 @@ http://127.0.0.1:18081/seata/rest
 
 在 `account-server`、`order-service` 和 `storage-service` 三个 服务的 Controller 中，第一个执行的逻辑都是输出 RootContext 中的 Xid 信息，如果看到都输出了正确的 Xid 信息，即每次都发生变化，且同一次调用中所有服务的 Xid 都一致。则表明 Seata 的 Xid 的传递和还原是正常的。
 
+```bash
+# 分别查看服务运行日志（示例）
+Account Service ... xid: 192.168.44.1:8091:4540309594179612673
+Order Service Begin ... xid: 192.168.44.1:8091:4540309594179612673
+Storage Service Begin ... xid: 192.168.44.1:8091:4540309594179612673
+...
+Begin new global transaction [192.168.44.1:8091:4540309594179612673]
+```
+
 ### 数据库中数据是否一致
 
 在本示例中，我们模拟了一个用户购买货物的场景，StorageService 负责扣减库存数量，OrderService 负责保存订单，AccountService 负责扣减用户账户余额。
@@ -276,8 +363,18 @@ http://127.0.0.1:18081/seata/rest
 
 
 - 用户原始金额(1000) = 用户现存的金额  +  货物单价 (2) * 订单数量 * 每单的货物数量(2)
-
 - 货物的初始数量(100) = 货物的现存数量 + 订单数量 * 每单的货物数量(2)
+
+```sql
+# 验证示例
+SELECT * FROM account_tbl;
+SELECT * FROM storage_tbl;
+SELECT * FROM order_tbl;
+```
+
+注：由于使用了 Random.nextBoolean() 来随机抛出异常，模拟事务的异常情况，也需要验证分布式事务是否能正确回滚：
+如果在 OrderService 和 AccountService 中抛出异常，StorageService 应该会回滚库存扣减，账户余额也应恢复到初始状态。
+查看分布式事务日志：查看 undo_log 表和 global_table 表，确保在事务回滚时，相关记录被删除或恢复。
 
 ## 对 Spring Cloud 支持点
 

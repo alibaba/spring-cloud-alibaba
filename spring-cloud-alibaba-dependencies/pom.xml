@@ -21,7 +21,7 @@
         <revision>2025.0.0.1</revision>
         <sentinel.version>1.8.8</sentinel.version>
         <nacos.client.version>3.0.2</nacos.client.version>
-        <seata.version>2.1.0</seata.version>
+        <seata.version>2.5.0</seata.version>
         <!-- Apache RocketMQ -->
         <rocketmq.version>5.3.1</rocketmq.version>
 

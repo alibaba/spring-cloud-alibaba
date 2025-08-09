@@ -43,11 +43,14 @@ seata:
     nacos:
       serverAddr: 127.0.0.1:8848
       dataId: "seata.properties"
+      group: SEATA_GROUP
       username: 'nacos'
       password: 'nacos'
   registry:
     type: nacos
     nacos:
+      cluster: default
+      group: SEATA_GROUP
       application: seata-server
       server-addr: 127.0.0.1:8848
       username: 'nacos'
