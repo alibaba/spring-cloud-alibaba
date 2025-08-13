@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Executors;
 
-
 import com.alibaba.demo.nacosdruidexample.dao.JdbcEntityRepository;
 import com.alibaba.demo.nacosdruidexample.dao.JpaDemoEntityRepository;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,19 +28,19 @@ public class DemoController {
 
 	@GetMapping("/getTestKey")
 	public String getTestKey(HttpServletResponse httpServletResponse) {
-		return testKey+new Date();
+		return testKey + new Date();
 	}
 
 	DemoController(JpaDemoEntityRepository jpaDemoEntityRepository, JdbcEntityRepository jdbcEntityRepository) {
 		this.jpaDemoEntityRepository = jpaDemoEntityRepository;
 		this.jdbcEntityRepository = jdbcEntityRepository;
 
-		for(int i=0;i<10;i++){
+		for (int i = 0; i < 10; i++) {
 			scheduleTask();
 		}
 	}
 
-	private void scheduleTask(){
+	private void scheduleTask() {
 		Executors.newScheduledThreadPool(2).scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
@@ -50,15 +49,15 @@ public class DemoController {
 		}, 200, 200, MILLISECONDS);
 	}
 
-	private void selectTask(){
+	private void selectTask() {
 		int count = 200;
-		int successCount=0;
-		int failCount=0;
-		long start=System.currentTimeMillis();
+		int successCount = 0;
+		int failCount = 0;
+		long start = System.currentTimeMillis();
 		while (count > 0) {
 			try {
 				String nameById = jdbcEntityRepository.findNameById(123l);
-				if (nameById!=null){
+				if (nameById != null) {
 					successCount++;
 				}
 			}
@@ -70,26 +69,26 @@ public class DemoController {
 			}
 		}
 
-		System.out.println(new Date()+",SuccessCount:"+successCount+",failCount:"+failCount+", cost:"+(System.currentTimeMillis()-start)+" ms");
+		System.out.println(new Date() + ",SuccessCount:" + successCount + ",failCount:" + failCount + ", cost:" + (System.currentTimeMillis() - start) + " ms");
 
 	}
 
-	private void searchTask(){
+	private void searchTask() {
 		int count = 1000;
 
 		while (count > 0) {
-			long start=System.currentTimeMillis();
+			long start = System.currentTimeMillis();
 
 			try {
 
 				List<String> nameById = jdbcEntityRepository.getByContent(generateRandomString(1));
-				if (nameById!=null){
-					System.out.println("Success, cost:"+(System.currentTimeMillis()-start)+" ms");
+				if (nameById != null) {
+					System.out.println("Success, cost:" + (System.currentTimeMillis() - start) + " ms");
 
 				}
 			}
 			catch (Throwable throwable) {
-				System.out.println("Fail, cost:"+(System.currentTimeMillis()-start)+" ms");
+				System.out.println("Fail, cost:" + (System.currentTimeMillis() - start) + " ms");
 
 			}
 			finally {
@@ -98,14 +97,14 @@ public class DemoController {
 		}
 	}
 
-	private void insertTask(){
+	private void insertTask() {
 		int count = 1000;
-		int successCount=0;
-		int failCount=0;
-		long start=System.currentTimeMillis();
+		int successCount = 0;
+		int failCount = 0;
+		long start = System.currentTimeMillis();
 		while (count > 0) {
 			try {
-				 jdbcEntityRepository.insertNameById(generateRandomString(5),generateRandomString(100_100));
+				jdbcEntityRepository.insertNameById(generateRandomString(5), generateRandomString(100_100));
 
 			}
 			catch (Throwable throwable) {
@@ -116,10 +115,12 @@ public class DemoController {
 			}
 		}
 
-		System.out.println(new Date()+",SuccessCount:"+successCount+",failCount:"+failCount+", cost:"+(System.currentTimeMillis()-start)+" ms");
+		System.out.println(new Date() + ",SuccessCount:" + successCount + ",failCount:" + failCount + ", cost:" + (System.currentTimeMillis() - start) + " ms");
 
 	}
+
 	private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
 	public static String generateRandomString(int length) {
 		Random random = new Random();
 		StringBuilder sb = new StringBuilder(length);
