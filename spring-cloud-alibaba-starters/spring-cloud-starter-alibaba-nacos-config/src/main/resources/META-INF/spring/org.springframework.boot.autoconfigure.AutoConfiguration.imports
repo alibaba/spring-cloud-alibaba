@@ -1,1 +1,2 @@
 com.alibaba.cloud.nacos.NacosConfigSpringCloudAutoConfiguration
+com.alibaba.cloud.nacos.NacosConfigSpringCloudBootstrapConfiguration
