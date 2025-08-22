@@ -33,7 +33,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.0.2</version>
+        <version>3.0.3</version>
         <executions>
           <execution>
             <goals>
