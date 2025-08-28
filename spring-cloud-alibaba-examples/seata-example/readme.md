@@ -169,6 +169,7 @@ Create Nacos configuration for Seata: data-id: `seata.properties`, Group: `SEATA
 Add the following configuration items required in the application example to the `seata.properties` configuration file: [事务群组配置](https://seata.io/zh-cn/docs/user/configurations.html)
 
 ```properties
+   service.vgroupMapping.default_tx_group=default  # Used to specify the mapping relationship between global transaction groups and local transaction groups.
    service.vgroupMapping.order-service-tx-group=default
    service.vgroupMapping.account-service-tx-group=default
    service.vgroupMapping.business-service-tx-group=default
@@ -181,11 +182,13 @@ Add the following configuration items required in the application example to the
 
 #### 1. Download
 
-Click Download [Seata 2.1.0](https://github.com/seata/seata/releases/download/v2.1.0/seata-server-2.1.0.zip) Version.
+Click Download [Seata 2.5.0](https://github.com/apache/incubator-seata/releases/tag/v2.5.0) Version. \# The GitHub link is for the source code package, which requires Maven to compile and build the source code and generate the Seata server JAR file.
+
+Or click Download [Apache-seata-2.5.0-incubating-bin.tar.gz](https://seata.apache.org/zh-cn/download/seata-server) .  \# Binary package, convenient for debugging with seata-server
 
 #### 2. Configure Seata-server
 
-Modify `seata-server-2.1.0\conf\application.yml` the following configuration items in the configuration file:
+Modify `seata-server\conf\application.yml` the following configuration items in the configuration file:
 
 - Comment `group: SEATA_GROUP`
 - Add Nacos username and password
@@ -194,29 +197,104 @@ Modify `seata-server-2.1.0\conf\application.yml` the following configuration ite
 seata:
   # nacos configuration
   config:
-    type: nacos
+    type: nacos 
     nacos:
-      server-addr: 127.0.0.1:8848
-      namespace:
+      server-addr:  #  Nacos service addr
       # group: SEATA_GROUP
+      # namespace: public  # Nacos Namespace
       username: nacos
       password: nacos
-      context-path:
-      data-id: seata.properties
+      data-id: seata.properties  # Configuration file name in Nacos
       ##if use MSE Nacos with auth, mutex with username/password attribute
       #access-key:
       #secret-key:
   registry:
-    # nacos configuration
-    type: nacos
+    # support: nacos 、 eureka 、 redis 、 zk  、 consul 、 etcd3 、 sofa 、 seata
+    type: nacos  # Using Nacos as a registry center
     nacos:
       application: seata-server
-      server-addr: 127.0.0.1:8848
       # group: SEATA_GROUP
-      namespace:
+      # namespace: public  # Nacos namespace (make sure to set it to the actual value)
       cluster: default
+      server-addr:   # Nacos registry center address
       username: nacos
       password: nacos
+```
+
+- Add store and server settings (example - not required)
+
+```yml
+  store:
+    # Support: file, db, redis, raft
+    mode: db  # Using database models
+    session:
+      mode: file
+    lock:
+      mode: file
+    db:
+      datasource: druid
+      db-type: mysql
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/seata?rewriteBatchedStatements=true  # MySQL database connection
+      user: root  # MySQL username
+      password: rootpass  # MySQL password
+      min-conn: 10
+      max-conn: 100
+      global-table: global_table
+      branch-table: branch_table
+      lock-table: lock_table
+      distributed-lock-table: distributed_lock
+      vgroup-table: vgroup_table
+      query-limit: 1000
+      max-wait: 5000
+  server:
+    service-port: 8091  # Configure service port
+    max-commit-retry-timeout: -1
+    max-rollback-retry-timeout: -1
+    rollback-failed-unlock-enable: false
+    enable-check-auth: true
+    enable-parallel-request-handle: true
+    enable-parallel-handle-branch: false
+    retry-dead-threshold: 70000
+    xaer-nota-retry-timeout: 60000
+    enableParallelRequestHandle: true
+    applicationDataLimitCheck: true
+    applicationDataLimit: 64000
+    recovery:
+      committing-retry-period: 1000
+      async-committing-retry-period: 1000
+      rollbacking-retry-period: 1000
+      end-status-retry-period: 1000
+      timeout-retry-period: 1000
+    undo:
+      log-save-days: 7
+      log-delete-period: 86400000
+    session:
+      branch-async-queue-size: 5000  # Asynchronous branch queue size
+      enable-branch-async-remove: false  # Enable branch asynchronous removal
+    ratelimit:
+      enable: false
+      bucketTokenNumPerSecond: 999999
+      bucketTokenMaxNum: 999999
+      bucketTokenInitialNum: 999999
+  metrics:
+    enabled: false
+    registry-type: compact
+    exporter-list: prometheus
+    exporter-prometheus-port: 9898
+  transport:
+    rpc-tc-request-timeout: 15000
+    enable-tc-server-batch-send-response: false
+    min-http-pool-size: 10
+    max-http-pool-size: 100
+    max-http-task-queue-size: 1000
+    http-pool-keep-alive-time: 500
+    shutdown:
+      wait: 3
+    thread-factory:
+      boss-thread-prefix: NettyBoss
+      worker-thread-prefix: NettyServerNIOWorker
+      boss-thread-size: 1
 ```
 
 > **Notice**
@@ -265,6 +343,15 @@ When a service interface is invoked, two types of returns are possible
 
 In `account-server` the Controllers of, `order-service`, and `storage-service` services, the first logic to be executed is to output the Xid information in the RootContext. If the correct Xid information is output, that is, it changes every time. And that Xid of all the services in the same invocation are the same. Then it indicates that the passing and restoring of Seata's Xid is normal.
 
+```bash
+# View service operation logs separately (example)
+Account Service ... xid: 192.168.44.1:8091:4540309594179612673
+Order Service Begin ... xid: 192.168.44.1:8091:4540309594179612673
+Storage Service Begin ... xid: 192.168.44.1:8091:4540309594179612673
+...
+Begin new global transaction [192.168.44.1:8091:4540309594179612673]
+```
+
 ### Whether the data in the database is consistent
 
 In this example, we simulate a scenario in which a user purchases goods. The Storage Service is responsible for deducting the inventory quantity, the Order Service is responsible for saving the order, and the Account service is responsible for deducting the balance of the user's account.
@@ -274,8 +361,20 @@ To demonstrate the sample, we use Random. NextBoolean () to randomly throw excep
 If a distributed transaction is in effect, then the following equation should hold
 
 - User's original amount (1000) = user's existing amount + unit price of goods (2) *Number of orders* quantity of goods per order (2)
-
 - Initial quantity of goods (100) = Quantity on hand of goods + Order quantity * Quantity of goods per order (2)
+
+```sql
+# Verification example
+SELECT * FROM account_tbl;
+SELECT * FROM storage_tbl;
+SELECT * FROM order_tbl;
+```
+
+Note: Since Random.nextBoolean() is used to randomly throw exceptions to simulate transaction exceptions, it is also necessary to verify whether distributed transactions can be rolled back correctly:  
+
+If exceptions are thrown in OrderService and AccountService, StorageService should roll back the inventory deduction, and the account balance should also be restored to its initial state.
+
+View the distributed transaction logs: Check the undo_log table and global_table table to ensure that relevant records are deleted or restored during transaction rollback.
 
 ## Support points for Spring Cloud
 
