@@ -118,7 +118,7 @@
 
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
-                <artifactId>sentinel-spring-cloud-gateway-adapter</artifactId>
+                <artifactId>sentinel-spring-cloud-gateway-v6x-adapter</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
 
