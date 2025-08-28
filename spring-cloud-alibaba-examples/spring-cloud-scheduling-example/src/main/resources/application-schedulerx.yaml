@@ -15,3 +15,6 @@ spring:
 #        aliyun-access-key: XXXXXXXXXXXX
 #        aliyun-secret-key: XXXXXXXXXXXX
 #        task-model-default: standalone
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration

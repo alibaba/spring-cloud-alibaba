@@ -16,17 +16,14 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
         <junit.version>5.10.2</junit.version>
         <selenium.version>3.141.59</selenium.version>
-        <lombok.version>1.18.30</lombok.version>
-        <assertj-core.version>3.20.2</assertj-core.version>
-        <awaitility.version>4.1.0</awaitility.version>
+        <assertj-core.version>3.25.3</assertj-core.version>
+        <awaitility.version>4.2.2</awaitility.version>
         <kotlin.version>1.9.24</kotlin.version>
-        <slf4j-api.version>2.0.13</slf4j-api.version>
-        <log4j-slf4j-impl.version>2.23.1</log4j-slf4j-impl.version>
-        <guava.version>31.1-jre</guava.version>
-        <hamcrest.version>1.3</hamcrest.version>
+        <hamcrest.version>3.0</hamcrest.version>
+        <mockito-core.version>4.6.1</mockito-core.version>
+        <visible-assertions.version>2.1.2</visible-assertions.version>
     </properties>
 
 
@@ -39,14 +36,11 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j-api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>${log4j-slf4j-impl.version}</version>
+            <artifactId>log4j-slf4j2-impl</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
@@ -60,8 +54,6 @@
             <version>${hamcrest.version}</version>
             <scope>test</scope>
         </dependency>
-
-
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -94,29 +86,23 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>4.6.1</version>
+            <version>${mockito-core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.rnorth.visible-assertions</groupId>
             <artifactId>visible-assertions</artifactId>
-            <version>2.1.2</version>
+            <version>${visible-assertions.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
@@ -127,7 +113,7 @@
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers-bom</artifactId>
-                <version>1.16.3</version>
+                <version>${testcontainers.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -139,7 +125,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
+                <version>${maven-surefire-plugin.version}</version>
             </plugin>
         </plugins>
     </build>

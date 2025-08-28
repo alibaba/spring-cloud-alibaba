@@ -13,11 +13,6 @@
 	<artifactId>integrated-account</artifactId>
 	<name>Spring Cloud Alibaba Integrated Account Example</name>
 
-	<properties>
-		<druid.version>1.2.25</druid.version>
-		<mybatis.version>3.0.3</mybatis.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -36,13 +31,11 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid-spring-boot-starter</artifactId>
-			<version>${druid.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>
 			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>${mybatis.version}</version>
 		</dependency>
 
 		<dependency>

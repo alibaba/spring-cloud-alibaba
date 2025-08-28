@@ -33,7 +33,7 @@ import com.alibaba.schedulerx.scheduling.annotation.SchedulerX;
 import com.alibaba.schedulerx.worker.domain.SpringScheduleProfile;
 import com.alibaba.schedulerx.worker.log.LogFactory;
 import com.alibaba.schedulerx.worker.log.Logger;
-import com.alibaba.schedulerx.worker.processor.springscheduling.SchedulerxSchedulingConfigurer;
+import com.alibaba.schedulerx.worker.processor.springscheduling.SchedulerxJobRegister;
 
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,9 +63,6 @@ public class ScheduledJobSyncConfigurer implements SchedulingConfigurer {
 
 	@Autowired
 	private SchedulerxProperties properties;
-
-	@Autowired
-	private SchedulerxSchedulingConfigurer schedulerxSchedulingConfigurer;
 
 	@Value("${" + SchedulerxProperties.CONFIG_PREFIX + ".task-overwrite:false}")
 	private Boolean overwrite = false;
@@ -175,7 +172,7 @@ public class ScheduledJobSyncConfigurer implements SchedulingConfigurer {
 			}
 
 			// 获取仅SchedulerX注解任务
-			Collection<Pair<Object, Method>> schedulerXTasks = schedulerxSchedulingConfigurer.getSchedulerXTaskTargets();
+			Collection<Pair<Object, Method>> schedulerXTasks = SchedulerxJobRegister.getInstance().getSchedulerXTaskTargets();
 			if (schedulerXTasks != null && schedulerXTasks.size() > 0) {
 				for (Pair<Object, Method> task : schedulerXTasks) {
 					JobProperty jobProperty = convertToJobProperty(null, task.getFirst(), task.getSecond());

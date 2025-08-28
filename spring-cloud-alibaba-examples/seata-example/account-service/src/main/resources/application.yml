@@ -45,6 +45,7 @@ seata:
     nacos:
       serverAddr: 127.0.0.1:8848
       dataId: "seata.properties"
+      group: SEATA_GROUP
       username: 'nacos'
       password: 'nacos'
   registry:
@@ -52,5 +53,7 @@ seata:
     nacos:
       application: seata-server
       server-addr: 127.0.0.1:8848
+      cluster: default
+      group: SEATA_GROUP
       username: 'nacos'
       password: 'nacos'

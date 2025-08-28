@@ -6,26 +6,26 @@
 
 [Nacos](https://github.com/alibaba/Nacos) 是阿里巴巴开源的一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
 
-## 正确配置并启动 Nacos Server 3.0.2
+## 正确配置并启动 Nacos Server 3.0.3
 
-在 Nacos 3.0.2 中，加入了用户鉴权相关的功能，在首次启动 Nacos Server 时，需要正确配置，避免出现启动失败的问题。
+在 Nacos 3.0.3 中，加入了用户鉴权相关的功能，在首次启动 Nacos Server 时，需要正确配置，避免出现启动失败的问题。
 
 ### 下载 Nacos Server
 
-> 本示例中使用 Nacos Server 版本为 3.0.2！
+> 本示例中使用 Nacos Server 版本为 3.0.3！
 
-Nacos 支持直接下载和源码构建两种方式。**推荐在 Spring Cloud Alibaba 2023.x 中使用 Nacos Server 3.0.2 版本。**
+Nacos 支持直接下载和源码构建两种方式。**推荐在 Spring Cloud Alibaba 2023.x 中使用 Nacos Server 3.0.3 版本。**
 
 1. 直接下载：[Nacos Server 下载页](https://github.com/alibaba/nacos/releases)
 2. 源码构建：进入 Nacos [Github 项目页面](https://github.com/alibaba/nacos)，将代码 git clone 到本地自行编译打包，[参考文档](https://nacos.io/zh-cn/docs/quick-start.html)。
 
 ### 配置 Nacos Server
 
-打开 `\nacos-server-3.0.2\conf\application.properties` 配置文件，修改以下配置项：
+打开 `\nacos-server-3.0.3\conf\application.properties` 配置文件，修改以下配置项：
 
 #### 配置数据源
 
-此处以 MySQL 数据库为例，使用 `nacos-server-3.0.2\conf\mysql-schema.sql` 初始化数据库表文件。同时修改以下配置
+此处以 MySQL 数据库为例，使用 `nacos-server-3.0.3\conf\mysql-schema.sql` 初始化数据库表文件。同时修改以下配置
 
 ```properties
 #*************** Config Module Related Configurations ***************#
@@ -49,7 +49,7 @@ db.pool.config.minimumIdle=2
 
 #### 开启鉴权
 
-**注意：不开启在 3.0.2 中会出现登陆失败异常！**
+**注意：不开启在 3.0.3 中会出现登陆失败异常！**
 
 ```properties
 ### The auth system to use, currently only 'nacos' and 'ldap' is supported:
@@ -77,7 +77,7 @@ nacos.core.auth.plugin.nacos.token.secret.key=SecretKey0123456789012345678901234
 
 #### Open API 鉴权
 
-在 nacos server 3.0.2 中使用 Open api 接口时需要鉴权：更多细节请参考：[Nacos api 鉴权](https://nacos.io/zh-cn/docs/auth.html)
+在 nacos server 3.0.3 中使用 Open api 接口时需要鉴权：更多细节请参考：[Nacos api 鉴权](https://nacos.io/zh-cn/docs/auth.html)
 
 1. 获取 accessToken：使用用户名和密码登陆 nacos server：
 
@@ -110,6 +110,49 @@ nacos.core.auth.plugin.nacos.token.secret.key=SecretKey0123456789012345678901234
 ## Nacos 应用示例
 
 ### Spring Cloud Alibaba Nacos Config
+
+#### 配置方式更新说明
+
+在2023.0.1.3版本中，为了支持在SpringBoot中接入Nacos配置中心以及基于原有的nacos config模块之上支持@NacosConfig，@NacosConfigListener注解，将spring-cloud-starter-alibaba-nacos-config模块进行了拆分
+
+- **spring-alibaba-nacos-config**：仅依赖SpringBoot，支持在非SpringCloud应用中独立使用
+- **spring-cloud-starter-alibaba-nacos-config**：仅保留依赖SpringCloud的组件
+
+在模块拆分的过程中，发现随着代码不断的变更，配置的加载逻辑存在多个分支，包括最初版本中通过拼接spring.application.name以及fileExtension等参数，通过share-configs，extension-configs以及spring.config.import。多个属性源加载时机不一致且代码逻辑分叉，**不利于配置模块的扩展**。
+
+出于代码的可维护性考虑，对配置加载逻辑进行了删减，仅保留了spring在Spring Boot 2.4.0 (2020年11月12日)推出的**spring.config.import标准配置导入方式**,在该版本中Spring同时建议**废弃bootstrap模式**启动，统一迁移到**application.properties**。
+
+对于之前通过application.name拼接模式以及share-configs，extension-configs等方式导入的配置，需要**统一修改**为**spring.config.import**模式进行配置导入。
+
+**接入NacosConfig的标准用法如下**
+
+- 导入单个配置
+
+  ```
+  spring:
+  config:
+      import:nacos:application.propertise?refreshEnabled=true&group=DEFAULT_GROUP
+    cloud:
+      nacos:
+        config:
+          serverAddr: {nacos server addr}
+          namespace: {nacos namespace id}
+  ```
+
+- 导入多个配置
+
+  ```
+  spring:
+    config:
+      import:
+        - nacos:application.propertise?group=refreshEnabled=true&group=DEFAULT_GROUP
+        - nacos:{other config data id}?group={other config group}&refreshEnabled=true
+    cloud:
+      nacos:
+        config:
+          serverAddr: {nacos server addr}
+          namespace: {nacos namespace id}
+  ```
 
 #### 应用接入
 
@@ -604,6 +647,8 @@ Metadata|spring.cloud.nacos.discovery.metadata||使用Map格式配置
 ## 更多介绍
 
 Nacos 为用户提供包括动态服务发现，配置管理，服务管理等服务基础设施，帮助用户更灵活，更轻松地构建，交付和管理他们的微服务平台，基于 Nacos, 用户可以更快速的构建以“服务”为中心的现代云原生应用。Nacos 可以和 Spring Cloud、Kubernetes/CNCF、Dubbo 等微服务生态无缝融合，为用户提供更卓越的体验。更多 Nacos 相关的信息，请参考 [Nacos 项目](https://github.com/alibaba/Nacos)。
+
+未来，Spring-Alibaba-Nacos-Config模块将承载更多职责，面向二方中间件组件，对SpringBoot(包括Spring AI)以及SpringCloud应用提供统一的配置托管以及运行时无损轮转功能，面向普通的业务组件，通过@NacosConfig，@NacosConfigListener注解提供灵活易用的配置注入和变更回调能力。
 
 如果您对 Spring Cloud Nacos Discovery 有任何建议或想法，欢迎在 issue 中或者通过其他社区渠道向我们提出。
 
