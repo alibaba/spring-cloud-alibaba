@@ -85,6 +85,7 @@ public final class RocketMQConsumerFactory {
 				consumerProperties.getPullTimeDelayMillsWhenException());
 		consumer.setPullBatchSize(consumerProperties.getPullBatchSize());
 		consumer.setConsumeFromWhere(consumerProperties.getConsumeFromWhere());
+		consumer.setConsumeTimestamp(consumerProperties.getConsumeTimestamp());
 		consumer.setHeartbeatBrokerInterval(
 				consumerProperties.getHeartbeatBrokerInterval());
 		consumer.setPersistConsumerOffsetInterval(
@@ -158,6 +159,7 @@ public final class RocketMQConsumerFactory {
 				consumerProperties.getPull().getConsumerTimeoutMillisWhenSuspend());
 		consumer.setPullBatchSize(consumerProperties.getPullBatchSize());
 		consumer.setConsumeFromWhere(consumerProperties.getConsumeFromWhere());
+		consumer.setConsumeTimestamp(consumerProperties.getConsumeTimestamp());
 		consumer.setHeartbeatBrokerInterval(
 				consumerProperties.getHeartbeatBrokerInterval());
 		consumer.setPersistConsumerOffsetInterval(
