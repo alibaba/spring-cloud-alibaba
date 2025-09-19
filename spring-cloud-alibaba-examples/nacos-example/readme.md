@@ -321,6 +321,8 @@ Relative path | spring. Cloud. Nacos. Config. Context-path | | Relative path of 
 Access point | spring. Cloud. Nacos. Config. Endpoint | | The domain name of a service in a region. The server address can be obtained dynamically through this domain name
 Whether to enable listening and automatic refresh | spring. Cloud. Nacos. Config. Refresh -enabled | true |
 Cluster service name | spring. Cloud. Nacos. Config. Cluster -name | |
+Whether to enable nacos-config health indicator |spring.nacos.config.health-indicator.enabled|false|
+Whether to enable nacos-discovery health indicator |spring.cloud.nacos.discovery.health-indicator.enabled|false|
 
 ### Spring Cloud Alibaba Nacos Discovery
 

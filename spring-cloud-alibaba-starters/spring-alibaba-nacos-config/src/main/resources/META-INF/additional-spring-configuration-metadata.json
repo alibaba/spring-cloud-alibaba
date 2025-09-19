@@ -100,6 +100,12 @@
       "type": "com.alibaba.cloud.nacos.configdata.ConfigPreference",
       "defaultValue": "local",
       "description": "Config preference."
+    },
+    {
+      "name": "spring.nacos.config.health-indicator.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "whether to enable nacos-config health indicator."
     }
   ]
 }
