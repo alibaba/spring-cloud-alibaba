@@ -1,0 +1,17 @@
+[
+  {
+    "resource": "GET:https://httpbin.org/status/500",
+    "count": 1,
+    "grade": 2,
+    "minRequestAmount": 1,
+    "timeWindow": 30
+  },
+  {
+    "resource": "GET:https://httpbin.org/delay/3",
+    "count": 1,
+    "grade": 0,
+    "slowRatioThreshold": 0.1,
+    "minRequestAmount": 1,
+    "timeWindow": 30
+  }
+]

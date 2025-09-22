@@ -1,2 +1,4 @@
 org.springframework.context.ApplicationContextInitializer=\
   com.alibaba.cloud.sentinel.custom.context.SentinelApplicationContextInitializer
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.alibaba.cloud.sentinel.restclient.SentinelRestClientAutoConfiguration
