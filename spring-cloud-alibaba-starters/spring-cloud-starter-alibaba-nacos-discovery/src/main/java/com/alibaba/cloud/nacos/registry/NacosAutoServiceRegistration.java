@@ -17,9 +17,7 @@
 package com.alibaba.cloud.nacos.registry;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
-import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoChangedEvent;
-import com.alibaba.nacos.common.utils.ThreadUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +25,6 @@ import org.springframework.cloud.client.serviceregistry.AbstractAutoServiceRegis
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
-import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.util.Assert;
 
@@ -116,13 +113,4 @@ public class NacosAutoServiceRegistration
 		this.stop();
 		this.start();
 	}
-
-	@EventListener(ContextClosedEvent.class)
-	public void onContextClosedEvent(ContextClosedEvent event) {
-		stop();
-		NacosDiscoveryProperties configuration = (NacosDiscoveryProperties) getConfiguration();
-		Integer gracefulShutdownWaitTime = configuration.getGracefulShutdownWaitTime();
-		ThreadUtils.sleep(gracefulShutdownWaitTime);
-	}
-
 }
