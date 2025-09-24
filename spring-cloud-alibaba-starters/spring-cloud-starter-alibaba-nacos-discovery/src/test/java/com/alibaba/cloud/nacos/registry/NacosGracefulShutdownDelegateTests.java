@@ -75,7 +75,6 @@ public class NacosGracefulShutdownDelegateTests {
 
 	@Test
 	public void stopExceptionShouldBeSwallowed() {
-		when(nacosDiscoveryProperties.getGracefulShutdownWaitTime()).thenReturn(0);
 		doThrow(new RuntimeException("boom")).when(autoServiceRegistration).stop();
 
 		delegate.onApplicationEvent(new ContextClosedEvent(applicationContext));
