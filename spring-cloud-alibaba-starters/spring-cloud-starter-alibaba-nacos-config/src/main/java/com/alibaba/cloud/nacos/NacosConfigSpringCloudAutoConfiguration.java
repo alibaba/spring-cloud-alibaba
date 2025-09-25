@@ -46,12 +46,6 @@ public class NacosConfigSpringCloudAutoConfiguration {
 		return new SmartConfigurationPropertiesRebinder(beans);
 	}
 
-	@Bean
-	public NacosPropertySourceLocator nacosPropertySourceLocator(
-			NacosConfigManager nacosConfigManager) {
-		return new NacosPropertySourceLocator(nacosConfigManager);
-	}
-
 	@Bean(name = "nacosConfigSpringCloudRefreshEventListener")
 	public NacosConfigRefreshEventListener nacosConfigRefreshEventListener() {
 		return new NacosConfigRefreshEventListener();
