@@ -28,11 +28,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.util.ClassUtils;
@@ -97,7 +96,7 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper {
 			try {
 				target.put(JSON_TYPES, objectMapper.writeValueAsString(jsonHeaders));
 			}
-			catch (IllegalStateException | JsonProcessingException e) {
+			catch (IllegalStateException e) {
 				log.error("Could not add json types header", e);
 			}
 		}
@@ -213,7 +212,7 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper {
 						new TypeReference<Map<String, String>>() {
 						});
 			}
-			catch (IOException e) {
+			catch (Exception e) {
 				log.error("Could not decode json types: " + value, e);
 			}
 		}

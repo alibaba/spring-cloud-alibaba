@@ -41,7 +41,7 @@ startup.cmd -m standalone
 
 <dependency>
     <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-gateway</artifactId>
+    <artifactId>spring-cloud-starter-gateway-server-webflux</artifactId>
 </dependency>
 
 <dependency>

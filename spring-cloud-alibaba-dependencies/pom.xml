@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dependencies-parent</artifactId>
-        <version>4.3.0</version>
+        <version>5.0.0-M4</version>
         <relativePath/>
     </parent>
 
@@ -18,11 +18,11 @@
     <description>Spring Cloud Alibaba Dependencies</description>
 
     <properties>
-        <revision>2025.0.0.0</revision>
+        <revision>2025.1.0.0-SNAPSHOT</revision>
         <sentinel.version>1.8.9</sentinel.version>
         <nacos.client.version>3.0.3</nacos.client.version>
         <seata.version>2.5.0</seata.version>
-      
+
         <!-- Apache RocketMQ -->
         <rocketmq.version>5.3.1</rocketmq.version>
 

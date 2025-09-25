@@ -12,6 +12,11 @@
     <name>Spring Cloud Starter Alibaba Scheduling</name>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-jdbc</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <!--spring boot-->
         <dependency>

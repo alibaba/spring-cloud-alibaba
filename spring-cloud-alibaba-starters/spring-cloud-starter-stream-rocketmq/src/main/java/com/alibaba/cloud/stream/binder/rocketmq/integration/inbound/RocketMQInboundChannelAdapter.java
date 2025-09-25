@@ -34,16 +34,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
+import org.springframework.core.retry.RetryListener;
+import org.springframework.core.retry.RetryTemplate;
 import org.springframework.integration.context.OrderlyShutdownCapable;
+import org.springframework.integration.core.RecoveryCallback;
 import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessagingException;
-import org.springframework.retry.RecoveryCallback;
-import org.springframework.retry.RetryCallback;
-import org.springframework.retry.RetryContext;
-import org.springframework.retry.RetryListener;
-import org.springframework.retry.support.RetryTemplate;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
@@ -85,22 +83,7 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 						"Cannot have an 'errorChannel' property when a 'RetryTemplate' is "
 								+ "provided; use an 'ErrorMessageSendingRecoverer' in the 'recoveryCallback' property to "
 								+ "send an error message when retries are exhausted");
-				this.retryTemplate.registerListener(new RetryListener() {
-					@Override
-					public <T, E extends Throwable> boolean open(RetryContext context,
-							RetryCallback<T, E> callback) {
-						return true;
-					}
-
-					@Override
-					public <T, E extends Throwable> void close(RetryContext context,
-							RetryCallback<T, E> callback, Throwable throwable) {
-					}
-
-					@Override
-					public <T, E extends Throwable> void onError(RetryContext context,
-							RetryCallback<T, E> callback, Throwable throwable) {
-					}
+				this.retryTemplate.setRetryListener(new RetryListener() {
 				});
 			}
 			pushConsumer = RocketMQConsumerFactory
@@ -159,10 +142,10 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 				Message<?> message = RocketMQMessageConverterSupport
 						.convertMessage2Spring(messageExt);
 				if (this.retryTemplate != null) {
-					this.retryTemplate.execute(context -> {
-						this.sendMessage(message);
-						return message;
-					}, this.recoveryCallback);
+					// this.retryTemplate.execute(context -> {
+					// 	this.sendMessage(message);
+					// 	return message;
+					// }, this.recoveryCallback);
 				}
 				else {
 					this.sendMessage(message);

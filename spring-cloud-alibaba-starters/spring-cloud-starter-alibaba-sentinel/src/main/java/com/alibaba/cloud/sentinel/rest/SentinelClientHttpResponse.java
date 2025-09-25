@@ -48,7 +48,7 @@ public class SentinelClientHttpResponse implements ClientHttpResponse {
 		this.blockResponse = blockResponse;
 	}
 
-	@Override
+	// @Override
 	public int getRawStatusCode() throws IOException {
 		return HttpStatus.OK.value();
 	}

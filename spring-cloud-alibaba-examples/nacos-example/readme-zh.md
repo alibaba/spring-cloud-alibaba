@@ -577,7 +577,7 @@ Metadata|spring.cloud.nacos.discovery.metadata||使用Map格式配置
    </dependency>
    <dependency>
        <groupId>org.springframework.cloud</groupId>
-       <artifactId>spring-cloud-starter-gateway</artifactId>
+       <artifactId>spring-cloud-starter-gateway-server-webflux</artifactId>
    </dependency>
    ```
 

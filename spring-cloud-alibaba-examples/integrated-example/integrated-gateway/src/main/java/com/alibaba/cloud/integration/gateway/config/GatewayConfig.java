@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.integration.gateway.config;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -93,8 +94,8 @@ public class GatewayConfig {
 			public Mono<ServerResponse> handleRequest(ServerWebExchange serverWebExchange,
 					Throwable throwable) {
 				return ServerResponse.status(HttpStatus.OK)
-						.contentType(MediaType.APPLICATION_JSON_UTF8)
-						.body(BodyInserters.fromObject("此接口被限流了"));
+						.contentType(new MediaType("application", "json", StandardCharsets.UTF_8))
+						.body(BodyInserters.fromValue("此接口被限流了"));
 			}
 		};
 		GatewayCallbackManager.setBlockHandler(blockRequestHandler);

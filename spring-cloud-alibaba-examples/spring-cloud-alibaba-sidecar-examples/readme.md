@@ -38,7 +38,7 @@ Add dependency spring-cloud-starter-alibaba-sidecar to the `pom.xml` file in you
 ```xml
 <dependency>
     <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-gateway</artifactId>
+    <artifactId>spring-cloud-starter-gateway-server-webflux</artifactId>
 </dependency>
 
 <dependency>
