@@ -162,7 +162,7 @@ CREATE TABLE `account_tbl` (
 
 ### 2. 配置 Nacos
 
-> Spring Cloud Alibaba 适配了 Nacos 3.0.3 版本，在本示例中，使用 Nacos 3.0.3 作为 Seata 的配置中心组件。
+> Spring Cloud Alibaba 适配了 Nacos 3.1.0 版本，在本示例中，使用 Nacos 3.1.0 作为 Seata 的配置中心组件。
 
 创建 Seata 的 Nacos 配置： data-id: `seata.properties` , Group: `SEATA_GROUP` (seata 2.x 默认分组) ,导入 [Seata Config](https://github.com/seata/seata/blob/2.1.0/script/config-center/config.txt)
 
@@ -298,7 +298,7 @@ seata:
 ```
 
 > **注意：**
-> Nacos 3.0.3 开启鉴权，需要配置 `username` 和 `password` 属性，否则登陆失败。更多 Nacos 3.0.3 版本相关配置，参考 `nacos-example`。
+> Nacos 3.1.0 开启鉴权，需要配置 `username` 和 `password` 属性，否则登陆失败。更多 Nacos 3.1.0 版本相关配置，参考 `nacos-example`。
 > **Seata-server 启动时的 Nacos 服务注册分组需要和示例应用中的分组保持一致，否则出现无法找到 seata-server 的错误！**
 > 更多 Seata-server 以 Nacos 作为配置中心的配置请参考：https://seata.io/zh-cn/docs/ops/deploy-by-docker-compose/#nacos-db
 
