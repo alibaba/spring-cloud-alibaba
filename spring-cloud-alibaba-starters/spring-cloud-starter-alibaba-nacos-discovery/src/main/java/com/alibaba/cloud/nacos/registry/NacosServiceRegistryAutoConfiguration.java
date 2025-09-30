@@ -76,4 +76,11 @@ public class NacosServiceRegistryAutoConfiguration {
 				autoServiceRegistrationProperties, registration);
 	}
 
+	@Bean
+	@ConditionalOnBean(NacosAutoServiceRegistration.class)
+	public NacosGracefulShutdownDelegate nacosGracefulShutdownDelegate(
+			NacosAutoServiceRegistration nacosAutoServiceRegistration,
+			NacosDiscoveryProperties nacosDiscoveryProperties) {
+		return new NacosGracefulShutdownDelegate(nacosAutoServiceRegistration, nacosDiscoveryProperties);
+	}
 }
