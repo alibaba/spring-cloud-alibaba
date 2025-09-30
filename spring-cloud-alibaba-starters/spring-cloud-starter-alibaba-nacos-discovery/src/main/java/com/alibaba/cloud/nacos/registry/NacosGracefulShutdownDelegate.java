@@ -71,8 +71,8 @@ public class NacosGracefulShutdownDelegate implements ApplicationListener<Contex
 			if (gracefulShutdownWaitTime != null && gracefulShutdownWaitTime > 0) {
 				ThreadUtils.sleep(gracefulShutdownWaitTime);
 
-                log.info("Nacos client graceful shutdown has been executed successfully. " +
-                        "Graceful shutdown wait time is {}", gracefulShutdownWaitTime);
+				log.info("Nacos client graceful shutdown has been executed successfully. " +
+						"Graceful shutdown wait time is {}", gracefulShutdownWaitTime);
 			}
 		}
 		catch (Throwable t) {
