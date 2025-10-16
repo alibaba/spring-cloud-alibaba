@@ -27,6 +27,7 @@ import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -51,6 +52,7 @@ public class NacosDiscoveryEndpointAutoConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnProperty(name = "spring.cloud.nacos.discovery.health-indicator.enabled", havingValue = "true", matchIfMissing = false)
 	@ConditionalOnEnabledHealthIndicator("nacos-discovery")
 	public HealthIndicator nacosDiscoveryHealthIndicator(NacosServiceManager nacosServiceManager) {
 		return new NacosDiscoveryHealthIndicator(nacosServiceManager);
