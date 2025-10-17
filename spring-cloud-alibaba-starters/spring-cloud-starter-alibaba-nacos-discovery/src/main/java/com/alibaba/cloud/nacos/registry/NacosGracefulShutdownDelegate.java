@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2023 the original author or authors.
+ * Copyright 2013-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,6 +71,9 @@ public class NacosGracefulShutdownDelegate implements ApplicationListener<Contex
 			if (gracefulShutdownWaitTime != null && gracefulShutdownWaitTime > 0) {
 				ThreadUtils.sleep(gracefulShutdownWaitTime);
 			}
+
+			log.info("Nacos client graceful shutdown has been executed successfully. " +
+					"Graceful shutdown wait time is {}", gracefulShutdownWaitTime);
 		}
 		catch (Throwable t) {
 			log.error("Error occurred while performing Nacos client graceful shutdown", t);

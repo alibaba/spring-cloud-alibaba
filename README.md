@@ -76,7 +76,7 @@ These artifacts are available from Maven Central and Spring Release repository v
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>2025.0.0.0-preview</version>
+            <version>2025.0.0.0</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
