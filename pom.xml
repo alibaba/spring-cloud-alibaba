@@ -332,8 +332,66 @@
                         <groupId>org.sonatype.central</groupId>
                         <artifactId>central-publishing-maven-plugin</artifactId>
                         <extensions>true</extensions>
+                        <version>${central.publishing.maven.version}</version>
                         <configuration>
                             <publishingServerId>central</publishingServerId>
+                            <!--Referenced official documentation and validated in practice; for now, only exact matching is supported.-->
+                            <excludeArtifacts>
+                                <excludeArtifact>spring-cloud-alibaba-coverage</excludeArtifact>
+                                <excludeArtifact>sentinel-core-example</excludeArtifact>
+                                <excludeArtifact>sentinel-openfeign-example</excludeArtifact>
+                                <excludeArtifact>sentinel-resttemplate-example</excludeArtifact>
+                                <excludeArtifact>sentinel-circuitbreaker-example</excludeArtifact>
+                                <excludeArtifact>sentinel-webflux-example</excludeArtifact>
+                                <excludeArtifact>sentinel-spring-cloud-gateway-example</excludeArtifact>
+                                <excludeArtifact>nacos-discovery-example</excludeArtifact>
+                                <excludeArtifact>nacos-config-example</excludeArtifact>
+                                <excludeArtifact>nacos-gateway-example</excludeArtifact>
+                                <excludeArtifact>business-service</excludeArtifact>
+                                <excludeArtifact>order-service</excludeArtifact>
+                                <excludeArtifact>storage-service</excludeArtifact>
+                                <excludeArtifact>account-service</excludeArtifact>
+                                <excludeArtifact>spring-cloud-alibaba-examples</excludeArtifact>
+                                <excludeArtifact>rocketmq-comprehensive-example</excludeArtifact>
+                                <excludeArtifact>rocketmq-orderly-consume-example</excludeArtifact>
+                                <excludeArtifact>rocketmq-broadcast-producer-example</excludeArtifact>
+                                <excludeArtifact>rocketmq-broadcast-consumer1-example</excludeArtifact>
+                                <excludeArtifact>rocketmq-broadcast-consumer2-example</excludeArtifact>
+                                <excludeArtifact>rocketmq-delay-consume-example</excludeArtifact>
+                                <excludeArtifact>rocketmq-sql-consume-example</excludeArtifact>
+                                <excludeArtifact>rocketmq-example-common</excludeArtifact>
+                                <excludeArtifact>rocketmq-tx-example</excludeArtifact>
+                                <excludeArtifact>rocketmq-pollable-consume-example</excludeArtifact>
+                                <excludeArtifact>spring-cloud-bus-rocketmq-example</excludeArtifact>
+                                <excludeArtifact>spring-cloud-alibaba-sidecar-nacos-example</excludeArtifact>
+                                <excludeArtifact>spring-cloud-alibaba-sidecar-consul-example</excludeArtifact>
+                                <excludeArtifact>nacos-gateway-discovery-example</excludeArtifact>
+                                <excludeArtifact>nacos-discovery-provider-example</excludeArtifact>
+                                <excludeArtifact>nacos-discovery-consumer-sclb-example</excludeArtifact>
+                                <excludeArtifact>nacos-discovery-spring-cloud-config-client-example</excludeArtifact>
+                                <excludeArtifact>nacos-discovery-consumer-example</excludeArtifact>
+                                <excludeArtifact>nacos-reactivediscovery-consumer-example</excludeArtifact>
+                                <excludeArtifact>nacos-gateway-provider-example</excludeArtifact>
+                                <excludeArtifact>nacos-discovery-spring-cloud-config-server-example</excludeArtifact>
+                                <excludeArtifact>integrated-storage</excludeArtifact>
+                                <excludeArtifact>integrated-account</excludeArtifact>
+                                <excludeArtifact>integrated-order</excludeArtifact>
+                                <excludeArtifact>integrated-gateway</excludeArtifact>
+                                <excludeArtifact>integrated-praise-provider</excludeArtifact>
+                                <excludeArtifact>integrated-praise-consumer</excludeArtifact>
+                                <excludeArtifact>integrated-common</excludeArtifact>
+                                <excludeArtifact>integrated-frontend</excludeArtifact>
+                                <excludeArtifact>spring-cloud-scheduling-example</excludeArtifact>
+                                <excludeArtifact>spring-cloud-alibaba-test-support</excludeArtifact>
+                                <excludeArtifact>nacos-tests</excludeArtifact>
+                                <excludeArtifact>nacos-config-test</excludeArtifact>
+                                <excludeArtifact>nacos-discovery-test</excludeArtifact>
+                                <excludeArtifact>rocketmq-tests</excludeArtifact>
+                                <excludeArtifact>rocketmq-stream-test</excludeArtifact>
+                                <excludeArtifact>sentinel-tests</excludeArtifact>
+                                <excludeArtifact>sentinel-flowcontrol-test</excludeArtifact>
+                                <excludeArtifact>sentinel-degrade-test</excludeArtifact>
+                            </excludeArtifacts>
                         </configuration>
                     </plugin>
                 </plugins>
