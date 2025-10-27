@@ -15,17 +15,19 @@
  */
 
 package com.alibaba.cloud.sentinel.restclient;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestClient;
 
-
+/**
+ * BeanPostProcessor that injects Sentinel interceptor into RestClient.Builder.
+ */
 public class SentinelRestClientBeanPostProcessor implements BeanPostProcessor {
 
-	private final SentinelRestClientInterceptor interceptor;
+	private final ClientHttpRequestInterceptor interceptor;
 
-	public SentinelRestClientBeanPostProcessor(SentinelRestClientInterceptor interceptor) {
+	public SentinelRestClientBeanPostProcessor(ClientHttpRequestInterceptor interceptor) {
 		this.interceptor = interceptor;
 	}
 
@@ -35,7 +37,7 @@ public class SentinelRestClientBeanPostProcessor implements BeanPostProcessor {
 		if (bean instanceof RestClient.Builder builder) {
 			builder.requestInterceptors(list -> {
 				if (!list.contains(interceptor)) {
-					list.add(interceptor);
+					list.add(0, interceptor); // 提升优先级（等价 addFirst）
 				}
 			});
 		}

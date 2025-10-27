@@ -15,36 +15,48 @@
  */
 
 package com.alibaba.cloud.sentinel.restclient;
-
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestClient;
 
-
+/**
+ * Auto-configuration for Sentinel integration with Spring's RestClient.
+ * Controlled by the global switch:
+ *   spring.cloud.sentinel.enabled (default: true)
+ * When disabled, none of the RestClient-related Sentinel beans are registered.
+ */
 @AutoConfiguration
 @ConditionalOnClass(RestClient.class)
+@ConditionalOnProperty(
+		prefix = "spring.cloud.sentinel",
+		name = "enabled",
+		havingValue = "true",
+		matchIfMissing = true
+)
 @EnableConfigurationProperties(SentinelRestClientProperties.class)
 public class SentinelRestClientAutoConfiguration {
 
+	/**
+	 * Sentinel interceptor for RestClient.
+	 * Do NOT check any 'enabled' flag here; gating is done by ConditionalOnProperty.
+	 */
 	@Bean
 	@ConditionalOnMissingBean
-	public SentinelRestClientInterceptor sentinelRestClientInterceptor(
-			SentinelRestClientProperties properties) {
-		return new SentinelRestClientInterceptor(properties);
+	public SentinelRestClientInterceptor sentinelRestClientInterceptor() {
+		return new SentinelRestClientInterceptor();
 	}
 
+	/**
+	 * Register interceptor to Spring-managed RestClient.Builder.
+	 * Insert at index 0 to make sure the interceptor takes precedence.
+	 */
 	@Bean
-	@ConditionalOnMissingBean
-	public RestClient.Builder restClientBuilder(SentinelRestClientInterceptor interceptor) {
-		return RestClient.builder()
-				.requestInterceptors(list -> list.add(interceptor));
-	}
-
-	@Bean
-	public SentinelRestClientBeanPostProcessor sentinelRestClientBeanPostProcessor(
+	public BeanPostProcessor sentinelRestClientBeanPostProcessor(
 			SentinelRestClientInterceptor interceptor) {
 		return new SentinelRestClientBeanPostProcessor(interceptor);
 	}

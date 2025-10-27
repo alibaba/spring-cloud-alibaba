@@ -37,22 +37,12 @@ import org.springframework.http.client.ClientHttpResponse;
 
 public class SentinelRestClientInterceptor implements ClientHttpRequestInterceptor {
 
-	private final SentinelRestClientProperties properties;
-
-	public SentinelRestClientInterceptor(SentinelRestClientProperties properties) {
-		this.properties = properties;
-	}
+	public SentinelRestClientInterceptor() { }
 
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-		if (!properties.isEnabled()) {
-			// 如果禁用，直接放行
-			return execution.execute(request, body);
-		}
 
 		String resourceName = request.getMethod() + ":" + request.getURI();
-		System.out.println("[Sentinel-DEBUG] RestClient resourceName = " + resourceName);
-
 		Entry entry = null;
 		try {
 			entry = SphU.entry(resourceName);

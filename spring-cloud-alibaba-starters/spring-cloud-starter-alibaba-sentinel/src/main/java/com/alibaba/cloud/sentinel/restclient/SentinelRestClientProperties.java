@@ -20,15 +20,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "spring.cloud.sentinel.restclient")
 public class SentinelRestClientProperties {
-
-
-	private boolean enabled = true;
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
+	// 保留类，后续可加具体配置项
 }
