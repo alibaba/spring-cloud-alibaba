@@ -50,8 +50,8 @@ In addition to the above-mentioned features, for the needs of enterprise users' 
 For more features please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2023.x/Roadmap.md).
 
 ## How to build
-* **2025.1.x branch**: Corresponds to Spring Cloud 2025 & Spring Boot 4.0.x, JDK 17 or later versions are supported.
-* **2025.0.x branch**: Corresponds to Spring Cloud 2025 & Spring Boot 3.5.x, JDK 17 or later versions are supported.
+* **2025.1.x branch**: Corresponds to Spring Cloud 2025.1.x & Spring Boot 4.0.x, JDK 17 or later versions are supported.
+* **2025.0.x branch**: Corresponds to Spring Cloud 2025.0.x & Spring Boot 3.5.x, JDK 17 or later versions are supported.
 * **2023.x branch**: Corresponds to Spring Cloud 2023 & Spring Boot 3.2.x, JDK 17 or later versions are supported.
 * **2022.x branch**: Corresponds to Spring Cloud 2022 & Spring Boot 3.0.x, JDK 17 or later versions are supported.
 * **2021.x branch**: Corresponds to Spring Cloud 2021 & Spring Boot 2.6.x. JDK 1.8 or later versions are supported.
