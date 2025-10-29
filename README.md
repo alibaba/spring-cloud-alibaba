@@ -50,7 +50,7 @@ In addition to the above-mentioned features, for the needs of enterprise users' 
 For more features please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2023.x/Roadmap.md).
 
 ## How to build
-* **2025.x branch**: Corresponds to Spring Cloud 2025 & Spring Boot 3.5.x, JDK 17 or later versions are supported.
+* **2025.0.x branch**: Corresponds to Spring Cloud 2025 & Spring Boot 3.5.x, JDK 17 or later versions are supported.
 * **2023.x branch**: Corresponds to Spring Cloud 2023 & Spring Boot 3.2.x, JDK 17 or later versions are supported.
 * **2022.x branch**: Corresponds to Spring Cloud 2022 & Spring Boot 3.0.x, JDK 17 or later versions are supported.
 * **2021.x branch**: Corresponds to Spring Cloud 2021 & Spring Boot 2.6.x. JDK 1.8 or later versions are supported.
@@ -112,7 +112,7 @@ As the interfaces and annotations of Spring Boot 1 and Spring Boot 2 have been c
 * 2021.x for Spring Boot 2.6.x
 * 2022.x for Spring Boot 3.0.x
 * 2023.x for Spring Boot 3.2.x
-* 2025.x for Spring Boot 3.5.x
+* 2025.0.x for Spring Boot 3.5.x
 
 ## Code of Conduct
 This project is a sub-project of Spring Cloud, it adheres to the Contributor Covenant [code of conduct](https://sca.aliyun.com/en-us/community/developer/contributor-guide/new-contributor-guide_dev/). By participating, you are expected to uphold this code. Please report unacceptable behavior to spring-code-of-conduct@pivotal.io.
