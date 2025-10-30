@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.seata.web;
+package com.alibaba.cloud.seata.webclient;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import org.springframework.boot.web.reactive.function.client.WebClientCustomizer;
+import org.springframework.web.reactive.function.client.WebClient;
 
 /**
- * @author xiaojing
  * @author ChangJin Wei (魏昌进)
  */
-@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-public class SeataHandlerInterceptorConfiguration implements WebMvcConfigurer {
+public class SeataWebClientBuilderCustomizer implements WebClientCustomizer {
+	private final SeataWebClientFilter filter;
 
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new SeataHandlerInterceptor()).addPathPatterns("/**");
+	public SeataWebClientBuilderCustomizer(SeataWebClientFilter filter) {
+		this.filter = filter;
 	}
 
+	@Override
+	public void customize(WebClient.Builder builder) {
+		builder.filter(filter);
+	}
 }

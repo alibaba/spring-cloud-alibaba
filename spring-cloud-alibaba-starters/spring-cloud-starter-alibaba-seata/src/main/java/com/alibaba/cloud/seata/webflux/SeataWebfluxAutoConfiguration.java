@@ -14,30 +14,23 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.seata.rest;
+package com.alibaba.cloud.seata.webflux;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
+import org.springframework.web.server.WebFilter;
 
 /**
- * @author xiaojing
  * @author ChangJin Wei (魏昌进)
  */
-@Configuration(proxyBeanMethods = false)
-@ConditionalOnClass({RestClient.class, RestTemplate.class})
-public class SeataRestTemplateAutoConfiguration {
+@ConditionalOnClass({WebFilter.class, WebFluxConfigurer.class})
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
+public class SeataWebfluxAutoConfiguration {
 
 	@Bean
-	public SeataRestTemplateInterceptor seataRestTemplateInterceptor() {
-		return new SeataRestTemplateInterceptor();
+	public WebFilter seataWebFilter() {
+		return new SeataWebFilter();
 	}
-
-	@Bean
-	public SeataRestTemplateInterceptorAfterPropertiesSet seataRestTemplateInterceptorConfiguration() {
-		return new SeataRestTemplateInterceptorAfterPropertiesSet();
-	}
-
 }
