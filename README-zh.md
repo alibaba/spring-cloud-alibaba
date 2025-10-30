@@ -51,7 +51,7 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 更多组件请参考 [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2023.x/Roadmap-zh.md)。
 
 ## 如何构建
-* 2025.x 分支对应的是 Spring Cloud 2025 与 Spring Boot 3.5.x，最低支持 JDK 17。
+* 2025.0.x 分支对应的是 Spring Cloud 2025.0.x 与 Spring Boot 3.5.x，最低支持 JDK 17。
 * 2023.x 分支对应的是 Spring Cloud 2023 与 Spring Boot 3.2.x，最低支持 JDK 17。
 * 2022.x 分支对应的是 Spring Cloud 2022 与 Spring Boot 3.0.x，最低支持 JDK 17。
 * 2021.x 分支对应的是 Spring Cloud 2021 与 Spring Boot 2.6.x，最低支持 JDK 1.8。
@@ -121,7 +121,7 @@ Example 列表：
 * 2021.x 版本适用于 Spring Boot 2.6.x
 * 2022.x 版本适用于 Spring Boot 3.0.x
 * 2023.x 版本适用于 Spring Boot 3.2.x
-* 2025.x 版本适用于 Spring Boot 3.5.x
+* 2025.0.x 版本适用于 Spring Boot 3.5.x
 
 ## 社区交流
 
