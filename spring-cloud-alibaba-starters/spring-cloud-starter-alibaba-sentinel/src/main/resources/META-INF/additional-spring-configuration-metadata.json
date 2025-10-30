@@ -107,6 +107,12 @@
       "defaultValue": true
     },
     {
+      "name": "sentinel.restclient.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable Sentinel protection for all RestClient beans (global mode).",
+      "defaultValue": true
+    },
+    {
       "defaultValue": "false",
       "name": "feign.sentinel.enabled",
       "description": "If true, an OpenFeign client will be wrapped with a Sentinel circuit breaker.",
