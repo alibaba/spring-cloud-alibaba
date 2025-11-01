@@ -16,8 +16,8 @@
 
 package com.alibaba.cloud.seata.webflux;
 
-import io.seata.common.util.StringUtils;
-import io.seata.core.context.RootContext;
+import org.apache.seata.common.util.StringUtils;
+import org.apache.seata.core.context.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
