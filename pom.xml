@@ -86,7 +86,7 @@
         <spring.cloud.version>2025.1.0-M4</spring.cloud.version>
 
         <!-- Spring Boot -->
-        <spring-boot.version>4.0.0-RC1</spring-boot.version>
+        <spring-boot.version>4.0.0-RC2</spring-boot.version>
 
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
