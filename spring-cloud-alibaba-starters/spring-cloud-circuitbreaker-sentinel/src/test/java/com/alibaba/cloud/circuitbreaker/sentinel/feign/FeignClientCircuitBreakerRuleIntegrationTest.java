@@ -16,7 +16,6 @@
 
 package com.alibaba.cloud.circuitbreaker.sentinel.feign;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 /**
  * @author freeman
  */
-@Disabled
 @SpringBootTest(webEnvironment = DEFINED_PORT, classes = Application.class, properties = {
 		"server.port=10101",
 		"spring.cloud.openfeign.circuitbreaker.enabled=true",
