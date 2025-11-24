@@ -69,10 +69,11 @@ public class NacosServiceRegistryAutoConfiguration {
 	@Bean
 	@ConditionalOnBean(AutoServiceRegistrationProperties.class)
 	public NacosAutoServiceRegistration nacosAutoServiceRegistration(
+			ApplicationContext context,
 			NacosServiceRegistry registry,
 			AutoServiceRegistrationProperties autoServiceRegistrationProperties,
 			NacosRegistration registration) {
-		return new NacosAutoServiceRegistration(registry,
+		return new NacosAutoServiceRegistration(context, registry,
 				autoServiceRegistrationProperties, registration);
 	}
 

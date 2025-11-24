@@ -1533,8 +1533,17 @@ public final class CronExpression {
 		}
 	}
 
-	private class ValueSet {
+	private static final class ValueSet {
+
+		/**
+		 * value.
+		 */
 		public int value;
+
+		/**
+		 * position in the expression.
+		 */
 		public int pos;
+
 	}
 }

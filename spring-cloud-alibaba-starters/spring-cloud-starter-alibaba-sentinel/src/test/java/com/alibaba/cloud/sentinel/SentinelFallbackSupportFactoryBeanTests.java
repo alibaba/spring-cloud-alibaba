@@ -76,7 +76,7 @@ public class SentinelFallbackSupportFactoryBeanTests {
 
 	}
 
-	private static class FactoryBeanFallbackFeignFallback implements FactoryBean<FactoryBeanFallbackFeign> {
+	private static final class FactoryBeanFallbackFeignFallback implements FactoryBean<FactoryBeanFallbackFeign> {
 
 		@Override
 		public FactoryBeanFallbackFeign getObject() {
@@ -90,7 +90,7 @@ public class SentinelFallbackSupportFactoryBeanTests {
 
 	}
 
-	private static class OriginalFeignFallback implements OriginalFeign {
+	private static final class OriginalFeignFallback implements OriginalFeign {
 
 		@Override
 		public String get() {

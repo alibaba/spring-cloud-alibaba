@@ -161,7 +161,7 @@ public final class NacosDataParserHandler {
 		return ParserHandler.HANDLER;
 	}
 
-	private static class ParserHandler {
+	private static final class ParserHandler {
 
 		private static final NacosDataParserHandler HANDLER = new NacosDataParserHandler();
 
