@@ -65,7 +65,7 @@
   },
   {
     "condition": {
-      "typeReachable": "org.springframework.boot.env.EnvironmentPostProcessorApplicationListener"
+      "typeReachable": "org.springframework.boot.support.EnvironmentPostProcessorApplicationListener"
     },
     "name": "com.alibaba.nacos.api.config.remote.request.AbstractConfigRequest",
     "queryAllDeclaredMethods": true
@@ -201,7 +201,7 @@
   },
   {
     "condition": {
-      "typeReachable": "org.springframework.boot.env.EnvironmentPostProcessorApplicationListener"
+      "typeReachable": "org.springframework.boot.support.EnvironmentPostProcessorApplicationListener"
     },
     "name": "com.alibaba.nacos.api.config.remote.request.ConfigQueryRequest",
     "queryAllDeclaredMethods": true,
@@ -320,7 +320,7 @@
   },
   {
     "condition": {
-      "typeReachable": "org.springframework.boot.env.EnvironmentPostProcessorApplicationListener"
+      "typeReachable": "org.springframework.boot.support.EnvironmentPostProcessorApplicationListener"
     },
     "name": "com.alibaba.nacos.api.config.remote.response.ConfigQueryResponse",
     "allDeclaredFields": true,
@@ -630,7 +630,7 @@
   },
   {
     "condition": {
-      "typeReachable": "org.springframework.boot.env.EnvironmentPostProcessorApplicationListener"
+      "typeReachable": "org.springframework.boot.support.EnvironmentPostProcessorApplicationListener"
     },
     "name": "com.alibaba.nacos.api.remote.Payload",
     "queryAllDeclaredMethods": true
@@ -793,7 +793,7 @@
   },
   {
     "condition": {
-      "typeReachable": "org.springframework.boot.env.EnvironmentPostProcessorApplicationListener"
+      "typeReachable": "org.springframework.boot.support.EnvironmentPostProcessorApplicationListener"
     },
     "name": "com.alibaba.nacos.api.remote.request.Request",
     "queryAllDeclaredMethods": true
@@ -915,7 +915,7 @@
   },
   {
     "condition": {
-      "typeReachable": "org.springframework.boot.env.EnvironmentPostProcessorApplicationListener"
+      "typeReachable": "org.springframework.boot.support.EnvironmentPostProcessorApplicationListener"
     },
     "name": "com.alibaba.nacos.api.remote.response.Response",
     "queryAllDeclaredMethods": true
