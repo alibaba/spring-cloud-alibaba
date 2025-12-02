@@ -24,6 +24,7 @@ import com.alibaba.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.support.RocketMQMessageConverterSupport;
 import com.alibaba.cloud.stream.binder.rocketmq.utils.RocketMQUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
@@ -34,18 +35,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
+import org.springframework.core.retry.RetryTemplate;
+import org.springframework.core.retry.Retryable;
+import org.springframework.core.retry.support.CompositeRetryListener;
 import org.springframework.integration.context.OrderlyShutdownCapable;
+import org.springframework.integration.core.RecoveryCallback;
 import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessagingException;
-import org.springframework.retry.RecoveryCallback;
-import org.springframework.retry.RetryCallback;
-import org.springframework.retry.RetryContext;
-import org.springframework.retry.RetryListener;
-import org.springframework.retry.support.RetryTemplate;
 import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
+
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -85,23 +85,8 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 						"Cannot have an 'errorChannel' property when a 'RetryTemplate' is "
 								+ "provided; use an 'ErrorMessageSendingRecoverer' in the 'recoveryCallback' property to "
 								+ "send an error message when retries are exhausted");
-				this.retryTemplate.registerListener(new RetryListener() {
-					@Override
-					public <T, E extends Throwable> boolean open(RetryContext context,
-							RetryCallback<T, E> callback) {
-						return true;
-					}
-
-					@Override
-					public <T, E extends Throwable> void close(RetryContext context,
-							RetryCallback<T, E> callback, Throwable throwable) {
-					}
-
-					@Override
-					public <T, E extends Throwable> void onError(RetryContext context,
-							RetryCallback<T, E> callback, Throwable throwable) {
-					}
-				});
+				//原先没做任何操作,保持相同语义
+				retryTemplate.setRetryListener(new CompositeRetryListener());
 			}
 			pushConsumer = RocketMQConsumerFactory
 					.initPushConsumer(extendedConsumerProperties);
@@ -159,10 +144,14 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 				Message<?> message = RocketMQMessageConverterSupport
 						.convertMessage2Spring(messageExt);
 				if (this.retryTemplate != null) {
-					this.retryTemplate.execute(context -> {
-						this.sendMessage(message);
+					retryTemplate.execute((Retryable<Message<?>>) () -> {
+						sendMessage(message);
 						return message;
-					}, this.recoveryCallback);
+					});
+//					this.retryTemplate.execute(context -> {
+//						this.sendMessage(message);
+//						return message;
+//					}, this.recoveryCallback);
 				}
 				else {
 					this.sendMessage(message);

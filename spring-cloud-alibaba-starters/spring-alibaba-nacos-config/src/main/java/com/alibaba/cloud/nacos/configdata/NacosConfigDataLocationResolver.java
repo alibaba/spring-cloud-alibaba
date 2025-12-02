@@ -30,8 +30,8 @@ import com.alibaba.cloud.nacos.NacosPropertiesPrefixer;
 import com.alibaba.cloud.nacos.utils.StringUtils;
 import org.apache.commons.logging.Log;
 
-import org.springframework.boot.BootstrapRegistry.InstanceSupplier;
-import org.springframework.boot.ConfigurableBootstrapContext;
+import org.springframework.boot.bootstrap.BootstrapRegistry;
+import org.springframework.boot.bootstrap.ConfigurableBootstrapContext;
 import org.springframework.boot.context.config.ConfigDataLocation;
 import org.springframework.boot.context.config.ConfigDataLocationNotFoundException;
 import org.springframework.boot.context.config.ConfigDataLocationResolver;
@@ -151,7 +151,7 @@ public class NacosConfigDataLocationResolver
 				.getBootstrapContext();
 
 		bootstrapContext.registerIfAbsent(NacosConfigProperties.class,
-				InstanceSupplier.of(properties));
+				BootstrapRegistry.InstanceSupplier.of(properties));
 
 		registerConfigManager(properties, bootstrapContext);
 
@@ -199,7 +199,7 @@ public class NacosConfigDataLocationResolver
 			ConfigurableBootstrapContext bootstrapContext) {
 		if (!bootstrapContext.isRegistered(NacosConfigManager.class)) {
 			bootstrapContext.register(NacosConfigManager.class,
-					InstanceSupplier.of(NacosConfigManager.getInstance(properties)));
+					BootstrapRegistry.InstanceSupplier.of(NacosConfigManager.getInstance(properties)));
 		}
 	}
 

@@ -16,11 +16,12 @@
 
 package com.alibaba.cloud.nacos.endpoint;
 
+
 import com.alibaba.nacos.api.config.ConfigService;
 
-import org.springframework.boot.actuate.health.AbstractHealthIndicator;
-import org.springframework.boot.actuate.health.Health;
-import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.boot.health.contributor.AbstractHealthIndicator;
+import org.springframework.boot.health.contributor.Health;
+import org.springframework.boot.health.contributor.HealthIndicator;
 
 /**
  * The {@link HealthIndicator} for Nacos Config.
@@ -48,7 +49,6 @@ public class NacosConfigHealthIndicator extends AbstractHealthIndicator {
 
 	@Override
 	protected void doHealthCheck(Health.Builder builder) throws Exception {
-		// Just return "UP" or "DOWN"
 		String status = configService.getServerStatus();
 		// Set the status to Builder
 		builder.status(status);

@@ -16,16 +16,16 @@
 
 package com.alibaba.cloud.tests.sentinel.degrade;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.annotation.Bean;
+import org.springframework.test.web.servlet.client.RestTestClient;
 
 import static com.alibaba.cloud.tests.sentinel.degrade.Util.FLOW_CONTROL_NOT_TRIGGERED;
 import static com.alibaba.cloud.tests.sentinel.degrade.Util.FLOW_CONTROL_TRIGGERED;
@@ -38,19 +38,21 @@ class SentinelFlowControlTestAppTest {
 	@LocalServerPort
 	int port;
 
-	@Autowired
-	TestRestTemplate rest;
+
+	@Bean
+	public RestTestClient restTestClient() {
+		// 使用动态注入的端口来构建基础URL
+		String baseUrl = "http://localhost:" + port;
+		return RestTestClient.bindToServer().baseUrl(baseUrl).build();
+	}
 
 	@Test
 	void testFlowControl_whenNotTriggered() {
 		final int count = 3;
 		List<String> result = new ArrayList<>();
-
+		RestTestClient rest = restTestClient();
 		for (int i = 0; i < count; i++) {
-			ResponseEntity<String> res = rest.getForEntity(
-					"http://localhost:" + port + FLOW_CONTROL_NOT_TRIGGERED,
-					String.class);
-			result.add(res.getBody());
+			result.add(rest.get().uri(URI.create(FLOW_CONTROL_NOT_TRIGGERED)).exchange().expectBody(String.class).returnResult().getResponseBody());
 		}
 
 		assertThat(result).doesNotContain("fallback");
@@ -60,11 +62,9 @@ class SentinelFlowControlTestAppTest {
 	void testFlowControl_whenTriggered() {
 		final int count = 3;
 		List<String> result = new ArrayList<>();
-
+		RestTestClient rest = restTestClient();
 		for (int i = 0; i < count; i++) {
-			ResponseEntity<String> res = rest.getForEntity(
-					"http://localhost:" + port + FLOW_CONTROL_TRIGGERED, String.class);
-			result.add(res.getBody());
+			result.add(rest.get().uri(URI.create(FLOW_CONTROL_TRIGGERED)).exchange().expectBody(String.class).returnResult().getResponseBody());
 		}
 
 		assertThat(result).containsSequence("fallback");

@@ -42,13 +42,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import static com.alibaba.cloud.circuitbreaker.sentinel.ReactiveSentinelCircuitBreakerIntegrationTest.Application;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 
 /**
  * @author Ryan Baxter
  */
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = Application.class, properties = {
-		"spring.cloud.discovery.client.health-indicator.enabled=false" })
+@SpringBootTest(webEnvironment = DEFINED_PORT, classes = Application.class, properties = {
+		"spring.cloud.discovery.client.health-indicator.enabled=false", "local.server.port=7778" })
 public class ReactiveSentinelCircuitBreakerIntegrationTest {
 
 	@LocalServerPort
