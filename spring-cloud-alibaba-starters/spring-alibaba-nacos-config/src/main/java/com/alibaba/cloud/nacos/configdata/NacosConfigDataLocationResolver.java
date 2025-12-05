@@ -117,7 +117,10 @@ public class NacosConfigDataLocationResolver
 
 	@Override
 	public boolean isResolvable(ConfigDataLocationResolverContext context,
-			ConfigDataLocation location) {
+								ConfigDataLocation location) {
+		if (NacosConfigManager.getBindHandler() == null) {
+			NacosConfigManager.setBindHandler(this.getBindHandler(context));
+		}
 		if (!location.hasPrefix(getPrefix())) {
 			return false;
 		}
@@ -196,7 +199,7 @@ public class NacosConfigDataLocationResolver
 	}
 
 	private void registerConfigManager(NacosConfigProperties properties,
-			ConfigurableBootstrapContext bootstrapContext) {
+									   ConfigurableBootstrapContext bootstrapContext) {
 		if (!bootstrapContext.isRegistered(NacosConfigManager.class)) {
 			bootstrapContext.register(NacosConfigManager.class,
 					InstanceSupplier.of(NacosConfigManager.getInstance(properties)));
