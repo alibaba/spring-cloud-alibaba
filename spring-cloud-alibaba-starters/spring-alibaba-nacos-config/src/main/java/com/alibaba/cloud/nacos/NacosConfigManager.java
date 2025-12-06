@@ -160,6 +160,11 @@ public class NacosConfigManager implements InitializingBean, EnvironmentAware {
 	 */
 	private void recreateConfigService(NacosConfigProperties properties) {
 		if (service != null) {
+			try {
+				service.shutDown();
+			} catch (NacosException e) {
+				log.warn("Failed to shutdown old Nacos ConfigService", e);
+			}
 			service = null;
 		}
 		createConfigService(properties);
