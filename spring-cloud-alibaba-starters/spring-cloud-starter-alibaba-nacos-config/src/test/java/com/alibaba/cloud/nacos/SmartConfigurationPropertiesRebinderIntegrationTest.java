@@ -46,7 +46,8 @@ public class SmartConfigurationPropertiesRebinderIntegrationTest {
 				.web(WebApplicationType.NONE)
 				.properties("spring.cloud.nacos.config.refresh-behavior=specific_bean")
 				.properties("spring.cloud.nacos.server-addr=123.123.123.123:8848")
-				.properties("spring.cloud.nacos.config.import-check.enabled=false").run();
+				.properties("spring.cloud.nacos.config.import-check.enabled=false")
+				.properties("spring.config.import=nacos:test.properties").run();
 
 		ConfigurationPropertiesRebinder rebinder = context
 				.getBean(ConfigurationPropertiesRebinder.class);
@@ -64,7 +65,8 @@ public class SmartConfigurationPropertiesRebinderIntegrationTest {
 		context = new SpringApplicationBuilder(RebinderConfiguration.class)
 				.web(WebApplicationType.NONE)
 				.properties("spring.cloud.nacos.server-addr=123.123.123.123:8848")
-				.properties("spring.cloud.nacos.config.import-check.enabled=false").run();
+				.properties("spring.cloud.nacos.config.import-check.enabled=false")
+				.properties("spring.config.import=nacos:test.properties").run();
 
 		ConfigurationPropertiesRebinder rebinder = context
 				.getBean(ConfigurationPropertiesRebinder.class);

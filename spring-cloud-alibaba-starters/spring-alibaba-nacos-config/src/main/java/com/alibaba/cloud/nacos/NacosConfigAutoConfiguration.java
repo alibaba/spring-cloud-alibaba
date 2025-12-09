@@ -21,12 +21,16 @@ import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
 
 import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.SearchStrategy;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+
+import static com.alibaba.cloud.nacos.constants.Constants.SPRING_CONFIG_IMPORT_PROPERTIES;
 
 /**
  * @author juven.xuxb
@@ -35,6 +39,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 @Conditional(NacosConfigEnabledCondition.class)
 public class NacosConfigAutoConfiguration {
+
+
 
 	@Bean
 	@ConditionalOnMissingBean(value = NacosConfigProperties.class, search = SearchStrategy.CURRENT)
@@ -57,16 +63,19 @@ public class NacosConfigAutoConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnProperty(name = SPRING_CONFIG_IMPORT_PROPERTIES)
 	public NacosConfigManager nacosConfigManager(NacosConfigProperties nacosConfigProperties) {
 		return NacosConfigManager.getInstance(nacosConfigProperties);
 	}
 
 	@Bean
+	@ConditionalOnBean(NacosConfigManager.class)
 	public static NacosAnnotationProcessor nacosAnnotationProcessor() {
 		return new NacosAnnotationProcessor();
 	}
 
 	@Bean
+	@ConditionalOnBean(NacosConfigManager.class)
 	public NacosContextRefresher nacosContextRefresher(NacosConfigManager nacosConfigManager,
 			NacosRefreshHistory nacosRefreshHistory) {
 		// Consider that it is not necessary to be compatible with the previous
