@@ -199,7 +199,7 @@ public class NacosConfigDataLocationResolver
 	}
 
 	private void registerConfigManager(NacosConfigProperties properties,
-									   ConfigurableBootstrapContext bootstrapContext) {
+			ConfigurableBootstrapContext bootstrapContext) {
 		if (!bootstrapContext.isRegistered(NacosConfigManager.class)) {
 			bootstrapContext.register(NacosConfigManager.class,
 					InstanceSupplier.of(NacosConfigManager.getInstance(properties)));

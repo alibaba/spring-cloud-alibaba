@@ -183,10 +183,11 @@ public class NacosConfigManager implements InitializingBean, EnvironmentAware {
 				try {
 					service.shutDown();
 					log.info("Shutdown old Nacos ConfigService");
-				} catch (NacosException e) {
+				}
+				catch (NacosException e) {
 					log.error("Failed to shutdown old Nacos ConfigService. Current service may be in inconsistent state. " +
-						"Server address: " + properties.getServerAddr() + ", Group: " + properties.getGroup() + 
-						", Namespace: " + properties.getNamespace(), e);
+							"Server address: " + properties.getServerAddr() + ", Group: " + properties.getGroup() +
+							", Namespace: " + properties.getNamespace(), e);
 				}
 				service = null;
 			}
