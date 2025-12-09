@@ -56,7 +56,7 @@ public class NacosConfigManager implements InitializingBean, EnvironmentAware {
 	/*
 	 * Handler for binding configuration properties.
 	 */
-	private static BindHandler bindHandler;
+	private static volatile BindHandler bindHandler;
 
 	public NacosConfigManager(NacosConfigProperties nacosConfigProperties) {
 		this.nacosConfigProperties = nacosConfigProperties;
@@ -86,12 +86,18 @@ public class NacosConfigManager implements InitializingBean, EnvironmentAware {
 			NacosConfigProperties nacosConfigProperties) {
 		try {
 			if (Objects.isNull(service)) {
-				service = NacosFactory.createConfigService(
-						nacosConfigProperties.assembleConfigServiceProperties());
+				synchronized (NacosConfigManager.class) {
+					if (Objects.isNull(service)) {
+						log.info("Creating new Nacos ConfigService");
+						service = NacosFactory.createConfigService(
+								nacosConfigProperties.assembleConfigServiceProperties());
+						log.info("Successfully created Nacos ConfigService");
+					}
+				}
 			}
 		}
 		catch (NacosException e) {
-			log.error(e.getMessage());
+			log.error("Failed to create Nacos ConfigService: " + e.getMessage());
 			throw new NacosConnectionFailureException(
 					nacosConfigProperties.getServerAddr(), e.getMessage(), e);
 		}
@@ -138,16 +144,28 @@ public class NacosConfigManager implements InitializingBean, EnvironmentAware {
 						.bind(nacosConfigPrefix, Bindable.of(NacosConfigDataLoadProperties.class), bindHandler)
 						.orElse(null));
 		if (Objects.nonNull(newProperties)) {
-			// Update current instance's properties
-			this.nacosConfigProperties = newProperties;
-			// Safely update singleton instance
-			if (INSTANCE != null) {
-				synchronized (NacosConfigManager.class) {
-					if (INSTANCE != null) {
-						INSTANCE.nacosConfigProperties = newProperties;
-						// Recreate ConfigService if needed
-						recreateConfigService(newProperties);
-					}
+			updateInstanceProperties(newProperties);
+		}
+	}
+
+	/**
+	 * Safely update the singleton instance properties in a thread-safe manner.
+	 *
+	 * @param newProperties the new Nacos config properties
+	 */
+	private void updateInstanceProperties(NacosConfigProperties newProperties) {
+		// Update current instance's properties
+		this.nacosConfigProperties = newProperties;
+		// Safely update singleton instance
+		if (INSTANCE != null) {
+			synchronized (NacosConfigManager.class) {
+				if (INSTANCE != null && INSTANCE == this) {
+					log.debug("Updating INSTANCE properties");
+					INSTANCE.nacosConfigProperties = newProperties;
+					// Recreate ConfigService if needed
+					recreateConfigService(newProperties);
+				} else {
+					log.debug("Skipping update of INSTANCE properties as it does not match current instance");
 				}
 			}
 		}
@@ -159,15 +177,22 @@ public class NacosConfigManager implements InitializingBean, EnvironmentAware {
 	 * @param properties the new Nacos config properties
 	 */
 	private void recreateConfigService(NacosConfigProperties properties) {
-		if (service != null) {
-			try {
-				service.shutDown();
-			} catch (NacosException e) {
-				log.warn("Failed to shutdown old Nacos ConfigService", e);
+		synchronized (NacosConfigManager.class) {
+			log.info("Recreating Nacos ConfigService");
+			if (service != null) {
+				try {
+					service.shutDown();
+					log.info("Shutdown old Nacos ConfigService");
+				} catch (NacosException e) {
+					log.error("Failed to shutdown old Nacos ConfigService. Current service may be in inconsistent state. " +
+						"Server address: " + properties.getServerAddr() + ", Group: " + properties.getGroup() + 
+						", Namespace: " + properties.getNamespace(), e);
+				}
+				service = null;
 			}
-			service = null;
+			createConfigService(properties);
+			log.info("Successfully recreated Nacos ConfigService");
 		}
-		createConfigService(properties);
 	}
 
 	/**
@@ -178,7 +203,13 @@ public class NacosConfigManager implements InitializingBean, EnvironmentAware {
 	 * @param handler the bind handler to set
 	 */
 	public static void setBindHandler(BindHandler handler) {
-		bindHandler = handler;
+		if (bindHandler == null) {
+			synchronized (NacosConfigManager.class) {
+				if (bindHandler == null) {
+					bindHandler = handler;
+				}
+			}
+		}
 	}
 
 	/**
