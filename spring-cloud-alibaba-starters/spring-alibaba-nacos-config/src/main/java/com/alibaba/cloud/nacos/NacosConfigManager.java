@@ -164,7 +164,8 @@ public class NacosConfigManager implements InitializingBean, EnvironmentAware {
 					INSTANCE.nacosConfigProperties = newProperties;
 					// Recreate ConfigService if needed
 					recreateConfigService(newProperties);
-				} else {
+				}
+				else {
 					log.debug("Skipping update of INSTANCE properties as it does not match current instance");
 				}
 			}
