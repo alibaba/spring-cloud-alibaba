@@ -18,9 +18,9 @@
     <description>Spring Cloud Alibaba Dependencies</description>
 
     <properties>
-        <revision>2024.0.0-M1</revision>
+        <revision>2023.0.3.4</revision>
         <sentinel.version>1.8.8</sentinel.version>
-        <nacos.client.version>3.0.2</nacos.client.version>
+        <nacos.client.version>2.4.3</nacos.client.version>
         <seata.version>2.1.0</seata.version>
         <!-- Apache RocketMQ -->
         <rocketmq.version>5.3.1</rocketmq.version>
@@ -37,6 +37,7 @@
 
         <!-- Maven Central Portal -->
         <central.publishing.maven.version>0.7.0</central.publishing.maven.version>
+        <nacos.logback.adapter.version>1.1.4</nacos.logback.adapter.version>
     </properties>
 
     <dependencyManagement>
@@ -268,7 +269,13 @@
                 <artifactId>spring-cloud-starter-alibaba-schedulerx</artifactId>
                 <version>${revision}</version>
             </dependency>
-
+            
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>logback-adapter</artifactId>
+                <version>${nacos.logback.adapter.version}</version>
+            </dependency>
+            
         </dependencies>
     </dependencyManagement>
 

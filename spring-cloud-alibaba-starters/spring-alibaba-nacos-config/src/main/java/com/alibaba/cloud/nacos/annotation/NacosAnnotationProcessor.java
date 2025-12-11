@@ -35,6 +35,7 @@ import com.alibaba.nacos.api.config.ConfigChangeEvent;
 import com.alibaba.nacos.api.config.ConfigChangeItem;
 import com.alibaba.nacos.api.config.listener.AbstractListener;
 import com.alibaba.nacos.client.config.common.GroupKey;
+import com.alibaba.nacos.common.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,19 +49,23 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.annotation.MergedAnnotations;
+import org.springframework.core.env.Environment;
 import org.springframework.core.type.MethodMetadata;
 import org.springframework.util.ReflectionUtils;
 
-public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrdered, ApplicationContextAware {
+public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrdered, ApplicationContextAware, EnvironmentAware {
 
 	private NacosConfigManager nacosConfigManager;
 
 	private ApplicationContext applicationContext;
+
+	private Environment environment;
 
 	private final static Logger log = LoggerFactory
 			.getLogger(NacosAnnotationProcessor.class);
@@ -68,6 +73,10 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 	@Override
 	public int getOrder() {
 		return 0;
+	}
+	@Override
+	public void setEnvironment(Environment environment) {
+		this.environment = environment;
 	}
 
 	private Map<String, TargetRefreshable> targetListenerMap = new ConcurrentHashMap<>();
@@ -153,6 +162,12 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 	private void handleBeanNacosConfigAnnotation(String dataId, String group, String key, boolean refreshed, String beanName, Object bean,
 			String defaultValue) {
+		if (StringUtils.isNotEmpty(dataId)) {
+			dataId = environment.resolvePlaceholders(dataId);
+		}
+		if (StringUtils.isNotEmpty(group)) {
+			group = environment.resolvePlaceholders(group);
+		}
 		try {
 			String config = getDestContent(getGroupKeyContent(dataId, group, refreshed), key);
 			if (!org.springframework.util.StringUtils.hasText(config)) {
@@ -246,6 +261,12 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			Method method) {
 		String dataId = annotation.dataId();
 		String group = annotation.group();
+		if (StringUtils.isNotEmpty(dataId)) {
+			dataId = environment.resolvePlaceholders(dataId);
+		}
+		if (StringUtils.isNotEmpty(group)) {
+			group = environment.resolvePlaceholders(group);
+		}
 		try {
 			Class<?>[] parameterTypes = method.getParameterTypes();
 			if (parameterTypes.length != 1 || !ConfigChangeEvent.class.isAssignableFrom(parameterTypes[0])) {
@@ -310,6 +331,12 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 		String dataId = annotation.dataId();
 		String group = annotation.group();
 		String key = annotation.key();
+		if (StringUtils.isNotEmpty(dataId)) {
+			dataId = environment.resolvePlaceholders(dataId);
+		}
+		if (StringUtils.isNotEmpty(group)) {
+			group = environment.resolvePlaceholders(group);
+		}
 		try {
 			Type[] parameterTypes = method.getGenericParameterTypes();
 			if (parameterTypes.length != 1) {
@@ -439,6 +466,12 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 		String dataId = annotation.dataId();
 		String group = annotation.group();
 		String key = annotation.key();
+		if (StringUtils.isNotEmpty(dataId)) {
+			dataId = environment.resolvePlaceholders(dataId);
+		}
+		if (StringUtils.isNotEmpty(group)) {
+			group = environment.resolvePlaceholders(group);
+		}
 		try {
 			ReflectionUtils.makeAccessible(field);
 			handleFiledNacosConfigAnnotationInner(dataId, group, key, annotation.refreshed(), beanName, bean, field, annotation.defaultValue());
@@ -789,5 +822,6 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 		}
 		return nullPropertyNames.toArray(new String[0]);
 	}
+
 
 }
