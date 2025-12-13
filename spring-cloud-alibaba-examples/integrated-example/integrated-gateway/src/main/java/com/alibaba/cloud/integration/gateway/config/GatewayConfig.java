@@ -93,8 +93,9 @@ public class GatewayConfig {
 			public Mono<ServerResponse> handleRequest(ServerWebExchange serverWebExchange,
 					Throwable throwable) {
 				return ServerResponse.status(HttpStatus.OK)
-						.contentType(MediaType.APPLICATION_JSON_UTF8)
-						.body(BodyInserters.fromObject("此接口被限流了"));
+						//new MediaType()
+						.contentType(MediaType.APPLICATION_JSON)
+						.body(BodyInserters.fromValue("此接口被限流了"));
 			}
 		};
 		GatewayCallbackManager.setBlockHandler(blockRequestHandler);
