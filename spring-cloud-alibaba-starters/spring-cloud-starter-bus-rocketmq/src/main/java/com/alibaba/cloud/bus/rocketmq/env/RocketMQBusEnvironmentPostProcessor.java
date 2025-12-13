@@ -19,8 +19,8 @@ package com.alibaba.cloud.bus.rocketmq.env;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.boot.EnvironmentPostProcessor;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.cloud.bus.BusEnvironmentPostProcessor;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -39,7 +39,8 @@ import static org.springframework.cloud.bus.BusConstants.INPUT;
  * @see BusEnvironmentPostProcessor
  */
 public class RocketMQBusEnvironmentPostProcessor
-		implements EnvironmentPostProcessor, Ordered {
+		implements EnvironmentPostProcessor, Ordered,
+		org.springframework.boot.env.EnvironmentPostProcessor {
 
 	/**
 	 * The name of {@link PropertySource} of {@link SpringApplication#defaultProperties}.
@@ -83,7 +84,7 @@ public class RocketMQBusEnvironmentPostProcessor
 
 	/**
 	 * Copy from.
-	 * {@link BusEnvironmentPostProcessor#addOrReplace(MutablePropertySources, Map)}
+	 * {@link BusEnvironmentPostProcessor#addOrReplace(MutablePropertySources, Map, String, boolean)}
 	 * @param propertySources {@link MutablePropertySources}
 	 * @param map Default RocketMQ Bus Properties
 	 */
