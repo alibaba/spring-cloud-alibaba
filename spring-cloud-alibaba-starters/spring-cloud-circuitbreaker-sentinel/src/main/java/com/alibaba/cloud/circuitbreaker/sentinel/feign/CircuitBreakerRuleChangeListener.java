@@ -30,11 +30,12 @@ import com.alibaba.cloud.circuitbreaker.sentinel.SentinelConfigBuilder;
 import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.SmartInitializingSingleton;
@@ -175,10 +176,10 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 
 	private String prettyPrint(Object o) {
 		try {
-			return new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
-					.writeValueAsString(o);
+			ObjectMapper mapper = JsonMapper.builder().enable(SerializationFeature.INDENT_OUTPUT).build();
+			return mapper.writeValueAsString(o);
 		}
-		catch (JsonProcessingException e) {
+		catch (JacksonException e) {
 			LOGGER.error("JSON serialization err.", e);
 			return "__JSON format err__";
 		}
