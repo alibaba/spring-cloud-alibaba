@@ -49,11 +49,6 @@ public class SentinelClientHttpResponse implements ClientHttpResponse {
 	}
 
 	@Override
-	public int getRawStatusCode() throws IOException {
-		return HttpStatus.OK.value();
-	}
-
-	@Override
 	public HttpStatus getStatusCode() throws IOException {
 		return HttpStatus.OK;
 	}
