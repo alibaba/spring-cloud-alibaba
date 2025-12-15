@@ -21,6 +21,7 @@ import com.alibaba.cloud.nacos.configdata.NacosConfigRefreshEventListener;
 import com.alibaba.cloud.nacos.refresh.SmartConfigurationPropertiesRebinder;
 import com.alibaba.cloud.nacos.refresh.condition.ConditionalOnNonDefaultBehavior;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.SearchStrategy;
 import org.springframework.cloud.context.properties.ConfigurationPropertiesBeans;
@@ -47,6 +48,7 @@ public class NacosConfigSpringCloudAutoConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnBean(NacosConfigManager.class)
 	public NacosPropertySourceLocator nacosPropertySourceLocator(
 			NacosConfigManager nacosConfigManager) {
 		return new NacosPropertySourceLocator(nacosConfigManager);

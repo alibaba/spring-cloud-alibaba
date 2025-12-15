@@ -46,6 +46,7 @@ import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.Ordered;
 
 import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosItemConfig;
+import static com.alibaba.cloud.nacos.constants.Constants.SPRING_CONFIG_IMPORT_PROPERTIES;
 
 /**
  * Implementation of {@link ConfigDataLocationResolver}, load Nacos
@@ -117,7 +118,10 @@ public class NacosConfigDataLocationResolver
 
 	@Override
 	public boolean isResolvable(ConfigDataLocationResolverContext context,
-			ConfigDataLocation location) {
+								ConfigDataLocation location) {
+		if (NacosConfigManager.getBindHandler() == null) {
+			NacosConfigManager.setBindHandler(this.getBindHandler(context));
+		}
 		if (!location.hasPrefix(getPrefix())) {
 			return false;
 		}
@@ -153,7 +157,7 @@ public class NacosConfigDataLocationResolver
 		bootstrapContext.registerIfAbsent(NacosConfigProperties.class,
 				BootstrapRegistry.InstanceSupplier.of(properties));
 
-		registerConfigManager(properties, bootstrapContext);
+		registerConfigManager(properties, bootstrapContext, resolverContext);
 
 		return loadConfigDataResources(location, profiles, properties);
 	}
@@ -196,8 +200,11 @@ public class NacosConfigDataLocationResolver
 	}
 
 	private void registerConfigManager(NacosConfigProperties properties,
-			ConfigurableBootstrapContext bootstrapContext) {
-		if (!bootstrapContext.isRegistered(NacosConfigManager.class)) {
+			ConfigurableBootstrapContext bootstrapContext,
+			ConfigDataLocationResolverContext resolverContext) {
+		String springConfigImportProperties = resolverContext.getBinder()
+				.bind(SPRING_CONFIG_IMPORT_PROPERTIES, String.class).get();
+		if (StringUtils.isNotBlank(springConfigImportProperties) && !bootstrapContext.isRegistered(NacosConfigManager.class)) {
 			bootstrapContext.register(NacosConfigManager.class,
 					BootstrapRegistry.InstanceSupplier.of(NacosConfigManager.getInstance(properties)));
 		}

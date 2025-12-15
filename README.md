@@ -1,6 +1,6 @@
 # Spring Cloud Alibaba
 
-[![CircleCI](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2023.x.svg?style=svg)](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2023.x)
+[![CircleCI](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2025.1.x.svg?style=svg)](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2025.1.x)
 [![Maven Central](https://img.shields.io/maven-central/v/com.alibaba.cloud/spring-cloud-alibaba-dependencies.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:com.alibaba.cloud%20AND%20a:spring-cloud-alibaba-dependencies)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![actions](https://github.com/alibaba/spring-cloud-alibaba/workflows/Integration%20Testing/badge.svg)](https://github.com/alibaba/spring-cloud-alibaba/actions)
@@ -8,7 +8,7 @@
 
 A project maintained by Alibaba.
 
-See the [中文文档](https://github.com/alibaba/spring-cloud-alibaba/blob/2023.x/README-zh.md) for Chinese readme.
+See the [中文文档](https://github.com/alibaba/spring-cloud-alibaba/blob/2025.1.x/README-zh.md) for Chinese readme.
 
 Spring Cloud Alibaba provides a one-stop solution for distributed application development. It contains all the components required to develop distributed applications, making it easy for you to develop your applications using Spring Cloud.
 
@@ -26,7 +26,7 @@ With Spring Cloud Alibaba, you only need to add some annotations and a small amo
 * **Alibaba Cloud SchedulerX**: Accurate, highly reliable, and highly available scheduled job scheduling services with response time within seconds.
 * **Alibaba Cloud SMS**: A messaging service that covers the globe, Alibaba SMS provides convenient, efficient, and intelligent communication capabilities that help businesses quickly contact their customers.
 
-For more features, please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2023.x/Roadmap.md).
+For more features, please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2025.1.x/Roadmap.md).
 
 In addition to the above-mentioned features, for the needs of enterprise users' scenarios, [Microservices Engine (MSE)](https://www.aliyun.com/product/aliware/mse?spm=github.spring.com.topbar) of Spring Cloud Alibaba's enterprise version provides an enterprise-level microservices governance center, which includes more powerful governance capabilities such as Grayscale Release, Service Warm-up, Lossless Online and Offline and Outlier Ejection. At the same time, it also provides a variety of products and solutions such as enterprise-level Nacos registration / configuration center, enterprise-level cloud native gateway.
 
@@ -47,7 +47,7 @@ In addition to the above-mentioned features, for the needs of enterprise users' 
 
 **[Alibaba Cloud SchedulerX](https://www.aliyun.com/aliware/schedulerx?spm=5176.10695662.784137.1.4b07363dej23L3)**: Accurate, highly reliable, and highly available scheduled job scheduling services with response time within seconds.
 
-For more features please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2023.x/Roadmap.md).
+For more features please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2025.1.x/Roadmap.md).
 
 ## How to build
 * **2025.1.x branch**: Corresponds to Spring Cloud 2025.1.x & Spring Boot 4.0.x, JDK 17 or later versions are supported.
@@ -92,11 +92,11 @@ A `spring-cloud-alibaba-examples` module is included in our project for you to g
 
 Examples：
 
-[Sentinel Example](https://github.com/alibaba/spring-cloud-alibaba/tree/2023.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme.md)
+[Sentinel Example](https://github.com/alibaba/spring-cloud-alibaba/tree/2025.1.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme.md)
 
-[Nacos Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2023.x/spring-cloud-alibaba-examples/nacos-example/readme.md)
+[Nacos Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2025.1.x/spring-cloud-alibaba-examples/nacos-example/readme.md)
 
-[RocketMQ Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2023.x/spring-cloud-alibaba-examples/rocketmq-example/readme.md)
+[RocketMQ Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2025.1.x/spring-cloud-alibaba-examples/rocketmq-example/readme.md)
 
 [Alibaba Cloud OSS Example](https://github.com/alibaba/aliyun-spring-boot/tree/master/aliyun-spring-boot-samples/aliyun-oss-spring-boot-sample)
 

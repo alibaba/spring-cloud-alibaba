@@ -16,6 +16,9 @@
 
 package com.alibaba.cloud.nacos.proxy.druid;
 
+import com.alibaba.cloud.nacos.NacosConfigManager;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +29,7 @@ public class NacosDruidFilterConfiguration {
 
 	@Bean
 	@ConditionalOnProperty(value = "spring.nacos.config.proxy.druid.enabled", havingValue = "true")
+	@ConditionalOnBean(NacosConfigManager.class)
 	public NacosDruidConfigFilter nacosDruidFilter(Environment environment) {
 		String proxyDataId = environment.getProperty("spring.nacos.config.proxy.druid.data-id");
 		return new NacosDruidConfigFilter(proxyDataId);
