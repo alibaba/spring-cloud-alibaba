@@ -35,12 +35,11 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.core.AttributeAccessor;
-
+import org.springframework.core.retry.RetryException;
 import org.springframework.core.retry.RetryListener;
 import org.springframework.core.retry.RetryPolicy;
 import org.springframework.core.retry.RetryTemplate;
 import org.springframework.core.retry.Retryable;
-import org.springframework.core.retry.RetryException;
 import org.springframework.integration.context.OrderlyShutdownCapable;
 import org.springframework.integration.core.RecoveryCallback;
 import org.springframework.integration.endpoint.MessageProducerSupport;
@@ -147,7 +146,7 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 				Message<?> message = RocketMQMessageConverterSupport
 						.convertMessage2Spring(messageExt);
 				if (this.retryTemplate != null) {
-					this.retryTemplate.execute(new RetryableMessage(message));//, this.recoveryCallback
+					this.retryTemplate.execute(new RetryableMessage(message)); //, this.recoveryCallback
 				}
 				else {
 					this.sendMessage(message);
@@ -231,11 +230,12 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 		private RecoveryCallback<Object> recoveryCallback;
 
 		/**
-		 * 当重试策略耗尽 (达到最大重试次数) 时调用
-		 * 可以用于告警或执行降级逻辑
-		 * @param retryPolicy
-		 * @param retryable
-		 * @param exception
+		 * 当重试策略耗尽 (达到最大重试次数) 时调用.
+		 * 可以用于告警或执行降级逻辑.
+		 *
+		 * @param retryPolicy      the policy of retry.
+		 * @param retryable      the RetryableMessage.
+		 * @param exception      the exception message.
 		 */
 		@Override
 		public void onRetryPolicyExhaustion(RetryPolicy retryPolicy, Retryable<?> retryable, RetryException exception) {

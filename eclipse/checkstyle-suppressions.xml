@@ -5,5 +5,8 @@
 <suppressions>
     <suppress files="[\\/]spring-cloud-alibaba-examples[\\/]" checks="HideUtilityClassConstructorCheck" />
     <suppress files="[\\/]spring-cloud-alibaba-tests[\\/]" checks="HideUtilityClassConstructorCheck" />
-    <suppress files=".*" checks="LineLength" />
+	<suppress files=".*" checks="LineLength" />
+	<suppress files=".*" checks="RegexpHeader" />
+	<suppress files=".*" checks="FinalClass" />
+	<suppress files="com.alibaba.cloud.scheduling.schedulerx.util.CronExpression.java" checks="JavadocVariable" />
 </suppressions>
