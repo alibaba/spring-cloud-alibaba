@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2023 the original author or authors.
+ * Copyright 2013-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,17 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 	public ConfigData doLoad(ConfigDataLoaderContext context,
 			NacosConfigDataResource resource) {
 		try {
-			ConfigService configService = getBean(context, NacosConfigManager.class)
+			NacosConfigManager nacosConfigManager;
+			try {
+				nacosConfigManager = getBean(context, NacosConfigManager.class);
+			}
+			catch (Exception ignore) {
+				if (log.isErrorEnabled()) {
+					log.error("Error getting properties from nacos cause nacosConfigManager is not registration on spring context");
+				}
+				return null;
+			}
+			ConfigService configService = nacosConfigManager
 					.getConfigService();
 			NacosConfigProperties properties = getBean(context,
 					NacosConfigProperties.class);

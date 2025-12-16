@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 the original author or authors.
+ * Copyright 2024-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1533,8 +1533,17 @@ public final class CronExpression {
 		}
 	}
 
-	private class ValueSet {
+	private static final class ValueSet {
+
+		/**
+		 * value.
+		 */
 		public int value;
+
+		/**
+		 * position in the expression.
+		 */
 		public int pos;
+
 	}
 }

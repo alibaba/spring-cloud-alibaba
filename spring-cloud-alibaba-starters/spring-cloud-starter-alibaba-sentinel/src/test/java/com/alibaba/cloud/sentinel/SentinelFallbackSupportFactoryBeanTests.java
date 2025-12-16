@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2023 the original author or authors.
+ * Copyright 2013-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ public class SentinelFallbackSupportFactoryBeanTests {
 
 	}
 
-	private static class FactoryBeanFallbackFeignFallback implements FactoryBean<FactoryBeanFallbackFeign> {
+	private static final class FactoryBeanFallbackFeignFallback implements FactoryBean<FactoryBeanFallbackFeign> {
 
 		@Override
 		public FactoryBeanFallbackFeign getObject() {
@@ -90,7 +90,7 @@ public class SentinelFallbackSupportFactoryBeanTests {
 
 	}
 
-	private static class OriginalFeignFallback implements OriginalFeign {
+	private static final class OriginalFeignFallback implements OriginalFeign {
 
 		@Override
 		public String get() {

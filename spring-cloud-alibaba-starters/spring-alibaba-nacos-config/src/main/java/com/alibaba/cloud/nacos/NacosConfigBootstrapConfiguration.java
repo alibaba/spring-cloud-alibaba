@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2023 the original author or authors.
+ * Copyright 2013-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,12 @@
 package com.alibaba.cloud.nacos;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+
+import static com.alibaba.cloud.nacos.constants.Constants.SPRING_CONFIG_IMPORT_PROPERTIES;
 
 /**
  * @author xiaojing
@@ -37,6 +40,7 @@ public class NacosConfigBootstrapConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
+	@ConditionalOnProperty(name = SPRING_CONFIG_IMPORT_PROPERTIES)
 	public NacosConfigManager nacosConfigManager(
 			NacosConfigProperties nacosConfigProperties) {
 		return new NacosConfigManager(nacosConfigProperties);

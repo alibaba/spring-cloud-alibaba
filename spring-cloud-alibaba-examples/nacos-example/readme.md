@@ -577,7 +577,7 @@ Before starting the demo, learn how Spring Cloud applications connect to Spring 
    </dependency>
    <dependency>
        <groupId>org.springframework.cloud</groupId>
-       <artifactId>spring-cloud-starter-gateway-server-webmvc</artifactId>
+       <artifactId>spring-cloud-starter-gateway-server-webflux</artifactId>
    </dependency>
    ```
 

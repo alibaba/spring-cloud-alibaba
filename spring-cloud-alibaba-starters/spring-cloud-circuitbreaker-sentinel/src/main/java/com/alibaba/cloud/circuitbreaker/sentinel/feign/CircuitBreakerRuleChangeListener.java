@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2023 the original author or authors.
+ * Copyright 2013-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,6 @@ import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -176,10 +174,10 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 
 	private String prettyPrint(Object o) {
 		try {
-			ObjectMapper mapper = JsonMapper.builder().enable(SerializationFeature.INDENT_OUTPUT).build();
-			return mapper.writeValueAsString(o);
+			return JsonMapper.builder().configure(SerializationFeature.INDENT_OUTPUT, true).build()
+					.writeValueAsString(o);
 		}
-		catch (JacksonException e) {
+		catch (Exception e) {
 			LOGGER.error("JSON serialization err.", e);
 			return "__JSON format err__";
 		}

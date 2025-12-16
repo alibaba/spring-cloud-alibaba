@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2023 the original author or authors.
+ * Copyright 2013-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
-import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -98,7 +97,7 @@ public class SentinelFeignClientProperties {
 			String json = objectMapper.writeValueAsString(this);
 			return objectMapper.readValue(json, this.getClass());
 		}
-		catch (JacksonException ignored) {
+		catch (Exception ignored) {
 		}
 		return new SentinelFeignClientProperties();
 	}

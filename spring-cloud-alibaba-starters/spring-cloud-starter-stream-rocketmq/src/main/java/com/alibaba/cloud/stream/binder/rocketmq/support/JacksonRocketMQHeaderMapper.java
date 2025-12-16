@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2023 the original author or authors.
+ * Copyright 2013-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
@@ -97,7 +96,7 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper {
 			try {
 				target.put(JSON_TYPES, objectMapper.writeValueAsString(jsonHeaders));
 			}
-			catch (JacksonException e) {
+			catch (IllegalStateException e) {
 				log.error("Could not add json types header", e);
 			}
 		}
@@ -213,7 +212,7 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper {
 						new TypeReference<Map<String, String>>() {
 						});
 			}
-			catch (JacksonException e) {
+			catch (Exception e) {
 				log.error("Could not decode json types: " + value, e);
 			}
 		}
