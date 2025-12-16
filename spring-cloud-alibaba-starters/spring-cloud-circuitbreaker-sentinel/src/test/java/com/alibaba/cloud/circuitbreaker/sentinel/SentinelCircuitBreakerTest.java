@@ -16,8 +16,6 @@
 
 package com.alibaba.cloud.circuitbreaker.sentinel;
 
-
-
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -29,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * @author Eric Zhao
  */

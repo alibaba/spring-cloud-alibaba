@@ -25,7 +25,7 @@ import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import jakarta.annotation.PostConstruct;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.discovery.ManagementServerPortUtils;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.ApplicationContext;
@@ -147,7 +147,7 @@ public class NacosRegistration implements Registration {
 
 	@Override
 	public URI getUri() {
-		return ServiceInstance.createUri(this);
+		return DefaultServiceInstance.getUri(this);
 	}
 
 	@Override

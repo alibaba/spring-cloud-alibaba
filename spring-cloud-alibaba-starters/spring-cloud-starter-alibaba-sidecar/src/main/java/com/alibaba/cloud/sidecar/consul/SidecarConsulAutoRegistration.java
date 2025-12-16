@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.sidecar.SidecarProperties;
+import com.ecwid.consul.v1.agent.model.NewService;
 
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
 import org.springframework.cloud.consul.discovery.ConsulDiscoveryProperties;
 import org.springframework.cloud.consul.discovery.HeartbeatProperties;
-import org.springframework.cloud.consul.model.http.agent.NewService;
 import org.springframework.cloud.consul.serviceregistry.ConsulAutoRegistration;
 import org.springframework.cloud.consul.serviceregistry.ConsulManagementRegistrationCustomizer;
 import org.springframework.cloud.consul.serviceregistry.ConsulRegistrationCustomizer;

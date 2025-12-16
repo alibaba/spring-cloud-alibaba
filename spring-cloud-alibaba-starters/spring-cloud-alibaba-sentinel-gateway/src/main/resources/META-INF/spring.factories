@@ -1,1 +1,1 @@
-org.springframework.boot.EnvironmentPostProcessor=com.alibaba.cloud.sentinel.gateway.GatewayEnvironmentPostProcessor
+org.springframework.boot.env.EnvironmentPostProcessor=com.alibaba.cloud.sentinel.gateway.GatewayEnvironmentPostProcessor

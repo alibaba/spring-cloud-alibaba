@@ -30,10 +30,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.boot.health.contributor.AbstractHealthIndicator;
-import org.springframework.boot.health.contributor.Health;
-import org.springframework.boot.health.contributor.HealthIndicator;
-import org.springframework.boot.health.contributor.Status;
+import org.springframework.boot.actuate.health.AbstractHealthIndicator;
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.boot.actuate.health.Status;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -114,12 +114,12 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 				// If failed to send heartbeat message, means that the Dashboard is DOWN
 				dashboardUp = false;
 				detailMap.put("dashboard", new Status(
-								Status.UNKNOWN.getCode(),
-								String.format(
-										"the dashboard servers [%s] one of them can't be connected",
-										consoleServerList
-								)
+						Status.UNKNOWN.getCode(),
+						String.format(
+								"the dashboard servers [%s] one of them can't be connected",
+								consoleServerList
 						)
+					)
 				);
 			}
 		}

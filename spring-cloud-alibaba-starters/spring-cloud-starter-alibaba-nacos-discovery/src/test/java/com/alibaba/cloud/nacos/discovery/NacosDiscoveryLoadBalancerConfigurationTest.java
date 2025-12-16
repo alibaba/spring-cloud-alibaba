@@ -50,7 +50,7 @@ public class NacosDiscoveryLoadBalancerConfigurationTest {
 
 	@Test
 	public void testNacosLoadBalancerEnabled() {
-		contextRunner.withPropertyValues("spring.cloud.loadbalancer.nacos.enabled=true", "loadbalancer.client.name=nacosLoadBalancer")
+		contextRunner.withPropertyValues("spring.cloud.loadbalancer.nacos.enabled=true")
 				.withConfiguration(AutoConfigurations.of(
 						LoadBalancerNacosAutoConfiguration.class,
 						NacosLoadBalancerClientConfiguration.class))

@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
 
+import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
 
 /**
@@ -67,7 +68,7 @@ public class NacosServiceInstance implements ServiceInstance {
 
 	@Override
 	public URI getUri() {
-		return ServiceInstance.createUri(this);
+		return DefaultServiceInstance.getUri(this);
 	}
 
 	@Override

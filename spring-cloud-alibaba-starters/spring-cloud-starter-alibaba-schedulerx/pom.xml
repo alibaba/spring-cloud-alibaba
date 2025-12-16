@@ -70,10 +70,6 @@
             <groupId>net.javacrumbs.shedlock</groupId>
             <artifactId>shedlock-provider-jdbc-template</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-jdbc</artifactId>
-        </dependency>
         <!-- shedlock dependency end -->
     </dependencies>
 </project>

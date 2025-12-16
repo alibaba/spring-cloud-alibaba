@@ -16,7 +16,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>6.0.1</junit.version>
+        <junit.version>5.10.2</junit.version>
         <selenium.version>3.141.59</selenium.version>
         <assertj-core.version>3.25.3</assertj-core.version>
         <awaitility.version>4.2.2</awaitility.version>

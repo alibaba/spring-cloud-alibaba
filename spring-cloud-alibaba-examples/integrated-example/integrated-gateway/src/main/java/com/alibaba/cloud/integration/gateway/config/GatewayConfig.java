@@ -16,7 +16,6 @@
 
 package com.alibaba.cloud.integration.gateway.config;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +29,7 @@ import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.BlockRequestHandler;
 import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.GatewayCallbackManager;
 import com.alibaba.csp.sentinel.adapter.gateway.sc.exception.SentinelGatewayBlockExceptionHandler;
 import jakarta.annotation.PostConstruct;
+import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -46,6 +46,7 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.reactive.result.view.ViewResolver;
+import org.springframework.web.server.ServerWebExchange;
 
 /**
  * @author TrevorLink
@@ -87,9 +88,15 @@ public class GatewayConfig {
 
 	@PostConstruct
 	public void initBlockHandlers() {
-		BlockRequestHandler blockRequestHandler = (serverWebExchange, throwable) -> ServerResponse.status(HttpStatus.OK)
-				.contentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
-				.body(BodyInserters.fromValue("此接口被限流了")); //保持相同语义
+		BlockRequestHandler blockRequestHandler = new BlockRequestHandler() {
+			@Override
+			public Mono<ServerResponse> handleRequest(ServerWebExchange serverWebExchange,
+					Throwable throwable) {
+				return ServerResponse.status(HttpStatus.OK)
+						.contentType(MediaType.APPLICATION_JSON_UTF8)
+						.body(BodyInserters.fromObject("此接口被限流了"));
+			}
+		};
 		GatewayCallbackManager.setBlockHandler(blockRequestHandler);
 	}
 

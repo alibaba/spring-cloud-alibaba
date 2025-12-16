@@ -25,7 +25,6 @@ import org.springframework.cloud.client.serviceregistry.AbstractAutoServiceRegis
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.util.Assert;
 
@@ -36,16 +35,15 @@ import org.springframework.util.Assert;
 public class NacosAutoServiceRegistration
 		extends AbstractAutoServiceRegistration<Registration> {
 
-
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosAutoServiceRegistration.class);
 
 	private NacosRegistration registration;
 
-	public NacosAutoServiceRegistration(ApplicationContext context, ServiceRegistry<Registration> serviceRegistry,
-										AutoServiceRegistrationProperties autoServiceRegistrationProperties,
-										NacosRegistration registration) {
-		super(context, serviceRegistry, autoServiceRegistrationProperties);
+	public NacosAutoServiceRegistration(ServiceRegistry<Registration> serviceRegistry,
+			AutoServiceRegistrationProperties autoServiceRegistrationProperties,
+			NacosRegistration registration) {
+		super(serviceRegistry, autoServiceRegistrationProperties);
 		this.registration = registration;
 	}
 

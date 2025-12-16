@@ -10,7 +10,7 @@
         <artifactId>spring-cloud-build</artifactId>
         <version>4.3.0</version>
         <relativePath/>
-    </parent> 
+    </parent>
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-alibaba</artifactId>
@@ -83,14 +83,10 @@
         <revision>2025.0.0.0</revision>
 
         <!-- Spring Cloud -->
-        <spring.cloud.version>2025.1.0</spring.cloud.version>
+        <spring.cloud.version>2025.0.0</spring.cloud.version>
 
         <!-- Spring Boot -->
-        <spring-boot.version>4.0.0</spring-boot.version>
-
-		<!-- spring cloud gateway-->
-
-		<spring.cloud.gateway.version>4.3.2</spring.cloud.gateway.version>
+        <spring-boot.version>3.5.0</spring-boot.version>
 
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -147,21 +143,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-starter-gateway</artifactId>
-				<version>${spring.cloud.gateway.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-health</artifactId>
-				<version>${spring-boot.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-jdbc</artifactId>
-				<version>${spring-boot.version}</version>
-			</dependency>
+
         </dependencies>
     </dependencyManagement>
 

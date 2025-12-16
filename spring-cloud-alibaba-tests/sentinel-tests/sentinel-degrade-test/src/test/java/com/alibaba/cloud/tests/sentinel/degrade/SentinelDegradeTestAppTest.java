@@ -16,15 +16,13 @@
 
 package com.alibaba.cloud.tests.sentinel.degrade;
 
-import java.net.URI;
-
 import org.junit.jupiter.api.Test;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Bean;
-import org.springframework.test.web.servlet.client.RestTestClient;
-
+import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -35,17 +33,15 @@ class SentinelDegradeTestAppTest {
 	@LocalServerPort
 	int port;
 
-	@Bean
-	public RestTestClient restTestClient() {
-		// 使用动态注入的端口来构建基础URL
-		String baseUrl = "http://localhost:" + port;
-		return RestTestClient.bindToServer().baseUrl(baseUrl).build();
-	}
+	@Autowired
+	TestRestTemplate rest;
 
 	@Test
 	public void testDegradeRule() {
-		String responseBody = restTestClient().get().uri(URI.create("/degrade")).exchange().expectBody(String.class).returnResult().getResponseBody();
-		assertThat(responseBody).contains("fallback");
+		ResponseEntity<String> res = rest
+				.getForEntity("http://localhost:" + port + "/degrade", String.class);
+
+		assertThat(res.getBody()).contains("fallback");
 	}
 
 }

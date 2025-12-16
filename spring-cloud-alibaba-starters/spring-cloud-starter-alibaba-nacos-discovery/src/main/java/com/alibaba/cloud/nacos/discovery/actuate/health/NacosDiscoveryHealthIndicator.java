@@ -16,13 +16,13 @@
 
 package com.alibaba.cloud.nacos.discovery.actuate.health;
 
-
 import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.nacos.api.naming.NamingService;
 
-import org.springframework.boot.health.contributor.AbstractHealthIndicator;
-import org.springframework.boot.health.contributor.Health;
-import org.springframework.boot.health.contributor.HealthIndicator;
+import org.springframework.boot.actuate.health.AbstractHealthIndicator;
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.HealthIndicator;
+
 /**
  * The {@link HealthIndicator} for Nacos Discovery.
  *
@@ -63,9 +63,9 @@ public class NacosDiscoveryHealthIndicator extends AbstractHealthIndicator {
 		// Set the status to Builder
 		builder.status(status);
 		switch (status) {
-			case STATUS_UP -> builder.up();
-			case STATUS_DOWN -> builder.down();
-			default -> builder.unknown();
+		case STATUS_UP -> builder.up();
+		case STATUS_DOWN -> builder.down();
+		default -> builder.unknown();
 		}
 	}
 

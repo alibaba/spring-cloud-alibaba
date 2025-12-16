@@ -35,7 +35,6 @@ import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.util.Assert;
 
-
 /**
  * Sentinel implementation of {@link CircuitBreaker}.
  *

@@ -29,11 +29,10 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.health.Health.Builder;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.health.contributor.Health;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -45,7 +44,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author xiaojing
  * @author freeman
  */
-@SpringBootTest(classes = NacosConfigEndpointTests.TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = {"spring.application.name=test-name", "spring.nacos.config.server-addr=127.0.0.1:8848", "spring.nacos.config.file-extension=properties", "spring.cloud.bootstrap.enabled=true"})
+@SpringBootTest(classes = NacosConfigEndpointTests.TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = {
+		"spring.application.name=test-name",
+		"spring.nacos.config.server-addr=127.0.0.1:8848",
+		"spring.nacos.config.file-extension=properties",
+		"spring.cloud.bootstrap.enabled=true" })
 public class NacosConfigEndpointTests {
 
 	@Autowired
@@ -57,15 +60,16 @@ public class NacosConfigEndpointTests {
 	static {
 
 		try {
-			NacosConfigService mockedNacosConfigService = Mockito.mock(NacosConfigService.class);
+			NacosConfigService mockedNacosConfigService = Mockito
+					.mock(NacosConfigService.class);
 			Mockito.when(mockedNacosConfigService.getServerStatus()).thenReturn("UP");
-			ReflectionTestUtils.setField(NacosConfigManager.class, "service", mockedNacosConfigService);
+			ReflectionTestUtils.setField(NacosConfigManager.class, "service",
+					mockedNacosConfigService);
 		}
 		catch (Exception ignore) {
 			ignore.printStackTrace();
 		}
 	}
-
 	@Test
 	public void contextLoads() throws Exception {
 
@@ -76,7 +80,7 @@ public class NacosConfigEndpointTests {
 
 	private void checkoutAcmHealthIndicator() {
 		try {
-			Health.Builder builder = new Health.Builder();
+			Builder builder = new Builder();
 
 			ConfigService configService = properties.configServiceInstance();
 			// 因为 NacosConfigManager 的 afterPropertiesSet 中会重新创建 ConfigService，
@@ -87,7 +91,7 @@ public class NacosConfigEndpointTests {
 					properties.configServiceInstance());
 			healthIndicator.doHealthCheck(builder);
 
-			Health.Builder builder1 = new Health.Builder();
+			Builder builder1 = new Builder();
 			builder1.up();
 
 			Assertions.assertThat(builder.build()).isEqualTo(builder1.build());
@@ -99,7 +103,8 @@ public class NacosConfigEndpointTests {
 	}
 
 	private void checkoutEndpoint() throws Exception {
-		NacosConfigEndpoint endpoint = new NacosConfigEndpoint(properties, refreshHistory);
+		NacosConfigEndpoint endpoint = new NacosConfigEndpoint(properties,
+				refreshHistory);
 		Map<String, Object> map = endpoint.invoke();
 
 		assertThat(properties).isEqualTo(map.get("NacosConfigProperties"));
@@ -108,7 +113,8 @@ public class NacosConfigEndpointTests {
 
 	@Configuration
 	@EnableAutoConfiguration
-	@ImportAutoConfiguration({NacosConfigEndpointAutoConfiguration.class, NacosConfigAutoConfiguration.class, NacosConfigBootstrapConfiguration.class})
+	@ImportAutoConfiguration({ NacosConfigEndpointAutoConfiguration.class,
+			NacosConfigAutoConfiguration.class, NacosConfigBootstrapConfiguration.class })
 	public static class TestConfig {
 
 	}
