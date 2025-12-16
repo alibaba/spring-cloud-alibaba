@@ -84,7 +84,7 @@ public class RocketMQBusEnvironmentPostProcessor
 
 	/**
 	 * Copy from.
-	 * {@link BusEnvironmentPostProcessor#addOrReplace(MutablePropertySources, Map, String, boolean)}
+	 * {@link BusEnvironmentPostProcessor#addOrReplace(MutablePropertySources, Map)}
 	 * @param propertySources {@link MutablePropertySources}
 	 * @param map Default RocketMQ Bus Properties
 	 */
