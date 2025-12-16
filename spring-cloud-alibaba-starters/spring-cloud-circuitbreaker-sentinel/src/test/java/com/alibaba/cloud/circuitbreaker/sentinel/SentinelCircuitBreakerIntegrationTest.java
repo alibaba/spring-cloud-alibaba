@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.cloud.client.circuitbreaker.Customizer;
 import org.springframework.context.annotation.Bean;
@@ -52,6 +53,11 @@ public class SentinelCircuitBreakerIntegrationTest {
 
 	@Autowired
 	private Application.DemoControllerService service;
+
+	@LocalServerPort
+	private int port;
+
+	private static RestTestClient rest;
 
 	@Test
 	public void testSlow() throws Exception {
@@ -82,11 +88,13 @@ public class SentinelCircuitBreakerIntegrationTest {
 
 	@BeforeEach
 	public void setUp() {
+		rest = null != rest ? rest : RestTestClient.bindToServer().baseUrl("http://localhost:" + port).build();
 		DegradeRuleManager.loadRules(new ArrayList<>());
 	}
 
 	@BeforeEach
 	public void tearDown() {
+		rest = null != rest ? rest : RestTestClient.bindToServer().baseUrl("http://localhost:" + port).build();
 		DegradeRuleManager.loadRules(new ArrayList<>());
 	}
 
@@ -127,22 +135,12 @@ public class SentinelCircuitBreakerIntegrationTest {
 			};
 		}
 
-		@Bean
-		public RestTestClient restTestClient() {
-			RestTestClient restTestClient = RestTestClient.bindToServer().build();
-			return restTestClient;
-		}
-
 		@Service
 		public static class DemoControllerService {
 
-			private RestTestClient rest;
-
 			private CircuitBreakerFactory cbFactory;
 
-			DemoControllerService(RestTestClient rest,
-					CircuitBreakerFactory cbFactory) {
-				this.rest = rest;
+			DemoControllerService(CircuitBreakerFactory cbFactory) {
 				this.cbFactory = cbFactory;
 			}
 

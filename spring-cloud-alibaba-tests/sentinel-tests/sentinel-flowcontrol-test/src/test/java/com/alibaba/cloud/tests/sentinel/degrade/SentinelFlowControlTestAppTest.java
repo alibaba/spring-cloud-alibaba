@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.web.servlet.client.RestTestClient;
@@ -37,8 +36,7 @@ class SentinelFlowControlTestAppTest {
 	@LocalServerPort
 	int port;
 
-	@Autowired
-	RestTestClient rest;
+	RestTestClient rest = RestTestClient.bindToServer().build();;
 
 	@Test
 	void testFlowControl_whenNotTriggered() {
