@@ -142,10 +142,10 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 				Message<?> message = RocketMQMessageConverterSupport
 						.convertMessage2Spring(messageExt);
 				if (this.retryTemplate != null) {
-					// this.retryTemplate.execute(context -> {
-					// 	this.sendMessage(message);
-					// 	return message;
-					// }, this.recoveryCallback);
+					this.retryTemplate.execute(() -> {
+						this.sendMessage(message);
+						return message;
+					});
 				}
 				else {
 					this.sendMessage(message);
