@@ -13,11 +13,6 @@
     <name>Spring Cloud Starter Alibaba Nacos Discovery</name>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-health</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
