@@ -211,7 +211,7 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 		return 0;
 	}
 
-	private class RetryableMessage implements Retryable<Message<?>> {
+	private final class RetryableMessage implements Retryable<Message<?>> {
 		private final Message<?> message;
 
 		private RetryableMessage(Message<?> message) {
@@ -225,7 +225,7 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 		}
 	}
 
-	private class RetryCallbackListener implements RetryListener {
+	private final class RetryCallbackListener implements RetryListener {
 
 		private RecoveryCallback<Object> recoveryCallback;
 
