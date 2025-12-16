@@ -16,8 +16,7 @@
 
 package com.alibaba.cloud.seata.webclient;
 
-
-import org.springframework.cloud.client.loadbalancer.reactive.WebClientCustomizer;
+import org.springframework.boot.webclient.WebClientCustomizer;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
