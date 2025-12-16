@@ -36,7 +36,7 @@ class SentinelFlowControlTestAppTest {
 	@LocalServerPort
 	int port;
 
-	RestTestClient rest = RestTestClient.bindToServer().build();;
+	RestTestClient rest = RestTestClient.bindToServer().build();
 
 	@Test
 	void testFlowControl_whenNotTriggered() {
