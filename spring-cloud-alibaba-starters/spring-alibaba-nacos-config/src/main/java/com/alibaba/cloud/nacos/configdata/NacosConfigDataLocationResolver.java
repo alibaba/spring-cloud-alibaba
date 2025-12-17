@@ -202,9 +202,9 @@ public class NacosConfigDataLocationResolver
 	private void registerConfigManager(NacosConfigProperties properties,
 			ConfigurableBootstrapContext bootstrapContext,
 			ConfigDataLocationResolverContext resolverContext) {
-		String springConfigImportProperties = resolverContext.getBinder()
-				.bind(SPRING_CONFIG_IMPORT_PROPERTIES, String.class).get();
-		if (StringUtils.isNotBlank(springConfigImportProperties) && !bootstrapContext.isRegistered(NacosConfigManager.class)) {
+		List<?> springConfigImportProperties = resolverContext.getBinder()
+				.bind(SPRING_CONFIG_IMPORT_PROPERTIES, List.class).get();
+		if (!springConfigImportProperties.isEmpty() && !bootstrapContext.isRegistered(NacosConfigManager.class)) {
 			bootstrapContext.register(NacosConfigManager.class,
 					BootstrapRegistry.InstanceSupplier.of(NacosConfigManager.getInstance(properties)));
 		}
