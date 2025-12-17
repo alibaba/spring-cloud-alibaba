@@ -34,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
-import org.springframework.core.AttributeAccessor;
 import org.springframework.core.retry.RetryException;
 import org.springframework.core.retry.RetryListener;
 import org.springframework.core.retry.RetryPolicy;
@@ -43,7 +42,6 @@ import org.springframework.core.retry.Retryable;
 import org.springframework.integration.context.OrderlyShutdownCapable;
 import org.springframework.integration.core.RecoveryCallback;
 import org.springframework.integration.endpoint.MessageProducerSupport;
-import org.springframework.integration.support.ErrorMessageUtils;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessagingException;
@@ -61,7 +59,7 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 
 	private RetryTemplate retryTemplate;
 
-	private RetryCallbackListener retryListener = new RetryCallbackListener();
+	private RecoveryCallback<Object> recoveryCallback;
 
 	private DefaultMQPushConsumer pushConsumer;
 
@@ -88,7 +86,8 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 						"Cannot have an 'errorChannel' property when a 'RetryTemplate' is "
 								+ "provided; use an 'ErrorMessageSendingRecoverer' in the 'recoveryCallback' property to "
 								+ "send an error message when retries are exhausted");
-				this.retryTemplate.setRetryListener(this.retryListener);
+				this.retryTemplate.setRetryListener(new RetryListener() {
+				});
 			}
 			pushConsumer = RocketMQConsumerFactory
 					.initPushConsumer(extendedConsumerProperties);
@@ -146,7 +145,12 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 				Message<?> message = RocketMQMessageConverterSupport
 						.convertMessage2Spring(messageExt);
 				if (this.retryTemplate != null) {
-					this.retryTemplate.execute(new RetryableMessage(message)); //, this.recoveryCallback
+					this.retryTemplate.setRetryListener(new RetryListener() {
+						@Override
+						public void onRetryPolicyExhaustion(RetryPolicy retryPolicy, Retryable<?> retryable, RetryException exception) {
+							recoveryCallback.recover(null, exception);
+						}
+					});
 				}
 				else {
 					this.sendMessage(message);
@@ -197,7 +201,7 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 	}
 
 	public void setRecoveryCallback(RecoveryCallback<Object> recoveryCallback) {
-		this.retryListener.recoveryCallback = recoveryCallback;
+		this.recoveryCallback = recoveryCallback;
 	}
 
 	@Override
@@ -209,46 +213,6 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 	@Override
 	public int afterShutdown() {
 		return 0;
-	}
-
-	private final class RetryableMessage implements Retryable<Message<?>> {
-		private final Message<?> message;
-
-		private RetryableMessage(Message<?> message) {
-			this.message = message;
-		}
-
-		@Override
-		public Message<?> execute() throws Throwable {
-			RocketMQInboundChannelAdapter.this.sendMessage(message);
-			return message;
-		}
-	}
-
-	private final class RetryCallbackListener implements RetryListener {
-
-		private RecoveryCallback<Object> recoveryCallback;
-
-		/**
-		 * 当重试策略耗尽 (达到最大重试次数) 时调用.
-		 * 可以用于告警或执行降级逻辑.
-		 *
-		 * @param retryPolicy      the policy of retry.
-		 * @param retryable      the RetryableMessage.
-		 * @param exception      the exception message.
-		 */
-		@Override
-		public void onRetryPolicyExhaustion(RetryPolicy retryPolicy, Retryable<?> retryable, RetryException exception) {
-			if (null == recoveryCallback) {
-				return;
-			}
-			RetryableMessage retryableMessage = (RetryableMessage) retryable;
-			//参考 RequestHandlerRetryAdvice
-			AttributeAccessor retryContext = ErrorMessageUtils.getAttributeAccessor(
-					retryableMessage.message, retryableMessage.message);
-			recoveryCallback.recover(retryContext, exception);
-		}
-
 	}
 
 }
