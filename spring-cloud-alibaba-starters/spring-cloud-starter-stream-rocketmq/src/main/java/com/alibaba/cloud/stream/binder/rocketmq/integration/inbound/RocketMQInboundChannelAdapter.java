@@ -34,8 +34,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
+import org.springframework.core.retry.RetryException;
 import org.springframework.core.retry.RetryListener;
+import org.springframework.core.retry.RetryPolicy;
 import org.springframework.core.retry.RetryTemplate;
+import org.springframework.core.retry.Retryable;
 import org.springframework.integration.context.OrderlyShutdownCapable;
 import org.springframework.integration.core.RecoveryCallback;
 import org.springframework.integration.endpoint.MessageProducerSupport;
@@ -142,9 +145,11 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 				Message<?> message = RocketMQMessageConverterSupport
 						.convertMessage2Spring(messageExt);
 				if (this.retryTemplate != null) {
-					this.retryTemplate.execute(() -> {
-						this.sendMessage(message);
-						return message;
+					this.retryTemplate.setRetryListener(new RetryListener() {
+						@Override
+						public void onRetryPolicyExhaustion(RetryPolicy retryPolicy, Retryable<?> retryable, RetryException exception) {
+							recoveryCallback.recover(null, exception);
+						}
 					});
 				}
 				else {
