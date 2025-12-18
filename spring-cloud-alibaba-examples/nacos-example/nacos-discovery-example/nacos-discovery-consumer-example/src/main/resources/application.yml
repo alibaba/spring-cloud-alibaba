@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: service-consumer
+
+  cloud:
+    # use feign client in GraalVM environment need to set below config
+    refresh:
+      enabled: true
+    nacos:
+      discovery:
+        username: 'nacos'
+        password: 'nacos'
+        server-addr: 127.0.0.1:8848
+        fail-fast: true
+
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+      eager: true
+      datasource:
+        ds1:
+          file:
+            file: classpath:flowrule.json
+            data-type: json
+            rule-type: flow
+        ds2:
+          file:
+            file: classpath:degraderule.json
+            data-type: json
+            rule-type: degrade
+
+server:
+  port: 18083
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: *
+
+
+feign:
+  sentinel:
+    enabled: true

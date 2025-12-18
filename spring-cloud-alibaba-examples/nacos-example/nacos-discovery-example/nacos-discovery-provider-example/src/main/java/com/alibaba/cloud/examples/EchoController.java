@@ -18,7 +18,6 @@ package com.alibaba.cloud.examples;
 
 import java.util.Map;
 
-
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import jakarta.annotation.Resource;
 
