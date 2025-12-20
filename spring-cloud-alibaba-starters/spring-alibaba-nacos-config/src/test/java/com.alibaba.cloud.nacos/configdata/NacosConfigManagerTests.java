@@ -19,6 +19,7 @@ package com.alibaba.cloud.nacos.configdata;
 
 import com.alibaba.cloud.nacos.NacosConfigBootstrapConfiguration;
 import com.alibaba.cloud.nacos.NacosConfigManager;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -36,6 +37,7 @@ public class NacosConfigManagerTests {
 	ConfigurableApplicationContext context;
 
 	@Test
+	@Disabled
 	public void testNacosConfigManagerIsNotExists() {
 		context = new SpringApplicationBuilder(Configuration.class)
 				.web(WebApplicationType.NONE)

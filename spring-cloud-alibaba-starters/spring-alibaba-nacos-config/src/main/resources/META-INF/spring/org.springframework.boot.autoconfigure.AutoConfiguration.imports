@@ -1,2 +1,3 @@
 com.alibaba.cloud.nacos.NacosConfigAutoConfiguration
+com.alibaba.cloud.nacos.NacosConfigBootstrapConfiguration
 com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration
