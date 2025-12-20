@@ -61,7 +61,6 @@ public class NacosConfigDataLocationResolverTest {
 	@BeforeEach
 	void setup() {
 		this.environment = new MockEnvironment();
-		environment.setProperty("spring.config.import", "nacos:test.properties");
 		this.environmentBinder = Binder.get(this.environment);
 		this.resolver = new NacosConfigDataLocationResolver(new DeferredLogs());
 		Mockito.when(bootstrapContext.isRegistered(ArgumentMatchers.eq(ConfigService.class))).thenReturn(true);
@@ -73,14 +72,14 @@ public class NacosConfigDataLocationResolverTest {
 	void testIsResolvable_givenIncorrectPrefix_thenReturnFalse() {
 		assertThat(
 				this.resolver.isResolvable(this.context, ConfigDataLocation.of("test:")))
-				.isFalse();
+						.isFalse();
 	}
 
 	@Test
 	void testIsResolvable_givenCorrectPrefix_thenReturnTure() {
 		assertThat(
 				this.resolver.isResolvable(this.context, ConfigDataLocation.of("nacos:")))
-				.isTrue();
+						.isTrue();
 		assertThat(this.resolver.isResolvable(this.context,
 				ConfigDataLocation.of("optional:nacos:"))).isTrue();
 	}
@@ -93,7 +92,7 @@ public class NacosConfigDataLocationResolverTest {
 		this.environment.setProperty(prefix + ".config.enabled", "false");
 		assertThat(
 				this.resolver.isResolvable(this.context, ConfigDataLocation.of("nacos:")))
-				.isFalse();
+						.isFalse();
 	}
 
 	@Test

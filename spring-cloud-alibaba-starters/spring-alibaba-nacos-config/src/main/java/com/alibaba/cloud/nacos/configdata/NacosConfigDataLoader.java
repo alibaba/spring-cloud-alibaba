@@ -71,17 +71,7 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 	public ConfigData doLoad(ConfigDataLoaderContext context,
 			NacosConfigDataResource resource) {
 		try {
-			NacosConfigManager nacosConfigManager;
-			try {
-				nacosConfigManager = getBean(context, NacosConfigManager.class);
-			}
-			catch (Exception ignore) {
-				if (log.isErrorEnabled()) {
-					log.error("Error getting properties from nacos cause nacosConfigManager is not registration on spring context");
-				}
-				return null;
-			}
-			ConfigService configService = nacosConfigManager
+			ConfigService configService = getBean(context, NacosConfigManager.class)
 					.getConfigService();
 			NacosConfigProperties properties = getBean(context,
 					NacosConfigProperties.class);
