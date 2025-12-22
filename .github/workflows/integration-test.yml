@@ -73,10 +73,12 @@ jobs:
         if: github.repository_owner == 'xuxiaowei-com-cn'
         run: |
           find . -name "pom.xml" -type f -exec sed -i 's#<groupId>com.alibaba.cloud</groupId>#<groupId>io.xuxiaowei.alibaba.cloud</groupId>#g' {} \;
+      - name: install dependencies
+        run: mvn clean install -U package -pl '!spring-cloud-alibaba-coverage'  -DskipTests
       - name: Deploy to Maven Central
         run: |
           echo "${{ secrets.GPG_SECRET_KEYS }}" | gpg --import
-          mvn clean deploy -DskipTests -Prelease -s settings.xml
+          mvn clean -B deploy -DskipTests -Prelease -s settings.xml
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
