@@ -108,14 +108,6 @@
         <central.publishing.maven.version>0.7.0</central.publishing.maven.version>
     </properties>
 
-    <modules>
-        <module>spring-cloud-alibaba-dependencies</module>
-        <module>spring-cloud-alibaba-examples</module>
-        <module>spring-cloud-alibaba-starters</module>
-        <module>spring-cloud-alibaba-coverage</module>
-        <module>spring-cloud-alibaba-tests</module>
-    </modules>
-
     <dependencyManagement>
         <dependencies>
 
@@ -281,9 +273,34 @@
         </plugins>
     </reporting>
 
+	<!-- Override org.springframework.cloud:spring-cloud-build distributionManagement -->
+	<distributionManagement>
+		<snapshotRepository>
+			<id>central</id>
+			<url>https://central.sonatype.com/repository/maven-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
     <profiles>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>spring-cloud-alibaba-dependencies</module>
+				<module>spring-cloud-alibaba-examples</module>
+				<module>spring-cloud-alibaba-starters</module>
+				<module>spring-cloud-alibaba-coverage</module>
+				<module>spring-cloud-alibaba-tests</module>
+			</modules>
+		</profile>
         <profile>
             <id>release</id>
+			<modules>
+				<module>spring-cloud-alibaba-dependencies</module>
+				<module>spring-cloud-alibaba-starters</module>
+			</modules>
             <build>
                 <plugins>
                     <plugin>
