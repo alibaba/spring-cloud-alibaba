@@ -1,6 +1,6 @@
 # Spring Cloud Alibaba
 
-[![CircleCI](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2023.x.svg?style=svg)](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2023.x)
+[![CircleCI](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2025.0.x.svg?style=svg)](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2025.0.x)
 [![Maven Central](https://img.shields.io/maven-central/v/com.alibaba.cloud/spring-cloud-alibaba-dependencies.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:com.alibaba.cloud%20AND%20a:spring-cloud-alibaba-dependencies)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![actions](https://github.com/alibaba/spring-cloud-alibaba/workflows/Integration%20Testing/badge.svg)](https://github.com/alibaba/spring-cloud-alibaba/actions)
@@ -28,7 +28,7 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 * **阿里云短信服务**：覆盖全球的短信服务，友好、高效、智能的互联化通讯能力，帮助企业迅速搭建客户触达通道。
 
 
-更多功能请参考 [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2023.x/Roadmap-zh.md)
+更多功能请参考 [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2025.0.x/Roadmap-zh.md)
 
 除了上述所具有的功能外，针对企业级用户的场景，Spring Cloud Alibaba 配套的企业版微服务治理方案 [微服务引擎MSE](https://www.aliyun.com/product/aliware/mse?spm=github.spring.com.topbar) 还提供了企业级微服务治理中心，包括全链路灰度、服务预热、无损上下线和离群实例摘除等更多更强大的治理能力，同时还提供了企业级 Nacos 注册配置中心，企业级云原生网关等多种产品及解决方案。
 
@@ -48,7 +48,7 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 
 **[Alibaba Cloud SMS](https://www.aliyun.com/product/sms)**: 覆盖全球的短信服务，友好、高效、智能的互联化通讯能力，帮助企业迅速搭建客户触达通道。
 
-更多组件请参考 [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2023.x/Roadmap-zh.md)。
+更多组件请参考 [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2025.0.x/Roadmap-zh.md)。
 
 ## 如何构建
 * 2025.0.x 分支对应的是 Spring Cloud 2025.0.x 与 Spring Boot 3.5.x，最低支持 JDK 17。
@@ -71,7 +71,9 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
 
 ### 如何引入依赖
 
-如果需要使用已发布的版本，在 `dependencyManagement` 中添加如下配置。
+#### 正式版
+
+如果需要使用已发布的`正式版本`，在 `dependencyManagement` 中添加如下配置。
 ```xml
 <dependencyManagement>
     <dependencies>
@@ -87,19 +89,65 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
 ```
 然后在 `dependencies` 中添加自己所需使用的依赖即可使用。如果你想选择老版本，可以参考[版本说明](https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E)。
 
+#### 快照
+
+如果需要使用已发布的`快照版本`，在 `dependencyManagement` 中添加如下配置。
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+            <version>2025.0.0.1-SNAPSHOT</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+在 `repositories` 中添加如下配置。
+
+```xml
+<repositories>
+    <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/alibaba/spring-cloud-alibaba</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
+```
+
+在 `settings.xml` 中添加如下配置。
+
+```xml
+<servers>
+    <server>
+        <id>github</id>
+        <username>你的 GitHub 用户名</username>
+        <password>你的 GitHub Token（需要 read:packages 权限）</password>
+    </server>
+</servers>
+```
+
 ## 演示 Demo
 
 为了演示如何使用，Spring Cloud Alibaba 项目包含了一个子模块`spring-cloud-alibaba-examples`。此模块中提供了演示用的 example ，您可以阅读对应的 example 工程下的 readme 文档，根据里面的步骤来体验。
 
 Example 列表：
 
-[Sentinel Example](https://github.com/alibaba/spring-cloud-alibaba/tree/2023.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme-zh.md)
+[Sentinel Example](https://github.com/alibaba/spring-cloud-alibaba/tree/2025.0.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme-zh.md)
 
-[Nacos Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2023.x/spring-cloud-alibaba-examples/nacos-example/readme-zh.md)
+[Nacos Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2025.0.x/spring-cloud-alibaba-examples/nacos-example/readme-zh.md)
 
-[RocketMQ Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2023.x/spring-cloud-alibaba-examples/rocketmq-example/readme-zh.md)
+[RocketMQ Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2025.0.x/spring-cloud-alibaba-examples/rocketmq-example/readme-zh.md)
 
-[Seata Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2023.x/spring-cloud-alibaba-examples/seata-example/readme-zh.md)
+[Seata Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2025.0.x/spring-cloud-alibaba-examples/seata-example/readme-zh.md)
 
 [Alibaba Cloud OSS Example](https://github.com/alibaba/aliyun-spring-boot/tree/master/aliyun-spring-boot-samples/aliyun-oss-spring-boot-sample)
 
