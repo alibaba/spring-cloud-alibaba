@@ -162,7 +162,7 @@ CREATE TABLE `account_tbl` (
 
 ### 2. Configure Nacos
 
-> Spring Cloud Alibaba is adapted with Nacos 3.0.3. In this example, Nacos 3.0.3 is used as the configuration center component of Seata.
+> Spring Cloud Alibaba is adapted with Nacos 3.1.0. In this example, Nacos 3.1.0 is used as the configuration center component of Seata.
 
 Create Nacos configuration for Seata: data-id: `seata.properties`, Group: `SEATA_GROUP` (default grouping for seata 2.1.0), import
 
@@ -298,7 +298,7 @@ seata:
 ```
 
 > **Notice**
-> Nacos 3.0.3 enables authentication. Configuration `username` and `password` properties are required, otherwise login fails. For more Nacos 3.0.3 related configurations, refer to `nacos-example`.
+> Nacos 3.1.0 enables authentication. Configuration `username` and `password` properties are required, otherwise login fails. For more Nacos 3.1.0 related configurations, refer to `nacos-example`.
 > **The Nacos service registration group when seata-server is started must be consistent with the group in the sample application, otherwise an error that seata-server cannot be found will occur!**
 > For more information about the configuration of Seata-server with Nacos as the configuration center, please refer to https://seata.io/zh-cn/docs/ops/deploy-by-docker-compose/#nacos-db.
 

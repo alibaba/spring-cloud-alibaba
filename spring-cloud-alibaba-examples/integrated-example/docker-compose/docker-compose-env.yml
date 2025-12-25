@@ -3,7 +3,7 @@ services:
 
   # nacos
   nacos:
-    image: nacos/nacos-server:v3.0.3
+    image: nacos/nacos-server:v3.1.0
     hostname: nacos-server
     restart: always
     container_name: integrated-example-nacos
