@@ -1,6 +1,6 @@
 services:
   nacos:
-    image: nacos/nacos-server:v3.0.3
+    image: nacos/nacos-server:v3.1.0
     container_name: nacos-standalone
     environment:
       - PREFER_HOST_MODE=hostname
