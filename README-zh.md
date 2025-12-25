@@ -72,7 +72,9 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
 
 ### 如何引入依赖
 
-如果需要使用已发布的版本，在 `dependencyManagement` 中添加如下配置。
+#### 正式版
+
+如果需要使用已发布的`正式版本`，在 `dependencyManagement` 中添加如下配置。
 ```xml
 <dependencyManagement>
     <dependencies>
@@ -87,6 +89,52 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
 </dependencyManagement>
 ```
 然后在 `dependencies` 中添加自己所需使用的依赖即可使用。如果你想选择老版本，可以参考[版本说明](https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E)。
+
+#### 快照
+
+如果需要使用已发布的`快照版本`，在 `dependencyManagement` 中添加如下配置。
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+            <version>2025.1.0.0-SNAPSHOT</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+在 `repositories` 中添加如下配置。
+
+```xml
+<repositories>
+    <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/alibaba/spring-cloud-alibaba</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
+```
+
+在 `settings.xml` 中添加如下配置。
+
+```xml
+<servers>
+    <server>
+        <id>github</id>
+        <username>你的 GitHub 用户名</username>
+        <password>你的 GitHub Token（需要 read:packages 权限）</password>
+    </server>
+</servers>
+```
 
 ## 演示 Demo
 

@@ -334,6 +334,14 @@
         </dependencies>
     </dependencyManagement>
 
+	<!-- Override org.springframework.cloud:spring-cloud-dependencies-parent distributionManagement -->
+	<distributionManagement>
+		<snapshotRepository>
+			<id>github</id>
+			<url>https://maven.pkg.github.com/alibaba/spring-cloud-alibaba</url>
+		</snapshotRepository>
+	</distributionManagement>
+
     <profiles>
         <profile>
             <id>release</id>

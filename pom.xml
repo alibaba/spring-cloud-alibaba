@@ -281,6 +281,14 @@
         </plugins>
     </reporting>
 
+	<!-- Override org.springframework.cloud:spring-cloud-build distributionManagement -->
+	<distributionManagement>
+		<snapshotRepository>
+			<id>github</id>
+			<url>https://maven.pkg.github.com/alibaba/spring-cloud-alibaba</url>
+		</snapshotRepository>
+	</distributionManagement>
+
     <profiles>
         <profile>
             <id>release</id>
