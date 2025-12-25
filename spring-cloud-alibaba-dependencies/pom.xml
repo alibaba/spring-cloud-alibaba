@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dependencies-parent</artifactId>
-        <version>4.3.0</version>
+        <version>4.3.2</version>
         <relativePath/>
     </parent>
 
@@ -20,7 +20,7 @@
     <properties>
         <revision>2025.0.0.0</revision>
         <sentinel.version>1.8.9</sentinel.version>
-        <nacos.client.version>3.0.3</nacos.client.version>
+        <nacos.client.version>3.1.1</nacos.client.version>
         <seata.version>2.5.0</seata.version>
       
         <!-- Apache RocketMQ -->
@@ -34,22 +34,22 @@
         <maven.compiler.target>17</maven.compiler.target>
 
         <!-- Maven Plugin Versions -->
-        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
-        <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
-        <flatten-maven-plugin.version>1.7.0</flatten-maven-plugin.version>
+        <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
+        <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+        <flatten-maven-plugin.version>1.7.3</flatten-maven-plugin.version>
 
         <!-- Maven Central Portal -->
         <central.publishing.maven.version>0.7.0</central.publishing.maven.version>
 
         <druid.version>1.2.27</druid.version>
         <mybatis.version>3.0.5</mybatis.version>
-        <log4j-core.version>2.25.1</log4j-core.version>
+        <log4j-core.version>2.25.3</log4j-core.version>
         <slf4j-api.version>2.0.17</slf4j-api.version>
-        <fastjson.version>2.0.58</fastjson.version>
-        <log4j-slf4j2-impl.version>2.25.1</log4j-slf4j2-impl.version>
+        <fastjson.version>2.0.60</fastjson.version>
+        <log4j-slf4j2-impl.version>2.25.3</log4j-slf4j2-impl.version>
         <guava.version>33.4.8-jre</guava.version>
-        <lombok.version>1.18.38</lombok.version>
+        <lombok.version>1.18.42</lombok.version>
     </properties>
 
     <dependencyManagement>

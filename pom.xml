@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>4.3.0</version>
+        <version>4.3.2</version>
         <relativePath/>
     </parent>
 
@@ -83,29 +83,29 @@
         <revision>2025.0.0.0</revision>
 
         <!-- Spring Cloud -->
-        <spring.cloud.version>2025.0.0</spring.cloud.version>
+        <spring.cloud.version>2025.0.1</spring.cloud.version>
 
         <!-- Spring Boot -->
-        <spring-boot.version>3.5.0</spring-boot.version>
+        <spring-boot.version>3.5.9</spring-boot.version>
 
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
 
         <!-- Maven Plugin Versions -->
-        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
         <!-- JUnit 5 requires Surefire version 2.22.0 or higher -->
-        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
-        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
-        <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
-        <flatten-maven-plugin.version>1.7.0</flatten-maven-plugin.version>
+        <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
+        <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
+        <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+        <flatten-maven-plugin.version>1.7.3</flatten-maven-plugin.version>
         <gmavenplus-plugin.version>4.4.1</gmavenplus-plugin.version>
-        <jacoco.version>0.8.13</jacoco.version>
-        <native-maven-plugin.version>0.10.6</native-maven-plugin.version>
+        <jacoco.version>0.8.14</jacoco.version>
+        <native-maven-plugin.version>0.11.3</native-maven-plugin.version>
 
         <!-- Maven Central Portal -->
-        <central.publishing.maven.version>0.7.0</central.publishing.maven.version>
+        <central.publishing.maven.version>0.9.0</central.publishing.maven.version>
     </properties>
 
     <modules>
