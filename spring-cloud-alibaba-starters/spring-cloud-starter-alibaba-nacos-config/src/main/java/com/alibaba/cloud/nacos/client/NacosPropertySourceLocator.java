@@ -39,6 +39,7 @@ import org.springframework.core.env.PropertySource;
  * @author pbting
  */
 @Order(0)
+@Deprecated
 public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	private static final Logger log = LoggerFactory

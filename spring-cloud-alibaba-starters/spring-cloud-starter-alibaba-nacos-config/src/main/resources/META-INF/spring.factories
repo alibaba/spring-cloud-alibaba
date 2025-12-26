@@ -1,5 +1,3 @@
-org.springframework.cloud.bootstrap.BootstrapConfiguration=\
-com.alibaba.cloud.nacos.NacosConfigSpringCloudBootstrapConfiguration
 org.springframework.boot.diagnostics.FailureAnalyzer=\
 com.alibaba.cloud.nacos.configdata.NacosConfigDataMissingEnvironmentPostProcessor.ImportExceptionFailureAnalyzer
 org.springframework.boot.EnvironmentPostProcessor=\

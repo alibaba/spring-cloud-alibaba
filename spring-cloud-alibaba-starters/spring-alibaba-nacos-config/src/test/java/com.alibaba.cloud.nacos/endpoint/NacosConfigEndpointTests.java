@@ -19,7 +19,6 @@ package com.alibaba.cloud.nacos.endpoint;
 import java.util.Map;
 
 import com.alibaba.cloud.nacos.NacosConfigAutoConfiguration;
-import com.alibaba.cloud.nacos.NacosConfigBootstrapConfiguration;
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
@@ -47,7 +46,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 		"spring.application.name=test-name",
 		"spring.nacos.config.server-addr=127.0.0.1:8848",
 		"spring.nacos.config.file-extension=properties",
-		"spring.cloud.bootstrap.enabled=true" })
+		"spring.config.import[0]=nacos:test-name.properties?refreshEnabled=true"})
 public class NacosConfigEndpointTests {
 
 	@Autowired
@@ -108,7 +107,7 @@ public class NacosConfigEndpointTests {
 	@Configuration
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration({ NacosConfigEndpointAutoConfiguration.class,
-			NacosConfigAutoConfiguration.class, NacosConfigBootstrapConfiguration.class })
+			NacosConfigAutoConfiguration.class})
 	public static class TestConfig {
 
 	}
