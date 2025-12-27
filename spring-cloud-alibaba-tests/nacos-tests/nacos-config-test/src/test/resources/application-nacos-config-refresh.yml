@@ -1,9 +1,0 @@
-spring:
-  application:
-    name: nacos-config-test
-  cloud:
-    nacos:
-      config:
-        group: DEFAULT_GROUP
-  config:
-    import: optional:nacos:nacos-config-refresh.yml

@@ -1,5 +1,3 @@
-org.springframework.cloud.bootstrap.BootstrapConfiguration=\
-com.alibaba.cloud.nacos.NacosConfigBootstrapConfiguration
 org.springframework.boot.diagnostics.FailureAnalyzer=\
 com.alibaba.cloud.nacos.diagnostics.analyzer.NacosConnectionFailureAnalyzer
 org.springframework.boot.env.PropertySourceLoader=\

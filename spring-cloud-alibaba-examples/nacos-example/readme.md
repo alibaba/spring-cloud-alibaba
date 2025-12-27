@@ -6,26 +6,26 @@ This project demonstrates how to use Spring Cloud Alibaba Nacos related Starters
 
 [Nacos](https://github.com/alibaba/Nacos) It is Alibaba's open source dynamic service discovery, configuration management and service management platform that is easier to build cloud-native applications.
 
-## Nacos Server 3.0.3 is properly configured and started
+## Nacos Server 3.1.0 is properly configured and started
 
-In Nacos 3.0.3, functions related to user authentication are added. When starting Nacos Server for the first time, it needs to be configured correctly to avoid the problem of startup failure.
+In Nacos 3.1.0, functions related to user authentication are added. When starting Nacos Server for the first time, it needs to be configured correctly to avoid the problem of startup failure.
 
 ### Download Nacos Server
 
-> The Nacos serv version used in this example is 3.0.3!
+> The Nacos server version used in this example is 3.1.0!
 
-Nacos supports both direct download and source code construction. **Nacos Server version 3.0.3 is recommended for Spring Cloud Alibaba 2022.x.**
+Nacos supports both direct download and source code construction. **Nacos Server version 3.1.0 is recommended for Spring Cloud Alibaba 2022.x.**
 
 1. Direct download: [Nacos Server download page](https://github.com/alibaba/nacos/releases)
 2. Source code construction: Enter Nacos [Github project page](https://github.com/alibaba/nacos), git clone the code to the local compilation and packaging [参考文档](https://nacos.io/zh-cn/docs/quick-start.html).
 
 ### Configure the Nacos Server
 
-Open the `\nacos-server-3.0.3\conf\application.properties` configuration file and modify the following configuration items:
+Open the `\nacos-server-3.1.0\conf\application.properties` configuration file and modify the following configuration items:
 
 #### Configure the data source
 
-Take the MySQL database as an example here, and use the `nacos-server-3.0.3\conf\mysql-schema.sql` initialization database table file. Modify the following configuration as well
+Take the MySQL database as an example here, and use the `nacos-server-3.1.0\conf\mysql-schema.sql` initialization database table file. Modify the following configuration as well
 
 ```properties
 #*************** Config Module Related Configurations ***************#
@@ -49,7 +49,7 @@ db.pool.config.minimumIdle=2
 
 #### Turn on authentication
 
-**Note: If it is not enabled, login failure exception will occur in 3.0.3!**
+**Note: If it is not enabled, login failure exception will occur in 3.1.0!**
 
 ```properties
 ### The auth system to use, currently only 'nacos' and 'ldap' is supported:
@@ -77,7 +77,7 @@ nacos.core.auth.plugin.nacos.token.secret.key=SecretKey0123456789012345678901234
 
 #### Open API authentication
 
-Authentication is required when using the Open api interface in nacos server 3.0.3: For more details, please refer to: [Nacos api authentication](https://nacos.io/zh-cn/docs/auth.html)
+Authentication is required when using the Open api interface in nacos server 3.1.0: For more details, please refer to: [Nacos api authentication](https://nacos.io/zh-cn/docs/auth.html)
 
 1. Obtain accessToken: Use username and password to log in to the nacos server:
 

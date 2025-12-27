@@ -70,6 +70,8 @@ Spring Cloud uses Maven for most build-related activities, and you should be abl
 
 ### Add maven dependency 
 
+#### Release Version
+
 These artifacts are available from Maven Central and Spring Release repository via BOM:
 ```xml
 <dependencyManagement>
@@ -85,6 +87,50 @@ These artifacts are available from Maven Central and Spring Release repository v
 </dependencyManagement>
 ```
 add the module in  `dependencies`. If you want to choose an older version, you can refer to the [Release Notes](https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E).
+
+#### Snapshot
+
+If you need to use the already published `Snapshot Version`, add the following configuration in the `dependencyManagement`.
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+            <version>2025.1.0.0-SNAPSHOT</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+Add the following configuration in `repositories`.
+```xml
+<repositories>
+    <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/alibaba/spring-cloud-alibaba</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
+```
+
+Add the following configuration in `settings.xml`.
+```xml
+<servers>
+    <server>
+        <id>github</id>
+        <username>Your GitHub Username</username>
+        <password>Your GitHub Token (requires read:packages permission)</password>
+    </server>
+</servers>
+```
 
 ## Examples
 

@@ -19,11 +19,9 @@ package com.alibaba.cloud.nacos.endpoint;
 import java.util.Map;
 
 import com.alibaba.cloud.nacos.NacosConfigAutoConfiguration;
-import com.alibaba.cloud.nacos.NacosConfigBootstrapConfiguration;
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
-import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.client.config.NacosConfigService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -48,7 +46,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 		"spring.application.name=test-name",
 		"spring.nacos.config.server-addr=127.0.0.1:8848",
 		"spring.nacos.config.file-extension=properties",
-		"spring.cloud.bootstrap.enabled=true" })
+		"spring.config.import[0]=nacos:test-name.properties?refreshEnabled=true"})
 public class NacosConfigEndpointTests {
 
 	@Autowired
@@ -82,11 +80,6 @@ public class NacosConfigEndpointTests {
 		try {
 			Health.Builder builder = new Health.Builder();
 
-			ConfigService configService = properties.configServiceInstance();
-			// 因为 NacosConfigManager 的 afterPropertiesSet 中会重新创建 ConfigService，
-			// 导致当前测试用例类最开始 static 块中 Mockito 固定设置的 UP 失效，所以这里重新设置一下。
-			// 测试用例 static 块中固定设置的 UP，实际上为了跑测试用例，是假UP，这里重新设置没有逻辑影响。
-			Mockito.when(configService.getServerStatus()).thenReturn("UP");
 			NacosConfigHealthIndicator healthIndicator = new NacosConfigHealthIndicator(
 					properties.configServiceInstance());
 			healthIndicator.doHealthCheck(builder);
@@ -114,7 +107,7 @@ public class NacosConfigEndpointTests {
 	@Configuration
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration({ NacosConfigEndpointAutoConfiguration.class,
-			NacosConfigAutoConfiguration.class, NacosConfigBootstrapConfiguration.class })
+			NacosConfigAutoConfiguration.class})
 	public static class TestConfig {
 
 	}
