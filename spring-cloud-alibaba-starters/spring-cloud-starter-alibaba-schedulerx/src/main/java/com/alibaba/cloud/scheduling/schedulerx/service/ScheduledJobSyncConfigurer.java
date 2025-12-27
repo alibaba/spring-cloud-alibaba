@@ -52,7 +52,7 @@ import org.springframework.util.CollectionUtils;
  * Spring scheduled job sync.
  *
  * @author yaohui
- * @create 2022/8/17 下午2:21
+ * @create 2022/8/17 14:21
  **/
 public class ScheduledJobSyncConfigurer implements SchedulingConfigurer {
 

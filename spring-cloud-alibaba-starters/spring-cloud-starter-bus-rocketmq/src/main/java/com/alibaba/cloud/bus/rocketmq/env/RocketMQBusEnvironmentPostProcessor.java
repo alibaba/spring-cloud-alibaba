@@ -39,7 +39,8 @@ import static org.springframework.cloud.bus.BusConstants.INPUT;
  * @see BusEnvironmentPostProcessor
  */
 public class RocketMQBusEnvironmentPostProcessor
-		implements EnvironmentPostProcessor, Ordered {
+		implements EnvironmentPostProcessor, Ordered,
+		org.springframework.boot.env.EnvironmentPostProcessor {
 
 	/**
 	 * The name of {@link PropertySource} of {@link SpringApplication#defaultProperties}.

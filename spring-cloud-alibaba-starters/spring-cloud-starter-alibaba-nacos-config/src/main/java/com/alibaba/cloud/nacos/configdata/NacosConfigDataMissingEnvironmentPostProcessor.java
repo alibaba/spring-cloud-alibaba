@@ -33,7 +33,8 @@ import static com.alibaba.cloud.nacos.configdata.NacosConfigDataLocationResolver
  * @since 2021.0.1.0
  */
 public class NacosConfigDataMissingEnvironmentPostProcessor
-		extends ConfigDataMissingEnvironmentPostProcessor {
+		extends ConfigDataMissingEnvironmentPostProcessor
+		implements org.springframework.boot.env.EnvironmentPostProcessor {
 
 	/**
 	 * after {@link ConfigDataEnvironmentPostProcessor}.

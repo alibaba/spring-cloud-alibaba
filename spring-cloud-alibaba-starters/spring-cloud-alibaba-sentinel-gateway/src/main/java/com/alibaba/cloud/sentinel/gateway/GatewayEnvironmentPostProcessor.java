@@ -29,7 +29,8 @@ import org.springframework.core.env.PropertySource;
 /**
  * @author zhuhonghan
  */
-public class GatewayEnvironmentPostProcessor implements EnvironmentPostProcessor {
+public class GatewayEnvironmentPostProcessor implements EnvironmentPostProcessor,
+		org.springframework.boot.env.EnvironmentPostProcessor {
 
 	private final static String SENTINEL_FILTER_ENABLED = "spring.cloud.sentinel.filter.enabled";
 
