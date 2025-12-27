@@ -81,7 +81,7 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>2025.1.0.0</version>
+            <version>2025.1.0.0-SNAPSHOT</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
