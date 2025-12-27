@@ -18,13 +18,8 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-webclient</artifactId>
+			<artifactId>spring-boot-starter-webclient</artifactId>
 		</dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aspectj</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
