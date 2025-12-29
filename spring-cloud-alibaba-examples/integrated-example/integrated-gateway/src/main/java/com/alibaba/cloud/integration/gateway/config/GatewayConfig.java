@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-present the original author or authors.
+ * Copyright 2013-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,7 +94,7 @@ public class GatewayConfig {
 			public Mono<ServerResponse> handleRequest(ServerWebExchange serverWebExchange,
 					Throwable throwable) {
 				return ServerResponse.status(HttpStatus.OK)
-						.contentType(new MediaType("application", "json", StandardCharsets.UTF_8))
+						.contentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
 						.body(BodyInserters.fromValue("此接口被限流了"));
 			}
 		};

@@ -27,6 +27,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+
 /**
  * Sentinel feign client properties.
  *
