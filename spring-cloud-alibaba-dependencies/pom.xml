@@ -20,7 +20,7 @@
     <properties>
         <revision>2025.1.0.0-SNAPSHOT</revision>
         <sentinel.version>1.8.9</sentinel.version>
-        <nacos.client.version>3.1.0</nacos.client.version>
+        <nacos.client.version>3.1.1</nacos.client.version>
         <seata.version>2.5.0</seata.version>
 
         <!-- Apache RocketMQ -->
