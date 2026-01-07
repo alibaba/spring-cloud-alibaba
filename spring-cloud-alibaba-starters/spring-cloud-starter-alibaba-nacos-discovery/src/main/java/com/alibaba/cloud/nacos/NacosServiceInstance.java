@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.core.style.ToStringCreator;
 
 /**
  * @author xiaojing
@@ -128,4 +129,15 @@ public class NacosServiceInstance implements ServiceInstance {
 		return (instanceId == null) ? 31 : (instanceId.hashCode() + 31);
 	}
 
+	@Override
+	public String toString() {
+		return new ToStringCreator(this)
+				.append("serviceId", serviceId)
+				.append("instanceId", instanceId)
+				.append("host", host)
+				.append("port", port)
+				.append("secure", secure)
+				.append("metadata", metadata)
+				.toString();
+	}
 }

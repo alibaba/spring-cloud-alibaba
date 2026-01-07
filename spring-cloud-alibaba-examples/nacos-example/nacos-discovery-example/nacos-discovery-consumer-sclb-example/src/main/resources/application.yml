@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: service-consumer-sclb
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        username: nacos
+        password: nacos
+    loadbalancer:
+      ribbon:
+        enabled: false
+      configurations: zone-preference
+      zone: hangzhou
+
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+      eager: true
+      datasource:
+        ds1:
+          file:
+            file: classpath:flowrule.json
+            data-type: json
+            rule-type: flow
+        ds2:
+          file:
+            file: classpath:degraderule.json
+            data-type: json
+            rule-type: degrade
+
+feign:
+  sentinel:
+    enabled: true
+
+server:
+  port: 18083
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

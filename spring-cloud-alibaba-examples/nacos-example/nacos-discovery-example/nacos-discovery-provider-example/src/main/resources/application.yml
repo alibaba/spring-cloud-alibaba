@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: service-provider
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        enabled: true
+        # instance-enabled: true
+        # ip-type: IPv4 # only register IPv4 instance
+        # ip-type: IPv6 # only register IPv6 instance
+        username: nacos
+        password: nacos
+
+server:
+  port: 0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always

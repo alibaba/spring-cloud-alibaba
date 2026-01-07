@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: service-gateway
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        username: nacos
+        password: nacos
+
+    gateway:
+      routes:
+        - id: nacos-route
+          uri: lb://service-gateway-provider
+          predicates:
+            - Path=/nacos/**
+          filters:
+            - StripPrefix=1
+
+server:
+  port: 18085
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

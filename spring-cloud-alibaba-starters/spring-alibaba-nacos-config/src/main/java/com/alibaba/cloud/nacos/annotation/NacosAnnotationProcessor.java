@@ -35,6 +35,7 @@ import com.alibaba.nacos.api.config.ConfigChangeEvent;
 import com.alibaba.nacos.api.config.ConfigChangeItem;
 import com.alibaba.nacos.api.config.listener.AbstractListener;
 import com.alibaba.nacos.client.config.common.GroupKey;
+import com.alibaba.nacos.common.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,19 +49,23 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.annotation.MergedAnnotations;
+import org.springframework.core.env.Environment;
 import org.springframework.core.type.MethodMetadata;
 import org.springframework.util.ReflectionUtils;
 
-public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrdered, ApplicationContextAware {
+public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrdered, ApplicationContextAware, EnvironmentAware {
 
 	private NacosConfigManager nacosConfigManager;
 
 	private ApplicationContext applicationContext;
+
+	private Environment environment;
 
 	private final static Logger log = LoggerFactory
 			.getLogger(NacosAnnotationProcessor.class);
@@ -69,11 +74,15 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 	public int getOrder() {
 		return 0;
 	}
+	@Override
+	public void setEnvironment(Environment environment) {
+		this.environment = environment;
+	}
 
 	private Map<String, TargetRefreshable> targetListenerMap = new ConcurrentHashMap<>();
 	private Map<String, AtomicReference<String>> groupKeyCache = new ConcurrentHashMap<>();
 
-	private String getGroupKeyContent(String dataId, String group) throws Exception {
+	private String getGroupKeyContent(String dataId, String group, boolean refreshed) throws Exception {
 		if (groupKeyCache.containsKey(GroupKey.getKey(dataId, group))) {
 			return groupKeyCache.get(GroupKey.getKey(dataId, group)).get();
 		}
@@ -81,7 +90,11 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			if (!groupKeyCache.containsKey(GroupKey.getKey(dataId, group))) {
 				String content = getNacosConfigManager().getConfigService().getConfig(dataId, group, 5000);
 				groupKeyCache.put(GroupKey.getKey(dataId, group), new AtomicReference<>(content));
-
+				if (!refreshed) {
+					log.info("[Nacos Config] refreshed is set to false, not listening config for annotation: dataId={}, group={}", dataId,
+							group);
+					return content;
+				}
 				log.info("[Nacos Config] Listening config for annotation: dataId={}, group={}", dataId,
 						group);
 				getNacosConfigManager().getConfigService().addListener(dataId, group, new AbstractListener() {
@@ -115,7 +128,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 		Class clazz = bean.getClass();
 		NacosConfig annotationBean = AnnotationUtils.findAnnotation(clazz, NacosConfig.class);
 		if (annotationBean != null) {
-			handleBeanNacosConfigAnnotation(annotationBean.dataId(), annotationBean.group(), annotationBean.key(), beanName, bean, annotationBean.defaultValue());
+			handleBeanNacosConfigAnnotation(annotationBean.dataId(), annotationBean.group(), annotationBean.key(), annotationBean.refreshed(), beanName, bean, annotationBean.defaultValue());
 			return bean;
 		}
 
@@ -147,10 +160,16 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 		}
 	}
 
-	private void handleBeanNacosConfigAnnotation(String dataId, String group, String key, String beanName, Object bean,
+	private void handleBeanNacosConfigAnnotation(String dataId, String group, String key, boolean refreshed, String beanName, Object bean,
 			String defaultValue) {
+		if (StringUtils.isNotEmpty(dataId)) {
+			dataId = environment.resolvePlaceholders(dataId);
+		}
+		if (StringUtils.isNotEmpty(group)) {
+			group = environment.resolvePlaceholders(group);
+		}
 		try {
-			String config = getDestContent(getGroupKeyContent(dataId, group), key);
+			String config = getDestContent(getGroupKeyContent(dataId, group, refreshed), key);
 			if (!org.springframework.util.StringUtils.hasText(config)) {
 				config = defaultValue;
 			}
@@ -163,6 +182,10 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			}
 
 			String refreshTargetKey = beanName + "#instance#";
+			if (!refreshed) {
+				log.info("[Nacos Config] refresh is set to false,do not register listener for {} to bean {} ", refreshTargetKey, bean);
+				return;
+			}
 			TargetRefreshable currentTarget = targetListenerMap.get(refreshTargetKey);
 			if (currentTarget != null) {
 				log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
@@ -238,6 +261,12 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			Method method) {
 		String dataId = annotation.dataId();
 		String group = annotation.group();
+		if (StringUtils.isNotEmpty(dataId)) {
+			dataId = environment.resolvePlaceholders(dataId);
+		}
+		if (StringUtils.isNotEmpty(group)) {
+			group = environment.resolvePlaceholders(group);
+		}
 		try {
 			Class<?>[] parameterTypes = method.getParameterTypes();
 			if (parameterTypes.length != 1 || !ConfigChangeEvent.class.isAssignableFrom(parameterTypes[0])) {
@@ -270,7 +299,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 					return String.format("sca nacos config listener on bean method %s", bean + "#" + methodSignature(method));
 				}
 			};
-			nacosPropertiesKeyListener.setLastContent(getGroupKeyContent(dataId, group));
+			nacosPropertiesKeyListener.setLastContent(getGroupKeyContent(dataId, group, true));
 			getNacosConfigManager().getConfigService().addListener(dataId, group,
 					nacosPropertiesKeyListener);
 			targetListenerMap.put(refreshTargetKey, nacosPropertiesKeyListener);
@@ -302,6 +331,12 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 		String dataId = annotation.dataId();
 		String group = annotation.group();
 		String key = annotation.key();
+		if (StringUtils.isNotEmpty(dataId)) {
+			dataId = environment.resolvePlaceholders(dataId);
+		}
+		if (StringUtils.isNotEmpty(group)) {
+			group = environment.resolvePlaceholders(group);
+		}
 		try {
 			Type[] parameterTypes = method.getGenericParameterTypes();
 			if (parameterTypes.length != 1) {
@@ -309,7 +344,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 						"@NacosConfigListener  must be over a method with  a single parameter");
 			}
 
-			String configInfo = getGroupKeyContent(dataId, group);
+			String configInfo = getGroupKeyContent(dataId, group, true);
 			String refreshTargetKey = beanName + "#method#" + methodSignature(method);
 			TargetRefreshable currentTarget = targetListenerMap.get(refreshTargetKey);
 			if (currentTarget != null) {
@@ -431,25 +466,31 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 		String dataId = annotation.dataId();
 		String group = annotation.group();
 		String key = annotation.key();
+		if (StringUtils.isNotEmpty(dataId)) {
+			dataId = environment.resolvePlaceholders(dataId);
+		}
+		if (StringUtils.isNotEmpty(group)) {
+			group = environment.resolvePlaceholders(group);
+		}
 		try {
 			ReflectionUtils.makeAccessible(field);
-			handleFiledNacosConfigAnnotationInner(dataId, group, key, beanName, bean, field, annotation.defaultValue());
+			handleFiledNacosConfigAnnotationInner(dataId, group, key, annotation.refreshed(), beanName, bean, field, annotation.defaultValue());
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void handleFiledNacosConfigAnnotationInner(String dataId, String group, String key, String beanName, Object bean,
+	private void handleFiledNacosConfigAnnotationInner(String dataId, String group, String key, boolean refreshed, String beanName, Object bean,
 			Field field, String defaultValue) {
 		try {
-			String config = getDestContent(getGroupKeyContent(dataId, group), key);
+			String config = getDestContent(getGroupKeyContent(dataId, group, refreshed), key);
 			if (!org.springframework.util.StringUtils.hasText(config)) {
 				config = defaultValue;
 			}
 
 			//primitive type
-			if (handPrimitiveFiled(field, dataId, group, config, key, defaultValue, beanName, bean)) {
+			if (handPrimitiveFiled(field, dataId, group, config, key, defaultValue, refreshed, beanName, bean)) {
 				return;
 			}
 
@@ -461,6 +502,11 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			}
 
 			String refreshTargetKey = beanName + "#filed#" + field.getName();
+
+			if (!refreshed) {
+				log.info("[Nacos Config] refresh is set to false,do not register listener for {} to bean {} ", refreshTargetKey, bean);
+				return;
+			}
 			TargetRefreshable currentTarget = targetListenerMap.get(refreshTargetKey);
 			if (currentTarget != null) {
 				log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
@@ -530,7 +576,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 		}
 	}
 
-	private boolean handPrimitiveFiled(Field field, String dataId, String group, String config, String key, String defaultValue, String beanName, Object bean) throws Exception {
+	private boolean handPrimitiveFiled(Field field, String dataId, String group, String config, String key, String defaultValue, boolean refreshed, String beanName, Object bean) throws Exception {
 		if (field.getType().isPrimitive()) {
 
 			if (org.springframework.util.StringUtils.hasText(config)) {
@@ -543,6 +589,11 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			}
 
 			String refreshTargetKey = beanName + "#filed#" + field.getName();
+			if (!refreshed) {
+				log.info("[Nacos Config] refresh is set to false,do not register listener for {} to bean {} ", refreshTargetKey, bean);
+				return true;
+			}
+
 			TargetRefreshable currentTarget = targetListenerMap.get(refreshTargetKey);
 			if (currentTarget != null) {
 				log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
@@ -729,7 +780,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 					String group = (String) stringObjectMap.get("group");
 					String key = (String) stringObjectMap.get("key");
 					String defaultValue = (String) stringObjectMap.get("defaultValue");
-					handleBeanNacosConfigAnnotation(dataId, group, key, beanName, bean, defaultValue);
+					handleBeanNacosConfigAnnotation(dataId, group, key, true, beanName, bean, defaultValue);
 				}
 			}
 
@@ -771,5 +822,6 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 		}
 		return nullPropertyNames.toArray(new String[0]);
 	}
+
 
 }

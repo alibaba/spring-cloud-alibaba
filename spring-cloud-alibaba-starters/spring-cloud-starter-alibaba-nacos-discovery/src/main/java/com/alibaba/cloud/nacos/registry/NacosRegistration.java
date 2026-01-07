@@ -174,7 +174,7 @@ public class NacosRegistration implements Registration {
 	@Override
 	public String toString() {
 		NacosDiscoveryProperties safeProp = new NacosDiscoveryProperties();
-		BeanUtils.copyProperties(safeProp, nacosDiscoveryProperties);
+		BeanUtils.copyProperties(nacosDiscoveryProperties, safeProp);
 		safeProp.setUsername("******");
 		safeProp.setPassword("******");
 		return "NacosRegistration{" + "nacosDiscoveryProperties="
