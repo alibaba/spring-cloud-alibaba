@@ -23,10 +23,10 @@ import com.alibaba.cloud.sentinel.datasource.factorybean.FileRefreshableDataSour
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.FileRefreshableDataSource;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
+import org.junit.jupiter.api.Test;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

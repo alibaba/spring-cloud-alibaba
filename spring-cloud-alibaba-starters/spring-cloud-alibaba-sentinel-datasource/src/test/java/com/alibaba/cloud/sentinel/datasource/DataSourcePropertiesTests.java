@@ -28,10 +28,10 @@ import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.FileRefreshableDataSource;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import org.junit.jupiter.api.Test;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
