@@ -16,7 +16,6 @@
 
 package com.alibaba.cloud.sentinel.datasource.converter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,10 +30,11 @@ import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRule;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Convert sentinel rules for json or xml array Using strict mode to parse json or xml.
@@ -90,7 +90,7 @@ public abstract class SentinelConverter<T extends Object>
 					Optional.ofNullable(convertRule(item))
 							.ifPresent(convertRule -> ruleCollection.add(convertRule));
 				}
-				catch (IOException e) {
+				catch (JacksonException e) {
 					log.error("sentinel rule convert error: " + e.getMessage(), e);
 					throw new IllegalArgumentException(
 							"sentinel rule convert error: " + e.getMessage(), e);
@@ -108,7 +108,7 @@ public abstract class SentinelConverter<T extends Object>
 		return ruleCollection;
 	}
 
-	private Object convertRule(String ruleStr) throws IOException {
+	private Object convertRule(String ruleStr) {
 		return objectMapper.readValue(ruleStr, ruleClass);
 	}
 
