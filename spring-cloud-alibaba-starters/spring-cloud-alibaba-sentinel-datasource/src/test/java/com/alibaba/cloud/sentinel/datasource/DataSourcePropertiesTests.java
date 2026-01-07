@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.sentinel.datasource;
 
+import java.util.List;
+
 import com.alibaba.cloud.sentinel.datasource.config.ApolloDataSourceProperties;
 import com.alibaba.cloud.sentinel.datasource.config.FileDataSourceProperties;
 import com.alibaba.cloud.sentinel.datasource.config.ZookeeperDataSourceProperties;
@@ -26,13 +28,12 @@ import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.FileRefreshableDataSource;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
-import org.junit.jupiter.api.Test;
-import org.springframework.util.ResourceUtils;
-import org.springframework.util.StringUtils;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
-import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.springframework.util.ResourceUtils;
+import org.springframework.util.StringUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -142,7 +143,7 @@ public class DataSourcePropertiesTests {
 
 					@Override
 					public List<FlowRule> convert(String source) {
-						return objectMapper.readValue(source, new TypeReference<>() {});
+						return objectMapper.readValue(source, new TypeReference<>() { });
 					}
 				});
 		fileDataSourceProperties.postRegister(fileRefreshableDataSource);
