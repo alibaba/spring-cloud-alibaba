@@ -32,7 +32,7 @@ public class TestConverter implements Converter<String, List<ParamFlowRule>> {
 
 	@Override
 	public List<ParamFlowRule> convert(String s) {
-		return objectMapper.readValue(s, new TypeReference<>() {});
+		return objectMapper.readValue(s, new TypeReference<>() { });
 	}
 
 }
