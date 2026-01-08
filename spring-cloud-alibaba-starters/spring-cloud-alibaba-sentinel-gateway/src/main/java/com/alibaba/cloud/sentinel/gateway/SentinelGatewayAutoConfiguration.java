@@ -16,6 +16,9 @@
 
 package com.alibaba.cloud.sentinel.gateway;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.alibaba.cloud.sentinel.datasource.converter.JsonConverter;
 import com.alibaba.cloud.sentinel.datasource.converter.XmlConverter;
 import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiDefinition;
@@ -23,10 +26,6 @@ import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiPathPredicateItem;
 import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiPredicateGroupItem;
 import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiPredicateItem;
 import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayFlowRule;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import tools.jackson.core.JsonParser;
 import tools.jackson.core.Version;
 import tools.jackson.databind.DeserializationContext;
@@ -38,8 +37,10 @@ import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.module.SimpleModule;
 import tools.jackson.dataformat.xml.XmlMapper;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
