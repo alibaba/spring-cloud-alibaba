@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.examples.delay;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -40,6 +42,11 @@ import org.springframework.messaging.support.GenericMessage;
 public class RocketMQDelayConsumeApplication {
 	private static final Logger log = LoggerFactory
 			.getLogger(RocketMQDelayConsumeApplication.class);
+
+	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+
+	private static LocalDateTime sendTime;
+
 	@Autowired
 	private StreamBridge streamBridge;
 
@@ -62,13 +69,15 @@ public class RocketMQDelayConsumeApplication {
 				Message<SimpleMsg> msg = new GenericMessage(new SimpleMsg("Delay RocketMQ " + i), headers);
 				streamBridge.send("producer-out-0", msg);
 			}
+			sendTime = LocalDateTime.now();
+			log.info("All 100 messages sent at {}", sendTime.format(FORMATTER));
 		};
 	}
 
 	@Bean
 	public Consumer<Message<SimpleMsg>> consumer() {
 		return msg -> {
-			log.info(Thread.currentThread().getName() + " Consumer Receive New Messages: " + msg.getPayload().getMsg());
+			log.info(Thread.currentThread().getName() + " Consumer Receive New Messages: " + msg.getPayload().getMsg() + ". Delay time(s): " + (LocalDateTime.now().getSecond() - sendTime.getSecond()));
 		};
 	}
 }
