@@ -16,11 +16,8 @@
 
 package com.alibaba.cloud.sentinel.gateway;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.alibaba.cloud.sentinel.datasource.converter.JsonConverter;
 import com.alibaba.cloud.sentinel.datasource.converter.XmlConverter;
@@ -29,16 +26,16 @@ import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiPathPredicateItem;
 import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiPredicateGroupItem;
 import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiPredicateItem;
 import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayFlowRule;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.Version;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.deser.std.StdDeserializer;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.dataformat.xml.XmlMapper;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -72,14 +69,10 @@ public class SentinelGatewayAutoConfiguration {
 
 			@Override
 			public ApiPredicateItem deserialize(JsonParser jp,
-					DeserializationContext ctxt) throws IOException {
-				ObjectMapper mapper = (ObjectMapper) jp.getCodec();
-				ObjectNode root = mapper.readTree(jp);
+					DeserializationContext ctxt) {
+				JsonNode root = ctxt.readTree(jp);
 				Class<? extends ApiPredicateItem> apiPredicateItemClass = null;
-				Iterator<Entry<String, JsonNode>> elementsIterator = root.fields();
-				while (elementsIterator.hasNext()) {
-					Entry<String, JsonNode> element = elementsIterator.next();
-					String name = element.getKey();
+				for (String name : root.propertyNames()) {
 					if (registry.containsKey(name)) {
 						apiPredicateItemClass = registry.get(name);
 						break;
@@ -88,7 +81,7 @@ public class SentinelGatewayAutoConfiguration {
 				if (apiPredicateItemClass == null) {
 					return null;
 				}
-				return mapper.readValue(root.toString(), apiPredicateItemClass);
+				return ctxt.readTreeAsValue(root, apiPredicateItemClass);
 			}
 
 		}
@@ -96,12 +89,9 @@ public class SentinelGatewayAutoConfiguration {
 		@Configuration(proxyBeanMethods = false)
 		protected static class SentinelJsonConfiguration {
 
-			private ObjectMapper objectMapper = new ObjectMapper();
+			private final ObjectMapper objectMapper;
 
 			public SentinelJsonConfiguration() {
-				objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-						false);
-
 				ApiPredicateItemDeserializer deserializer = new ApiPredicateItemDeserializer();
 				deserializer.registerApiPredicateItem("pattern",
 						ApiPathPredicateItem.class);
@@ -111,7 +101,11 @@ public class SentinelGatewayAutoConfiguration {
 						"PolymorphicApiPredicateItemDeserializerModule",
 						new Version(1, 0, 0, null, null, null));
 				module.addDeserializer(ApiPredicateItem.class, deserializer);
-				objectMapper.registerModule(module);
+
+				this.objectMapper = JsonMapper.builder()
+						.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+						.addModule(module)
+						.build();
 			}
 
 			@Bean("sentinel-json-gw-flow-converter")
@@ -130,11 +124,9 @@ public class SentinelGatewayAutoConfiguration {
 		@Configuration(proxyBeanMethods = false)
 		protected static class SentinelXmlConfiguration {
 
-			private XmlMapper xmlMapper = new XmlMapper();
+			private final XmlMapper xmlMapper;
 
 			public SentinelXmlConfiguration() {
-				xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-						false);
 				ApiPredicateItemDeserializer deserializer = new ApiPredicateItemDeserializer();
 				deserializer.registerApiPredicateItem("pattern",
 						ApiPathPredicateItem.class);
@@ -144,7 +136,11 @@ public class SentinelGatewayAutoConfiguration {
 						"PolymorphicGatewayDeserializerModule",
 						new Version(1, 0, 0, null, null, null));
 				module.addDeserializer(ApiPredicateItem.class, deserializer);
-				xmlMapper.registerModule(module);
+
+				this.xmlMapper = XmlMapper.builder()
+						.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+						.addModule(module)
+						.build();
 			}
 
 			@Bean("sentinel-xml-gw-flow-converter")

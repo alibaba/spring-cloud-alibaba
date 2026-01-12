@@ -25,9 +25,9 @@ import com.alibaba.cloud.sentinel.datasource.converter.JsonConverter;
 import com.alibaba.cloud.sentinel.datasource.converter.XmlConverter;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.dataformat.xml.XmlMapper;
 
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
@@ -79,6 +79,7 @@ public class SentinelConverterTests {
 
 	@Test
 	public void testConverterErrorContent() {
+		// see https://github.com/FasterXML/jackson-databind/issues/493
 		assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
 			JsonConverter jsonConverter = new JsonConverter(objectMapper, FlowRule.class);
 			jsonConverter

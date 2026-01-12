@@ -23,7 +23,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.converter.AbstractMessageConverter;
 import org.springframework.messaging.converter.ByteArrayMessageConverter;
 import org.springframework.messaging.converter.CompositeMessageConverter;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.converter.JacksonJsonMessageConverter;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.util.ClassUtils;
@@ -47,8 +47,8 @@ public class RocketMQMessageConverter extends AbstractMessageConverter {
 	static {
 		ClassLoader classLoader = RocketMQMessageConverter.class.getClassLoader();
 		JACKSON_PRESENT = ClassUtils
-				.isPresent("com.fasterxml.jackson.databind.ObjectMapper", classLoader)
-				&& ClassUtils.isPresent("com.fasterxml.jackson.core.JsonGenerator",
+				.isPresent("tools.jackson.core.JsonToken", classLoader)
+				&& ClassUtils.isPresent("tools.jackson.core.JsonGenerator",
 						classLoader);
 		FASTJSON_PRESENT = ClassUtils.isPresent("com.alibaba.fastjson.JSON", classLoader)
 				&& ClassUtils.isPresent(
@@ -65,7 +65,7 @@ public class RocketMQMessageConverter extends AbstractMessageConverter {
 		messageConverters.add(byteArrayMessageConverter);
 		messageConverters.add(new StringMessageConverter());
 		if (JACKSON_PRESENT) {
-			messageConverters.add(new MappingJackson2MessageConverter());
+			messageConverters.add(new JacksonJsonMessageConverter());
 		}
 		if (FASTJSON_PRESENT) {
 			try {
