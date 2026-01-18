@@ -13,10 +13,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-
+spring:
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
 feign:
-  circuitbreaker:
-    enabled: true
   sentinel:
     default-rule: default
     rules:

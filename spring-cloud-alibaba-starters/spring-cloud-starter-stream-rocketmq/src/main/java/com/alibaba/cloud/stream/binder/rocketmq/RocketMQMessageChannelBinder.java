@@ -132,6 +132,7 @@ public class RocketMQMessageChannelBinder extends
 
 		RocketMQInboundChannelAdapter inboundChannelAdapter = new RocketMQInboundChannelAdapter(
 				destination.getName(), extendedConsumerProperties);
+		inboundChannelAdapter.setBeanFactory(this.getApplicationContext().getBeanFactory());
 		ErrorInfrastructure errorInfrastructure = registerErrorInfrastructure(destination,
 				group, extendedConsumerProperties);
 		if (extendedConsumerProperties.getMaxAttempts() > 1) {

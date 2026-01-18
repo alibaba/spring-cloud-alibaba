@@ -133,24 +133,17 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 			return;
 		}
 
-		String serviceId = registration.getServiceId();
-
-		Instance instance = getNacosInstanceFromRegistration(registration);
-
-		if (STATUS_DOWN.equalsIgnoreCase(status)) {
-			instance.setEnabled(false);
-		}
-		else {
-			instance.setEnabled(true);
-		}
-
 		try {
-			nacosServiceManager.getNamingService().registerInstance(serviceId, nacosDiscoveryProperties.getGroup(), instance);
+			if (STATUS_DOWN.equalsIgnoreCase(status)) {
+				deregister(registration);
+			}
+			else {
+				register(registration);
+			}
 		}
 		catch (Exception e) {
 			throw new RuntimeException("update nacos instance status fail", e);
 		}
-
 	}
 
 	@Override

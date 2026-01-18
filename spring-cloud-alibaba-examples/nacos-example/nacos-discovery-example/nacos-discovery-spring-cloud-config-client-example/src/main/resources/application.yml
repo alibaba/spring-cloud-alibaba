@@ -1,1 +1,14 @@
+server:
+  port: 18083
+spring:
+  application:
+    name: client
+  config:
+    import: optional:configserver:http://localhost:7070
+  cloud:
+    nacos:
+      username: nacos
+      password: nacos
+      discovery:
+        server-addr: 127.0.0.1:8848
 config: config-from-yml
