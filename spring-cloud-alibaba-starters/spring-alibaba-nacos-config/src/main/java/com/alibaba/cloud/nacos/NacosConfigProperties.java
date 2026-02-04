@@ -607,21 +607,40 @@ public class NacosConfigProperties {
 		return sb.toString();
 	}
 
+	/**
+	 * refer
+	 * https://github.com/alibaba/spring-cloud-alibaba/issues/4242
+	 * Mask sensitive fields in logs to avoid credential leakage.
+	 */
+	private static String mask(String value) {
+		return (value == null || value.isEmpty()) ? value : "******";
+	}
+
 	@Override
 	public String toString() {
-		return "NacosConfigProperties{" + "serverAddr='" + serverAddr + '\''
-				+ ", encode='" + encode + '\'' + ", group='" + group + '\'' + ", prefix='"
-				+ prefix + '\'' + ", fileExtension='" + fileExtension + '\''
-				+ ", timeout=" + timeout + ", maxRetry='" + maxRetry + '\''
+		return "NacosConfigProperties{"
+				+ "serverAddr='" + serverAddr + '\''
+				+ ", encode='" + encode + '\''
+				+ ", group='" + group + '\''
+				+ ", prefix='" + prefix + '\''
+				+ ", fileExtension='" + fileExtension + '\''
+				+ ", timeout=" + timeout
+				+ ", maxRetry='" + maxRetry + '\''
 				+ ", configLongPollTimeout='" + configLongPollTimeout + '\''
 				+ ", configRetryTime='" + configRetryTime + '\''
-				+ ", enableRemoteSyncConfig=" + enableRemoteSyncConfig + ", endpoint='"
-				+ endpoint + '\'' + ", namespace='" + namespace + '\'' + ", accessKey='"
-				+ accessKey + '\'' + ", secretKey='" + secretKey + '\''
-				+ ", ramRoleName='" + ramRoleName + '\'' + ", contextPath='" + contextPath
-				+ '\'' + ", clusterName='" + clusterName + '\'' + ", name='" + name + '\''
-				+ '\'' + ", shares=" + sharedConfigs + ", extensions=" + extensionConfigs
-				+ ", refreshEnabled=" + refreshEnabled + '}';
+				+ ", enableRemoteSyncConfig=" + enableRemoteSyncConfig
+				+ ", endpoint='" + endpoint + '\''
+				+ ", namespace='" + namespace + '\''
+				+ ", accessKey='" + mask(accessKey) + '\''
+				+ ", secretKey='" + mask(secretKey) + '\''
+				+ ", ramRoleName='" + ramRoleName + '\''
+				+ ", contextPath='" + contextPath + '\''
+				+ ", clusterName='" + clusterName + '\''
+				+ ", name='" + name + '\''
+				+ ", shares=" + sharedConfigs
+				+ ", extensions=" + extensionConfigs
+				+ ", refreshEnabled=" + refreshEnabled
+				+ '}';
 	}
 
 	public static class Config {
