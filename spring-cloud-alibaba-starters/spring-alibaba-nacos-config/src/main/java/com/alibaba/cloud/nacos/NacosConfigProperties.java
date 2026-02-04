@@ -629,7 +629,7 @@ public class NacosConfigProperties {
 				+ ", configLongPollTimeout='" + configLongPollTimeout + '\''
 				+ ", configRetryTime='" + configRetryTime + '\''
 				+ ", enableRemoteSyncConfig=" + enableRemoteSyncConfig
-				+ ", endpoint='" + mask(endpoint) + '\''
+				+ ", endpoint='" + endpoint + '\''
 				+ ", namespace='" + namespace + '\''
 				+ ", accessKey='" + mask(accessKey) + '\''
 				+ ", secretKey='" + mask(secretKey) + '\''
