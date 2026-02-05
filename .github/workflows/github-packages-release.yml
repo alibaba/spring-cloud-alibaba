@@ -30,6 +30,12 @@ jobs:
           cat ~/.m2/settings.xml
       - name: Deploy to GitHub Package Maven
         run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "Project version: $VERSION"
+          if [[ "$VERSION" != *"-SNAPSHOT" ]]; then
+            echo "Not a snapshot version. Skipping deployment."
+            exit 0
+          fi
           mvn clean -B deploy -pl . -DskipTests
           cd $GITHUB_WORKSPACE/spring-cloud-alibaba-dependencies
           mvn clean -B deploy -DskipTests
