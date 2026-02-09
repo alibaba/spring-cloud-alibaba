@@ -232,6 +232,12 @@
     "allPublicMethods": true
   },
   {
+    "name": "com.alibaba.fastjson.support.spring.messaging.MappingFastJsonMessageConverter",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
     "name": "org.springframework.integration.config.ConverterRegistrar$IntegrationConverterRegistration",
     "allDeclaredFields": true,
     "queryAllDeclaredMethods": true,
