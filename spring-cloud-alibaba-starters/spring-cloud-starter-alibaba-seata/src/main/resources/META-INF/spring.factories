@@ -1,3 +1,0 @@
-# AutoConfigurationImportFilter to exclude incompatible Seata auto-configuration
-org.springframework.boot.autoconfigure.AutoConfigurationImportFilter=\
-com.alibaba.cloud.seata.autoconfigure.SeataSpringFenceAutoConfigurationImportFilter
