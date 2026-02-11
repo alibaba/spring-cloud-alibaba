@@ -22,6 +22,7 @@ import com.alibaba.cloud.nacos.refresh.condition.ConditionalOnNonDefaultBehavior
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.SearchStrategy;
 import org.springframework.cloud.context.properties.ConfigurationPropertiesBeans;
 import org.springframework.cloud.context.properties.ConfigurationPropertiesRebinder;
@@ -52,6 +53,7 @@ public class NacosConfigSpringCloudAutoConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnProperty(name = "spring.cloud.nacos.config.enable-check-bootstrap", matchIfMissing = true)
 	@ConditionalOnClass(name = "org.springframework.cloud.bootstrap.marker.Marker")
 	public Object checkBootstrapConfiguration() {
 		throw new RuntimeException("Including 'org.springframework.cloud:spring-cloud-starter-bootstrap' is prohibited. "
