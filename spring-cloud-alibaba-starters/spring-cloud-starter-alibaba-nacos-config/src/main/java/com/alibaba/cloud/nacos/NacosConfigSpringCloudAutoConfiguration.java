@@ -61,10 +61,8 @@ public class NacosConfigSpringCloudAutoConfiguration {
 	@ConditionalOnProperty(name = "spring.cloud.nacos.config.enable-check-bootstrap", matchIfMissing = true)
 	@ConditionalOnClass(name = "org.springframework.cloud.bootstrap.marker.Marker")
 	public Object checkBootstrapConfiguration() {
-		if (log.isWarnEnabled()) {
-			log.warn("Including 'org.springframework.cloud:spring-cloud-starter-bootstrap' is prohibited. "
-					+ "For details, please refer to: https://github.com/alibaba/spring-cloud-alibaba/issues/4259");
-		}
+		log.warn("Including 'org.springframework.cloud:spring-cloud-starter-bootstrap' is prohibited. "
+				+ "For details, please refer to: https://github.com/alibaba/spring-cloud-alibaba/issues/4259");
 		return null;
 	}
 
