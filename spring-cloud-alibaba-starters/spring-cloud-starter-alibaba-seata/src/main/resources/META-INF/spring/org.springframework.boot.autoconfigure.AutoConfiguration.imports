@@ -3,4 +3,3 @@ com.alibaba.cloud.seata.web.SeataHandlerInterceptorConfiguration
 com.alibaba.cloud.seata.feign.SeataFeignClientAutoConfiguration
 com.alibaba.cloud.seata.webclient.SeataWebClientAutoConfiguration
 com.alibaba.cloud.seata.webflux.SeataWebfluxAutoConfiguration
-com.alibaba.cloud.seata.autoconfigure.ScaSeataSpringFenceAutoConfiguration
