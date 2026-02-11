@@ -19,6 +19,8 @@ package com.alibaba.cloud.nacos;
 import com.alibaba.cloud.nacos.configdata.NacosConfigRefreshEventListener;
 import com.alibaba.cloud.nacos.refresh.SmartConfigurationPropertiesRebinder;
 import com.alibaba.cloud.nacos.refresh.condition.ConditionalOnNonDefaultBehavior;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -38,6 +40,9 @@ import org.springframework.context.annotation.Configuration;
 @Conditional(NacosConfigEnabledCondition.class)
 public class NacosConfigSpringCloudAutoConfiguration {
 
+	private static final Logger log = LoggerFactory
+			.getLogger(NacosConfigSpringCloudAutoConfiguration.class);
+
 	@Bean
 	@ConditionalOnMissingBean(search = SearchStrategy.CURRENT)
 	@ConditionalOnNonDefaultBehavior
@@ -56,8 +61,11 @@ public class NacosConfigSpringCloudAutoConfiguration {
 	@ConditionalOnProperty(name = "spring.cloud.nacos.config.enable-check-bootstrap", matchIfMissing = true)
 	@ConditionalOnClass(name = "org.springframework.cloud.bootstrap.marker.Marker")
 	public Object checkBootstrapConfiguration() {
-		throw new RuntimeException("Including 'org.springframework.cloud:spring-cloud-starter-bootstrap' is prohibited. "
-				+ "For details, please refer to: https://github.com/alibaba/spring-cloud-alibaba/issues/4259");
+		if (log.isWarnEnabled()) {
+			log.warn("Including 'org.springframework.cloud:spring-cloud-starter-bootstrap' is prohibited. "
+					+ "For details, please refer to: https://github.com/alibaba/spring-cloud-alibaba/issues/4259");
+		}
+		return null;
 	}
 
 }
