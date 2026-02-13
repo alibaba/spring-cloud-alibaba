@@ -16,8 +16,6 @@
 
 package com.alibaba.cloud.nacos;
 
-import java.util.Objects;
-
 import com.alibaba.cloud.nacos.diagnostics.analyzer.NacosConnectionFailureException;
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
@@ -25,27 +23,54 @@ import com.alibaba.nacos.api.exception.NacosException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
+
 /**
+ * Manager class for Nacos configuration service.
+ * Provides singleton access to Nacos ConfigService instance and manages configuration properties.
+ *
  * @author zkzlx
  */
 public class NacosConfigManager {
 
 	private static final Logger log = LoggerFactory.getLogger(NacosConfigManager.class);
 
+	// Singleton Nacos ConfigService instance
 	private static ConfigService service;
 
+	// Singleton instance of NacosConfigManager
 	private static NacosConfigManager INSTANCE;
 
+	// Configuration properties for Nacos config
 	private NacosConfigProperties nacosConfigProperties;
 
+	/**
+	 * Gets the singleton instance of NacosConfigManager.
+	 * Note: This method returns null if the instance has not been initialized via getInstance(NacosConfigProperties).
+	 *
+	 * @return singleton NacosConfigManager instance, or null if not initialized
+	 */
 	public NacosConfigManager(NacosConfigProperties nacosConfigProperties) {
 		this.nacosConfigProperties = nacosConfigProperties;
 	}
 
+	/**
+	 * Gets the singleton instance of NacosConfigManager.
+	 * Note: This method returns null if the instance has not been initialized via getInstance(NacosConfigProperties).
+	 *
+	 * @return singleton NacosConfigManager instance, or null if not initialized
+	 */
 	public static NacosConfigManager getInstance() {
 		return INSTANCE;
 	}
 
+	/**
+	 * Gets or initializes the singleton instance of NacosConfigManager with given properties.
+	 * Thread-safe initialization of the singleton instance.
+	 *
+	 * @param properties Nacos configuration properties
+	 * @return initialized singleton NacosConfigManager instance
+	 */
 	public static NacosConfigManager getInstance(NacosConfigProperties properties) {
 		if (INSTANCE != null) {
 			return INSTANCE;
@@ -60,7 +85,12 @@ public class NacosConfigManager {
 	}
 
 	/**
-	 * Compatible with old design,It will be perfected in the future.
+	 * Creates Nacos ConfigService instance with given properties (compatible with legacy design).
+	 * This method will be optimized in future releases.
+	 *
+	 * @param nacosConfigProperties configuration properties for Nacos ConfigService
+	 * @return created ConfigService instance
+	 * @throws NacosConnectionFailureException if failed to connect to Nacos server
 	 */
 	private ConfigService createConfigService(
 			NacosConfigProperties nacosConfigProperties) {
@@ -78,6 +108,13 @@ public class NacosConfigManager {
 		return service;
 	}
 
+	/**
+	 * Gets the singleton Nacos ConfigService instance.
+	 * Initializes the ConfigService if it is not already created.
+	 *
+	 * @return singleton ConfigService instance
+	 * @throws NacosConnectionFailureException if failed to create ConfigService
+	 */
 	public ConfigService getConfigService() {
 		if (Objects.isNull(service)) {
 			createConfigService(this.nacosConfigProperties);
@@ -85,6 +122,11 @@ public class NacosConfigManager {
 		return service;
 	}
 
+	/**
+	 * Gets the Nacos configuration properties used by this manager.
+	 *
+	 * @return NacosConfigProperties instance
+	 */
 	public NacosConfigProperties getNacosConfigProperties() {
 		return nacosConfigProperties;
 	}
