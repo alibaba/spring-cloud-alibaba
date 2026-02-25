@@ -60,7 +60,7 @@ public class NacosConfigSpringCloudAutoConfiguration {
 		BootstrapDetectionConfiguration() {
 			LoggerFactory.getLogger(BootstrapDetectionConfiguration.class)
 					.warn("Including 'org.springframework.cloud:spring-cloud-starter-bootstrap' will prevent Nacos Config from working properly."
-					+ "For details, please refer to: https://github.com/alibaba/spring-cloud-alibaba/issues/4259");
+					+ "Please remove this dependency. For details, please refer to: https://github.com/alibaba/spring-cloud-alibaba/issues/4259");
 		}
 	}
 
