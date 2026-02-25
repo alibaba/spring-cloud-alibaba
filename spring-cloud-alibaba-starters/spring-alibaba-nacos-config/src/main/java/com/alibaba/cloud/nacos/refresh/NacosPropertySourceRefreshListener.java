@@ -24,6 +24,7 @@ import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.client.NacosPropertySource;
 import com.alibaba.cloud.nacos.client.NacosPropertySourceBuilder;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,11 +46,11 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 	private final static Logger log = LoggerFactory
 			.getLogger(NacosPropertySourceRefreshListener.class);
 
-	private Map<String, ConfigurationPropertiesBean> beans = new HashMap<>();
+	private @Nullable Map<String, ConfigurationPropertiesBean> beans = new HashMap<>();
 
-	private ApplicationContext applicationContext;
+	private @Nullable ApplicationContext applicationContext;
 
-	private AtomicBoolean ready = new AtomicBoolean(false);
+	private final AtomicBoolean ready = new AtomicBoolean(false);
 
 	NacosConfigManager nacosConfigManager;
 
@@ -108,7 +109,6 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 					NacosPropertySource newProperSource = nacosPropertySourceBuilder.build(event.getDataId(), event.getGroup(), "properties", ((NacosPropertySource) prevpropertySource).isRefreshable());
 					target.replace(sourceName, newProperSource);
 					log.info("Replace Nacos Property Source : " + sourceName);
-
 				}
 
 			}

@@ -27,9 +27,11 @@ import java.util.Set;
 
 import com.alibaba.cloud.nacos.utils.StringUtils;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.boot.env.PropertySourceLoader;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.Resource;
+import org.springframework.util.Assert;
 
 /**
  * Nacos-specific loader, If need to support other methods of parsing,you need to do the
@@ -96,14 +98,15 @@ public abstract class AbstractPropertySourceLoader implements PropertySourceLoad
 			throws IOException;
 
 	protected void flattenedMap(Map<String, Object> result, Map<String, Object> dataMap,
-			String parentKey) {
+			@Nullable String parentKey) {
+
+		Assert.state(org.springframework.util.StringUtils.hasText(parentKey), "parentKey must not be empty");
+
 		if (dataMap == null || dataMap.isEmpty()) {
 			return;
 		}
 		Set<Entry<String, Object>> entries = dataMap.entrySet();
-		for (Iterator<Entry<String, Object>> iterator = entries.iterator(); iterator
-				.hasNext();) {
-			Map.Entry<String, Object> entry = iterator.next();
+		for (Entry<String, Object> entry : entries) {
 			String key = entry.getKey();
 			Object value = entry.getValue();
 
@@ -113,8 +116,7 @@ public abstract class AbstractPropertySourceLoader implements PropertySourceLoad
 			if (value instanceof Map map) {
 				flattenedMap(result, map, fullKey);
 				continue;
-			}
-			else if (value instanceof Collection collection) {
+			} else if (value instanceof Collection collection) {
 				int count = 0;
 				for (Object object : collection) {
 					flattenedMap(result,

@@ -20,14 +20,18 @@ import java.lang.reflect.Type;
 
 import org.springframework.util.StringUtils;
 
+import static com.alibaba.cloud.nacos.constants.Constants.NULL;
+
 final class ObjectUtils {
+
+
 
 	private ObjectUtils() {
 	}
 
 	public static Object convertToObject(String content, Type clazz) {
 		if (!StringUtils.hasText(content)) {
-			return null;
+			return NULL;
 		}
 
 		return convertFormJsonContent(content, clazz);

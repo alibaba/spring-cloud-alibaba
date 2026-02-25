@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
@@ -32,6 +33,7 @@ import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
 import org.apache.commons.logging.Log;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.boot.context.config.ConfigData;
 import org.springframework.boot.context.config.ConfigDataLoader;
 import org.springframework.boot.context.config.ConfigDataLoaderContext;
@@ -43,6 +45,7 @@ import org.springframework.core.env.PropertySource;
 import static com.alibaba.cloud.nacos.configdata.ConfigPreference.LOCAL;
 import static com.alibaba.cloud.nacos.configdata.ConfigPreference.REMOTE;
 import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosItemConfig;
+import static com.alibaba.cloud.nacos.constants.Constants.NULL;
 import static org.springframework.boot.context.config.ConfigData.Option;
 
 /**
@@ -164,11 +167,13 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 		}
 	}
 
-	protected <T> T getBean(ConfigDataLoaderContext context, Class<T> type) {
+	protected <T> T getBean(ConfigDataLoaderContext context, Class<? extends @Nullable T> type) {
+
 		if (context.getBootstrapContext().isRegistered(type)) {
-			return context.getBootstrapContext().get(type);
+			return Objects.requireNonNull(context.getBootstrapContext().get(type));
 		}
-		return null;
+
+		return (T) NULL;
 	}
 
 }

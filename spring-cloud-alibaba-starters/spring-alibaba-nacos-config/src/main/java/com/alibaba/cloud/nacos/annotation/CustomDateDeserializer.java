@@ -17,6 +17,8 @@
 package com.alibaba.cloud.nacos.annotation;
 
 import java.io.IOException;
+import java.io.Serial;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -25,11 +27,12 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class CustomDateDeserializer extends JsonDeserializer<Date> {
+public class CustomDateDeserializer extends JsonDeserializer<Date> implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public CustomDateDeserializer() {
 		super();

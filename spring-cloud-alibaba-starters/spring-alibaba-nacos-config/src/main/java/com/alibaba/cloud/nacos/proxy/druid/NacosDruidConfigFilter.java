@@ -18,7 +18,6 @@ package com.alibaba.cloud.nacos.proxy.druid;
 
 import java.io.StringReader;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -47,7 +46,7 @@ public class NacosDruidConfigFilter extends FilterAdapter {
 	@Override
 	public void init(final DataSourceProxy dataSourceProxy) {
 
-		if (!(dataSourceProxy instanceof DruidDataSource)) {
+		if (!(dataSourceProxy instanceof DruidDataSource druidDataSource)) {
 			return;
 		}
 		String name = StringUtils.isNotBlank(dataSourceProxy.getName()) ? dataSourceProxy.getName()
@@ -56,7 +55,6 @@ public class NacosDruidConfigFilter extends FilterAdapter {
 			return;
 		}
 
-		DruidDataSource druidDataSource = ((DruidDataSource) dataSourceProxy);
 		ConfigService configService = NacosConfigManager.getInstance().getConfigService();
 
 		try {
@@ -77,7 +75,7 @@ public class NacosDruidConfigFilter extends FilterAdapter {
 						Properties propertiesNew = convert(configInfo);
 
 						//refresh
-						((DruidDataSource) dataSourceProxy).configFromProperties(propertiesNew);
+						druidDataSource.configFromProperties(propertiesNew);
 					}
 					catch (Exception e) {
 						throw new RuntimeException(e);
@@ -101,16 +99,13 @@ public class NacosDruidConfigFilter extends FilterAdapter {
 		properties.load(new StringReader(config));
 
 		Properties propertiesNew = new Properties();
-		Iterator<Map.Entry<Object, Object>> iterator = properties.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Map.Entry<Object, Object> entry = iterator.next();
+		for (Map.Entry<Object, Object> entry : properties.entrySet()) {
 			String key = entry.getKey().toString();
 			String value = entry.getValue().toString();
 
 			if (key.startsWith(druidPrefix)) {
 				propertiesNew.put(key.replace(druidPrefix, "druid."), value);
-			}
-			else if (key.startsWith(datasourcePrefix)) {
+			} else if (key.startsWith(datasourcePrefix)) {
 				propertiesNew.put(key.replace(datasourcePrefix, "druid."), value);
 			}
 		}

@@ -27,9 +27,8 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.core.env.Environment;
 
 /**
@@ -39,13 +38,11 @@ import org.springframework.core.env.Environment;
  */
 public class AbstractDataSourceProperties {
 
-	@NotEmpty
-	private String dataType = "json";
+	private @Nullable String dataType = "json";
 
-	@NotNull
-	private RuleType ruleType;
+	private @Nullable RuleType ruleType;
 
-	private String converterClass;
+	private @Nullable String converterClass;
 
 	@JsonIgnore
 	private final String factoryBeanName;

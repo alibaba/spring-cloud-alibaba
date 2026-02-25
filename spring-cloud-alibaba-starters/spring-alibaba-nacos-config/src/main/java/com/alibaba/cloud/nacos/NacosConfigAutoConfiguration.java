@@ -36,8 +36,6 @@ import org.springframework.context.annotation.Configuration;
 @Conditional(NacosConfigEnabledCondition.class)
 public class NacosConfigAutoConfiguration {
 
-
-
 	@Bean
 	@ConditionalOnMissingBean(value = NacosConfigProperties.class, search = SearchStrategy.CURRENT)
 	public NacosConfigProperties nacosConfigProperties(ApplicationContext context) {

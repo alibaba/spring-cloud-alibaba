@@ -72,12 +72,13 @@ public class NacosPropertySource extends MapPropertySource {
 
 	private static Map<String, Object> getSourceMap(String group, String dataId,
 			List<PropertySource<?>> propertySources) {
+
 		if (CollectionUtils.isEmpty(propertySources)) {
 			return Collections.emptyMap();
 		}
 		// If only one, return the internal element, otherwise wrap it.
 		if (propertySources.size() == 1) {
-			PropertySource propertySource = propertySources.get(0);
+			PropertySource<?> propertySource = propertySources.get(0);
 			if (propertySource != null && propertySource.getSource() instanceof Map source) {
 				return source;
 			}

@@ -16,11 +16,13 @@
 
 package com.alibaba.cloud.nacos;
 
+import jakarta.annotation.Nullable;
+
 /**
  * @author shiyiyue
  */
 public interface NacosPropertiesPrefixProvider {
 
-	String getPrefix();
+	@Nullable String getPrefix();
 
 }

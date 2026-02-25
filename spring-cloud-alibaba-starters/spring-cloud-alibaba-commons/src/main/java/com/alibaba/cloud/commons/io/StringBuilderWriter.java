@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.commons.io;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.io.Writer;
 
@@ -26,6 +27,7 @@ import java.io.Writer;
  */
 public class StringBuilderWriter extends Writer implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = -146927496096066153L;
 
 	private final StringBuilder builder;

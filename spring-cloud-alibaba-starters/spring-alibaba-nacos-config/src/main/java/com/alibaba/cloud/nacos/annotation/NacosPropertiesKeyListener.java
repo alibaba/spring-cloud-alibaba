@@ -21,12 +21,13 @@ import java.util.Set;
 import com.alibaba.nacos.api.config.ConfigChangeEvent;
 import com.alibaba.nacos.api.config.ConfigChangeItem;
 import com.alibaba.nacos.common.utils.CollectionUtils;
+import org.jspecify.annotations.Nullable;
 
 public abstract class NacosPropertiesKeyListener extends AbstractConfigChangeListener {
 
-	Set<String> interestedKeys;
+	@Nullable Set<String> interestedKeys;
 
-	Set<String> interestedKeyPrefixes;
+	@Nullable Set<String> interestedKeyPrefixes;
 
 	NacosPropertiesKeyListener(Object target) {
 		super(target);

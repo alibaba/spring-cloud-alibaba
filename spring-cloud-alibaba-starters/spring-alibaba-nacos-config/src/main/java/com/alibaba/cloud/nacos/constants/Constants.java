@@ -30,4 +30,35 @@ public final class Constants {
 	 * property:spring.config.import.
 	 */
 	public static final String SPRING_CONFIG_IMPORT_PROPERTIES = "spring.config.import";
+
+	/**
+	 * Yaml for nacos config files.
+	 */
+	public static final String NACOS_YAML_TYPE = "yaml";
+
+	/**
+	 * Yml for nacos config files.
+	 */
+	public static final String NACOS_YML_TYPE = "yml";
+
+	/**
+	 * Properties for nacos config files.
+	 */
+	public static final String NACOS_PROPERTIES_TYPE = "properties";
+
+	/**
+	 * Null obj.
+	 */
+	public static final Object NULL = new Object();
+
+	/**
+	 * status up .
+	 */
+	public static final String STATUS_UP = "UP";
+
+	/**
+	 * status down .
+	 */
+	public static final String STATUS_DOWN = "DOWN";
+
 }

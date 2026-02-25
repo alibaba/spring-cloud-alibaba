@@ -16,10 +16,12 @@
 
 package com.alibaba.cloud.nacos;
 
+import jakarta.annotation.Nullable;
+
 public class SpringCloudNacosPropertiesPrefixProvider implements NacosPropertiesPrefixProvider {
 
 	@Override
-	public String getPrefix() {
+	public @Nullable String getPrefix() {
 		return "spring.cloud.nacos";
 	}
 }

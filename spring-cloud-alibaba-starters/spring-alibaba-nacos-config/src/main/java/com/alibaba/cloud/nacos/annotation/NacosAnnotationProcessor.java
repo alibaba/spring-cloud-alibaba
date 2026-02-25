@@ -35,6 +35,7 @@ import com.alibaba.nacos.api.config.ConfigChangeEvent;
 import com.alibaba.nacos.api.config.ConfigChangeItem;
 import com.alibaba.nacos.api.config.listener.AbstractListener;
 import com.alibaba.nacos.client.config.common.GroupKey;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,9 +59,9 @@ import org.springframework.util.ReflectionUtils;
 
 public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrdered, ApplicationContextAware {
 
-	private NacosConfigManager nacosConfigManager;
+	private @Nullable NacosConfigManager nacosConfigManager;
 
-	private ApplicationContext applicationContext;
+	private @Nullable ApplicationContext applicationContext;
 
 	private final static Logger log = LoggerFactory
 			.getLogger(NacosAnnotationProcessor.class);
@@ -70,8 +71,8 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 		return 0;
 	}
 
-	private Map<String, TargetRefreshable> targetListenerMap = new ConcurrentHashMap<>();
-	private Map<String, AtomicReference<String>> groupKeyCache = new ConcurrentHashMap<>();
+	private final Map<String, TargetRefreshable> targetListenerMap = new ConcurrentHashMap<>();
+	private final Map<String, AtomicReference<String>> groupKeyCache = new ConcurrentHashMap<>();
 
 	private String getGroupKeyContent(String dataId, String group, boolean refreshed) throws Exception {
 		if (groupKeyCache.containsKey(GroupKey.getKey(dataId, group))) {
@@ -96,7 +97,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 					@Override
 					public String toString() {
-						return String.format("sca nacos config annotation cache config listener");
+						return "sca nacos config annotation cache config listener";
 					}
 				});
 
@@ -116,7 +117,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
-		Class clazz = bean.getClass();
+		Class<?> clazz = bean.getClass();
 		NacosConfig annotationBean = AnnotationUtils.findAnnotation(clazz, NacosConfig.class);
 		if (annotationBean != null) {
 			handleBeanNacosConfigAnnotation(annotationBean.dataId(), annotationBean.group(), annotationBean.key(), annotationBean.refreshed(), beanName, bean, annotationBean.defaultValue());

@@ -43,7 +43,7 @@ public class NacosConfigEndpoint {
 
 	private final NacosRefreshHistory refreshHistory;
 
-	private ThreadLocal<DateFormat> dateFormat = ThreadLocal
+	private final ThreadLocal<DateFormat> dateFormat = ThreadLocal
 			.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
 	public NacosConfigEndpoint(NacosConfigProperties properties,

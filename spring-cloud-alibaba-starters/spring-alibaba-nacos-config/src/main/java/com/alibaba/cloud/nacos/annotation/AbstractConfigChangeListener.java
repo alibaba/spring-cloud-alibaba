@@ -22,10 +22,15 @@ import com.alibaba.nacos.api.config.ConfigChangeEvent;
 import com.alibaba.nacos.api.config.ConfigChangeItem;
 import com.alibaba.nacos.api.config.listener.AbstractSharedListener;
 import com.alibaba.nacos.client.config.impl.ConfigChangeHandler;
+import org.jspecify.annotations.Nullable;
+
+import static com.alibaba.cloud.nacos.constants.Constants.NACOS_PROPERTIES_TYPE;
+import static com.alibaba.cloud.nacos.constants.Constants.NACOS_YAML_TYPE;
+import static com.alibaba.cloud.nacos.constants.Constants.NACOS_YML_TYPE;
 
 public abstract class AbstractConfigChangeListener extends AbstractSharedListener implements TargetRefreshable {
 
-	String lastContent;
+	@Nullable String lastContent;
 
 	Object target;
 
@@ -50,7 +55,7 @@ public abstract class AbstractConfigChangeListener extends AbstractSharedListene
 	@Override
 	public void innerReceive(String dataId, String group, String configInfo) {
 
-		Map<String, ConfigChangeItem> data = null;
+		Map<String, ConfigChangeItem> data;
 		try {
 			data = ConfigChangeHandler.getInstance().parseChangeData(lastContent, configInfo, type(dataId));
 		}
@@ -63,10 +68,10 @@ public abstract class AbstractConfigChangeListener extends AbstractSharedListene
 	}
 
 	private String type(String dataId) {
-		if (dataId.endsWith(".yml") || dataId.endsWith(".yaml")) {
-			return "yaml";
+		if (dataId.endsWith(NACOS_YML_TYPE) || dataId.endsWith(NACOS_YAML_TYPE)) {
+			return NACOS_YAML_TYPE;
 		}
-		return "properties";
+		return NACOS_PROPERTIES_TYPE;
 	}
 
 	abstract void receiveConfigChange(ConfigChangeEvent event);
