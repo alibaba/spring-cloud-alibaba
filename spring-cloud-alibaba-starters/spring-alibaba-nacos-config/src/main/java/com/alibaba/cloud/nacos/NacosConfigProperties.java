@@ -195,11 +195,6 @@ public class NacosConfigProperties {
 	 */
 	private boolean refreshEnabled = true;
 
-	/**
-	 * whether to check if the bootstrap configuration is enabled, default is true.
-	 */
-	private boolean enableCheckBootstrap = true;
-
 	@PostConstruct
 	public void init() {
 		this.overrideFromEnv();
@@ -425,14 +420,6 @@ public class NacosConfigProperties {
 		this.refreshEnabled = refreshEnabled;
 	}
 
-	public boolean isEnableCheckBootstrap() {
-		return enableCheckBootstrap;
-	}
-
-	public void setEnableCheckBootstrap(boolean enableCheckBootstrap) {
-		this.enableCheckBootstrap = enableCheckBootstrap;
-	}
-
 	/**
 	 * recommend to use {@link NacosConfigProperties#sharedConfigs} .
 	 * @return string
@@ -653,7 +640,6 @@ public class NacosConfigProperties {
 				+ ", shares=" + sharedConfigs
 				+ ", extensions=" + extensionConfigs
 				+ ", refreshEnabled=" + refreshEnabled
-				+ ", enableCheckBootstrap=" + enableCheckBootstrap
 				+ '}';
 	}
 
