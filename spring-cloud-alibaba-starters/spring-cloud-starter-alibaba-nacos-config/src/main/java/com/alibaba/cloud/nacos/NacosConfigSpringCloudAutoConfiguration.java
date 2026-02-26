@@ -19,8 +19,11 @@ package com.alibaba.cloud.nacos;
 import com.alibaba.cloud.nacos.configdata.NacosConfigRefreshEventListener;
 import com.alibaba.cloud.nacos.refresh.SmartConfigurationPropertiesRebinder;
 import com.alibaba.cloud.nacos.refresh.condition.ConditionalOnNonDefaultBehavior;
+import org.slf4j.LoggerFactory;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.SearchStrategy;
 import org.springframework.cloud.context.properties.ConfigurationPropertiesBeans;
 import org.springframework.cloud.context.properties.ConfigurationPropertiesRebinder;
@@ -48,6 +51,17 @@ public class NacosConfigSpringCloudAutoConfiguration {
 	@Bean(name = "nacosConfigSpringCloudRefreshEventListener")
 	public NacosConfigRefreshEventListener nacosConfigRefreshEventListener() {
 		return new NacosConfigRefreshEventListener();
+	}
+
+	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnProperty(name = "spring.cloud.nacos.config.enable-check-bootstrap", matchIfMissing = true)
+	@ConditionalOnClass(name = "org.springframework.cloud.bootstrap.marker.Marker")
+	static class BootstrapDetectionConfiguration {
+		BootstrapDetectionConfiguration() {
+			LoggerFactory.getLogger(BootstrapDetectionConfiguration.class)
+					.warn("Including 'org.springframework.cloud:spring-cloud-starter-bootstrap' will prevent Nacos Config from working properly."
+					+ "Please remove this dependency. For details, please refer to: https://github.com/alibaba/spring-cloud-alibaba/issues/4259");
+		}
 	}
 
 }
