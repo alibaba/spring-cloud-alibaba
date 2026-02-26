@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.sentinel.datasource.factorybean.RedisDataSourceFactoryBean;
+import org.jspecify.annotations.Nullable;
 
 
 /**
@@ -48,7 +49,7 @@ public class RedisDataSourceProperties extends AbstractDataSourceProperties {
 	/**
 	 * redis server password.
 	 */
-	private String password;
+	private @Nullable String password;
 
 	/**
 	 * redis server default select database.
@@ -58,27 +59,27 @@ public class RedisDataSourceProperties extends AbstractDataSourceProperties {
 	/**
 	 * redis server timeout.
 	 */
-	private Duration timeout;
+	private @Nullable Duration timeout;
 
 	/**
 	 * Comma-separated list of "host:port" pairs.
 	 */
-	private List<String> nodes;
+	private @Nullable List<String> nodes;
 
 	/**
 	 * data key in Redis.
 	 */
-	private String ruleKey;
+	private @Nullable String ruleKey;
 
 	/**
 	 * channel to subscribe in Redis.
 	 */
-	private String channel;
+	private @Nullable String channel;
 
 	/**
 	 * redis sentinel model.
 	 */
-	private String masterId;
+	private @Nullable String masterId;
 
 	@Override
 	public void preCheck(String dataSourceName) {
@@ -115,27 +116,27 @@ public class RedisDataSourceProperties extends AbstractDataSourceProperties {
 		this.port = port;
 	}
 
-	public String getRuleKey() {
+	public @Nullable String getRuleKey() {
 		return ruleKey;
 	}
 
-	public void setRuleKey(String ruleKey) {
+	public void setRuleKey(@Nullable String ruleKey) {
 		this.ruleKey = ruleKey;
 	}
 
-	public String getChannel() {
+	public @Nullable String getChannel() {
 		return channel;
 	}
 
-	public void setChannel(String channel) {
+	public void setChannel(@Nullable String channel) {
 		this.channel = channel;
 	}
 
-	public String getPassword() {
+	public @Nullable String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
+	public void setPassword(@Nullable String password) {
 		this.password = password;
 	}
 
@@ -147,27 +148,27 @@ public class RedisDataSourceProperties extends AbstractDataSourceProperties {
 		this.database = database;
 	}
 
-	public Duration getTimeout() {
+	public @Nullable Duration getTimeout() {
 		return timeout;
 	}
 
-	public void setTimeout(Duration timeout) {
+	public void setTimeout(@Nullable Duration timeout) {
 		this.timeout = timeout;
 	}
 
-	public List<String> getNodes() {
+	public @Nullable List<String> getNodes() {
 		return nodes;
 	}
 
-	public void setNodes(List<String> nodes) {
+	public void setNodes(@Nullable List<String> nodes) {
 		this.nodes = nodes;
 	}
 
-	public String getMasterId() {
+	public @Nullable String getMasterId() {
 		return masterId;
 	}
 
-	public void setMasterId(String masterId) {
+	public void setMasterId(@Nullable String masterId) {
 		this.masterId = masterId;
 	}
 

@@ -19,6 +19,7 @@ package com.alibaba.cloud.sentinel.datasource.factorybean;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.zookeeper.ZookeeperDataSource;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.beans.factory.FactoryBean;
 
@@ -30,15 +31,15 @@ import org.springframework.beans.factory.FactoryBean;
  */
 public class ZookeeperDataSourceFactoryBean implements FactoryBean<ZookeeperDataSource> {
 
-	private String serverAddr;
+	private @Nullable String serverAddr;
 
-	private String path;
+	private @Nullable String path;
 
-	private String groupId;
+	private @Nullable String groupId;
 
-	private String dataId;
+	private @Nullable String dataId;
 
-	private Converter converter;
+	private @Nullable Converter converter;
 
 	@Override
 	public ZookeeperDataSource getObject() throws Exception {
@@ -57,43 +58,43 @@ public class ZookeeperDataSourceFactoryBean implements FactoryBean<ZookeeperData
 		return ZookeeperDataSource.class;
 	}
 
-	public String getServerAddr() {
+	public @Nullable String getServerAddr() {
 		return serverAddr;
 	}
 
-	public void setServerAddr(String serverAddr) {
+	public void setServerAddr(@Nullable String serverAddr) {
 		this.serverAddr = serverAddr;
 	}
 
-	public String getPath() {
+	public @Nullable String getPath() {
 		return path;
 	}
 
-	public void setPath(String path) {
+	public void setPath(@Nullable String path) {
 		this.path = path;
 	}
 
-	public String getGroupId() {
+	public @Nullable String getGroupId() {
 		return groupId;
 	}
 
-	public void setGroupId(String groupId) {
+	public void setGroupId(@Nullable String groupId) {
 		this.groupId = groupId;
 	}
 
-	public String getDataId() {
+	public @Nullable String getDataId() {
 		return dataId;
 	}
 
-	public void setDataId(String dataId) {
+	public void setDataId(@Nullable String dataId) {
 		this.dataId = dataId;
 	}
 
-	public Converter getConverter() {
+	public @Nullable Converter getConverter() {
 		return converter;
 	}
 
-	public void setConverter(Converter converter) {
+	public void setConverter(@Nullable Converter converter) {
 		this.converter = converter;
 	}
 

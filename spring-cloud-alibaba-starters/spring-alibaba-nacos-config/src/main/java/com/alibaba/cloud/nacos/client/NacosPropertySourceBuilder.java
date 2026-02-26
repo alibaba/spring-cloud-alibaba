@@ -26,6 +26,7 @@ import com.alibaba.cloud.nacos.refresh.NacosSnapshotConfigManager;
 import com.alibaba.cloud.nacos.utils.StringUtils;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +58,7 @@ public class NacosPropertySourceBuilder {
 		this.timeout = timeout;
 	}
 
+	@Nullable
 	public ConfigService getConfigService() {
 		return configService;
 	}

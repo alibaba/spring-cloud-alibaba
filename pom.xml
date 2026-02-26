@@ -88,12 +88,17 @@
         <!-- Spring Boot -->
         <spring-boot.version>4.0.0</spring-boot.version>
 
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <java.version>17</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
 
         <!-- Maven Plugin Versions -->
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
         <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
+        <!-- The version (range) of the JDK we want to use to compile. -->
+        <!-- This is different from ${java.version} which we use as -release target. -->
+        <compiler.jdk.version>[21.0.8,)</compiler.jdk.version>
         <!-- JUnit 5 requires Surefire version 2.22.0 or higher -->
         <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
@@ -104,7 +109,10 @@
         <jacoco.version>0.8.13</jacoco.version>
         <native-maven-plugin.version>0.10.6</native-maven-plugin.version>
 
-        <!-- Maven Central Portal -->
+		<error-prone.version>2.46.0</error-prone.version>
+		<nullaway.version>0.13.0</nullaway.version>
+
+		<!-- Maven Central Portal -->
         <central.publishing.maven.version>0.7.0</central.publishing.maven.version>
     </properties>
 
@@ -181,6 +189,33 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${maven-enforcer-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>maven-enforcer</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <!-- Make sure we run with a JDK that supports -->
+                                <!-- error_prone + nullaway tools correctly. -->
+                                <!-- See also .mvn/jvm.config -->
+                                <requireJavaVersion>
+                                    <version>${compiler.jdk.version}</version>
+                                </requireJavaVersion>
+                                <banDuplicatePomDependencyVersions />
+                                <requireMavenVersion>
+                                    <version>[3.9.1,)</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-eclipse-plugin</artifactId>
                 <configuration>
                     <useProjectReferences>false</useProjectReferences>
@@ -232,7 +267,45 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+					<release>${java.version}</release>
+					<compilerArgs>
+						<arg>-parameters</arg>
+					</compilerArgs>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>com.google.errorprone</groupId>
+							<artifactId>error_prone_core</artifactId>
+							<version>${error-prone.version}</version>
+						</path>
+						<path>
+							<groupId>com.uber.nullaway</groupId>
+							<artifactId>nullaway</artifactId>
+							<version>${nullaway.version}</version>
+						</path>
+						<path>
+							<groupId>org.springframework.boot</groupId>
+							<artifactId>spring-boot-configuration-processor</artifactId>
+						</path>
+					</annotationProcessorPaths>
                 </configuration>
+				<executions>
+					<execution>
+						<id>java-compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<compilerArgs>
+								<arg>-XDcompilePolicy=simple</arg>
+								<!-- The following arg won't be necessary with JDK25+ -->
+								<arg>-XDaddTypeAnnotationsToSymbol=true</arg>
+								<arg>--should-stop=ifError=FLOW</arg>
+							<arg>-Xplugin:ErrorProne -XepDisableAllChecks -Xep:NullAway:ERROR -XepOpt:NullAway:OnlyNullMarked -XepOpt:NullAway:JSpecifyMode=true</arg>
+							</compilerArgs>
+						</configuration>
+					</execution>
+				</executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

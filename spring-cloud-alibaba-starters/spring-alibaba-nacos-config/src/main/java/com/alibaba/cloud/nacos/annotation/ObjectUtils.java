@@ -18,20 +18,18 @@ package com.alibaba.cloud.nacos.annotation;
 
 import java.lang.reflect.Type;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.util.StringUtils;
 
-import static com.alibaba.cloud.nacos.constants.Constants.NULL;
-
 final class ObjectUtils {
-
-
 
 	private ObjectUtils() {
 	}
 
+	@Nullable
 	public static Object convertToObject(String content, Type clazz) {
 		if (!StringUtils.hasText(content)) {
-			return NULL;
+			return null;
 		}
 
 		return convertFormJsonContent(content, clazz);

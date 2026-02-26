@@ -18,6 +18,7 @@ package com.alibaba.cloud.sentinel.datasource.config;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.sentinel.datasource.factorybean.ConsulDataSourceFactoryBean;
+import org.jspecify.annotations.Nullable;
 
 
 /**
@@ -35,7 +36,7 @@ public class ConsulDataSourceProperties extends AbstractDataSourceProperties {
 	/**
 	 * consul server host.
 	 */
-	private String host;
+	private @Nullable String host;
 
 	/**
 	 * consul server port.
@@ -46,12 +47,12 @@ public class ConsulDataSourceProperties extends AbstractDataSourceProperties {
 	 * consul acl-token.
 	 */
 
-	private String token;
+	private @Nullable String token;
 
 	/**
 	 * data key in Redis.
 	 */
-	private String ruleKey;
+	private @Nullable String ruleKey;
 
 	/**
 	 * Request of query will hang until timeout (in second) or get updated value.
@@ -69,11 +70,11 @@ public class ConsulDataSourceProperties extends AbstractDataSourceProperties {
 		}
 	}
 
-	public String getHost() {
+	public @Nullable String getHost() {
 		return host;
 	}
 
-	public void setHost(String host) {
+	public void setHost(@Nullable String host) {
 		this.host = host;
 	}
 
@@ -85,11 +86,11 @@ public class ConsulDataSourceProperties extends AbstractDataSourceProperties {
 		this.port = port;
 	}
 
-	public String getRuleKey() {
+	public @Nullable String getRuleKey() {
 		return ruleKey;
 	}
 
-	public void setRuleKey(String ruleKey) {
+	public void setRuleKey(@Nullable String ruleKey) {
 		this.ruleKey = ruleKey;
 	}
 
@@ -101,11 +102,11 @@ public class ConsulDataSourceProperties extends AbstractDataSourceProperties {
 		this.waitTimeoutInSecond = waitTimeoutInSecond;
 	}
 
-	public String getToken() {
+	public @Nullable String getToken() {
 		return token;
 	}
 
-	public void setToken(String token) {
+	public void setToken(@Nullable String token) {
 		this.token = token;
 	}
 }

@@ -40,7 +40,7 @@ public abstract class AbstractConfigChangeListener extends AbstractSharedListene
 	}
 
 	@Override
-	public void setTarget(Object target) {
+	public void setTarget(@Nullable Object target) {
 		this.target = target;
 	}
 

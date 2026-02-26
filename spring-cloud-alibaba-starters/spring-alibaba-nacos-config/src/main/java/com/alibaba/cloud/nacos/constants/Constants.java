@@ -47,11 +47,6 @@ public final class Constants {
 	public static final String NACOS_PROPERTIES_TYPE = "properties";
 
 	/**
-	 * Null obj.
-	 */
-	public static final Object NULL = new Object();
-
-	/**
 	 * status up .
 	 */
 	public static final String STATUS_UP = "UP";

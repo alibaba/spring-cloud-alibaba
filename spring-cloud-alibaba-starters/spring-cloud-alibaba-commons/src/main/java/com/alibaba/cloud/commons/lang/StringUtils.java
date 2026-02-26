@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.commons.lang;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * StringUtils. copy from apache common-lang3.
  *
@@ -60,7 +62,7 @@ public final class StringUtils {
 	 * @return {@code true} if the CharSequence is empty or null
 	 * @since 3.0 Changed signature from isEmpty(String) to isEmpty(CharSequence)
 	 */
-	public static boolean isEmpty(final CharSequence cs) {
+	public static boolean isEmpty(final @Nullable CharSequence cs) {
 		return cs == null || cs.length() == 0;
 	}
 
@@ -162,7 +164,7 @@ public final class StringUtils {
 	 * @param str the String to be trimmed, may be null
 	 * @return the trimmed string, {@code null} if null String input
 	 */
-	public static String trim(final String str) {
+	public static @Nullable String trim(final String str) {
 		return str == null ? null : str.trim();
 	}
 
@@ -321,7 +323,7 @@ public final class StringUtils {
 	 * @return the substring, <code>null</code> if no match
 	 * @since 2.0
 	 */
-	public static String substringBetween(String str, String tag) {
+	public static @Nullable String substringBetween(String str, String tag) {
 		return substringBetween(str, tag, tag);
 	}
 
@@ -355,7 +357,7 @@ public final class StringUtils {
 	 * @return the substring, <code>null</code> if no match
 	 * @since 2.0
 	 */
-	public static String substringBetween(String str, String open, String close) {
+	public static @Nullable String substringBetween(String str, String open, String close) {
 		if (str == null || open == null || close == null) {
 			return null;
 		}

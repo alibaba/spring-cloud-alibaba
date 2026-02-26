@@ -17,9 +17,11 @@
 package com.alibaba.cloud.nacos.annotation;
 
 import com.alibaba.nacos.api.config.listener.Listener;
+import org.jspecify.annotations.Nullable;
 
 interface TargetRefreshable extends Listener {
 
+	@Nullable
 	Object getTarget();
 
 	void setTarget(Object target);

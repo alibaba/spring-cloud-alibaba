@@ -45,7 +45,6 @@ import org.springframework.core.env.PropertySource;
 import static com.alibaba.cloud.nacos.configdata.ConfigPreference.LOCAL;
 import static com.alibaba.cloud.nacos.configdata.ConfigPreference.REMOTE;
 import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosItemConfig;
-import static com.alibaba.cloud.nacos.constants.Constants.NULL;
 import static org.springframework.boot.context.config.ConfigData.Option;
 
 /**
@@ -167,13 +166,14 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 		}
 	}
 
+	@Nullable
 	protected <T> T getBean(ConfigDataLoaderContext context, Class<? extends @Nullable T> type) {
 
 		if (context.getBootstrapContext().isRegistered(type)) {
 			return Objects.requireNonNull(context.getBootstrapContext().get(type));
 		}
 
-		return (T) NULL;
+		return null;
 	}
 
 }
