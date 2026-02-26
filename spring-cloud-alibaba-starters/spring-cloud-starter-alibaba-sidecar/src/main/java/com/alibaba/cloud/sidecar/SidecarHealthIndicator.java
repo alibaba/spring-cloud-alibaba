@@ -18,6 +18,7 @@ package com.alibaba.cloud.sidecar;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.boot.health.contributor.AbstractHealthIndicator;
 import org.springframework.boot.health.contributor.Health;
@@ -70,7 +71,8 @@ public class SidecarHealthIndicator extends AbstractHealthIndicator {
 			}
 		}
 		catch (Exception e) {
-			builder.down().withDetail("error", e.getMessage());
+			builder.down().withDetail("error",
+					Objects.toString(e.getMessage(), e.getClass().getName()));
 		}
 	}
 

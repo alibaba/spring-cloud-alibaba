@@ -78,10 +78,10 @@ public class NacosConfigDataLocationResolver
 		return -1;
 	}
 
-	protected NacosConfigProperties loadProperties(
+	protected @Nullable NacosConfigProperties loadProperties(
 			ConfigDataLocationResolverContext context) {
 		Binder binder = context.getBinder();
-		BindHandler bindHandler = getBindHandler(context);
+		@Nullable BindHandler bindHandler = getBindHandler(context);
 
 		NacosConfigProperties nacosConfigProperties;
 		if (context.getBootstrapContext().isRegistered(NacosConfigDataLoadProperties.class)) {
@@ -148,6 +148,9 @@ public class NacosConfigDataLocationResolver
 			ConfigDataLocation location, Profiles profiles)
 			throws ConfigDataLocationNotFoundException {
 		NacosConfigProperties properties = loadProperties(resolverContext);
+		if (properties == null) {
+			throw new IllegalStateException("NacosConfigProperties could not be loaded");
+		}
 
 		ConfigurableBootstrapContext bootstrapContext = resolverContext
 				.getBootstrapContext();
@@ -166,10 +169,11 @@ public class NacosConfigDataLocationResolver
 		List<NacosConfigDataResource> result = new ArrayList<>();
 		URI uri = getUri(location, properties);
 
-		String dataId = dataIdFor(uri);
-		if (StringUtils.isBlank(dataId)) {
+		String dataIdNullable = dataIdFor(uri);
+		if (dataIdNullable == null || dataIdNullable.isEmpty()) {
 			throw new IllegalArgumentException("dataId must be specified");
 		}
+		String dataId = dataIdNullable;
 
 		String group = groupFor(uri, properties);
 		if (group == null) {

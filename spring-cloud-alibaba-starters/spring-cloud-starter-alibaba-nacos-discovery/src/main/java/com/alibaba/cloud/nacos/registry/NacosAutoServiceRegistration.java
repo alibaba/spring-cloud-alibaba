@@ -65,7 +65,7 @@ public class NacosAutoServiceRegistration
 
 	@Override
 	protected NacosRegistration getManagementRegistration() {
-		return null;
+		return this.registration;
 	}
 
 	@Override
@@ -103,7 +103,10 @@ public class NacosAutoServiceRegistration
 	@SuppressWarnings("deprecation")
 	protected String getAppName() {
 		String appName = registration.getNacosDiscoveryProperties().getService();
-		return StringUtils.isEmpty(appName) ? super.getAppName() : appName;
+		if (appName == null || StringUtils.isEmpty(appName)) {
+			return super.getAppName();
+		}
+		return appName;
 	}
 
 	@EventListener

@@ -24,6 +24,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
+import jakarta.annotation.Nullable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -44,12 +45,12 @@ public class InetIPv6Utils {
 		this.properties = properties;
 	}
 
-	private InetUtils.HostInfo findFirstValidHostInfo() {
+	private @Nullable InetUtils.HostInfo findFirstValidHostInfo() {
 		InetAddress address = this.findFirstValidIPv6Address();
 		return address != null ? this.getHostInfo(address) : null;
 	}
 
-	private InetAddress findFirstValidIPv6Address() {
+	private @Nullable InetAddress findFirstValidIPv6Address() {
 		InetAddress address = null;
 
 		try {
@@ -94,7 +95,7 @@ public class InetIPv6Utils {
 		return address;
 	}
 
-	public String findIPv6Address() {
+	public @Nullable String findIPv6Address() {
 		InetUtils.HostInfo hostInfo = findFirstValidHostInfo();
 		return hostInfo != null ? normalizeIPv6(hostInfo.getIpAddress()) : null;
 	}

@@ -17,6 +17,7 @@
 package com.alibaba.cloud.nacos.client;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosConfigManager;
@@ -25,6 +26,7 @@ import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
 import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
 import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
 import com.alibaba.nacos.api.config.ConfigService;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,11 +53,11 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	private static final String DOT = ".";
 
-	private NacosPropertySourceBuilder nacosPropertySourceBuilder;
+	private @Nullable NacosPropertySourceBuilder nacosPropertySourceBuilder;
 
 	private NacosConfigProperties nacosConfigProperties;
 
-	private NacosConfigManager nacosConfigManager;
+	private @Nullable NacosConfigManager nacosConfigManager;
 
 	/**
 	 * recommend to use
@@ -73,7 +75,11 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	}
 
 	@Override
-	public PropertySource<?> locate(Environment env) {
+	public @Nullable PropertySource<?> locate(Environment env) {
+		if (nacosConfigManager == null) {
+			log.warn("no nacosConfigManager, can't load config from nacos");
+			return null;
+		}
 		ConfigService configService = nacosConfigManager.getConfigService();
 
 		if (null == configService) {
@@ -97,7 +103,9 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		CompositePropertySource composite = new CompositePropertySource(
 				NACOS_PROPERTY_SOURCE_NAME);
 
-		loadApplicationConfiguration(composite, dataIdPrefix, nacosConfigProperties, env);
+		if (dataIdPrefix != null) {
+			loadApplicationConfiguration(composite, dataIdPrefix, nacosConfigProperties, env);
+		}
 		return composite;
 	}
 
@@ -127,9 +135,13 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private void loadNacosConfiguration(final CompositePropertySource composite,
 			List<NacosConfigProperties.Config> configs) {
 		for (NacosConfigProperties.Config config : configs) {
-			loadNacosDataIfPresent(composite, config.getDataId(), config.getGroup(),
+			String dataId = config.getDataId();
+			if (dataId == null) {
+				continue;
+			}
+			loadNacosDataIfPresent(composite, dataId, config.getGroup(),
 					NacosDataParserHandler.getInstance()
-							.getFileExtension(config.getDataId()),
+							.getFileExtension(dataId),
 					config.isRefresh());
 		}
 	}
@@ -147,7 +159,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	}
 
 	private void loadNacosDataIfPresent(final CompositePropertySource composite,
-			final String dataId, final String group, String fileExtension,
+			final @Nullable String dataId, final @Nullable String group, @Nullable String fileExtension,
 			boolean isRefreshable) {
 		if (null == dataId || dataId.trim().length() < 1) {
 			return;
@@ -161,14 +173,17 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	}
 
 	private NacosPropertySource loadNacosPropertySource(final String dataId,
-			final String group, String fileExtension, boolean isRefreshable) {
+			final String group, @Nullable String fileExtension, boolean isRefreshable) {
 		if (NacosContextRefresher.getRefreshCount() != 0) {
 			if (!isRefreshable) {
-				return NacosPropertySourceRepository.getNacosPropertySource(dataId,
-						group);
+				return Objects.requireNonNull(NacosPropertySourceRepository.getNacosPropertySource(dataId,
+						group));
 			}
 		}
-		return nacosPropertySourceBuilder.build(dataId, group, fileExtension,
+		if (nacosPropertySourceBuilder == null) {
+			throw new IllegalStateException("nacosPropertySourceBuilder is not initialized");
+		}
+		return nacosPropertySourceBuilder.build(dataId, group, fileExtension != null ? fileExtension : "",
 				isRefreshable);
 	}
 

@@ -26,6 +26,7 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.exception.runtime.NacosRuntimeException;
 import com.alibaba.nacos.client.config.impl.YmlChangeParser;
 import com.alibaba.nacos.common.utils.StringUtils;
+import org.jspecify.annotations.Nullable;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.composer.ComposerException;
@@ -62,7 +63,8 @@ public class ScaYamlConfigChangeParser extends YmlChangeParser {
 	}
 
 	private void handleYamlException(MarkedYAMLException e) {
-		if (e.getMessage().startsWith(INVALID_CONSTRUCTOR_ERROR_INFO) || e instanceof ComposerException) {
+		String message = e.getMessage();
+		if ((message != null && message.startsWith(INVALID_CONSTRUCTOR_ERROR_INFO)) || e instanceof ComposerException) {
 			throw new NacosRuntimeException(NacosException.INVALID_PARAM,
 					"AbstractConfigChangeListener only support basic java data type for yaml. If you want to listen "
 							+ "key changes for custom classes, please use `Listener` to listener whole yaml configuration and parse it by yourself.",
@@ -77,7 +79,7 @@ public class ScaYamlConfigChangeParser extends YmlChangeParser {
 		return result;
 	}
 
-	private void buildFlattenedMap(Map<String, Object> result, Map<String, Object> source, String path) {
+	private void buildFlattenedMap(Map<String, Object> result, Map<String, Object> source, @Nullable String path) {
 
 		for (Map.Entry<String, Object> e : source.entrySet()) {
 			String key = e.getKey();

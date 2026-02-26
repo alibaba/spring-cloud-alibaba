@@ -22,9 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.core.Ordered;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SentinelGatewayPropertiesTest {
 
@@ -37,25 +35,26 @@ public class SentinelGatewayPropertiesTest {
 
 	@Test
 	public void testDefaultOrder() {
-		assertEquals(Ordered.HIGHEST_PRECEDENCE, properties.getOrder().intValue());
+		assertThat(properties.getOrder().intValue())
+				.isEqualTo(Ordered.HIGHEST_PRECEDENCE);
 	}
 
 	@Test
 	public void testSetOrder() {
 		int newOrder = 100;
 		properties.setOrder(newOrder);
-		assertEquals(newOrder, properties.getOrder().intValue());
+		assertThat(properties.getOrder().intValue()).isEqualTo(newOrder);
 	}
 
 	@Test
 	public void testFallbackPropertiesInitialization() {
-		assertNull(properties.getFallback());
+		assertThat(properties.getFallback()).isNull();
 	}
 
 	@Test
 	public void testSetFallbackProperties() {
 		FallbackProperties newFallback = new FallbackProperties();
 		properties.setFallback(newFallback);
-		assertSame(newFallback, properties.getFallback());
+		assertThat(properties.getFallback()).isSameAs(newFallback);
 	}
 }

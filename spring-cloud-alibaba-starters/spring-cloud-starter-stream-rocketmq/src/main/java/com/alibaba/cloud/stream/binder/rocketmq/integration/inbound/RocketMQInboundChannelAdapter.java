@@ -30,6 +30,7 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,11 +58,11 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 	private static final Logger log = LoggerFactory
 			.getLogger(RocketMQInboundChannelAdapter.class);
 
-	private RetryTemplate retryTemplate;
+	private @Nullable RetryTemplate retryTemplate;
 
-	private RecoveryCallback<Object> recoveryCallback;
+	private @Nullable RecoveryCallback<Object> recoveryCallback;
 
-	private DefaultMQPushConsumer pushConsumer;
+	private @Nullable DefaultMQPushConsumer pushConsumer;
 
 	private final String topic;
 
@@ -148,17 +149,13 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 					this.retryTemplate.setRetryListener(new RetryListener() {
 						@Override
 						public void onRetryPolicyExhaustion(RetryPolicy retryPolicy, Retryable<?> retryable, RetryException exception) {
-							recoveryCallback.recover(null, exception);
+							log.warn("retry exhausted for messageExt: {}",
+									messageExt, exception);
 						}
 					});
 					this.retryTemplate.execute(() -> {
-						try {
-							this.sendMessage(message);
-						}
-						catch (Exception e) {
-							return e;
-						}
-						return null;
+						this.sendMessage(message);
+						return Boolean.TRUE;
 					});
 				}
 				else {
@@ -181,8 +178,13 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 		}
 		Instrumentation instrumentation = new Instrumentation(topic, this);
 		try {
+			if (pushConsumer == null) {
+				throw new IllegalStateException("DefaultMQPushConsumer not initialized");
+			}
+			String subscription = extendedConsumerProperties.getExtension()
+					.getSubscription();
 			pushConsumer.subscribe(topic, RocketMQUtils.getMessageSelector(
-					extendedConsumerProperties.getExtension().getSubscription()));
+					subscription != null ? subscription : ""));
 			pushConsumer.start();
 			instrumentation.markStartedSuccessfully();
 		}

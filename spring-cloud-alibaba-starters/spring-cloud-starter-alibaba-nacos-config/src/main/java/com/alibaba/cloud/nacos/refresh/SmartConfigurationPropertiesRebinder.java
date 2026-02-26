@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.beans.BeansException;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBean;
 import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
@@ -53,9 +55,9 @@ public class SmartConfigurationPropertiesRebinder
 
 	private Map<String, ConfigurationPropertiesBean> beanMap;
 
-	private ApplicationContext applicationContext;
+	private @Nullable ApplicationContext applicationContext;
 
-	private RefreshBehavior refreshBehavior;
+	private @Nullable RefreshBehavior refreshBehavior;
 
 	public SmartConfigurationPropertiesRebinder(ConfigurationPropertiesBeans beans) {
 		super(beans);
@@ -86,10 +88,13 @@ public class SmartConfigurationPropertiesRebinder
 
 	@Override
 	public void onApplicationEvent(EnvironmentChangeEvent event) {
+		if (this.applicationContext == null) {
+			return;
+		}
 		if (this.applicationContext.equals(event.getSource())
 				// Backwards compatible
 				|| event.getKeys().equals(event.getSource())) {
-			switch (refreshBehavior) {
+			switch (refreshBehavior != null ? refreshBehavior : RefreshBehavior.ALL_BEANS) {
 			case SPECIFIC_BEAN -> rebindSpecificBean(event);
 			default -> rebind();
 			}
@@ -99,7 +104,8 @@ public class SmartConfigurationPropertiesRebinder
 	private void rebindSpecificBean(EnvironmentChangeEvent event) {
 		Set<String> refreshedSet = new HashSet<>();
 		beanMap.forEach((name, bean) -> event.getKeys().forEach(changeKey -> {
-			String prefix = AnnotationUtils.getValue(bean.getAnnotation()).toString();
+			Object annotationValue = AnnotationUtils.getValue(bean.getAnnotation());
+			String prefix = annotationValue != null ? annotationValue.toString() : "";
 			// prevent multiple refresh one ConfigurationPropertiesBean.
 			if (changeKey.startsWith(prefix) && refreshedSet.add(name)) {
 				rebind(name);

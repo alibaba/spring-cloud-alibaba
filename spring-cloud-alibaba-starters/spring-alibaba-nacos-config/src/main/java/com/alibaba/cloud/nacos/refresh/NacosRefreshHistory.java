@@ -108,7 +108,7 @@ public class NacosRefreshHistory {
 		private final String md5;
 
 		Record(String timestamp, String dataId, String group, String md5,
-				Map<String, Object> last) {
+				@Nullable Map<String, Object> last) {
 			this.timestamp = timestamp;
 			this.dataId = dataId;
 			this.group = group;

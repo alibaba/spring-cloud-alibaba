@@ -101,11 +101,11 @@ public class NacosConfigDataResource extends ConfigDataResource {
 	}
 
 	public static class NacosItemConfig {
-		private String group;
-		private String dataId;
-		private String suffix;
+		private String group = "";
+		private String dataId = "";
+		private String suffix = "";
 		private boolean refreshEnabled;
-		private String preference;
+		private String preference = "";
 
 		public NacosItemConfig() {
 		}

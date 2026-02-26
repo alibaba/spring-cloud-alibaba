@@ -22,6 +22,7 @@ import java.util.Properties;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingMaintainService;
 import com.alibaba.nacos.api.naming.NamingService;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,15 +36,22 @@ public class NacosServiceManager {
 
 	private static final Logger log = LoggerFactory.getLogger(NacosServiceManager.class);
 
-	private NacosDiscoveryProperties nacosDiscoveryProperties;
+	private @Nullable NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	private volatile NamingService namingService;
+	private volatile @Nullable NamingService namingService;
 
-	private volatile NamingMaintainService namingMaintainService;
+	private volatile @Nullable NamingMaintainService namingMaintainService;
 
 	public NamingService getNamingService() {
 		if (Objects.isNull(this.namingService)) {
-			buildNamingService(nacosDiscoveryProperties.getNacosProperties());
+			NacosDiscoveryProperties properties = this.nacosDiscoveryProperties;
+			if (properties == null) {
+				throw new IllegalStateException("NacosDiscoveryProperties is not initialized");
+			}
+			buildNamingService(properties.getNacosProperties());
+		}
+		if (namingService == null) {
+			throw new IllegalStateException("NamingService is not initialized");
 		}
 		return namingService;
 	}
@@ -53,12 +61,18 @@ public class NacosServiceManager {
 		if (Objects.isNull(this.namingService)) {
 			buildNamingService(properties);
 		}
+		if (namingService == null) {
+			throw new IllegalStateException("NamingService is not initialized");
+		}
 		return namingService;
 	}
 
 	public NamingMaintainService getNamingMaintainService(Properties properties) {
 		if (Objects.isNull(namingMaintainService)) {
 			buildNamingMaintainService(properties);
+		}
+		if (namingMaintainService == null) {
+			throw new IllegalStateException("NamingMaintainService is not initialized");
 		}
 		return namingMaintainService;
 	}

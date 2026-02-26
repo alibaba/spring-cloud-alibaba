@@ -19,6 +19,7 @@ package com.alibaba.cloud.nacos.loadbalancer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.util.InetIPv6Utils;
@@ -66,7 +67,8 @@ public class NacosLoadBalancerClientConfiguration {
 			InetIPv6Utils inetIPv6Utils,
 			List<ServiceInstanceFilter> serviceInstanceFilters,
 			List<LoadBalancerAlgorithm> loadBalancerAlgorithms) {
-		String name = environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);
+		String name = Objects.toString(
+				environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME), "");
 		Map<String, LoadBalancerAlgorithm> loadBalancerAlgorithmMap = new HashMap<>();
 		loadBalancerAlgorithms.forEach(loadBalancerAlgorithm -> {
 			if (!loadBalancerAlgorithmMap.containsKey(loadBalancerAlgorithm.getServiceId())) {

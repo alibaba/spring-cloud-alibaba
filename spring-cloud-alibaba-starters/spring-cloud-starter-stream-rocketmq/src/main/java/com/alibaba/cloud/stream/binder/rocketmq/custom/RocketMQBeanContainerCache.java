@@ -27,6 +27,7 @@ import org.apache.rocketmq.client.hook.SendMessageHook;
 import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.TransactionListener;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.messaging.converter.CompositeMessageConverter;
 import org.springframework.util.StringUtils;
@@ -57,11 +58,13 @@ public final class RocketMQBeanContainerCache {
 		return CLASSES;
 	}
 
-	public static <T> T getBean(String beanName, Class<T> clazz) {
+	public static <T> @Nullable T getBean(@Nullable String beanName,
+			Class<T> clazz) {
 		return getBean(beanName, clazz, null);
 	}
 
-	public static <T> T getBean(String beanName, Class<T> clazz, T defaultObj) {
+	public static <T> @Nullable T getBean(@Nullable String beanName, Class<T> clazz,
+			@Nullable T defaultObj) {
 		if (!StringUtils.hasLength(beanName)) {
 			return defaultObj;
 		}

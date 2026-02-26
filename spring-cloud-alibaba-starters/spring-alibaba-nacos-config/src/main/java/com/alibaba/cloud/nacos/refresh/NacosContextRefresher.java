@@ -129,8 +129,10 @@ public class NacosContextRefresher
 						NacosConfigRefreshEvent event = new NacosConfigRefreshEvent(this, null, "Refresh Nacos config");
 						event.setDataId(dataId);
 						event.setGroup(group);
+					if (applicationContext != null) {
 						applicationContext.publishEvent(
 								event);
+					}
 						if (log.isDebugEnabled()) {
 							log.debug(String.format(
 									"Publish Nacos config Refresh Event group=%s,dataId=%s,configInfo=%s",
@@ -141,6 +143,9 @@ public class NacosContextRefresher
 		try {
 			if (configService == null && configManager != null) {
 				configService = configManager.getConfigService();
+			}
+			if (configService == null) {
+				throw new IllegalStateException("ConfigService not available");
 			}
 			configService.addListener(dataKey, groupKey, listener);
 			log.info("[Nacos Config] Listening config: dataId={}, group={}", dataKey,

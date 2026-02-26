@@ -95,7 +95,7 @@ public class NacosConfigProperties {
 
 	@Autowired
 	@JsonIgnore
-	private Environment environment;
+	private @Nullable Environment environment;
 	/**
 	 * nacos config server address.
 	 */
@@ -486,7 +486,7 @@ public class NacosConfigProperties {
 						LinkedHashMap::new, Collectors.toList()))
 				.forEach((key, list) -> {
 					list.stream()
-							.reduce((a, b) -> new Config(a.getDataId(), a.getGroup(),
+						.reduce((a, b) -> new Config(a.getDataId() != null ? a.getDataId() : "", a.getGroup(),
 									a.isRefresh() || (b != null && b.isRefresh())))
 							.ifPresent(result::add);
 				});
@@ -613,7 +613,7 @@ public class NacosConfigProperties {
 	 * https://github.com/alibaba/spring-cloud-alibaba/issues/4242
 	 * Mask sensitive fields in logs to avoid credential leakage.
 	 */
-	private static String mask(String value) {
+	private static @Nullable String mask(@Nullable String value) {
 		return (value == null || value.isEmpty()) ? value : "******";
 	}
 

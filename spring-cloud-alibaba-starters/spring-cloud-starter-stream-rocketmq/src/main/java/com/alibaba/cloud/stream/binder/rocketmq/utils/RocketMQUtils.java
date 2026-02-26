@@ -25,6 +25,7 @@ import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.consumer.MessageSelector;
 import org.apache.rocketmq.common.UtilAll;
 import org.apache.rocketmq.remoting.RPCHook;
+import org.jspecify.annotations.Nullable;
 
 
 /**
@@ -87,7 +88,7 @@ public final class RocketMQUtils {
 		return instanceName.toString();
 	}
 
-	public static String getNameServerStr(String nameServer) {
+	public static String getNameServerStr(@Nullable String nameServer) {
 		if (StringUtils.isEmpty(nameServer)) {
 			return RocketMQConst.DEFAULT_NAME_SERVER;
 		}

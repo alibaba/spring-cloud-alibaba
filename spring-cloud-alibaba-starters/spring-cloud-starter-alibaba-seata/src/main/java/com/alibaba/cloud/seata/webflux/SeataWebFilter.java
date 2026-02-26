@@ -53,7 +53,7 @@ public class SeataWebFilter implements WebFilter {
 					if (StringUtils.isNotBlank(RootContext.getXID())) {
 						String headerXid = exchange.getRequest().getHeaders().getFirst(RootContext.KEY_XID);
 
-						if (StringUtils.isEmpty(headerXid)) {
+						if (headerXid == null || StringUtils.isEmpty(headerXid)) {
 							return;
 						}
 

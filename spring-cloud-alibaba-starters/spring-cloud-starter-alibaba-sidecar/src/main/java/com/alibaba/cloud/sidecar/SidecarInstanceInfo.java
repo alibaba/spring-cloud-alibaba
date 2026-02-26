@@ -18,6 +18,8 @@ package com.alibaba.cloud.sidecar;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.boot.health.contributor.Status;
 
 /**
@@ -25,33 +27,39 @@ import org.springframework.boot.health.contributor.Status;
  */
 public class SidecarInstanceInfo {
 
+	@Nullable
 	private String ip;
 
+	@Nullable
 	private Integer port;
 
+	@Nullable
 	private Status status;
 
+	@Nullable
 	public String getIp() {
 		return ip;
 	}
 
-	public void setIp(String ip) {
+	public void setIp(@Nullable String ip) {
 		this.ip = ip;
 	}
 
+	@Nullable
 	public Integer getPort() {
 		return port;
 	}
 
-	public void setPort(Integer port) {
+	public void setPort(@Nullable Integer port) {
 		this.port = port;
 	}
 
+	@Nullable
 	public Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(@Nullable Status status) {
 		this.status = status;
 	}
 

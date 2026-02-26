@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.seata.common.util.StringUtils;
 import org.apache.seata.core.context.RootContext;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +61,7 @@ public class SeataHandlerInterceptor implements HandlerInterceptor {
 
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-			Object handler, Exception e) {
+			Object handler, @Nullable Exception e) {
 		if (StringUtils.isNotBlank(RootContext.getXID())) {
 			String rpcXid = request.getHeader(RootContext.KEY_XID);
 

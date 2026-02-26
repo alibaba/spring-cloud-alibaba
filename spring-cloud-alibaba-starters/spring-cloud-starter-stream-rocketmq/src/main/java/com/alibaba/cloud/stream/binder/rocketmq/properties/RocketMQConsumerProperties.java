@@ -27,6 +27,7 @@ import org.apache.rocketmq.client.impl.consumer.ConsumeMessageOrderlyService;
 import org.apache.rocketmq.common.UtilAll;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.remoting.protocol.heartbeat.MessageModel;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Extended consumer properties for RocketMQ binder.
@@ -45,7 +46,7 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 	 * Queue allocation algorithm specifying how message queues are allocated to each
 	 * consumer clients.
 	 */
-	private String allocateMessageQueueStrategy;
+	private @Nullable String allocateMessageQueueStrategy;
 
 	/**
 	 * The expressions include tags or SQL,as follow:
@@ -55,7 +56,7 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 	 * Determines whether there are specific characters "{@code ||}" in the expression to
 	 * determine how the message is filtered,tags or SQL.
 	 */
-	private String subscription;
+	private @Nullable String subscription;
 
 	/**
 	 * Delay some time when exception occur .
@@ -137,19 +138,20 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 		return this;
 	}
 
-	public String getAllocateMessageQueueStrategy() {
+	public @Nullable String getAllocateMessageQueueStrategy() {
 		return allocateMessageQueueStrategy;
 	}
 
-	public void setAllocateMessageQueueStrategy(String allocateMessageQueueStrategy) {
+	public void setAllocateMessageQueueStrategy(
+			@Nullable String allocateMessageQueueStrategy) {
 		this.allocateMessageQueueStrategy = allocateMessageQueueStrategy;
 	}
 
-	public String getSubscription() {
+	public @Nullable String getSubscription() {
 		return subscription;
 	}
 
-	public void setSubscription(String subscription) {
+	public void setSubscription(@Nullable String subscription) {
 		this.subscription = subscription;
 	}
 
@@ -410,7 +412,7 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 		 * Ack state handling, including receive, reject, and retry, when a consumption
 		 * exception occurs.
 		 */
-		private String errAcknowledge;
+		private @Nullable String errAcknowledge;
 
 		private long pullThresholdForAll = 1000L;
 
@@ -448,11 +450,11 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 			this.consumerTimeoutMillisWhenSuspend = consumerTimeoutMillisWhenSuspend;
 		}
 
-		public String getErrAcknowledge() {
+		public @Nullable String getErrAcknowledge() {
 			return errAcknowledge;
 		}
 
-		public void setErrAcknowledge(String errAcknowledge) {
+		public void setErrAcknowledge(@Nullable String errAcknowledge) {
 			this.errAcknowledge = errAcknowledge;
 		}
 

@@ -55,7 +55,11 @@ public class NacosDruidConfigFilter extends FilterAdapter {
 			return;
 		}
 
-		ConfigService configService = NacosConfigManager.getInstance().getConfigService();
+		NacosConfigManager nacosConfigManager = NacosConfigManager.getInstance();
+		if (nacosConfigManager == null) {
+			return;
+		}
+		ConfigService configService = nacosConfigManager.getConfigService();
 
 		try {
 			String druidProperties = configService.getConfig(proxyDataId, groupMatched, 3000L);

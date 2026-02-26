@@ -18,10 +18,12 @@ package com.alibaba.cloud.stream.binder.rocketmq.aot.hint;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQSpecificPropertiesProvider;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.aot.hint.ExecutableMode;
 import org.springframework.aot.hint.RuntimeHints;
@@ -34,7 +36,7 @@ import org.springframework.util.ReflectionUtils;
 public class RocketMQSpecificPropertiesProviderHints implements RuntimeHintsRegistrar {
 
 	@Override
-	public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
+	public void registerHints(RuntimeHints hints, @Nullable ClassLoader classLoader) {
 		Constructor<RocketMQSpecificPropertiesProvider> constructor;
 		try {
 			constructor = RocketMQSpecificPropertiesProvider.class.getConstructor();
@@ -45,15 +47,19 @@ public class RocketMQSpecificPropertiesProviderHints implements RuntimeHintsRegi
 		hints.reflection().registerConstructor(constructor, ExecutableMode.INVOKE);
 		// getConsumer
 		Method getConsumer = ReflectionUtils.findMethod(RocketMQSpecificPropertiesProvider.class, "getConsumer");
-		hints.reflection().registerMethod(getConsumer, ExecutableMode.INVOKE);
+		hints.reflection().registerMethod(Objects.requireNonNull(getConsumer),
+				ExecutableMode.INVOKE);
 		// setConsumer
 		Method setConsumer = ReflectionUtils.findMethod(RocketMQSpecificPropertiesProvider.class, "setConsumer", RocketMQConsumerProperties.class);
-		hints.reflection().registerMethod(setConsumer, ExecutableMode.INVOKE);
+		hints.reflection().registerMethod(Objects.requireNonNull(setConsumer),
+				ExecutableMode.INVOKE);
 		// getProducer
 		Method getProducer = ReflectionUtils.findMethod(RocketMQSpecificPropertiesProvider.class, "getProducer");
-		hints.reflection().registerMethod(getProducer, ExecutableMode.INVOKE);
+		hints.reflection().registerMethod(Objects.requireNonNull(getProducer),
+				ExecutableMode.INVOKE);
 		// setProducer
 		Method setProducer = ReflectionUtils.findMethod(RocketMQSpecificPropertiesProvider.class, "setProducer", RocketMQProducerProperties.class);
-		hints.reflection().registerMethod(setProducer, ExecutableMode.INVOKE);
+		hints.reflection().registerMethod(Objects.requireNonNull(setProducer),
+				ExecutableMode.INVOKE);
 	}
 }

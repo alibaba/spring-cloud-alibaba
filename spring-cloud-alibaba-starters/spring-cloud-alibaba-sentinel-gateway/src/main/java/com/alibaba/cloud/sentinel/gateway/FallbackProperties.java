@@ -17,6 +17,7 @@
 package com.alibaba.cloud.sentinel.gateway;
 
 import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -54,7 +55,7 @@ public class FallbackProperties {
 	 */
 	private String contentType = MediaType.APPLICATION_JSON.toString();
 
-	public String getMode() {
+	public @Nullable String getMode() {
 		return mode;
 	}
 
@@ -63,7 +64,7 @@ public class FallbackProperties {
 		return this;
 	}
 
-	public String getRedirect() {
+	public @Nullable String getRedirect() {
 		return redirect;
 	}
 
@@ -72,7 +73,7 @@ public class FallbackProperties {
 		return this;
 	}
 
-	public String getResponseBody() {
+	public @Nullable String getResponseBody() {
 		return responseBody;
 	}
 
@@ -95,7 +96,8 @@ public class FallbackProperties {
 	}
 
 	public FallbackProperties setContentType(@Nullable String contentType) {
-		this.contentType = contentType;
+		this.contentType = contentType != null ? contentType
+				: MediaType.APPLICATION_JSON.toString();
 		return this;
 	}
 

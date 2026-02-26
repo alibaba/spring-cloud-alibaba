@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq;
 
+import java.util.Objects;
+
 import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQBeanContainerCache;
 import com.alibaba.cloud.stream.binder.rocketmq.extend.ErrorAcknowledgeHandler;
 import com.alibaba.cloud.stream.binder.rocketmq.integration.inbound.RocketMQInboundChannelAdapter;
@@ -165,16 +167,25 @@ public class RocketMQMessageChannelBinder extends
 			ExtendedConsumerProperties<RocketMQConsumerProperties> properties) {
 		return message -> {
 			if (message.getPayload() instanceof MessagingException payload) {
+				if (payload.getFailedMessage() == null) {
+					return;
+				}
 				AcknowledgmentCallback ack = StaticMessageHeaderAccessor
 						.getAcknowledgmentCallback(
 								payload.getFailedMessage());
 				if (ack != null) {
+					String errAcknowledge = properties.getExtension().getPull()
+							.getErrAcknowledge();
 					ErrorAcknowledgeHandler handler = RocketMQBeanContainerCache.getBean(
-							properties.getExtension().getPull().getErrAcknowledge(),
+							errAcknowledge,
 							ErrorAcknowledgeHandler.class,
 							new DefaultErrorAcknowledgeHandler());
+					if (handler == null) {
+						return;
+					}
 					ack.acknowledge(
-							handler.handler(payload.getFailedMessage()));
+							handler.handler(Objects.requireNonNull(
+									payload.getFailedMessage())));
 				}
 			}
 		};

@@ -27,6 +27,7 @@ import reactor.core.scheduler.Schedulers;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.health.contributor.Health;
 import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.boot.health.contributor.Status;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -63,11 +64,14 @@ public class SidecarHealthChecker {
 
 	public void check() {
 		Schedulers.single().schedulePeriodically(() -> {
-			String applicationName = environment.getProperty("spring.application.name");
-			String ip = sidecarProperties.getIp();
+			String applicationName = Objects
+					.requireNonNullElse(environment.getProperty("spring.application.name"),
+							"sidecar-application");
+			String ip = Objects.requireNonNullElse(sidecarProperties.getIp(), "127.0.0.1");
 			Integer port = sidecarProperties.getPort();
 
-			Status status = healthIndicator.health().getStatus();
+			Health health = healthIndicator.health();
+			Status status = health != null ? health.getStatus() : Status.UNKNOWN;
 
 			SidecarInstanceInfo sidecarInstanceInfo = instanceCache(applicationName, ip,
 					port, status);

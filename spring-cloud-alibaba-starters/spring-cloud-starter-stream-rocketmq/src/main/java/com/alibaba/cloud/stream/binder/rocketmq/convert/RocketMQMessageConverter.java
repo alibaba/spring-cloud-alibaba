@@ -19,6 +19,8 @@ package com.alibaba.cloud.stream.binder.rocketmq.convert;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.messaging.Message;
 import org.springframework.messaging.converter.AbstractMessageConverter;
 import org.springframework.messaging.converter.ByteArrayMessageConverter;
@@ -110,7 +112,8 @@ public class RocketMQMessageConverter extends AbstractMessageConverter {
 	 * @since 4.2
 	 */
 	@Override
-	protected Object convertFromInternal(Message<?> message, Class<?> targetClass, Object conversionHint) {
+	protected @Nullable Object convertFromInternal(Message<?> message,
+			Class<?> targetClass, @Nullable Object conversionHint) {
 		Object payload = null;
 		for (MessageConverter converter : getMessageConverter().getConverters()) {
 			try {

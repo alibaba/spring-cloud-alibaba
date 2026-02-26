@@ -57,8 +57,8 @@ public class SidecarConsulAutoConfiguration {
 			SidecarProperties sidecarProperties) {
 		return SidecarConsulAutoRegistration.registration(
 				autoServiceRegistrationProperties, properties, applicationContext,
-				registrationCustomizers.getIfAvailable(),
-				managementRegistrationCustomizers.getIfAvailable(), heartbeatProperties,
+				registrationCustomizers.getIfAvailable(List::of),
+				managementRegistrationCustomizers.getIfAvailable(List::of), heartbeatProperties,
 				sidecarProperties);
 	}
 

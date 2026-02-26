@@ -43,10 +43,13 @@ public final class RocketMQMessageConverterSupport {
 	private RocketMQMessageConverterSupport() {
 	}
 
-	private static final CompositeMessageConverter MESSAGE_CONVERTER = RocketMQBeanContainerCache
-			.getBean(RocketMQMessageConverter.DEFAULT_NAME,
-					CompositeMessageConverter.class,
-					new RocketMQMessageConverter().getMessageConverter());
+	private static final CompositeMessageConverter MESSAGE_CONVERTER = Objects
+			.requireNonNullElseGet(
+					RocketMQBeanContainerCache.getBean(
+							RocketMQMessageConverter.DEFAULT_NAME,
+							CompositeMessageConverter.class,
+							null),
+					() -> new RocketMQMessageConverter().getMessageConverter());
 
 	public static Message convertMessage2Spring(MessageExt message) {
 		MessageBuilder messageBuilder = MessageBuilder.withPayload(message.getBody())
@@ -88,7 +91,8 @@ public final class RocketMQMessageConverterSupport {
 			String destination, Message<?> source) {
 		Message<?> message = MESSAGE_CONVERTER.toMessage(source.getPayload(),
 				source.getHeaders());
-		assert message != null;
+		message = Objects.requireNonNull(message,
+				"message must not be null after conversion");
 		MessageBuilder<?> builder = MessageBuilder.fromMessage(message);
 		builder.setHeaderIfAbsent(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.TEXT_PLAIN);
 		message = builder.build();
@@ -128,10 +132,10 @@ public final class RocketMQMessageConverterSupport {
 	private static org.apache.rocketmq.common.message.Message getAndWrapMessage(
 			String topic, MessageHeaders headers, byte[] payloads) {
 		if (topic == null || topic.length() < 1) {
-			return null;
+			throw new IllegalArgumentException("topic must not be empty");
 		}
 		if (payloads == null || payloads.length < 1) {
-			return null;
+			throw new IllegalArgumentException("payload must not be empty");
 		}
 		org.apache.rocketmq.common.message.Message rocketMsg = new org.apache.rocketmq.common.message.Message(
 				topic, payloads);

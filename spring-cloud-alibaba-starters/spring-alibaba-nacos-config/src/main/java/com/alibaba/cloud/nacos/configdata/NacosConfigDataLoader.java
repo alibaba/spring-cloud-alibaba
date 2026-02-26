@@ -70,13 +70,19 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 		return doLoad(context, resource);
 	}
 
-	public ConfigData doLoad(ConfigDataLoaderContext context,
+	public @Nullable ConfigData doLoad(ConfigDataLoaderContext context,
 			NacosConfigDataResource resource) {
 		try {
-			ConfigService configService = getBean(context, NacosConfigManager.class)
-					.getConfigService();
+			NacosConfigManager configManager = getBean(context, NacosConfigManager.class);
+			if (configManager == null) {
+				throw new IllegalStateException("NacosConfigManager not available");
+			}
+			ConfigService configService = configManager.getConfigService();
 			NacosConfigProperties properties = getBean(context,
 					NacosConfigProperties.class);
+			if (properties == null) {
+				throw new IllegalStateException("NacosConfigProperties not available");
+			}
 
 			NacosItemConfig config = resource.getConfig();
 			// pull config from nacos

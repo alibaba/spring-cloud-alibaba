@@ -37,6 +37,7 @@ import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
 import jakarta.annotation.PostConstruct;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,28 +85,28 @@ public class NacosDiscoveryProperties {
 	/**
 	 * nacos discovery server address.
 	 */
-	private String serverAddr;
+	private @Nullable String serverAddr;
 
 	/**
 	 * the nacos authentication username.
 	 */
-	private String username;
+	private @Nullable String username;
 
 	/**
 	 * the nacos authentication password.
 	 */
-	private String password;
+	private @Nullable String password;
 
 	/**
 	 * the domain name of a service, through which the server address can be dynamically
 	 * obtained.
 	 */
-	private String endpoint;
+	private @Nullable String endpoint;
 
 	/**
 	 * namespace, separation registry of different environments.
 	 */
-	private String namespace;
+	private @Nullable String namespace;
 
 	/**
 	 * watch delay,duration to pull new service from nacos server.
@@ -115,13 +116,13 @@ public class NacosDiscoveryProperties {
 	/**
 	 * nacos naming log file name.
 	 */
-	private String logName;
+	private @Nullable String logName;
 
 	/**
 	 * service name to registry.
 	 */
 	@Value("${spring.cloud.nacos.discovery.service:${spring.application.name:}}")
-	private String service;
+	private @Nullable String service;
 
 	/**
 	 * weight for service instance, the larger the value, the larger the weight.
@@ -131,7 +132,7 @@ public class NacosDiscoveryProperties {
 	/**
 	 * cluster name for nacos .
 	 */
-	private String clusterName;
+	private @Nullable String clusterName;
 
 	/**
 	 * group name for nacos.
@@ -158,7 +159,7 @@ public class NacosDiscoveryProperties {
 	 * The ip address your want to register for your service instance, needn't to set it
 	 * if the auto detect ip works well.
 	 */
-	private String ip;
+	private @Nullable String ip;
 
 	/**
 	 * which network interface's ip you want to register.
@@ -170,7 +171,7 @@ public class NacosDiscoveryProperties {
 	 * When IPv6 is chosen but no IPv6 can be found, system will automatically find IPv4 to ensure there is an
 	 * available service address.
 	 */
-	private String ipType;
+	private @Nullable String ipType;
 
 	/**
 	 * The port your want to register for your service instance, needn't to set it if the
@@ -186,27 +187,27 @@ public class NacosDiscoveryProperties {
 	/**
 	 * access key for namespace.
 	 */
-	private String accessKey;
+	private @Nullable String accessKey;
 
 	/**
 	 * secret key for namespace.
 	 */
-	private String secretKey;
+	private @Nullable String secretKey;
 
 	/**
 	 * Heart beat interval. Time unit: millisecond.
 	 */
-	private Integer heartBeatInterval;
+	private @Nullable Integer heartBeatInterval;
 
 	/**
 	 * Heart beat timeout. Time unit: millisecond.
 	 */
-	private Integer heartBeatTimeout;
+	private @Nullable Integer heartBeatTimeout;
 
 	/**
 	 * Ip delete timeout. Time unit: millisecond.
 	 */
-	private Integer ipDeleteTimeout;
+	private @Nullable Integer ipDeleteTimeout;
 
 	/**
 	 * If instance is enabled to accept request. The default value is true.
@@ -338,27 +339,27 @@ public class NacosDiscoveryProperties {
 		return nacosServiceManager.getNamingService();
 	}
 
-	public String getEndpoint() {
+	public @Nullable String getEndpoint() {
 		return endpoint;
 	}
 
-	public void setEndpoint(String endpoint) {
+	public void setEndpoint(@Nullable String endpoint) {
 		this.endpoint = endpoint;
 	}
 
-	public String getNamespace() {
+	public @Nullable String getNamespace() {
 		return namespace;
 	}
 
-	public void setNamespace(String namespace) {
+	public void setNamespace(@Nullable String namespace) {
 		this.namespace = namespace;
 	}
 
-	public String getLogName() {
+	public @Nullable String getLogName() {
 		return logName;
 	}
 
-	public void setLogName(String logName) {
+	public void setLogName(@Nullable String logName) {
 		this.logName = logName;
 	}
 
@@ -374,19 +375,19 @@ public class NacosDiscoveryProperties {
 		this.weight = weight;
 	}
 
-	public String getClusterName() {
+	public @Nullable String getClusterName() {
 		return clusterName;
 	}
 
-	public void setClusterName(String clusterName) {
+	public void setClusterName(@Nullable String clusterName) {
 		this.clusterName = clusterName;
 	}
 
-	public String getService() {
+	public @Nullable String getService() {
 		return service;
 	}
 
-	public void setService(String service) {
+	public void setService(@Nullable String service) {
 		this.service = service;
 	}
 
@@ -398,19 +399,19 @@ public class NacosDiscoveryProperties {
 		this.registerEnabled = registerEnabled;
 	}
 
-	public String getIp() {
+	public @Nullable String getIp() {
 		return ip;
 	}
 
-	public void setIp(String ip) {
+	public void setIp(@Nullable String ip) {
 		this.ip = ip;
 	}
 
-	public String getIpType() {
+	public @Nullable String getIpType() {
 		return ipType;
 	}
 
-	public void setIpType(String ipType) {
+	public void setIpType(@Nullable String ipType) {
 		this.ipType = ipType;
 	}
 
@@ -446,51 +447,51 @@ public class NacosDiscoveryProperties {
 		this.metadata = metadata;
 	}
 
-	public String getServerAddr() {
+	public @Nullable String getServerAddr() {
 		return serverAddr;
 	}
 
-	public void setServerAddr(String serverAddr) {
+	public void setServerAddr(@Nullable String serverAddr) {
 		this.serverAddr = serverAddr;
 	}
 
-	public String getAccessKey() {
+	public @Nullable String getAccessKey() {
 		return accessKey;
 	}
 
-	public void setAccessKey(String accessKey) {
+	public void setAccessKey(@Nullable String accessKey) {
 		this.accessKey = accessKey;
 	}
 
-	public String getSecretKey() {
+	public @Nullable String getSecretKey() {
 		return secretKey;
 	}
 
-	public void setSecretKey(String secretKey) {
+	public void setSecretKey(@Nullable String secretKey) {
 		this.secretKey = secretKey;
 	}
 
-	public Integer getHeartBeatInterval() {
+	public @Nullable Integer getHeartBeatInterval() {
 		return heartBeatInterval;
 	}
 
-	public void setHeartBeatInterval(Integer heartBeatInterval) {
+	public void setHeartBeatInterval(@Nullable Integer heartBeatInterval) {
 		this.heartBeatInterval = heartBeatInterval;
 	}
 
-	public Integer getHeartBeatTimeout() {
+	public @Nullable Integer getHeartBeatTimeout() {
 		return heartBeatTimeout;
 	}
 
-	public void setHeartBeatTimeout(Integer heartBeatTimeout) {
+	public void setHeartBeatTimeout(@Nullable Integer heartBeatTimeout) {
 		this.heartBeatTimeout = heartBeatTimeout;
 	}
 
-	public Integer getIpDeleteTimeout() {
+	public @Nullable Integer getIpDeleteTimeout() {
 		return ipDeleteTimeout;
 	}
 
-	public void setIpDeleteTimeout(Integer ipDeleteTimeout) {
+	public void setIpDeleteTimeout(@Nullable Integer ipDeleteTimeout) {
 		this.ipDeleteTimeout = ipDeleteTimeout;
 	}
 
@@ -518,19 +519,19 @@ public class NacosDiscoveryProperties {
 		this.group = group;
 	}
 
-	public String getUsername() {
+	public @Nullable String getUsername() {
 		return username;
 	}
 
-	public void setUsername(String username) {
+	public void setUsername(@Nullable String username) {
 		this.username = username;
 	}
 
-	public String getPassword() {
+	public @Nullable String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
+	public void setPassword(@Nullable String password) {
 		this.password = password;
 	}
 
@@ -687,23 +688,25 @@ public class NacosDiscoveryProperties {
 
 	public Properties getNacosProperties() {
 		Properties properties = new Properties();
-		properties.put(SERVER_ADDR, serverAddr);
+		properties.put(SERVER_ADDR, Objects.toString(serverAddr, ""));
 		properties.put(USERNAME, Objects.toString(username, ""));
 		properties.put(PASSWORD, Objects.toString(password, ""));
-		properties.put(NAMESPACE, namespace);
-		properties.put(UtilAndComs.NACOS_NAMING_LOG_NAME, logName);
+		properties.put(NAMESPACE, Objects.toString(namespace, ""));
+		properties.put(UtilAndComs.NACOS_NAMING_LOG_NAME,
+				Objects.toString(logName, ""));
 
-		if (endpoint.contains(":")) {
-			int index = endpoint.indexOf(":");
-			properties.put(ENDPOINT, endpoint.substring(0, index));
-			properties.put(ENDPOINT_PORT, endpoint.substring(index + 1));
+		String endpointValue = Objects.toString(endpoint, "");
+		if (endpointValue.contains(":")) {
+			int index = endpointValue.indexOf(":");
+			properties.put(ENDPOINT, endpointValue.substring(0, index));
+			properties.put(ENDPOINT_PORT, endpointValue.substring(index + 1));
 		}
 		else {
-			properties.put(ENDPOINT, endpoint);
+			properties.put(ENDPOINT, endpointValue);
 		}
 
-		properties.put(ACCESS_KEY, accessKey);
-		properties.put(SECRET_KEY, secretKey);
+		properties.put(ACCESS_KEY, Objects.toString(accessKey, ""));
+		properties.put(SECRET_KEY, Objects.toString(secretKey, ""));
 		// only used for instance.setClusterName()
 //		properties.put(CLUSTER_NAME, clusterName);
 		properties.put(NAMING_LOAD_CACHE_AT_START, namingLoadCacheAtStart);

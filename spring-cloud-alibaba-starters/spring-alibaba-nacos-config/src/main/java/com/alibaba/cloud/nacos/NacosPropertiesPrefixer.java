@@ -40,7 +40,10 @@ public final class NacosPropertiesPrefixer {
 	private static String getPrefixFromSpi() {
 		ServiceLoader<NacosPropertiesPrefixProvider> load = ServiceLoader.load(NacosPropertiesPrefixProvider.class);
 		for (NacosPropertiesPrefixProvider provider : load) {
-			return provider.getPrefix();
+			String prefix = provider.getPrefix();
+			if (prefix != null) {
+				return prefix;
+			}
 		}
 		return "";
 	}
@@ -48,7 +51,7 @@ public final class NacosPropertiesPrefixer {
 	public static String getPrefix(Environment environment) {
 		String prefix = "spring.nacos";
 		String prefixFromProperties = environment.getProperty("spring.nacos.properties.prefix");
-		if (StringUtils.isBlank(prefixFromProperties)) {
+		if (prefixFromProperties == null || prefixFromProperties.isEmpty()) {
 			if (StringUtils.isNotBlank(NacosPropertiesPrefixer.PREFIX)) {
 				prefix = NacosPropertiesPrefixer.PREFIX;
 			}
@@ -72,7 +75,10 @@ public final class NacosPropertiesPrefixer {
 			}
 		}
 		else {
-			prefix = bind.get();
+			String boundValue = bind.get();
+			if (boundValue != null) {
+				prefix = boundValue;
+			}
 		}
 
 		if (StringUtils.isNotBlank(prefix) && prefix.endsWith(".")) {

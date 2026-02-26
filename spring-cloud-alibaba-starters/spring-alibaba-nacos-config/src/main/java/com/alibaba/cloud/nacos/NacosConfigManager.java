@@ -35,7 +35,7 @@ public class NacosConfigManager {
 
 	private @Nullable static ConfigService service;
 
-	private static NacosConfigManager INSTANCE;
+	private @Nullable static NacosConfigManager INSTANCE;
 
 	private final NacosConfigProperties nacosConfigProperties;
 
@@ -43,7 +43,7 @@ public class NacosConfigManager {
 		this.nacosConfigProperties = nacosConfigProperties;
 	}
 
-	public static NacosConfigManager getInstance() {
+	public static @Nullable NacosConfigManager getInstance() {
 		return INSTANCE;
 	}
 
@@ -72,9 +72,11 @@ public class NacosConfigManager {
 			}
 		}
 		catch (NacosException e) {
-			log.error(e.getMessage());
+			String serverAddr = nacosConfigProperties.getServerAddr();
+			String message = e.getMessage();
+			log.error(message != null ? message : "NacosException");
 			throw new NacosConnectionFailureException(
-					nacosConfigProperties.getServerAddr(), e.getMessage(), e);
+					serverAddr != null ? serverAddr : "", message != null ? message : "", e);
 		}
 		return service;
 	}
@@ -82,6 +84,9 @@ public class NacosConfigManager {
 	public ConfigService getConfigService() {
 		if (Objects.isNull(service)) {
 			createConfigService(this.nacosConfigProperties);
+		}
+		if (service == null) {
+			throw new IllegalStateException("ConfigService is not initialized");
 		}
 		return service;
 	}

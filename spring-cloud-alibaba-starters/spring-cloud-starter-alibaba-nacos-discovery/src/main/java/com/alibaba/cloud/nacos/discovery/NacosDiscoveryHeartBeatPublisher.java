@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,8 +46,8 @@ public class NacosDiscoveryHeartBeatPublisher implements ApplicationEventPublish
 	private final ThreadPoolTaskScheduler taskScheduler;
 	private final AtomicLong nacosHeartBeatIndex = new AtomicLong(0);
 	private final AtomicBoolean running = new AtomicBoolean(false);
-	private ApplicationEventPublisher publisher;
-	private ScheduledFuture<?> heartBeatFuture;
+	private @Nullable ApplicationEventPublisher publisher;
+	private @Nullable ScheduledFuture<?> heartBeatFuture;
 
 	public NacosDiscoveryHeartBeatPublisher(NacosDiscoveryProperties nacosDiscoveryProperties) {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
@@ -100,6 +101,9 @@ public class NacosDiscoveryHeartBeatPublisher implements ApplicationEventPublish
 	 * nacos doesn't support watch now , publish an event every 30 seconds.
 	 */
 	public void publishHeartBeat() {
+		if (this.publisher == null) {
+			return;
+		}
 		HeartbeatEvent event = new HeartbeatEvent(this, nacosHeartBeatIndex.getAndIncrement());
 		this.publisher.publishEvent(event);
 	}

@@ -33,6 +33,7 @@ import org.apache.rocketmq.client.consumer.MessageSelector;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.common.message.MessageQueue;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +56,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 	private final static Logger log = LoggerFactory
 			.getLogger(RocketMQMessageSource.class);
 
-	private DefaultLitePullConsumer consumer;
+	private @Nullable DefaultLitePullConsumer consumer;
 
 	private final Map<String, Collection<MessageQueue>> messageQueuesForTopic = new ConcurrentHashMap<>();
 
@@ -67,13 +68,15 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 
 	private final ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties;
 
-	private volatile Iterator<MessageExt> messageExtIterator = null;
+	private volatile @Nullable Iterator<MessageExt> messageExtIterator = null;
 
 	public RocketMQMessageSource(String name,
 			ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties) {
 		this.topic = name;
+		String subscription = extendedConsumerProperties.getExtension()
+				.getSubscription();
 		this.messageSelector = RocketMQUtils.getMessageSelector(
-				extendedConsumerProperties.getExtension().getSubscription());
+				subscription != null ? subscription : "");
 		this.extendedConsumerProperties = extendedConsumerProperties;
 
 	}
@@ -107,10 +110,10 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 		finally {
 			InstrumentationManager.addHealthInstrumentation(instrumentation);
 		}
-		this.running = true;
+		this.running = this.consumer != null;
 	}
 
-	private MessageQueue acquireCurrentMessageQueue(String topic, int queueId,
+	private @Nullable MessageQueue acquireCurrentMessageQueue(String topic, int queueId,
 			String brokerName) {
 		Collection<MessageQueue> messageQueueSet = messageQueuesForTopic.get(topic);
 		if (CollectionUtils.isEmpty(messageQueueSet)) {
@@ -140,7 +143,10 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 	}
 
 	@Override
-	protected synchronized Object doReceive() {
+	protected synchronized @Nullable Object doReceive() {
+		if (consumer == null) {
+			return null;
+		}
 		if (messageExtIterator == null) {
 			List<MessageExt> messageExtList = consumer.poll();
 			if (CollectionUtils.isEmpty(messageExtList)) {

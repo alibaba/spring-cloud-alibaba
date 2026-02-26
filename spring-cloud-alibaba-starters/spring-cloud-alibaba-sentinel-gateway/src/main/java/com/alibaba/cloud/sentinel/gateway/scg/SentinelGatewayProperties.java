@@ -36,7 +36,7 @@ public class SentinelGatewayProperties {
 
 	private Integer order = Ordered.HIGHEST_PRECEDENCE;
 
-	public FallbackProperties getFallback() {
+	public @Nullable FallbackProperties getFallback() {
 		return fallback;
 	}
 

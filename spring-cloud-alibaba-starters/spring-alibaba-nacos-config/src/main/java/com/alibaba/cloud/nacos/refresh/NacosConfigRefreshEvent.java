@@ -26,17 +26,17 @@ public class NacosConfigRefreshEvent extends ApplicationEvent {
 
 	@Nullable String group;
 
-	private Object event;
+	private @Nullable Object event;
 
 	private String eventDesc;
 
-	public NacosConfigRefreshEvent(Object source, Object event, String eventDesc) {
+	public NacosConfigRefreshEvent(Object source, @Nullable Object event, String eventDesc) {
 		super(source);
 		this.event = event;
 		this.eventDesc = eventDesc;
 	}
 
-	public Object getEvent() {
+	public @Nullable Object getEvent() {
 		return this.event;
 	}
 

@@ -28,6 +28,7 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.naming.pojo.ListView;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.cloud.client.ServiceInstance;
 
@@ -84,7 +85,7 @@ public class NacosServiceDiscovery {
 		return result;
 	}
 
-	public static ServiceInstance hostToServiceInstance(Instance instance,
+	public static @Nullable ServiceInstance hostToServiceInstance(Instance instance,
 			String serviceId) {
 		if (instance == null || !instance.isEnabled() || !instance.isHealthy()) {
 			return null;

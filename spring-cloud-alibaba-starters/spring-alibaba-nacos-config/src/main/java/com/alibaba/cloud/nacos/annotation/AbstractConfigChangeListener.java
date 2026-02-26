@@ -32,10 +32,10 @@ public abstract class AbstractConfigChangeListener extends AbstractSharedListene
 
 	@Nullable String lastContent;
 
-	Object target;
+	@Nullable Object target;
 
 	@Override
-	public Object getTarget() {
+	public @Nullable Object getTarget() {
 		return target;
 	}
 

@@ -23,7 +23,6 @@ import java.util.List;
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
 import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
 import com.alibaba.cloud.nacos.refresh.NacosSnapshotConfigManager;
-import com.alibaba.cloud.nacos.utils.StringUtils;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
 import org.jspecify.annotations.Nullable;
@@ -86,7 +85,7 @@ public class NacosPropertySourceBuilder {
 		String data = null;
 		try {
 			String configSnapshot = NacosSnapshotConfigManager.getAndRemoveConfigSnapshot(dataId, group);
-			if (StringUtils.isEmpty(configSnapshot)) {
+			if (configSnapshot == null || configSnapshot.isEmpty()) {
 				log.debug("get config from nacos, dataId: {}, group: {}", dataId, group);
 				data = configService.getConfig(dataId, group, timeout);
 			}
@@ -95,7 +94,7 @@ public class NacosPropertySourceBuilder {
 						dataId, group);
 				data = configSnapshot;
 			}
-			if (StringUtils.isEmpty(data)) {
+			if (data == null || data.isEmpty()) {
 				log.warn(
 						"Ignore the empty nacos configuration and get it based on dataId[{}] & group[{}]",
 						dataId, group);
@@ -105,6 +104,9 @@ public class NacosPropertySourceBuilder {
 				log.debug(String.format(
 						"Loading nacos data, dataId: '%s', group: '%s', data: %s", dataId,
 						group, data));
+			}
+			if (data == null) {
+				return Collections.emptyList();
 			}
 			return NacosDataParserHandler.getInstance().parseNacosData(dataId, data,
 					fileExtension);

@@ -21,8 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FallbackPropertiesTest {
 
@@ -41,11 +40,13 @@ public class FallbackPropertiesTest {
 				.setResponseStatus(HttpStatus.TOO_EARLY.value())
 				.setContentType("application/json");
 
-		assertEquals("response", properties.getMode());
-		assertEquals("http://example.com", properties.getRedirect());
-		assertEquals("{'message': 'Fallback response'}", properties.getResponseBody());
-		assertEquals(HttpStatus.TOO_EARLY.value(), properties.getResponseStatus().intValue());
-		assertEquals("application/json", properties.getContentType());
+		assertThat(properties.getMode()).isEqualTo("response");
+		assertThat(properties.getRedirect()).isEqualTo("http://example.com");
+		assertThat(properties.getResponseBody())
+				.isEqualTo("{'message': 'Fallback response'}");
+		assertThat(properties.getResponseStatus().intValue())
+				.isEqualTo(HttpStatus.TOO_EARLY.value());
+		assertThat(properties.getContentType()).isEqualTo("application/json");
 	}
 
 	/**
@@ -55,10 +56,12 @@ public class FallbackPropertiesTest {
 	@Test
 	public void testDefaultValues() {
 		FallbackProperties properties = new FallbackProperties();
-		assertNull(properties.getMode());
-		assertNull(properties.getRedirect());
-		assertNull(properties.getResponseBody());
-		assertEquals(HttpStatus.TOO_MANY_REQUESTS.value(), properties.getResponseStatus().intValue());
-		assertEquals(MediaType.APPLICATION_JSON.toString(), properties.getContentType());
+		assertThat(properties.getMode()).isNull();
+		assertThat(properties.getRedirect()).isNull();
+		assertThat(properties.getResponseBody()).isNull();
+		assertThat(properties.getResponseStatus().intValue())
+				.isEqualTo(HttpStatus.TOO_MANY_REQUESTS.value());
+		assertThat(properties.getContentType())
+				.isEqualTo(MediaType.APPLICATION_JSON.toString());
 	}
 }

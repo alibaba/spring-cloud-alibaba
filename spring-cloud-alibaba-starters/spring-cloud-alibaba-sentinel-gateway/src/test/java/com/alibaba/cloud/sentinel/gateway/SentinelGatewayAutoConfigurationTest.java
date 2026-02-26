@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SentinelGatewayAutoConfigurationTest {
 
@@ -56,8 +56,9 @@ public class SentinelGatewayAutoConfigurationTest {
 	public void testJsonGatewayFlowConverter() {
 		JsonConverter<GatewayFlowRule> jsonGatewayFlowConverter = json.jsonGatewayFlowConverter();
 		Collection<GatewayFlowRule> gatewayFlowRules = jsonGatewayFlowConverter.convert(readFileContent("classpath: gatewayflowrule.json"));
-		assertEquals(1, gatewayFlowRules.size());
-		assertEquals("test", new ArrayList<>(gatewayFlowRules).get(0).getResource());
+		assertThat(gatewayFlowRules).hasSize(1);
+		assertThat(new ArrayList<>(gatewayFlowRules).get(0).getResource())
+				.isEqualTo("test");
 	}
 
 	/**
@@ -68,8 +69,9 @@ public class SentinelGatewayAutoConfigurationTest {
 	public void testJsonApiConverter() {
 		JsonConverter<ApiDefinition> jsonApiConverter = json.jsonApiConverter();
 		Collection<ApiDefinition> apiDefinitions = jsonApiConverter.convert(readFileContent("classpath: apidefinition.json"));
-		assertEquals(1, apiDefinitions.size());
-		assertEquals("test", new ArrayList<>(apiDefinitions).get(0).getApiName());
+		assertThat(apiDefinitions).hasSize(1);
+		assertThat(new ArrayList<>(apiDefinitions).get(0).getApiName())
+				.isEqualTo("test");
 	}
 
 	/**
@@ -80,8 +82,9 @@ public class SentinelGatewayAutoConfigurationTest {
 	public void testXmlGatewayFlowConverter() {
 		XmlConverter<GatewayFlowRule> xmlGatewayFlowConverter = xml.xmlGatewayFlowConverter();
 		Collection<GatewayFlowRule> gatewayFlowRules = xmlGatewayFlowConverter.convert(readFileContent("classpath: gatewayflowrule.xml"));
-		assertEquals(1, gatewayFlowRules.size());
-		assertEquals("test", new ArrayList<>(gatewayFlowRules).get(0).getResource());
+		assertThat(gatewayFlowRules).hasSize(1);
+		assertThat(new ArrayList<>(gatewayFlowRules).get(0).getResource())
+				.isEqualTo("test");
 	}
 
 	/**
@@ -92,8 +95,9 @@ public class SentinelGatewayAutoConfigurationTest {
 	public void testSentinelXmlConfiguration() {
 		XmlConverter<ApiDefinition> xmlApiConverter = xml.xmlApiConverter();
 		Collection<ApiDefinition> apiDefinitions = xmlApiConverter.convert(readFileContent("classpath: apidefinition.xml"));
-		assertEquals(1, apiDefinitions.size());
-		assertEquals("test", new ArrayList<>(apiDefinitions).get(0).getApiName());
+		assertThat(apiDefinitions).hasSize(1);
+		assertThat(new ArrayList<>(apiDefinitions).get(0).getApiName())
+				.isEqualTo("test");
 	}
 
 	/**
