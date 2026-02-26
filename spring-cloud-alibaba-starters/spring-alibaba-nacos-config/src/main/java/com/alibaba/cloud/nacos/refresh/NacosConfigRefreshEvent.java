@@ -16,13 +16,15 @@
 
 package com.alibaba.cloud.nacos.refresh;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.context.ApplicationEvent;
 
 public class NacosConfigRefreshEvent extends ApplicationEvent {
 
-	String dataId;
+	@Nullable String dataId;
 
-	String group;
+	@Nullable String group;
 
 	private Object event;
 
@@ -42,7 +44,7 @@ public class NacosConfigRefreshEvent extends ApplicationEvent {
 		return this.eventDesc;
 	}
 
-	public String getDataId() {
+	public @Nullable String getDataId() {
 		return dataId;
 	}
 
@@ -50,7 +52,7 @@ public class NacosConfigRefreshEvent extends ApplicationEvent {
 		this.dataId = dataId;
 	}
 
-	public String getGroup() {
+	public @Nullable String getGroup() {
 		return group;
 	}
 

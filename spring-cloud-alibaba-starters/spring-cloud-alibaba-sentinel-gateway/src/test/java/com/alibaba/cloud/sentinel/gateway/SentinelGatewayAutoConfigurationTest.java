@@ -26,12 +26,13 @@ import com.alibaba.cloud.sentinel.datasource.converter.JsonConverter;
 import com.alibaba.cloud.sentinel.datasource.converter.XmlConverter;
 import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiDefinition;
 import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayFlowRule;
-import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SentinelGatewayAutoConfigurationTest {
 
@@ -41,7 +42,7 @@ public class SentinelGatewayAutoConfigurationTest {
 	/**
 	 * Setup method to initialize test configurations.
 	 */
-	@Before
+	@BeforeEach
 	public void setup() {
 		json = new SentinelGatewayAutoConfiguration.SentinelConverterConfiguration.SentinelJsonConfiguration();
 		xml = new SentinelGatewayAutoConfiguration.SentinelConverterConfiguration.SentinelXmlConfiguration();
@@ -53,10 +54,10 @@ public class SentinelGatewayAutoConfigurationTest {
 	 */
 	@Test
 	public void testJsonGatewayFlowConverter() {
-		JsonConverter jsonGatewayFlowConverter = json.jsonGatewayFlowConverter();
+		JsonConverter<GatewayFlowRule> jsonGatewayFlowConverter = json.jsonGatewayFlowConverter();
 		Collection<GatewayFlowRule> gatewayFlowRules = jsonGatewayFlowConverter.convert(readFileContent("classpath: gatewayflowrule.json"));
-		Assert.assertEquals(1, gatewayFlowRules.size());
-		Assert.assertEquals("test", new ArrayList<>(gatewayFlowRules).get(0).getResource());
+		assertEquals(1, gatewayFlowRules.size());
+		assertEquals("test", new ArrayList<>(gatewayFlowRules).get(0).getResource());
 	}
 
 	/**
@@ -65,10 +66,10 @@ public class SentinelGatewayAutoConfigurationTest {
 	 */
 	@Test
 	public void testJsonApiConverter() {
-		JsonConverter jsonApiConverter = json.jsonApiConverter();
+		JsonConverter<ApiDefinition> jsonApiConverter = json.jsonApiConverter();
 		Collection<ApiDefinition> apiDefinitions = jsonApiConverter.convert(readFileContent("classpath: apidefinition.json"));
-		Assert.assertEquals(1, apiDefinitions.size());
-		Assert.assertEquals("test", new ArrayList<>(apiDefinitions).get(0).getApiName());
+		assertEquals(1, apiDefinitions.size());
+		assertEquals("test", new ArrayList<>(apiDefinitions).get(0).getApiName());
 	}
 
 	/**
@@ -77,10 +78,10 @@ public class SentinelGatewayAutoConfigurationTest {
 	 */
 	@Test
 	public void testXmlGatewayFlowConverter() {
-		XmlConverter xmlGatewayFlowConverter = xml.xmlGatewayFlowConverter();
+		XmlConverter<GatewayFlowRule> xmlGatewayFlowConverter = xml.xmlGatewayFlowConverter();
 		Collection<GatewayFlowRule> gatewayFlowRules = xmlGatewayFlowConverter.convert(readFileContent("classpath: gatewayflowrule.xml"));
-		Assert.assertEquals(1, gatewayFlowRules.size());
-		Assert.assertEquals("test", new ArrayList<>(gatewayFlowRules).get(0).getResource());
+		assertEquals(1, gatewayFlowRules.size());
+		assertEquals("test", new ArrayList<>(gatewayFlowRules).get(0).getResource());
 	}
 
 	/**
@@ -89,10 +90,10 @@ public class SentinelGatewayAutoConfigurationTest {
 	 */
 	@Test
 	public void testSentinelXmlConfiguration() {
-		XmlConverter xmlApiConverter = xml.xmlApiConverter();
+		XmlConverter<ApiDefinition> xmlApiConverter = xml.xmlApiConverter();
 		Collection<ApiDefinition> apiDefinitions = xmlApiConverter.convert(readFileContent("classpath: apidefinition.xml"));
-		Assert.assertEquals(1, apiDefinitions.size());
-		Assert.assertEquals("test", new ArrayList<>(apiDefinitions).get(0).getApiName());
+		assertEquals(1, apiDefinitions.size());
+		assertEquals("test", new ArrayList<>(apiDefinitions).get(0).getApiName());
 	}
 
 	/**

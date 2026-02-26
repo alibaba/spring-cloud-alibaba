@@ -16,11 +16,13 @@
 
 package com.alibaba.cloud.sentinel.gateway;
 
-import junit.framework.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class FallbackPropertiesTest {
 
@@ -39,11 +41,11 @@ public class FallbackPropertiesTest {
 				.setResponseStatus(HttpStatus.TOO_EARLY.value())
 				.setContentType("application/json");
 
-		Assert.assertEquals("response", properties.getMode());
-		Assert.assertEquals("http://example.com", properties.getRedirect());
-		Assert.assertEquals("{'message': 'Fallback response'}", properties.getResponseBody());
-		Assert.assertEquals(HttpStatus.TOO_EARLY.value(), properties.getResponseStatus().intValue());
-		Assert.assertEquals("application/json", properties.getContentType());
+		assertEquals("response", properties.getMode());
+		assertEquals("http://example.com", properties.getRedirect());
+		assertEquals("{'message': 'Fallback response'}", properties.getResponseBody());
+		assertEquals(HttpStatus.TOO_EARLY.value(), properties.getResponseStatus().intValue());
+		assertEquals("application/json", properties.getContentType());
 	}
 
 	/**
@@ -53,10 +55,10 @@ public class FallbackPropertiesTest {
 	@Test
 	public void testDefaultValues() {
 		FallbackProperties properties = new FallbackProperties();
-		Assert.assertNull(properties.getMode());
-		Assert.assertNull(properties.getRedirect());
-		Assert.assertNull(properties.getResponseBody());
-		Assert.assertEquals(HttpStatus.TOO_MANY_REQUESTS.value(), properties.getResponseStatus().intValue());
-		Assert.assertEquals(MediaType.APPLICATION_JSON.toString(), properties.getContentType());
+		assertNull(properties.getMode());
+		assertNull(properties.getRedirect());
+		assertNull(properties.getResponseBody());
+		assertEquals(HttpStatus.TOO_MANY_REQUESTS.value(), properties.getResponseStatus().intValue());
+		assertEquals(MediaType.APPLICATION_JSON.toString(), properties.getContentType());
 	}
 }

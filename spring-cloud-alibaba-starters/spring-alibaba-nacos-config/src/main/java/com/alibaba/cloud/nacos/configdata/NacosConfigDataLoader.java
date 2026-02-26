@@ -65,7 +65,7 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 	}
 
 	@Override
-	public ConfigData load(ConfigDataLoaderContext context,
+	public @Nullable ConfigData load(ConfigDataLoaderContext context,
 			NacosConfigDataResource resource) {
 		return doLoad(context, resource);
 	}
@@ -118,6 +118,9 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 	private ConfigPreference getPreference(ConfigDataLoaderContext context,
 			NacosConfigDataResource resource) {
 		Binder binder = context.getBootstrapContext().get(Binder.class);
+		if (binder == null) {
+			throw new IllegalStateException("Binder not available in BootstrapContext");
+		}
 		String prefix = NacosPropertiesPrefixer.getPrefix(binder);
 
 

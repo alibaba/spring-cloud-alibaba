@@ -26,6 +26,7 @@ import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiPathPredicateItem;
 import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiPredicateGroupItem;
 import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiPredicateItem;
 import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayFlowRule;
+import org.jspecify.annotations.Nullable;
 import tools.jackson.core.JsonParser;
 import tools.jackson.core.Version;
 import tools.jackson.databind.DeserializationContext;
@@ -67,6 +68,7 @@ public class SentinelGatewayAutoConfiguration {
 				registry.put(uniqueAttribute, apiPredicateItemClass);
 			}
 
+			@Nullable
 			@Override
 			public ApiPredicateItem deserialize(JsonParser jp,
 					DeserializationContext ctxt) {
@@ -109,13 +111,13 @@ public class SentinelGatewayAutoConfiguration {
 			}
 
 			@Bean("sentinel-json-gw-flow-converter")
-			public JsonConverter jsonGatewayFlowConverter() {
-				return new JsonConverter(objectMapper, GatewayFlowRule.class);
+			public JsonConverter<GatewayFlowRule> jsonGatewayFlowConverter() {
+				return new JsonConverter<>(objectMapper, GatewayFlowRule.class);
 			}
 
 			@Bean("sentinel-json-gw-api-group-converter")
-			public JsonConverter jsonApiConverter() {
-				return new JsonConverter(objectMapper, ApiDefinition.class);
+			public JsonConverter<ApiDefinition> jsonApiConverter() {
+				return new JsonConverter<>(objectMapper, ApiDefinition.class);
 			}
 
 		}
@@ -144,13 +146,13 @@ public class SentinelGatewayAutoConfiguration {
 			}
 
 			@Bean("sentinel-xml-gw-flow-converter")
-			public XmlConverter xmlGatewayFlowConverter() {
-				return new XmlConverter(xmlMapper, GatewayFlowRule.class);
+			public XmlConverter<GatewayFlowRule> xmlGatewayFlowConverter() {
+				return new XmlConverter<>(xmlMapper, GatewayFlowRule.class);
 			}
 
 			@Bean("sentinel-xml-gw-api-group-converter")
-			public XmlConverter xmlApiConverter() {
-				return new XmlConverter(xmlMapper, ApiDefinition.class);
+			public XmlConverter<ApiDefinition> xmlApiConverter() {
+				return new XmlConverter<>(xmlMapper, ApiDefinition.class);
 			}
 
 		}

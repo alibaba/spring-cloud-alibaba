@@ -16,15 +16,16 @@
 
 package com.alibaba.cloud.sentinel.gateway;
 
-import junit.framework.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConfigConstantsTest {
 	@Test
 	public void testConfigConstants() {
-		Assert.assertEquals("11", ConfigConstants.APP_TYPE_SCG_GATEWAY);
-		Assert.assertEquals("spring.cloud.sentinel.scg", ConfigConstants.GATEWAY_PREFIX);
-		Assert.assertEquals("response", ConfigConstants.FALLBACK_MSG_RESPONSE);
-		Assert.assertEquals("redirect", ConfigConstants.FALLBACK_REDIRECT);
+		assertEquals("11", ConfigConstants.APP_TYPE_SCG_GATEWAY);
+		assertEquals("spring.cloud.sentinel.scg", ConfigConstants.GATEWAY_PREFIX);
+		assertEquals("response", ConfigConstants.FALLBACK_MSG_RESPONSE);
+		assertEquals("redirect", ConfigConstants.FALLBACK_REDIRECT);
 	}
 }

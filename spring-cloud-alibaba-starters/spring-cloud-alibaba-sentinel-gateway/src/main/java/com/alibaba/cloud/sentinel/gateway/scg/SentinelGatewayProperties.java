@@ -18,6 +18,7 @@ package com.alibaba.cloud.sentinel.gateway.scg;
 
 import com.alibaba.cloud.sentinel.gateway.ConfigConstants;
 import com.alibaba.cloud.sentinel.gateway.FallbackProperties;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
@@ -30,6 +31,7 @@ import org.springframework.core.Ordered;
 public class SentinelGatewayProperties {
 
 	@NestedConfigurationProperty
+	@Nullable
 	private FallbackProperties fallback;
 
 	private Integer order = Ordered.HIGHEST_PRECEDENCE;
@@ -38,7 +40,7 @@ public class SentinelGatewayProperties {
 		return fallback;
 	}
 
-	public SentinelGatewayProperties setFallback(FallbackProperties fallback) {
+	public SentinelGatewayProperties setFallback(@Nullable FallbackProperties fallback) {
 		this.fallback = fallback;
 		return this;
 	}

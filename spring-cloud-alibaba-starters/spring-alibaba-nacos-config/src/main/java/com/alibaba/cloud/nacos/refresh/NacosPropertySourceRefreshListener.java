@@ -60,7 +60,9 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-
+		if (this.applicationContext == null || this.beans == null) {
+			return bean;
+		}
 		ConfigurationPropertiesBean propertiesBean = ConfigurationPropertiesBean.get(this.applicationContext, bean,
 				beanName);
 		if (propertiesBean != null) {
@@ -95,7 +97,7 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 	}
 
 	public void handle(NacosConfigRefreshEvent event) {
-		if (this.ready.get()) { // don't handle events before app is ready
+		if (this.ready.get() && this.applicationContext != null) { // don't handle events before app is ready
 			if (!applicationContext.containsBean("nacosConfigSpringCloudRefreshEventListener")) {
 				log.info("Event received " + event.getEventDesc());
 
@@ -106,7 +108,13 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 				MutablePropertySources target = environment.getPropertySources();
 				PropertySource<?> prevpropertySource = target.get(sourceName);
 				if (prevpropertySource instanceof NacosPropertySource) {
-					NacosPropertySource newProperSource = nacosPropertySourceBuilder.build(event.getDataId(), event.getGroup(), "properties", ((NacosPropertySource) prevpropertySource).isRefreshable());
+					String dataId = event.getDataId();
+					String group = event.getGroup();
+					if (dataId == null || group == null) {
+						log.warn("Event dataId or group is null, skipping refresh");
+						return;
+					}
+					NacosPropertySource newProperSource = nacosPropertySourceBuilder.build(dataId, group, "properties", ((NacosPropertySource) prevpropertySource).isRefreshable());
 					target.replace(sourceName, newProperSource);
 					log.info("Replace Nacos Property Source : " + sourceName);
 				}
