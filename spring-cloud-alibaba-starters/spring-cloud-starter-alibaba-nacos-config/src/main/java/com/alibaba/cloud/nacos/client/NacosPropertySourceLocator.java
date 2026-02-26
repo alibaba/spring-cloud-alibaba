@@ -19,7 +19,6 @@ package com.alibaba.cloud.nacos.client;
 import java.util.List;
 import java.util.Objects;
 
-import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
@@ -35,6 +34,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
+import org.springframework.util.StringUtils;
 
 /**
  * @author xiaojing
@@ -92,11 +92,11 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		String name = nacosConfigProperties.getName();
 
 		String dataIdPrefix = nacosConfigProperties.getPrefix();
-		if (StringUtils.isEmpty(dataIdPrefix)) {
+		if (!StringUtils.hasText(dataIdPrefix)) {
 			dataIdPrefix = name;
 		}
 
-		if (StringUtils.isEmpty(dataIdPrefix)) {
+		if (!StringUtils.hasText(dataIdPrefix)) {
 			dataIdPrefix = env.getProperty("spring.application.name");
 		}
 
