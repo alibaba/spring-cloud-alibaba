@@ -19,15 +19,14 @@ package com.alibaba.cloud.nacos.parser;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import com.alibaba.cloud.nacos.utils.StringUtils;
-
 import org.jspecify.annotations.Nullable;
+
 import org.springframework.boot.env.PropertySourceLoader;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.Resource;
@@ -116,7 +115,8 @@ public abstract class AbstractPropertySourceLoader implements PropertySourceLoad
 			if (value instanceof Map map) {
 				flattenedMap(result, map, fullKey);
 				continue;
-			} else if (value instanceof Collection collection) {
+			}
+			else if (value instanceof Collection collection) {
 				int count = 0;
 				for (Object object : collection) {
 					flattenedMap(result,

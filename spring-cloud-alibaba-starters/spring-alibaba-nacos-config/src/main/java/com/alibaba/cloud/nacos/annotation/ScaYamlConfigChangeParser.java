@@ -18,7 +18,6 @@ package com.alibaba.cloud.nacos.annotation;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -85,26 +84,31 @@ public class ScaYamlConfigChangeParser extends YmlChangeParser {
 			if (StringUtils.isNotBlank(path)) {
 				if (key.startsWith("[")) {
 					key = path + key;
-				} else {
+				}
+				else {
 					key = path + '.' + key;
 				}
 			}
 			if (e.getValue() instanceof String) {
 				result.put(key, e.getValue());
-			} else if (e.getValue() instanceof Map) {
+			}
+			else if (e.getValue() instanceof Map) {
 				@SuppressWarnings("unchecked") Map<String, Object> map = (Map<String, Object>) e.getValue();
 				buildFlattenedMap(result, map, key);
-			} else if (e.getValue() instanceof Collection) {
+			}
+			else if (e.getValue() instanceof Collection) {
 				@SuppressWarnings("unchecked") Collection<Object> collection = (Collection<Object>) e.getValue();
 				if (collection.isEmpty()) {
 					result.put(key, "");
-				} else {
+				}
+				else {
 					int count = 0;
 					for (Object object : collection) {
 						buildFlattenedMap(result, Collections.singletonMap("[" + (count++) + "]", object), key);
 					}
 				}
-			} else {
+			}
+			else {
 				result.put(key, (e.getValue() != null ? e.getValue() : ""));
 			}
 		}

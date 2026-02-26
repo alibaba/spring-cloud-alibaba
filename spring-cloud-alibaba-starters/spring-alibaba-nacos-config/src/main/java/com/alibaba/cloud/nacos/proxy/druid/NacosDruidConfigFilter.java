@@ -105,11 +105,13 @@ public class NacosDruidConfigFilter extends FilterAdapter {
 
 			if (key.startsWith(druidPrefix)) {
 				propertiesNew.put(key.replace(druidPrefix, "druid."), value);
-			} else if (key.startsWith(datasourcePrefix)) {
+			}
+			else if (key.startsWith(datasourcePrefix)) {
 				propertiesNew.put(key.replace(datasourcePrefix, "druid."), value);
 			}
 		}
 
 		return propertiesNew;
 	}
+
 }

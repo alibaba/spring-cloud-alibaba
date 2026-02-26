@@ -45,10 +45,16 @@ public class ZookeeperDataSourceFactoryBean implements FactoryBean<ZookeeperData
 	public ZookeeperDataSource getObject() throws Exception {
 		if (StringUtils.isNotEmpty(groupId) && StringUtils.isNotEmpty(dataId)) {
 			// the path will be /{groupId}/{dataId}
+			if (serverAddr == null || groupId == null || dataId == null) {
+				throw new IllegalStateException("serverAddr, groupId, and dataId must not be null");
+			}
 			return new ZookeeperDataSource(serverAddr, groupId, dataId, converter);
 		}
 		else {
 			// using path directly
+			if (serverAddr == null || path == null) {
+				throw new IllegalStateException("serverAddr and path must not be null");
+			}
 			return new ZookeeperDataSource(serverAddr, path, converter);
 		}
 	}

@@ -30,11 +30,11 @@ import org.springframework.beans.factory.FactoryBean;
  */
 public class ConsulDataSourceFactoryBean implements FactoryBean<ConsulDataSource> {
 
-	private String host;
+	private @Nullable String host;
 
 	private int port;
 
-	private String ruleKey;
+	private @Nullable String ruleKey;
 
 	private @Nullable String token;
 
@@ -52,11 +52,11 @@ public class ConsulDataSourceFactoryBean implements FactoryBean<ConsulDataSource
 		return ConsulDataSource.class;
 	}
 
-	public String getHost() {
+	public @Nullable String getHost() {
 		return host;
 	}
 
-	public void setHost(String host) {
+	public void setHost(@Nullable String host) {
 		this.host = host;
 	}
 
@@ -68,11 +68,11 @@ public class ConsulDataSourceFactoryBean implements FactoryBean<ConsulDataSource
 		this.port = port;
 	}
 
-	public String getRuleKey() {
+	public @Nullable String getRuleKey() {
 		return ruleKey;
 	}
 
-	public void setRuleKey(String ruleKey) {
+	public void setRuleKey(@Nullable String ruleKey) {
 		this.ruleKey = ruleKey;
 	}
 

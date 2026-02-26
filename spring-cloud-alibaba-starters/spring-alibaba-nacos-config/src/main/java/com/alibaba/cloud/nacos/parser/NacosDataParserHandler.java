@@ -26,15 +26,14 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.alibaba.cloud.nacos.utils.NacosConfigUtils;
-
 import org.jspecify.annotations.Nullable;
+
 import org.springframework.boot.env.OriginTrackedMapPropertySource;
 import org.springframework.boot.env.PropertiesPropertySourceLoader;
 import org.springframework.boot.env.PropertySourceLoader;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.support.SpringFactoriesLoader;
-import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 

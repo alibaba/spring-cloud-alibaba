@@ -17,6 +17,7 @@
 package com.alibaba.cloud.nacos.parser;
 
 import org.jspecify.annotations.Nullable;
+
 import org.springframework.core.io.ByteArrayResource;
 
 /**

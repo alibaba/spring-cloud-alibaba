@@ -20,6 +20,7 @@ import java.lang.reflect.Constructor;
 
 import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
 import com.alibaba.cloud.sentinel.custom.SentinelProtectInterceptor;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.aot.hint.ExecutableMode;
 import org.springframework.aot.hint.RuntimeHints;
@@ -31,7 +32,7 @@ import org.springframework.web.client.RestTemplate;
  */
 public class SentinelProtectInterceptorHints implements RuntimeHintsRegistrar {
 	@Override
-	public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
+	public void registerHints(RuntimeHints hints, @Nullable ClassLoader classLoader) {
 		Constructor<SentinelProtectInterceptor> constructor;
 		try {
 			constructor = SentinelProtectInterceptor.class.getConstructor(SentinelRestTemplate.class, RestTemplate.class);

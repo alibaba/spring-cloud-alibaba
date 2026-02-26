@@ -18,6 +18,7 @@ package com.alibaba.cloud.sentinel.datasource.factorybean;
 
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.apollo.ApolloDataSource;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.beans.factory.FactoryBean;
 
@@ -29,16 +30,19 @@ import org.springframework.beans.factory.FactoryBean;
  */
 public class ApolloDataSourceFactoryBean implements FactoryBean<ApolloDataSource> {
 
-	private String namespaceName;
+	private @Nullable String namespaceName;
 
-	private String flowRulesKey;
+	private @Nullable String flowRulesKey;
 
-	private String defaultFlowRuleValue;
+	private @Nullable String defaultFlowRuleValue;
 
-	private Converter converter;
+	private @Nullable Converter converter;
 
 	@Override
 	public ApolloDataSource getObject() throws Exception {
+		if (namespaceName == null || flowRulesKey == null || defaultFlowRuleValue == null) {
+			throw new IllegalStateException("namespaceName, flowRulesKey, and defaultFlowRuleValue must not be null");
+		}
 		return new ApolloDataSource(namespaceName, flowRulesKey, defaultFlowRuleValue,
 				converter);
 	}
@@ -48,35 +52,35 @@ public class ApolloDataSourceFactoryBean implements FactoryBean<ApolloDataSource
 		return ApolloDataSource.class;
 	}
 
-	public String getNamespaceName() {
+	public @Nullable String getNamespaceName() {
 		return namespaceName;
 	}
 
-	public void setNamespaceName(String namespaceName) {
+	public void setNamespaceName(@Nullable String namespaceName) {
 		this.namespaceName = namespaceName;
 	}
 
-	public String getFlowRulesKey() {
+	public @Nullable String getFlowRulesKey() {
 		return flowRulesKey;
 	}
 
-	public void setFlowRulesKey(String flowRulesKey) {
+	public void setFlowRulesKey(@Nullable String flowRulesKey) {
 		this.flowRulesKey = flowRulesKey;
 	}
 
-	public String getDefaultFlowRuleValue() {
+	public @Nullable String getDefaultFlowRuleValue() {
 		return defaultFlowRuleValue;
 	}
 
-	public void setDefaultFlowRuleValue(String defaultFlowRuleValue) {
+	public void setDefaultFlowRuleValue(@Nullable String defaultFlowRuleValue) {
 		this.defaultFlowRuleValue = defaultFlowRuleValue;
 	}
 
-	public Converter getConverter() {
+	public @Nullable Converter getConverter() {
 		return converter;
 	}
 
-	public void setConverter(Converter converter) {
+	public void setConverter(@Nullable Converter converter) {
 		this.converter = converter;
 	}
 

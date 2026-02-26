@@ -46,6 +46,9 @@ public class FileRefreshableDataSourceFactoryBean
 
 	@Override
 	public FileRefreshableDataSource getObject() throws Exception {
+		if (file == null || charset == null) {
+			throw new IllegalStateException("file and charset must not be null");
+		}
 		return new FileRefreshableDataSource(new File(file), converter,
 				recommendRefreshMs, bufSize, Charset.forName(charset));
 	}

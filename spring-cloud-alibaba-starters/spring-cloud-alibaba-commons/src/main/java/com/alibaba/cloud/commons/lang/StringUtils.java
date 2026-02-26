@@ -82,7 +82,7 @@ public final class StringUtils {
 	 * @return {@code true} if the CharSequence is not empty and not null
 	 * @since 3.0 Changed signature from isNotEmpty(String) to isNotEmpty(CharSequence)
 	 */
-	public static boolean isNotEmpty(final CharSequence cs) {
+	public static boolean isNotEmpty(final @Nullable CharSequence cs) {
 		return !isEmpty(cs);
 	}
 

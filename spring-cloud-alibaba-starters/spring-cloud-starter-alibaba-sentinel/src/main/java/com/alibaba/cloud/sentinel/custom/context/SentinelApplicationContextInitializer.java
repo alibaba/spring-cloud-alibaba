@@ -23,6 +23,7 @@ import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.init.InitExecutor;
 import com.alibaba.csp.sentinel.log.LogBase;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.ApplicationContextInitializer;
@@ -43,17 +44,17 @@ public class SentinelApplicationContextInitializer implements ApplicationContext
 	public void initialize(ConfigurableApplicationContext applicationContext) {
 
 		ConfigurableEnvironment environment = applicationContext.getEnvironment();
-		String applicationName = environment.getProperty("spring.application.name");
+		@Nullable String applicationName = environment.getProperty("spring.application.name");
 		SentinelProperties sentinelProperties = Binder.get(environment)
 				.bindOrCreate(SentinelConstants.PROPERTY_PREFIX, SentinelProperties.class);
 
 		initSentinelConfig(sentinelProperties, applicationName);
 	}
 
-	private void initSentinelConfig(SentinelProperties properties, String applicationName) {
+	private void initSentinelConfig(SentinelProperties properties, @Nullable String applicationName) {
 
 		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_DIR))
-				&& StringUtils.isNotBlank(properties.getLog().getDir())) {
+				&& properties.getLog().getDir() != null && StringUtils.isNotBlank(properties.getLog().getDir())) {
 			System.setProperty(LogBase.LOG_DIR, properties.getLog().getDir());
 		}
 		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_NAME_USE_PID))
@@ -62,7 +63,7 @@ public class SentinelApplicationContextInitializer implements ApplicationContext
 					String.valueOf(properties.getLog().isSwitchPid()));
 		}
 		if (StringUtils.isEmpty(System.getProperty(SentinelConfig.APP_NAME_PROP_KEY))
-				&& StringUtils.isNotBlank(applicationName)) {
+				&& applicationName != null && StringUtils.isNotBlank(applicationName)) {
 			System.setProperty(SentinelConfig.APP_NAME_PROP_KEY, applicationName);
 		}
 		if (StringUtils.isEmpty(System.getProperty(TransportConfig.SERVER_PORT))
@@ -76,13 +77,13 @@ public class SentinelApplicationContextInitializer implements ApplicationContext
 					properties.getTransport().getDashboard());
 		}
 		if (StringUtils.isEmpty(System.getProperty(TransportConfig.HEARTBEAT_INTERVAL_MS))
-				&& StringUtils
+				&& properties.getTransport().getHeartbeatIntervalMs() != null && StringUtils
 				.isNotBlank(properties.getTransport().getHeartbeatIntervalMs())) {
 			System.setProperty(TransportConfig.HEARTBEAT_INTERVAL_MS,
 					properties.getTransport().getHeartbeatIntervalMs());
 		}
 		if (StringUtils.isEmpty(System.getProperty(TransportConfig.HEARTBEAT_CLIENT_IP))
-				&& StringUtils.isNotBlank(properties.getTransport().getClientIp())) {
+				&& properties.getTransport().getClientIp() != null && StringUtils.isNotBlank(properties.getTransport().getClientIp())) {
 			System.setProperty(TransportConfig.HEARTBEAT_CLIENT_IP,
 					properties.getTransport().getClientIp());
 		}
@@ -93,13 +94,13 @@ public class SentinelApplicationContextInitializer implements ApplicationContext
 		}
 		if (StringUtils
 				.isEmpty(System.getProperty(SentinelConfig.SINGLE_METRIC_FILE_SIZE))
-				&& StringUtils.isNotBlank(properties.getMetric().getFileSingleSize())) {
+				&& properties.getMetric().getFileSingleSize() != null && StringUtils.isNotBlank(properties.getMetric().getFileSingleSize())) {
 			System.setProperty(SentinelConfig.SINGLE_METRIC_FILE_SIZE,
 					properties.getMetric().getFileSingleSize());
 		}
 		if (StringUtils
 				.isEmpty(System.getProperty(SentinelConfig.TOTAL_METRIC_FILE_COUNT))
-				&& StringUtils.isNotBlank(properties.getMetric().getFileTotalCount())) {
+				&& properties.getMetric().getFileTotalCount() != null && StringUtils.isNotBlank(properties.getMetric().getFileTotalCount())) {
 			System.setProperty(SentinelConfig.TOTAL_METRIC_FILE_COUNT,
 					properties.getMetric().getFileTotalCount());
 		}
@@ -108,7 +109,7 @@ public class SentinelApplicationContextInitializer implements ApplicationContext
 			System.setProperty(SentinelConfig.COLD_FACTOR,
 					properties.getFlow().getColdFactor());
 		}
-		if (StringUtils.isNotBlank(properties.getBlockPage())) {
+		if (properties.getBlockPage() != null && StringUtils.isNotBlank(properties.getBlockPage())) {
 			setConfig(BLOCK_PAGE_URL_CONF_KEY, properties.getBlockPage());
 		}
 

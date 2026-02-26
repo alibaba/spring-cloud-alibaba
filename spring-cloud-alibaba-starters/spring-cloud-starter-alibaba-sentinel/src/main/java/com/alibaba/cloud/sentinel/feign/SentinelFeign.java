@@ -25,6 +25,7 @@ import feign.Contract;
 import feign.Feign;
 import feign.InvocationHandlerFactory;
 import feign.Target;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
@@ -61,9 +62,9 @@ public final class SentinelFeign {
 
 		private Contract contract = new Contract.Default();
 
-		private ApplicationContext applicationContext;
+		private @Nullable ApplicationContext applicationContext;
 
-		private FeignClientFactory feignClientFactory;
+		private @Nullable FeignClientFactory feignClientFactory;
 
 		@Override
 		public Feign.Builder invocationHandlerFactory(
@@ -83,12 +84,17 @@ public final class SentinelFeign {
 				@Override
 				public InvocationHandler create(Target target,
 						Map<Method, MethodHandler> dispatch) {
-					GenericApplicationContext gctx = (GenericApplicationContext) Builder.this.applicationContext;
+					ApplicationContext ctx = Builder.this.applicationContext;
+					FeignClientFactory factory = Builder.this.feignClientFactory;
+					if (ctx == null || factory == null) {
+						throw new IllegalStateException("ApplicationContext or FeignClientFactory not initialized");
+					}
+					GenericApplicationContext gctx = (GenericApplicationContext) ctx;
 					BeanDefinition def = gctx.getBeanDefinition(target.type().getName());
-					FeignClientFactoryBean feignClientFactoryBean;
+					@Nullable FeignClientFactoryBean feignClientFactoryBean;
 
 					// If you need the attributes to be resolved lazily, set the property value to true.
-					Boolean isLazyInit = applicationContext.getEnvironment()
+					Boolean isLazyInit = ctx.getEnvironment()
 							.getProperty(FEIGN_LAZY_ATTR_RESOLUTION, Boolean.class, false);
 					if (isLazyInit) {
 						/*
@@ -100,14 +106,18 @@ public final class SentinelFeign {
 								.getAttribute("feignClientsRegistrarFactoryBean");
 					}
 					else {
-						feignClientFactoryBean = (FeignClientFactoryBean) applicationContext
+						feignClientFactoryBean = (FeignClientFactoryBean) ctx
 								.getBean("&" + target.type().getName());
+					}
+					if (feignClientFactoryBean == null) {
+						throw new IllegalStateException("FeignClientFactoryBean not found for " + target.type().getName());
 					}
 					Class fallback = feignClientFactoryBean.getFallback();
 					Class fallbackFactory = feignClientFactoryBean.getFallbackFactory();
 					String beanName = feignClientFactoryBean.getContextId();
 					if (!StringUtils.hasText(beanName)) {
-						beanName = (String) getFieldValue(feignClientFactoryBean, "name");
+						@Nullable Object nameValue = getFieldValue(feignClientFactoryBean, "name");
+						beanName = nameValue != null ? (String) nameValue : "unknown";
 					}
 
 					Object fallbackInstance;
@@ -132,7 +142,11 @@ public final class SentinelFeign {
 
 				private Object getFromContext(String name, String type,
 						Class fallbackType, Class targetType) {
-					Object fallbackInstance = feignClientFactory.getInstance(name,
+					FeignClientFactory factory = Builder.this.feignClientFactory;
+					if (factory == null) {
+						throw new IllegalStateException("FeignClientFactory not initialized");
+					}
+					Object fallbackInstance = factory.getInstance(name,
 							fallbackType);
 					if (fallbackInstance == null) {
 						throw new IllegalStateException(String.format(
@@ -146,6 +160,9 @@ public final class SentinelFeign {
 						}
 						catch (Exception e) {
 							throw new IllegalStateException(type + " create fail", e);
+						}
+						if (fallbackInstance == null) {
+							throw new IllegalStateException(type + " FactoryBean returned null");
 						}
 						fallbackType = fallbackInstance.getClass();
 					}
@@ -163,8 +180,11 @@ public final class SentinelFeign {
 			return super.internalBuild();
 		}
 
-		private Object getFieldValue(Object instance, String fieldName) {
-			Field field = ReflectionUtils.findField(instance.getClass(), fieldName);
+		private @Nullable Object getFieldValue(Object instance, String fieldName) {
+			@Nullable Field field = ReflectionUtils.findField(instance.getClass(), fieldName);
+			if (field == null) {
+				return null;
+			}
 			field.setAccessible(true);
 			try {
 				return field.get(instance);
