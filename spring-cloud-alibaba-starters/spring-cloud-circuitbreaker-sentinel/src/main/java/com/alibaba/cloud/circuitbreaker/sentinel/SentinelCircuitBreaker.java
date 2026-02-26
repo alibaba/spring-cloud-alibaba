@@ -83,6 +83,7 @@ public class SentinelCircuitBreaker implements CircuitBreaker {
 	}
 
 	@Override
+	@SuppressWarnings("NullAway")
 	public <T> T run(Supplier<T> toRun, Function<Throwable, T> fallback) {
 		Entry entry = null;
 		try {
