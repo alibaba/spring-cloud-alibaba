@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2025 the original author or authors.
+ * Copyright 2013-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 
 package com.alibaba.cloud.sentinel.restclient;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -37,7 +38,7 @@ public class SentinelRestClientBeanPostProcessor implements BeanPostProcessor {
 		if (bean instanceof RestClient.Builder builder) {
 			builder.requestInterceptors(list -> {
 				if (!list.contains(interceptor)) {
-					list.add(0, interceptor); // 提升优先级（等价 addFirst）
+					list.add(0, interceptor); // promote priority (equivalent to addFirst)
 				}
 			});
 		}

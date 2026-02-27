@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2025 the original author or authors.
+ * Copyright 2013-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,89 +16,147 @@
 
 package com.alibaba.cloud.sentinel.restclient;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.net.URI;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import com.alibaba.csp.sentinel.Entry;
+import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.SphU;
 import com.alibaba.csp.sentinel.Tracer;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 
-
+/**
+ * {@link ClientHttpRequestInterceptor} for integrating Sentinel with Spring's
+ * {@link org.springframework.web.client.RestClient}.
+ *
+ * <p>
+ * This interceptor creates two levels of Sentinel resources for each request:
+ * <ul>
+ * <li><b>Host-level resource</b>: {@code METHOD:scheme://host[:port]},
+ * e.g. {@code GET:https://httpbin.org}</li>
+ * <li><b>Path-level resource</b>: {@code METHOD:scheme://host[:port]/path},
+ * e.g. {@code GET:https://httpbin.org/get}</li>
+ * </ul>
+ *
+ * <p>
+ * Supports optional customizations:
+ * <ul>
+ * <li>{@code urlCleaner}: a function to clean/normalize the path-level resource
+ * name
+ * (e.g. convert {@code /users/123} to {@code /users/{id}})</li>
+ * <li>{@code blockHandler}: a handler for flow-control blocking (returns a
+ * fallback response)</li>
+ * <li>{@code fallback}: a handler for circuit-breaking (degrade) blocking</li>
+ * </ul>
+ *
+ * @author QHT, uuuyuqi
+ * @see SentinelRestClientAutoConfiguration
+ */
 public class SentinelRestClientInterceptor implements ClientHttpRequestInterceptor {
 
-	public SentinelRestClientInterceptor() { }
+	private static final Logger log = LoggerFactory.getLogger(SentinelRestClientInterceptor.class);
+
+	private final Function<String, String> urlCleaner;
+
+	private final BiFunction<HttpRequest, BlockException, ClientHttpResponse> blockHandler;
+
+	private final BiFunction<HttpRequest, BlockException, ClientHttpResponse> fallback;
+
+	public SentinelRestClientInterceptor() {
+		this(null, null, null);
+	}
+
+	public SentinelRestClientInterceptor(
+			Function<String, String> urlCleaner,
+			BiFunction<HttpRequest, BlockException, ClientHttpResponse> blockHandler,
+			BiFunction<HttpRequest, BlockException, ClientHttpResponse> fallback) {
+		this.urlCleaner = urlCleaner;
+		this.blockHandler = blockHandler;
+		this.fallback = fallback;
+	}
 
 	@Override
-	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+	public ClientHttpResponse intercept(HttpRequest request, byte[] body,
+			ClientHttpRequestExecution execution) throws IOException {
 
-		String resourceName = request.getMethod() + ":" + request.getURI();
-		Entry entry = null;
+		URI uri = request.getURI();
+		String hostResource = request.getMethod().toString() + ":" + uri.getScheme()
+				+ "://" + uri.getHost()
+				+ (uri.getPort() == -1 ? "" : ":" + uri.getPort());
+		String hostWithPathResource = hostResource + uri.getPath();
+
+		boolean entryWithPath = !hostResource.equals(hostWithPathResource);
+
+		// Apply URL cleaner if configured
+		if (urlCleaner != null) {
+			hostWithPathResource = urlCleaner.apply(hostWithPathResource);
+		}
+
+		Entry hostEntry = null;
+		Entry hostWithPathEntry = null;
 		try {
-			entry = SphU.entry(resourceName);
+			hostEntry = SphU.entry(hostResource, EntryType.OUT);
+			if (entryWithPath) {
+				hostWithPathEntry = SphU.entry(hostWithPathResource, EntryType.OUT);
+			}
 
 			ClientHttpResponse response = execution.execute(request, body);
 
-			// 如果返回的是 5xx，明确告诉 Sentinel：这是异常
+			// Report 5xx server errors to Sentinel as exceptions
 			if (response.getStatusCode().is5xxServerError()) {
 				Tracer.traceEntry(
 						new RuntimeException("Server error: " + response.getStatusCode().value()),
-						entry
-				);
+						hostEntry);
 			}
 
 			return response;
 		}
 		catch (BlockException ex) {
-			// 被 Sentinel 拦截（限流/熔断）
-			return new ClientHttpResponse() {
-				@Override
-				public org.springframework.http.HttpStatusCode getStatusCode() {
-					return HttpStatus.TOO_MANY_REQUESTS; // 429
-				}
-
-				@Override
-				public String getStatusText() {
-					return "Blocked by Sentinel: " + ex.getClass().getSimpleName();
-				}
-
-				@Override
-				public void close() { }
-
-				@Override
-				public InputStream getBody() {
-					return new ByteArrayInputStream(
-							("Blocked by Sentinel: " + ex.getClass().getSimpleName())
-									.getBytes(StandardCharsets.UTF_8));
-				}
-
-				@Override
-				public HttpHeaders getHeaders() {
-					HttpHeaders headers = new HttpHeaders();
-					headers.setContentType(MediaType.TEXT_PLAIN);
-					return headers;
-				}
-			};
+			log.warn("RestClient request blocked by Sentinel: resource={}, rule={}",
+					entryWithPath ? hostWithPathResource : hostResource,
+					ex.getClass().getSimpleName());
+			return handleBlockException(request, ex);
 		}
 		catch (IOException | RuntimeException ex) {
-			// 发生异常时上报给 Sentinel
-			Tracer.traceEntry(ex, entry);
+			Tracer.traceEntry(ex, hostEntry);
 			throw ex;
 		}
 		finally {
-			if (entry != null) {
-				entry.exit();
+			if (hostWithPathEntry != null) {
+				hostWithPathEntry.exit();
+			}
+			if (hostEntry != null) {
+				hostEntry.exit();
 			}
 		}
 	}
+
+	private ClientHttpResponse handleBlockException(HttpRequest request, BlockException ex) {
+		// Degrade (circuit breaking) → use fallback if configured
+		if (ex instanceof DegradeException) {
+			if (fallback != null) {
+				return fallback.apply(request, ex);
+			}
+		}
+		else {
+			// Flow control → use blockHandler if configured
+			if (blockHandler != null) {
+				return blockHandler.apply(request, ex);
+			}
+		}
+		// Default response
+		return new SentinelRestClientHttpResponse(
+				"Blocked by Sentinel: " + ex.getClass().getSimpleName());
+	}
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2023 the original author or authors.
+ * Copyright 2013-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 
 package com.alibaba.cloud.examples.controller;
+
 import java.nio.charset.StandardCharsets;
 
 import org.springframework.http.HttpHeaders;
@@ -27,6 +28,8 @@ import org.springframework.web.client.RestClient;
 
 /**
  * Endpoints to demonstrate RestClient + Sentinel integration.
+ *
+ * @author QHT
  */
 @RestController
 public class TestController {
@@ -46,7 +49,7 @@ public class TestController {
 					String body = StreamUtils.copyToString(res.getBody(), StandardCharsets.UTF_8);
 					HttpHeaders headers = new HttpHeaders();
 					headers.putAll(res.getHeaders());
-					// 透传真实状态码 (200 / 429)
+					// Propagate actual status code (200 / 429)
 					return ResponseEntity
 							.status(HttpStatus.valueOf(res.getStatusCode().value()))
 							.headers(headers)
@@ -79,4 +82,5 @@ public class TestController {
 							.body(body);
 				});
 	}
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2023 the original author or authors.
+ * Copyright 2013-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 
 package com.alibaba.cloud.examples.configuration;
+
 import java.util.Arrays;
 
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
@@ -23,15 +24,24 @@ import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Programmatic Sentinel rule configuration for the RestClient demo.
+ *
+ * @author QHT
+ */
 @Configuration
 public class SentinelRulesConfiguration {
 
+	private static final Logger log = LoggerFactory.getLogger(SentinelRulesConfiguration.class);
+
 	@PostConstruct
 	public void init() {
-		System.out.println("Load Sentinel Rules start！");
+		log.info("Loading Sentinel rules...");
 
 		// Flow rules
 		FlowRule getRule = new FlowRule("GET:https://httpbin.org/get");
@@ -69,6 +79,7 @@ public class SentinelRulesConfiguration {
 
 		DegradeRuleManager.loadRules(Arrays.asList(degradeRule1, degradeRule2));
 
-		System.out.println("Load Sentinel Rules end！");
+		log.info("Sentinel rules loaded successfully.");
 	}
+
 }

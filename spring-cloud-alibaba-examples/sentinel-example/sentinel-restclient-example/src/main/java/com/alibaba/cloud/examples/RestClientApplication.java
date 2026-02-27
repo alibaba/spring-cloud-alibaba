@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2023 the original author or authors.
+ * Copyright 2013-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,16 @@ package com.alibaba.cloud.examples;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * Demo application for Sentinel RestClient integration.
+ *
+ * @author QHT
+ */
 @SpringBootApplication
 public class RestClientApplication {
+
 	public static void main(String[] args) {
 		SpringApplication.run(RestClientApplication.class, args);
 	}
-}
 
+}
