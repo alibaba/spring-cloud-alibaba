@@ -126,7 +126,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 				return (ClientHttpResponse) methodInvoke(fallbackMethod, args);
 			}
 			else {
-				return new SentinelClientHttpResponse();
+				return new SentinelClientHttpResponse("RestTemplate request block by sentinel");
 			}
 		}
 		// handle flow
@@ -137,7 +137,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 			return (ClientHttpResponse) methodInvoke(blockHandler, args);
 		}
 		else {
-			return new SentinelClientHttpResponse();
+			return new SentinelClientHttpResponse("RestTemplate request block by sentinel");
 		}
 	}
 

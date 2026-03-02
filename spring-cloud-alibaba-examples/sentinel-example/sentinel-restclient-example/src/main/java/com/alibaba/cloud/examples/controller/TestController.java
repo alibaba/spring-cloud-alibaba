@@ -18,6 +18,7 @@ package com.alibaba.cloud.examples.controller;
 
 import java.nio.charset.StandardCharsets;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +37,11 @@ public class TestController {
 
 	private final RestClient restClient;
 
-	public TestController(RestClient restClient) {
+	private final RestClient anotherRestClient;
+
+	public TestController(RestClient restClient,RestClient anotherRestClient) {
 		this.restClient = restClient;
+		this.anotherRestClient = anotherRestClient;
 	}
 
 
@@ -83,4 +87,21 @@ public class TestController {
 				});
 	}
 
+
+
+	@GetMapping("/get2")
+	public ResponseEntity<String> get2() {
+		return anotherRestClient.get()
+				.uri("https://httpbin.org/get")
+				.exchange((req, res) -> {
+					String body = StreamUtils.copyToString(res.getBody(), StandardCharsets.UTF_8);
+					HttpHeaders headers = new HttpHeaders();
+					headers.putAll(res.getHeaders());
+					// Propagate actual status code (200 / 429)
+					return ResponseEntity
+							.status(HttpStatus.valueOf(res.getStatusCode().value()))
+							.headers(headers)
+							.body(body);
+				});
+	}
 }

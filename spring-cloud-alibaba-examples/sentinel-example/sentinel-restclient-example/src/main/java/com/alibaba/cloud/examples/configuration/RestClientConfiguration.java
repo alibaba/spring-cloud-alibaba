@@ -16,6 +16,9 @@
 
 package com.alibaba.cloud.examples.configuration;
 
+import com.alibaba.cloud.sentinel.annotation.SentinelRestClient;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
@@ -25,14 +28,34 @@ import org.springframework.web.client.RestClient;
 public class RestClientConfiguration {
 
 	@Bean
+	@SentinelRestClient(
+			blockHandler = "handleBlock",
+			blockHandlerClass = RestClientBlockHandler.class,
+			fallback = "handleFallback",
+			fallbackClass = RestClientBlockHandler.class,
+			urlCleaner = "cleanUrl",
+			urlCleanerClass = RestClientBlockHandler.class
+	)
 	public RestClient.Builder restClientBuilder() {
 		return RestClient.builder();
 	}
 
 	@Bean
-	public RestClient restClient(RestClient.Builder builder) {
+	public RestClient restClient(@Qualifier("restClientBuilder") RestClient.Builder builder) {
 		// Use the auto-injected Builder so that the Sentinel interceptor takes effect
 		return builder.build();
 	}
 
+
+
+	@Bean
+	public RestClient.Builder anotherRestClientBuilder() {
+		return RestClient.builder();
+	}
+
+	@Bean
+	public RestClient anotherRestClient(@Qualifier("anotherRestClientBuilder") RestClient.Builder builder) {
+		// Use the auto-injected Builder so that the Sentinel interceptor takes effect
+		return builder.build();
+	}
 }

@@ -17,10 +17,13 @@
 package com.alibaba.cloud.sentinel.restclient;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
+import com.alibaba.cloud.sentinel.annotation.SentinelRestClient;
+import com.alibaba.cloud.sentinel.custom.BlockClassRegistry;
+import com.alibaba.cloud.sentinel.rest.SentinelClientHttpResponse;
 import com.alibaba.csp.sentinel.Entry;
 import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.SphU;
@@ -49,40 +52,29 @@ import org.springframework.http.client.ClientHttpResponse;
  * </ul>
  *
  * <p>
- * Supports optional customizations:
+ * Supports optional customizations via {@link SentinelRestClient} annotation:
  * <ul>
- * <li>{@code urlCleaner}: a function to clean/normalize the path-level resource
- * name
- * (e.g. convert {@code /users/123} to {@code /users/{id}})</li>
- * <li>{@code blockHandler}: a handler for flow-control blocking (returns a
- * fallback response)</li>
- * <li>{@code fallback}: a handler for circuit-breaking (degrade) blocking</li>
+ * <li>{@code urlCleaner}: a static method to clean/normalize the path-level
+ * resource name (e.g. convert {@code /users/123} to {@code /users/{id}})</li>
+ * <li>{@code blockHandler}: a static method for handling flow-control blocking
+ * (returns a fallback response)</li>
+ * <li>{@code fallback}: a static method for handling circuit-breaking (degrade)
+ * blocking</li>
  * </ul>
  *
  * @author QHT, uuuyuqi
- * @see SentinelRestClientAutoConfiguration
+ * @see SentinelRestClient
+ * @see BlockClassRegistry
  */
 public class SentinelRestClientInterceptor implements ClientHttpRequestInterceptor {
 
-	private static final Logger log = LoggerFactory.getLogger(SentinelRestClientInterceptor.class);
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(SentinelRestClientInterceptor.class);
 
-	private final Function<String, String> urlCleaner;
+	private final SentinelRestClient sentinelRestClient;
 
-	private final BiFunction<HttpRequest, BlockException, ClientHttpResponse> blockHandler;
-
-	private final BiFunction<HttpRequest, BlockException, ClientHttpResponse> fallback;
-
-	public SentinelRestClientInterceptor() {
-		this(null, null, null);
-	}
-
-	public SentinelRestClientInterceptor(
-			Function<String, String> urlCleaner,
-			BiFunction<HttpRequest, BlockException, ClientHttpResponse> blockHandler,
-			BiFunction<HttpRequest, BlockException, ClientHttpResponse> fallback) {
-		this.urlCleaner = urlCleaner;
-		this.blockHandler = blockHandler;
-		this.fallback = fallback;
+	public SentinelRestClientInterceptor(SentinelRestClient sentinelRestClient) {
+		this.sentinelRestClient = sentinelRestClient;
 	}
 
 	@Override
@@ -98,8 +90,12 @@ public class SentinelRestClientInterceptor implements ClientHttpRequestIntercept
 		boolean entryWithPath = !hostResource.equals(hostWithPathResource);
 
 		// Apply URL cleaner if configured
-		if (urlCleaner != null) {
-			hostWithPathResource = urlCleaner.apply(hostWithPathResource);
+		Method urlCleanerMethod = BlockClassRegistry.lookupUrlCleaner(
+				sentinelRestClient.urlCleanerClass(),
+				sentinelRestClient.urlCleaner());
+		if (urlCleanerMethod != null) {
+			hostWithPathResource = (String) methodInvoke(urlCleanerMethod,
+					hostWithPathResource);
 		}
 
 		Entry hostEntry = null;
@@ -113,19 +109,23 @@ public class SentinelRestClientInterceptor implements ClientHttpRequestIntercept
 			ClientHttpResponse response = execution.execute(request, body);
 
 			// Report 5xx server errors to Sentinel as exceptions
+			// Use Tracer.trace() to trace to the current entry context (path-level entry)
+			// so that degrade rules configured for path-level resources can work correctly
 			if (response.getStatusCode().is5xxServerError()) {
-				Tracer.traceEntry(
-						new RuntimeException("Server error: " + response.getStatusCode().value()),
-						hostEntry);
+				RuntimeException ex = new RuntimeException("Server error: "
+						+ response.getStatusCode().value());
+				Tracer.trace(ex);
+				LOGGER.debug("Traced 5xx error for resource: {}, exception: {}",
+						hostWithPathResource, ex.getMessage());
 			}
 
 			return response;
 		}
 		catch (BlockException ex) {
-			log.warn("RestClient request blocked by Sentinel: resource={}, rule={}",
+			LOGGER.debug("RestClient request blocked by Sentinel: resource={}, rule={}",
 					entryWithPath ? hostWithPathResource : hostResource,
 					ex.getClass().getSimpleName());
-			return handleBlockException(request, ex);
+			return handleBlockException(request, body, execution, ex);
 		}
 		catch (IOException | RuntimeException ex) {
 			Tracer.traceEntry(ex, hostEntry);
@@ -141,22 +141,42 @@ public class SentinelRestClientInterceptor implements ClientHttpRequestIntercept
 		}
 	}
 
-	private ClientHttpResponse handleBlockException(HttpRequest request, BlockException ex) {
+	private ClientHttpResponse handleBlockException(HttpRequest request, byte[] body,
+			ClientHttpRequestExecution execution, BlockException ex) {
+		Object[] args = new Object[] { request, body, execution, ex };
 		// Degrade (circuit breaking) → use fallback if configured
 		if (ex instanceof DegradeException) {
-			if (fallback != null) {
-				return fallback.apply(request, ex);
+			Method fallbackMethod = BlockClassRegistry.lookupFallback(
+					sentinelRestClient.fallbackClass(),
+					sentinelRestClient.fallback());
+			if (fallbackMethod != null) {
+				return (ClientHttpResponse) methodInvoke(fallbackMethod, args);
+			}
+			else {
+				return new SentinelClientHttpResponse("RestClient request block by sentinel");
 			}
 		}
 		else {
 			// Flow control → use blockHandler if configured
-			if (blockHandler != null) {
-				return blockHandler.apply(request, ex);
+			Method blockHandlerMethod = BlockClassRegistry.lookupBlockHandler(
+					sentinelRestClient.blockHandlerClass(),
+					sentinelRestClient.blockHandler());
+			if (blockHandlerMethod != null) {
+				return (ClientHttpResponse) methodInvoke(blockHandlerMethod, args);
+			}
+			else {
+				return new SentinelClientHttpResponse("RestClient request block by sentinel");
 			}
 		}
-		// Default response
-		return new SentinelRestClientHttpResponse(
-				"Blocked by Sentinel: " + ex.getClass().getSimpleName());
+	}
+
+	private Object methodInvoke(Method method, Object... args) {
+		try {
+			return method.invoke(null, args);
+		}
+		catch (IllegalAccessException | InvocationTargetException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

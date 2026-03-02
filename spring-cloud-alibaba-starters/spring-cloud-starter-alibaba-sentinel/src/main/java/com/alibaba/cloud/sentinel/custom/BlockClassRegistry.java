@@ -23,9 +23,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.alibaba.csp.sentinel.util.StringUtil;
 
 /**
+ * Registry for block handler, fallback and url cleaner methods.
+ *
  * @author fangjian
  */
-final class BlockClassRegistry {
+public final class BlockClassRegistry {
 
 	private BlockClassRegistry() {
 
@@ -37,33 +39,69 @@ final class BlockClassRegistry {
 
 	private static final Map<String, Method> URL_CLEANER_MAP = new ConcurrentHashMap<>();
 
-	static Method lookupFallback(Class<?> clazz, String name) {
+	/**
+	 * Lookup fallback method.
+	 * @param clazz the class containing the fallback method
+	 * @param name the method name
+	 * @return the fallback method, or null if not found
+	 */
+	public static Method lookupFallback(Class<?> clazz, String name) {
 		return FALLBACK_MAP.get(getKey(clazz, name));
 	}
 
-	static Method lookupBlockHandler(Class<?> clazz, String name) {
+	/**
+	 * Lookup block handler method.
+	 * @param clazz the class containing the block handler method
+	 * @param name the method name
+	 * @return the block handler method, or null if not found
+	 */
+	public static Method lookupBlockHandler(Class<?> clazz, String name) {
 		return BLOCK_HANDLER_MAP.get(getKey(clazz, name));
 	}
 
-	static Method lookupUrlCleaner(Class<?> clazz, String name) {
+	/**
+	 * Lookup url cleaner method.
+	 * @param clazz the class containing the url cleaner method
+	 * @param name the method name
+	 * @return the url cleaner method, or null if not found
+	 */
+	public static Method lookupUrlCleaner(Class<?> clazz, String name) {
 		return URL_CLEANER_MAP.get(getKey(clazz, name));
 	}
 
-	static void updateFallbackFor(Class<?> clazz, String name, Method method) {
+	/**
+	 * Register fallback method.
+	 * @param clazz the class containing the fallback method
+	 * @param name the method name
+	 * @param method the fallback method
+	 */
+	public static void updateFallbackFor(Class<?> clazz, String name, Method method) {
 		if (clazz == null || StringUtil.isBlank(name)) {
 			throw new IllegalArgumentException("Bad argument");
 		}
 		FALLBACK_MAP.put(getKey(clazz, name), method);
 	}
 
-	static void updateBlockHandlerFor(Class<?> clazz, String name, Method method) {
+	/**
+	 * Register block handler method.
+	 * @param clazz the class containing the block handler method
+	 * @param name the method name
+	 * @param method the block handler method
+	 */
+	public static void updateBlockHandlerFor(Class<?> clazz, String name, Method method) {
 		if (clazz == null || StringUtil.isBlank(name)) {
 			throw new IllegalArgumentException("Bad argument");
 		}
 		BLOCK_HANDLER_MAP.put(getKey(clazz, name), method);
 	}
 
-	static void updateUrlCleanerFor(Class<?> clazz, String name, Method method) {
+	/**
+	 * Register url cleaner method.
+	 * @param clazz the class containing the url cleaner method
+	 * @param name the method name
+	 * @param method the url cleaner method
+	 */
+	public static void updateUrlCleanerFor(Class<?> clazz, String name, Method method) {
 		if (clazz == null || StringUtil.isBlank(name)) {
 			throw new IllegalArgumentException("Bad argument");
 		}

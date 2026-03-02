@@ -63,15 +63,17 @@ public class SentinelRulesConfiguration {
 
 		// Degrade rules
 		DegradeRule degradeRule1 = new DegradeRule("GET:https://httpbin.org/status/500");
-		degradeRule1.setGrade(RuleConstant.DEGRADE_GRADE_EXCEPTION_COUNT);
-		degradeRule1.setCount(1);
+		degradeRule1.setGrade(RuleConstant.DEGRADE_GRADE_EXCEPTION_RATIO);
+		degradeRule1.setCount(0.99); // value "1" is not supported now, see: https://github.com/alibaba/Sentinel/pull/1857
 		degradeRule1.setMinRequestAmount(1);
+		degradeRule1.setStatIntervalMs(10 * 1000);
 		degradeRule1.setTimeWindow(30);
 		degradeRule1.setLimitApp("default");
 
 		DegradeRule degradeRule2 = new DegradeRule("GET:https://httpbin.org/delay/3");
 		degradeRule2.setGrade(RuleConstant.DEGRADE_GRADE_RT);
-		degradeRule2.setCount(1);
+		degradeRule2.setCount(2000);
+		degradeRule1.setStatIntervalMs(10 * 1000);
 		degradeRule2.setSlowRatioThreshold(0.1);
 		degradeRule2.setMinRequestAmount(1);
 		degradeRule2.setTimeWindow(30);
