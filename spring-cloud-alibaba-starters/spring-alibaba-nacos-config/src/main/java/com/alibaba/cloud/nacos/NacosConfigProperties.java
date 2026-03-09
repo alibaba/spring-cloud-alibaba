@@ -32,7 +32,7 @@ import com.alibaba.cloud.nacos.utils.PropertySourcesUtils;
 import com.alibaba.cloud.nacos.utils.StringUtils;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -484,12 +484,10 @@ public class NacosConfigProperties {
 		configList.stream()
 				.collect(Collectors.groupingBy(cfg -> (cfg.getGroup() + cfg.getDataId()),
 						LinkedHashMap::new, Collectors.toList()))
-				.forEach((key, list) -> {
-					list.stream()
-						.reduce((a, b) -> new Config(a.getDataId() != null ? a.getDataId() : "", a.getGroup(),
-									a.isRefresh() || (b != null && b.isRefresh())))
-							.ifPresent(result::add);
-				});
+				.forEach((key, list) -> list.stream()
+					.reduce((a, b) -> new Config(a.getDataId(), a.getGroup(),
+								a.isRefresh() || (b != null && b.isRefresh())))
+						.ifPresent(result::add));
 		this.setSharedConfigs(result);
 	}
 
