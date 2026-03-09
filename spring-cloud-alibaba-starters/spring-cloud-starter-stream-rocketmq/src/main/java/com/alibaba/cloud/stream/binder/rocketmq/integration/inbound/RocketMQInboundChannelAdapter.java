@@ -60,7 +60,7 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 
 	private @Nullable RetryTemplate retryTemplate;
 
-	private @Nullable RecoveryCallback<@Nullable Object> recoveryCallback;
+	private @Nullable RecoveryCallback<Object> recoveryCallback;
 
 	private @Nullable DefaultMQPushConsumer pushConsumer;
 
@@ -211,7 +211,7 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 		this.retryTemplate = retryTemplate;
 	}
 
-	public void setRecoveryCallback(RecoveryCallback<@Nullable Object> recoveryCallback) {
+	public void setRecoveryCallback(RecoveryCallback<Object> recoveryCallback) {
 		this.recoveryCallback = recoveryCallback;
 	}
 

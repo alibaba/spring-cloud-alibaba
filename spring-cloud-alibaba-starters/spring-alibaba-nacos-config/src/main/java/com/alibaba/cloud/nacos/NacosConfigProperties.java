@@ -32,8 +32,8 @@ import com.alibaba.cloud.nacos.utils.PropertySourcesUtils;
 import com.alibaba.cloud.nacos.utils.StringUtils;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.jspecify.annotations.Nullable;
 import jakarta.annotation.PostConstruct;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -662,21 +662,21 @@ public class NacosConfigProperties {
 		public Config() {
 		}
 
-		public Config(String dataId) {
+		public Config(@Nullable String dataId) {
 			this.dataId = dataId;
 		}
 
-		public Config(String dataId, String group) {
+		public Config(@Nullable String dataId, String group) {
 			this(dataId);
 			this.group = group;
 		}
 
-		public Config(String dataId, boolean refresh) {
+		public Config(@Nullable String dataId, boolean refresh) {
 			this(dataId);
 			this.refresh = refresh;
 		}
 
-		public Config(String dataId, String group, boolean refresh) {
+		public Config(@Nullable String dataId, String group, boolean refresh) {
 			this(dataId, group);
 			this.refresh = refresh;
 		}
