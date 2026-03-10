@@ -30,7 +30,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
-      - name: Dependies Cache
+      - name: Dependencies Cache
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
@@ -38,10 +38,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Compile & Checkstyle
-        run: mvn clean compile
+        run: mvn clean -B compile
       - name: install dependencies
-        run: mvn clean install -U package -pl '!spring-cloud-alibaba-coverage'  -DskipTests
+        run: mvn clean -B install -U package -pl '!spring-cloud-alibaba-coverage'  -DskipTests
       - name: Testing
         run: ./mvnw verify -B -Dmaven.test.skip=false
 #        run: mvn clean -Dit.enabled=true test
+      - name: Delete snapshots from the Maven local repository
+        run: find ~/.m2/repository -type d -name '*-SNAPSHOT' -print -exec rm -r {} +
 
