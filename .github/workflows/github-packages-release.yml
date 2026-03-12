@@ -43,3 +43,5 @@ jobs:
           mvn clean -B deploy -DskipTests
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      - name: Delete snapshots from the Maven local repository
+        run: find ~/.m2/repository -type d -name '*-SNAPSHOT' -print -exec rm -r {} +
