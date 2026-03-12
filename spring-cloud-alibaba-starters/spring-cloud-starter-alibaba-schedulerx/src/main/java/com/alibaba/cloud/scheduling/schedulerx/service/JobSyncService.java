@@ -102,12 +102,17 @@ public class JobSyncService {
 		for (Entry<String, JobProperty> entry : jobs.entrySet()) {
 			String jobName = entry.getKey();
 			JobProperty jobProperty = entry.getValue();
-			JobConfigInfo jobConfigInfo = getJob(client, jobName, namespaceSource);
-			if (jobConfigInfo == null) {
-				createJob(client, jobName, jobProperty, namespaceSource);
+			try {
+				JobConfigInfo jobConfigInfo = getJob(client, jobName, namespaceSource);
+				if (jobConfigInfo == null) {
+					createJob(client, jobName, jobProperty, namespaceSource);
+				}
+				else if (jobProperty.isOverwrite()) {
+					updateJob(client, jobConfigInfo, jobProperty, namespaceSource);
+				}
 			}
-			else if (jobProperty.isOverwrite()) {
-				updateJob(client, jobConfigInfo, jobProperty, namespaceSource);
+			catch (Exception e) {
+				logger.error("sync job {} failed. jobProperty:{}", jobName, JsonUtil.toJson(jobProperty), e);
 			}
 		}
 	}
