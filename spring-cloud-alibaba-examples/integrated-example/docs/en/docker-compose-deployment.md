@@ -18,11 +18,13 @@ To ensure that the code can start properly, please configure the local host mapp
 127.0.0.1 integrated-mysql
 127.0.0.1 nacos-server
 127.0.0.1 seata-server
-127.0.0.1 rocketmq
+127.0.0.1 rocketmq-server
 127.0.0.1 gateway-service
 127.0.0.1 integrated-frontend
 ```
 
+> recommend to use host machine's ip,  in case run `docker-compose-env.yaml` and `docker-compose-service.yaml` separately,eg depoly env on linux and debug service on windows
+ 
 ### Preparing jar packages
 
 Go to the `spring-cloud-alibaba-examples` directory and run the `mvn package` command to compile the project and generate the jar package, so as to prepare for the subsequent construction of the docker service image.
@@ -74,7 +76,7 @@ For the distributed transaction capability, we provide the scenario **where a us
 
 #### Start test
 
-Visit `http://integrated-frontend:8080/order` to experience the corresponding scenario.
+Visit `http://integrated-frontend:8010/order` to experience the corresponding scenario.
 
 By clicking the order button directly to submit the form, we simulate the client sending a request to the gateway to create an order.
 
@@ -111,7 +113,7 @@ For service fusion limiting and peak and valley cutting in the context of high t
 
 - Sentinel service meltdown degradation
 
-Visit `http://integrated-frontend:8080/sentinel` to experience the corresponding scenario.
+Visit `http://integrated-frontend:8010/sentinel` to experience the corresponding scenario.
 
 ![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20221016155501290.png)
 
@@ -123,7 +125,7 @@ Therefore, we can see that Sentinel performs a service fusion on the Gateway sid
 
 - RocketMQ is performing peak and valley reduction
 
-Visit `http://integrated-frontend:8080/rocketmq` to experience the corresponding scenario.
+Visit `http://integrated-frontend:8010/rocketmq` to experience the corresponding scenario.
 
 Since we previously configured the consumption rate and interval of the `integrated-praise-consumer` consumer module in Nacos, we simulate 1000 requests for likes at the click of a button, and the `integrated-praise-provider`
 will deliver 1000 requests to the Broker, and the consumer module will consume them according to the configured consumption rate, and update the database with the product data of the likes, simulating the characteristics of RocketMQ to cut the peaks and fill the valleys under high traffic.

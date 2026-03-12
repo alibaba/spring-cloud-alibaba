@@ -36,6 +36,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -68,7 +69,7 @@ public class OrderController {
 	}
 
 	@PostMapping(value = "/order", produces = "application/json")
-	public String order(String userId, String commodityCode, int orderCount) {
+	public String order(@RequestParam("userId") String userId, @RequestParam("commodityCode") String commodityCode, @RequestParam("orderCount") Integer orderCount) {
 		LOGGER.info("Order Service Begin ... xid: " + RootContext.getXID());
 
 		int orderMoney = calculate(commodityCode, orderCount);

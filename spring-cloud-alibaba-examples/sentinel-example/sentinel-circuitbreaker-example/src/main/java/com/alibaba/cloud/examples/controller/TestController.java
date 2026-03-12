@@ -38,17 +38,17 @@ public class TestController {
 	private OrderClient orderClient;
 
 	@GetMapping("/test/default/{ok}")
-	public String testDefault(@PathVariable boolean ok) {
+	public String testDefault(@PathVariable(value = "ok") boolean ok) {
 		return orderClient.defaultConfig(ok);
 	}
 
 	@GetMapping("/test/feign/{ok}")
-	public String testFeign(@PathVariable boolean ok) {
+	public String testFeign(@PathVariable(value = "ok") boolean ok) {
 		return userClient.feign(ok);
 	}
 
 	@GetMapping("/test/feignMethod/{ok}")
-	public String testFeignMethod(@PathVariable boolean ok) {
+	public String testFeignMethod(@PathVariable(value = "ok") boolean ok) {
 		return userClient.feignMethod(ok);
 	}
 

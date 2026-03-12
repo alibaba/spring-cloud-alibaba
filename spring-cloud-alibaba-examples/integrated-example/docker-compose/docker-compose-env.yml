@@ -12,6 +12,7 @@ services:
       - MODE=standalone
     ports:
       - "8848:8848"
+      - "9848:9848"
 
   # mysql
   mysql:
@@ -34,7 +35,7 @@ services:
 
   # rocketMQ
   rmqnamesrv:
-    image: apache/rocketmq:4.9.4
+    image: apache/rocketmq:5.3.1
     hostname: rocketmq
     restart: always
     container_name: integrated-example-rmqnamesrv
@@ -43,29 +44,31 @@ services:
     command: sh mqnamesrv
 
   rmqbroker:
-    image: apache/rocketmq:4.9.4
+    image: apache/rocketmq:5.3.1
     restart: always
     container_name: integrated-example-rmqbroker
     ports:
       - "10909:10909"
       - "10911:10911"
+      - "10912:10912"
     volumes:
-      - ../config-init/rocketmq/broker.conf:/opt/rocketmq-4.9.4/conf/broker.conf
+      - ../config-init/rocketmq/broker.conf:/opt/rocketmq-5.3.1/conf/broker.conf
     environment:
       NAMESRV_ADDR: "rmqnamesrv:9876"
       JAVA_OPTS: " -Duser.home=/opt"
       JAVA_OPT_EXT: "-server -Xms128m -Xmx128m -Xmn128m"
-    command: sh mqbroker -c /opt/rocketmq-4.9.4/conf/broker.conf
+    command: sh mqbroker -c /opt/rocketmq-5.3.1/conf/broker.conf
     depends_on:
       - rmqnamesrv
 
   # seata
   seata-server:
-    image: seataio/seata-server:1.5.1
+    image: apache/seata-server:2.1.0
     hostname: seata-server
     restart: always
     container_name: integrated-example-seata-server
     ports:
+      - "7091:7091"
       - "8091:8091"
     environment:
       - SEATA_PORT=8091

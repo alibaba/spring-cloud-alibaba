@@ -29,6 +29,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface OrderClient {
 
 	@GetMapping("/default/{ok}")
-	String defaultConfig(@PathVariable boolean ok);
+	String defaultConfig(@PathVariable(value = "ok") boolean ok);
 
 }

@@ -27,6 +27,9 @@ spring:
         server-addr: 127.0.0.1:8848
         username: 'nacos'
         password: 'nacos'
+    openfeign:
+      circuitbreaker:
+        enabled: true
 
   config:
     import: optional:nacos:sentinel-circuitbreaker-rules.yml

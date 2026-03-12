@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiController {
 
 	@GetMapping("/default/{ok}")
-	public String defaultConfig(@PathVariable boolean ok) {
+	public String defaultConfig(@PathVariable(value = "ok") boolean ok) {
 		if (ok) {
 			return "ok";
 		}
@@ -37,7 +37,7 @@ public class ApiController {
 	}
 
 	@GetMapping("/feign/{ok}")
-	public String feignConfig(@PathVariable boolean ok) {
+	public String feignConfig(@PathVariable(value = "ok") boolean ok) {
 		if (ok) {
 			return "ok";
 		}
@@ -45,7 +45,7 @@ public class ApiController {
 	}
 
 	@GetMapping("/feignMethod/{ok}")
-	public String feignMethodConfig(@PathVariable boolean ok) {
+	public String feignMethodConfig(@PathVariable(value = "ok") boolean ok) {
 		if (ok) {
 			return "ok";
 		}

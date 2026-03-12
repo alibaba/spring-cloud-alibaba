@@ -67,14 +67,16 @@ server:
   port: 18083
 
 management:
-  endpoint:
+  endpoints:
     web:
         exposure:
             include: "*"
+  endpoint:
     health:
       show-details: always
-      diskSpace:
-        # we can disable health check, default is enable
-        enabled: false
-      # sentinel:
-      #  enabled: false
+  health:
+    diskspace:
+      # we can disable health check, default is enable
+      enabled: false
+#    sentinel:
+#      enabled: false

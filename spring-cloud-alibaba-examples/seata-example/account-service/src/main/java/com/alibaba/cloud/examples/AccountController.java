@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -48,7 +49,7 @@ public class AccountController {
 	}
 
 	@PostMapping(value = "/account", produces = "application/json")
-	public String account(String userId, int money) {
+	public String account(@RequestParam("userId") String userId,@RequestParam("money") Integer money) {
 		LOGGER.info("Account Service ... xid: " + RootContext.getXID());
 
 		if (random.nextBoolean()) {
