@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos.parser;
 
+import java.nio.charset.StandardCharsets;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +31,7 @@ import com.alibaba.cloud.nacos.utils.NacosConfigUtils;
 import org.springframework.boot.env.OriginTrackedMapPropertySource;
 import org.springframework.boot.env.PropertiesPropertySourceLoader;
 import org.springframework.boot.env.PropertySourceLoader;
+import org.springframework.boot.env.YamlPropertySourceLoader;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.support.SpringFactoriesLoader;
@@ -82,6 +84,12 @@ public final class NacosDataParserHandler {
 				nacosByteArrayResource = new NacosByteArrayResource(
 						NacosConfigUtils.selectiveConvertUnicode(configValue).getBytes(),
 						configName);
+			}
+			else if (propertySourceLoader instanceof YamlPropertySourceLoader) {
+				// YamlPropertySourceLoader internal only support use unicode,
+				// The default encoding for Chinese windows system is GBK, need to transform
+				nacosByteArrayResource = new NacosByteArrayResource(
+						configValue.getBytes(StandardCharsets.UTF_8), configName);
 			}
 			else {
 				nacosByteArrayResource = new NacosByteArrayResource(
