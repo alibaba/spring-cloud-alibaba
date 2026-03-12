@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: business-service  # 应用名，Seata 默认基于此生成事务组
+
+seata:
+  enabled: true             # 启用 Seata
+  tx-service-group: ${spring.application.name}-tx-group  # 可删除（默认行为）
+
+# 如果已配置 Nacos 作为注册中心和配置中心，以下 Seata 配置可完全省略！
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848  # Nacos 地址（全局共用）
+        username: nacos
+        password: nacos
+      config:
+        server-addr: 127.0.0.1:8848  # Nacos 地址（全局共用）
+        username: nacos
+        password: nacos
+
+# 完全删除以下冗余配置：
+# seata:
+#   config:
+#     type: nacos
+#     nacos:
+#       serverAddr: 127.0.0.1:8848
+#       dataId: "seata.properties"
+#       username: nacos
+#       password: nacos
+#   registry:
+#     type: nacos
+#     nacos:
+#       application: seata-server
+#       server-addr: 127.0.0.1:8848
+#       username: nacos
+#       password: nacos
