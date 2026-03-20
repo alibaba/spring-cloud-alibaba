@@ -66,7 +66,15 @@ public class NacosGracefulShutdownDelegate implements ApplicationListener<Contex
 
 	protected void doGracefulShutdown() {
 		try {
-			autoServiceRegistration.stop();
+			try {
+				autoServiceRegistration.stop();
+			}
+			catch (NullPointerException npe) {
+				// Nacos NotifyCenter.INSTANCE may already be null when deregisterSubscriber
+				// is called, if Nacos client shutdown hooks ran before this delegate.
+				// This is a known race condition in Nacos client graceful shutdown.
+				log.warn("Nacos client NotifyCenter already destroyed, skipping stop()", npe);
+			}
 			Integer gracefulShutdownWaitTime = this.nacosDiscoveryProperties.getGracefulShutdownWaitTime();
 			if (gracefulShutdownWaitTime != null && gracefulShutdownWaitTime > 0) {
 				ThreadUtils.sleep(gracefulShutdownWaitTime);
