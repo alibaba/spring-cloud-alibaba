@@ -2,8 +2,8 @@
  * Copyright 2013-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *      https://www.apache.org/licenses/LICENSE-2.0
  *
@@ -74,6 +74,11 @@ public class NacosGracefulShutdownDelegate implements ApplicationListener<Contex
 
 			log.info("Nacos client graceful shutdown has been executed successfully. " +
 					"Graceful shutdown wait time is {}", gracefulShutdownWaitTime);
+		}
+		catch (NullPointerException e) {
+			// Ignore NPE during shutdown when NotifyCenter.INSTANCE has been destroyed
+			log.warn("Nacos client graceful shutdown encountered NPE (NotifyCenter may already be destroyed). " +
+					"This is safe to ignore during shutdown.", e);
 		}
 		catch (Throwable t) {
 			log.error("Error occurred while performing Nacos client graceful shutdown", t);
