@@ -28,6 +28,8 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.TreeSet;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.util.Assert;
 
 /**
@@ -74,14 +76,14 @@ public final class CronExpression {
 	}
 
 	private final String cronExpression;
-	private TimeZone timeZone = null;
-	protected transient TreeSet<Integer> seconds;
-	protected transient TreeSet<Integer> minutes;
-	protected transient TreeSet<Integer> hours;
-	protected transient TreeSet<Integer> daysOfMonth;
-	protected transient TreeSet<Integer> months;
-	protected transient TreeSet<Integer> daysOfWeek;
-	protected transient TreeSet<Integer> years;
+	private @Nullable TimeZone timeZone = null;
+	protected transient TreeSet<Integer> seconds = new TreeSet<>();
+	protected transient TreeSet<Integer> minutes = new TreeSet<>();
+	protected transient TreeSet<Integer> hours = new TreeSet<>();
+	protected transient TreeSet<Integer> daysOfMonth = new TreeSet<>();
+	protected transient TreeSet<Integer> months = new TreeSet<>();
+	protected transient TreeSet<Integer> daysOfWeek = new TreeSet<>();
+	protected transient TreeSet<Integer> years = new TreeSet<>();
 
 	protected transient boolean lastdayOfWeek = false;
 	protected transient int nthdayOfWeek = 0;
@@ -158,7 +160,7 @@ public final class CronExpression {
 	 *             date/time
 	 * @return the next valid date/time.
 	 */
-	public Date getNextValidTimeAfter(final Date date) {
+	public @Nullable Date getNextValidTimeAfter(final Date date) {
 		return getTimeAfter(date);
 	}
 
@@ -248,27 +250,13 @@ public final class CronExpression {
 	protected void buildExpression(final String expression) throws ParseException {
 		expressionParsed = true;
 		try {
-			if (seconds == null) {
-				seconds = new TreeSet<>();
-			}
-			if (minutes == null) {
-				minutes = new TreeSet<>();
-			}
-			if (hours == null) {
-				hours = new TreeSet<>();
-			}
-			if (daysOfMonth == null) {
-				daysOfMonth = new TreeSet<>();
-			}
-			if (months == null) {
-				months = new TreeSet<>();
-			}
-			if (daysOfWeek == null) {
-				daysOfWeek = new TreeSet<>();
-			}
-			if (years == null) {
-				years = new TreeSet<>();
-			}
+			seconds = new TreeSet<>();
+			minutes = new TreeSet<>();
+			hours = new TreeSet<>();
+			daysOfMonth = new TreeSet<>();
+			months = new TreeSet<>();
+			daysOfWeek = new TreeSet<>();
+			years = new TreeSet<>();
 
 			int exprOn = SECOND;
 
@@ -993,7 +981,7 @@ public final class CronExpression {
 		return integer;
 	}
 
-	public Date getTimeAfter(Date afterTime) {
+	public @Nullable Date getTimeAfter(Date afterTime) {
 
 		// Computation is based on Gregorian year only.
 		final Calendar cl = new java.util.GregorianCalendar(getTimeZone());
@@ -1428,7 +1416,7 @@ public final class CronExpression {
 		}
 	}
 
-	protected Date getTimeBefore(final Date targetDate) {
+	protected @Nullable Date getTimeBefore(final Date targetDate) {
 		final Calendar cl = Calendar.getInstance(getTimeZone());
 
 		// CronTrigger does not deal with milliseconds, so truncate target
@@ -1451,7 +1439,7 @@ public final class CronExpression {
 		return prevFireTime;
 	}
 
-	public Date getPrevFireTime(final Date targetDate) {
+	public @Nullable Date getPrevFireTime(final Date targetDate) {
 		return getTimeBefore(targetDate);
 	}
 

@@ -18,6 +18,7 @@ package com.alibaba.cloud.scheduling.schedulerx;
 
 import com.alibaba.schedulerx.common.domain.ExecuteMode;
 import com.alibaba.schedulerx.common.domain.JobType;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -29,27 +30,27 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = SchedulerxProperties.CONFIG_PREFIX)
 public final class JobProperty {
 
-	private String jobName;
+	private @Nullable String jobName;
 
 	private String jobType = JobType.JAVA.getKey();
 
 	private String jobModel = ExecuteMode.STANDALONE.getKey();
 
-	private String className;
+	private @Nullable String className;
 
-	private String content;
+	private @Nullable String content;
 
-	private Integer timeType;
+	private @Nullable Integer timeType;
 
-	private String timeExpression;
+	private @Nullable String timeExpression;
 
-	private String cron;
+	private @Nullable String cron;
 
-	private String oneTime;
+	private @Nullable String oneTime;
 
-	private String jobParameter;
+	private @Nullable String jobParameter;
 
-	private String description;
+	private @Nullable String description;
 
 	private boolean overwrite = false;
 
@@ -69,7 +70,7 @@ public final class JobProperty {
 		this.jobModel = jobModel;
 	}
 
-	public String getClassName() {
+	public @Nullable String getClassName() {
 		return className;
 	}
 
@@ -77,7 +78,7 @@ public final class JobProperty {
 		this.className = className;
 	}
 
-	public String getCron() {
+	public @Nullable String getCron() {
 		return cron;
 	}
 
@@ -85,7 +86,7 @@ public final class JobProperty {
 		this.cron = cron;
 	}
 
-	public String getOneTime() {
+	public @Nullable String getOneTime() {
 		return oneTime;
 	}
 
@@ -93,7 +94,7 @@ public final class JobProperty {
 		this.oneTime = oneTime;
 	}
 
-	public String getJobParameter() {
+	public @Nullable String getJobParameter() {
 		return jobParameter;
 	}
 
@@ -101,7 +102,7 @@ public final class JobProperty {
 		this.jobParameter = jobParameter;
 	}
 
-	public String getDescription() {
+	public @Nullable String getDescription() {
 		return description;
 	}
 
@@ -117,7 +118,7 @@ public final class JobProperty {
 		this.overwrite = overwrite;
 	}
 
-	public String getContent() {
+	public @Nullable String getContent() {
 		return content;
 	}
 
@@ -125,7 +126,7 @@ public final class JobProperty {
 		this.content = content;
 	}
 
-	public String getJobName() {
+	public @Nullable String getJobName() {
 		return jobName;
 	}
 
@@ -133,7 +134,7 @@ public final class JobProperty {
 		this.jobName = jobName;
 	}
 
-	public Integer getTimeType() {
+	public @Nullable Integer getTimeType() {
 		return timeType;
 	}
 
@@ -141,7 +142,7 @@ public final class JobProperty {
 		this.timeType = timeType;
 	}
 
-	public String getTimeExpression() {
+	public @Nullable String getTimeExpression() {
 		return timeExpression;
 	}
 

@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.nacos;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author shiyiyue

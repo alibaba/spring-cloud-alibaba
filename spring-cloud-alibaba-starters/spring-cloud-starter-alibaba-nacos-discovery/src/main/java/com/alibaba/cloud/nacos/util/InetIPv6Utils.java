@@ -24,9 +24,9 @@ import java.util.Enumeration;
 import java.util.List;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
-import jakarta.annotation.Nullable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.commons.util.InetUtilsProperties;
@@ -45,7 +45,7 @@ public class InetIPv6Utils {
 		this.properties = properties;
 	}
 
-	private @Nullable InetUtils.HostInfo findFirstValidHostInfo() {
+	private InetUtils.@Nullable HostInfo findFirstValidHostInfo() {
 		InetAddress address = this.findFirstValidIPv6Address();
 		return address != null ? this.getHostInfo(address) : null;
 	}

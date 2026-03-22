@@ -14,4 +14,7 @@
  * limitations under the License.
  */
 
+@NullMarked
 package com.alibaba.cloud.scheduling.shedlock;
+
+import org.jspecify.annotations.NullMarked;

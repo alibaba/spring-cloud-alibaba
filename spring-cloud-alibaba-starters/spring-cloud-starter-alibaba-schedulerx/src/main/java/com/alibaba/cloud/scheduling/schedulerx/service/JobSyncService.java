@@ -52,9 +52,9 @@ import com.aliyuncs.schedulerx2.model.v20190430.GetJobInfoResponse;
 import com.aliyuncs.schedulerx2.model.v20190430.GetJobInfoResponse.Data.JobConfigInfo;
 import com.aliyuncs.schedulerx2.model.v20190430.UpdateJobRequest;
 import com.aliyuncs.schedulerx2.model.v20190430.UpdateJobResponse;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 
 /**
  * JobSyncService.
@@ -68,7 +68,7 @@ public class JobSyncService {
 	@Autowired
 	private SchedulerxProperties properties;
 
-	private DefaultAcsClient client;
+	private @Nullable DefaultAcsClient client;
 
 	private synchronized DefaultAcsClient getClient() {
 		// build aliyun pop client
@@ -219,7 +219,7 @@ public class JobSyncService {
 	 * @return job config info.
 	 * @throws Exception get job config info exception.
 	 */
-	private JobConfigInfo getJob(DefaultAcsClient client, String jobName, String namespaceSource) throws Exception {
+	private @Nullable JobConfigInfo getJob(DefaultAcsClient client, String jobName, String namespaceSource) throws Exception {
 		GetJobInfoRequest request = new GetJobInfoRequest();
 		request.setNamespace(properties.getNamespace());
 		request.setNamespaceSource(namespaceSource);
@@ -272,14 +272,16 @@ public class JobSyncService {
 			request.setContent(jobProperty.getContent());
 		}
 
-		if (StringUtils.isNotEmpty(jobProperty.getCron()) && StringUtils.isNotEmpty(jobProperty.getOneTime())) {
+		String cron = jobProperty.getCron();
+		String oneTime = jobProperty.getOneTime();
+		if (StringUtils.isNotEmpty(cron) && StringUtils.isNotEmpty(oneTime)) {
 			throw new IOException("cron and oneTime shouldn't set together");
 		}
-		if (StringUtils.isNotEmpty(jobProperty.getCron())) {
-			CronExpression cronExpression = new CronExpression(jobProperty.getCron());
+		if (cron != null && !cron.isEmpty()) {
+			CronExpression cronExpression = new CronExpression(cron);
 			Date now = new Date();
 			Date nextData = cronExpression.getTimeAfter(now);
-			Date next2Data = cronExpression.getTimeAfter(nextData);
+			Date next2Data = nextData == null ? null : cronExpression.getTimeAfter(nextData);
 			if (nextData != null && next2Data != null) {
 				long interval = TimeUnit.MILLISECONDS.toSeconds((next2Data.getTime() - nextData.getTime()));
 				if (interval < SchedulerxConstants.SECOND_DELAY_MAX_VALUE) {
@@ -289,17 +291,17 @@ public class JobSyncService {
 				}
 				else {
 					request.setTimeType(TimeType.CRON.getValue());
-					request.setTimeExpression(jobProperty.getCron());
+					request.setTimeExpression(cron);
 				}
 			}
 			else {
 				request.setTimeType(TimeType.CRON.getValue());
-				request.setTimeExpression(jobProperty.getCron());
+				request.setTimeExpression(cron);
 			}
 		}
-		else if (StringUtils.isNotEmpty(jobProperty.getOneTime())) {
+		else if (oneTime != null && !oneTime.isEmpty()) {
 			request.setTimeType(TimeType.ONE_TIME.getValue());
-			request.setTimeExpression(jobProperty.getOneTime());
+			request.setTimeExpression(oneTime);
 		}
 		else {
 			request.setTimeType(TimeType.API.getValue());
@@ -344,14 +346,16 @@ public class JobSyncService {
 		}
 		int timeType;
 		String timeExpression = null;
-		if (StringUtils.isNotEmpty(jobProperty.getCron()) && StringUtils.isNotEmpty(jobProperty.getOneTime())) {
+		String cron = jobProperty.getCron();
+		String oneTime = jobProperty.getOneTime();
+		if (StringUtils.isNotEmpty(cron) && StringUtils.isNotEmpty(oneTime)) {
 			throw new IOException("cron and oneTime shouldn't set together");
 		}
-		if (StringUtils.isNotEmpty(jobProperty.getCron())) {
-			CronExpression cronExpression = new CronExpression(jobProperty.getCron());
+		if (cron != null && !cron.isEmpty()) {
+			CronExpression cronExpression = new CronExpression(cron);
 			Date now = new Date();
 			Date nextData = cronExpression.getTimeAfter(now);
-			Date next2Data = cronExpression.getTimeAfter(nextData);
+			Date next2Data = nextData == null ? null : cronExpression.getTimeAfter(nextData);
 			if (nextData != null && next2Data != null) {
 				long interval = TimeUnit.MILLISECONDS.toSeconds((next2Data.getTime() - nextData.getTime()));
 				if (interval < SchedulerxConstants.SECOND_DELAY_MAX_VALUE) {
@@ -361,17 +365,17 @@ public class JobSyncService {
 				}
 				else {
 					timeType = TimeType.CRON.getValue();
-					timeExpression = jobProperty.getCron();
+					timeExpression = cron;
 				}
 			}
 			else {
 				timeType = TimeType.CRON.getValue();
-				timeExpression = jobProperty.getCron();
+				timeExpression = cron;
 			}
 		}
-		else if (StringUtils.isNotEmpty(jobProperty.getOneTime())) {
+		else if (oneTime != null && !oneTime.isEmpty()) {
 			timeType = TimeType.ONE_TIME.getValue();
-			timeExpression = jobProperty.getOneTime();
+			timeExpression = oneTime;
 		}
 		else {
 			timeType = TimeType.API.getValue();
@@ -427,9 +431,10 @@ public class JobSyncService {
 	 * @return namespace source
 	 */
 	private String getNamespaceSource() {
-		if (StringUtils.isEmpty(properties.getNamespaceSource())) {
+		String namespaceSource = properties.getNamespaceSource();
+		if (namespaceSource == null || namespaceSource.isEmpty()) {
 			return SchedulerxConstants.NAMESPACE_SOURCE_SPRINGBOOT;
 		}
-		return properties.getNamespaceSource();
+		return namespaceSource;
 	}
 }

@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.nacos;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class SpringCloudNacosPropertiesPrefixProvider implements NacosPropertiesPrefixProvider {
 

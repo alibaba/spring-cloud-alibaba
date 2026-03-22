@@ -115,7 +115,7 @@ public class NacosConfigProperties {
 	/**
 	 * nacos config group, group is config data meta info.
 	 */
-	private @Nullable String group = "DEFAULT_GROUP";
+	private String group = "DEFAULT_GROUP";
 	/**
 	 * nacos config dataId prefix.
 	 */
@@ -123,7 +123,7 @@ public class NacosConfigProperties {
 	/**
 	 * the suffix of nacos config dataId, also the file extension of config content.
 	 */
-	private @Nullable String fileExtension = "properties";
+	private String fileExtension = "properties";
 	/**
 	 * timeout for get config from nacos.
 	 */
@@ -265,7 +265,7 @@ public class NacosConfigProperties {
 		return fileExtension;
 	}
 
-	public void setFileExtension(@Nullable String fileExtension) {
+	public void setFileExtension(String fileExtension) {
 		this.fileExtension = fileExtension;
 	}
 
@@ -273,7 +273,7 @@ public class NacosConfigProperties {
 		return group;
 	}
 
-	public void setGroup(@Nullable String group) {
+	public void setGroup(String group) {
 		this.group = group;
 	}
 
