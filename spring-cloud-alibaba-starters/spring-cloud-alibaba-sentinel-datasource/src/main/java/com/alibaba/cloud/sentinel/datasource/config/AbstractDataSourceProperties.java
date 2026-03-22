@@ -38,7 +38,7 @@ import org.springframework.core.env.Environment;
  */
 public class AbstractDataSourceProperties {
 
-	private @Nullable String dataType = "json";
+	private String dataType = "json";
 
 	private @Nullable RuleType ruleType;
 
@@ -54,12 +54,12 @@ public class AbstractDataSourceProperties {
 		this.factoryBeanName = factoryBeanName;
 	}
 
-	public @Nullable String getDataType() {
+	public String getDataType() {
 		return dataType;
 	}
 
 	public void setDataType(@Nullable String dataType) {
-		this.dataType = dataType;
+		this.dataType = dataType == null ? "json" : dataType;
 	}
 
 	public @Nullable RuleType getRuleType() {

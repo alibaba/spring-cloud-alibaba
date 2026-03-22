@@ -46,7 +46,7 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 	private final static Logger log = LoggerFactory
 			.getLogger(NacosPropertySourceRefreshListener.class);
 
-	private @Nullable Map<String, ConfigurationPropertiesBean> beans = new HashMap<>();
+	private Map<String, ConfigurationPropertiesBean> beans = new HashMap<>();
 
 	private @Nullable ApplicationContext applicationContext;
 
@@ -60,7 +60,7 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-		if (this.applicationContext == null || this.beans == null) {
+		if (this.applicationContext == null) {
 			return bean;
 		}
 		ConfigurationPropertiesBean propertiesBean = ConfigurationPropertiesBean.get(this.applicationContext, bean,
