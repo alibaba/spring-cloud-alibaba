@@ -179,7 +179,7 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 		}
 		catch (Exception e) {
 			log.warn("NacosLoadBalancer error", e);
-			return null;
+			return new EmptyResponse();
 		}
 	}
 
