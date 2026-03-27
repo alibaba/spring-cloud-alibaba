@@ -29,10 +29,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.loadbalancer.DefaultResponse;
 import org.springframework.cloud.client.loadbalancer.EmptyResponse;
 import org.springframework.cloud.client.loadbalancer.Request;
 import org.springframework.cloud.client.loadbalancer.Response;
@@ -52,6 +55,9 @@ public class NacosLoadBalancerErrorHandlingTests {
 
 	@Mock
 	private ObjectProvider<ServiceInstanceListSupplier> supplierProvider;
+
+	@Mock
+	private ServiceInstanceListSupplier serviceInstanceListSupplier;
 
 	@Mock
 	private InetIPv6Utils inetIPv6Utils;
@@ -79,30 +85,24 @@ public class NacosLoadBalancerErrorHandlingTests {
 				algorithmMap);
 	}
 
+	// ========== Tests via private getInstanceResponse (reflection) ==========
+
 	@Test
 	public void exceptionShouldReturnEmptyResponseNotNull() {
 		when(defaultAlgorithm.getInstance(any(), any()))
 				.thenThrow(new RuntimeException("simulated error"));
 
-		List<ServiceInstance> instances = new ArrayList<>();
-		Map<String, String> metadata = new HashMap<>();
-		metadata.put("nacos.cluster", "clusterA");
-		instances.add(new DefaultServiceInstance("i1", "test-service",
-				"192.168.1.1", 8080, false, metadata));
-
-		Response<ServiceInstance> response = invokeGetInstanceResponse(instances);
+		Response<ServiceInstance> response = invokeGetInstanceResponse(createTestInstances());
 
 		assertThat(response).isNotNull();
 		assertThat(response).isInstanceOf(EmptyResponse.class);
+		assertThat(response.hasServer()).isFalse();
 	}
 
 	@Test
 	public void normalRequestShouldReturnValidResponse() {
+		ServiceInstance instance = createTestInstance("i1", "192.168.1.1", 8080);
 		List<ServiceInstance> instances = new ArrayList<>();
-		Map<String, String> metadata = new HashMap<>();
-		metadata.put("nacos.cluster", "clusterA");
-		ServiceInstance instance = new DefaultServiceInstance("i1", "test-service",
-				"192.168.1.1", 8080, false, metadata);
 		instances.add(instance);
 
 		when(defaultAlgorithm.getInstance(any(), any())).thenReturn(instance);
@@ -111,6 +111,75 @@ public class NacosLoadBalancerErrorHandlingTests {
 
 		assertThat(response).isNotNull();
 		assertThat(response.hasServer()).isTrue();
+		assertThat(response.getServer()).isEqualTo(instance);
+	}
+
+	// ========== Tests via public choose() — end-to-end reactive path ==========
+
+	@Test
+	public void chooseShouldReturnEmptyResponseWhenAlgorithmThrows() {
+		List<ServiceInstance> instances = createTestInstances();
+		when(supplierProvider.getIfAvailable(any())).thenReturn(serviceInstanceListSupplier);
+		when(serviceInstanceListSupplier.get(any())).thenReturn(Flux.just(instances));
+		when(defaultAlgorithm.getInstance(any(), any()))
+				.thenThrow(new RuntimeException("simulated algorithm failure"));
+
+		StepVerifier.create(nacosLoadBalancer.choose(null))
+				.assertNext(response -> {
+					assertThat(response).isNotNull();
+					assertThat(response).isInstanceOf(EmptyResponse.class);
+					assertThat(response.hasServer()).isFalse();
+				})
+				.verifyComplete();
+	}
+
+	@Test
+	public void chooseShouldReturnValidResponseOnNormalPath() {
+		ServiceInstance instance = createTestInstance("i1", "192.168.1.1", 8080);
+		List<ServiceInstance> instances = new ArrayList<>();
+		instances.add(instance);
+		when(supplierProvider.getIfAvailable(any())).thenReturn(serviceInstanceListSupplier);
+		when(serviceInstanceListSupplier.get(any())).thenReturn(Flux.just(instances));
+		when(defaultAlgorithm.getInstance(any(), any())).thenReturn(instance);
+
+		StepVerifier.create(nacosLoadBalancer.choose(null))
+				.assertNext(response -> {
+					assertThat(response).isNotNull();
+					assertThat(response).isInstanceOf(DefaultResponse.class);
+					assertThat(response.hasServer()).isTrue();
+					assertThat(response.getServer().getHost()).isEqualTo("192.168.1.1");
+					assertThat(response.getServer().getPort()).isEqualTo(8080);
+				})
+				.verifyComplete();
+	}
+
+	@Test
+	public void chooseShouldReturnEmptyResponseWhenNoInstances() {
+		List<ServiceInstance> emptyInstances = Collections.emptyList();
+		when(supplierProvider.getIfAvailable(any())).thenReturn(serviceInstanceListSupplier);
+		when(serviceInstanceListSupplier.get(any())).thenReturn(Flux.just(emptyInstances));
+
+		StepVerifier.create(nacosLoadBalancer.choose(null))
+				.assertNext(response -> {
+					assertThat(response).isNotNull();
+					assertThat(response).isInstanceOf(EmptyResponse.class);
+					assertThat(response.hasServer()).isFalse();
+				})
+				.verifyComplete();
+	}
+
+	// ========== Helper methods ==========
+
+	private ServiceInstance createTestInstance(String instanceId, String host, int port) {
+		Map<String, String> metadata = new HashMap<>();
+		metadata.put("nacos.cluster", "clusterA");
+		return new DefaultServiceInstance(instanceId, "test-service", host, port, false, metadata);
+	}
+
+	private List<ServiceInstance> createTestInstances() {
+		List<ServiceInstance> instances = new ArrayList<>();
+		instances.add(createTestInstance("i1", "192.168.1.1", 8080));
+		return instances;
 	}
 
 	private Response<ServiceInstance> invokeGetInstanceResponse(List<ServiceInstance> instances) {
