@@ -114,11 +114,29 @@ public class NacosServiceManager {
 
 	public void nacosServiceShutDown() throws NacosException {
 		if (Objects.nonNull(this.namingService)) {
-			this.namingService.shutDown();
+			try {
+				this.namingService.shutDown();
+			}
+			catch (NacosException e) {
+				log.error("Nacos naming service shutDown failed", e);
+			}
+			catch (Exception e) {
+				log.warn("Nacos naming service shutDown failed, "
+						+ "possibly caused by shutdown order", e);
+			}
 			this.namingService = null;
 		}
 		if (Objects.nonNull(this.namingMaintainService)) {
-			this.namingMaintainService.shutDown();
+			try {
+				this.namingMaintainService.shutDown();
+			}
+			catch (NacosException e) {
+				log.error("Nacos naming maintain service shutDown failed", e);
+			}
+			catch (Exception e) {
+				log.warn("Nacos naming maintain service shutDown failed, "
+						+ "possibly caused by shutdown order", e);
+			}
 			this.namingMaintainService = null;
 		}
 	}
