@@ -20,6 +20,7 @@
         <module>sentinel-example/sentinel-core-example</module>
         <module>sentinel-example/sentinel-openfeign-example</module>
         <module>sentinel-example/sentinel-resttemplate-example</module>
+        <module>sentinel-example/sentinel-restclient-example</module>
         <module>sentinel-example/sentinel-circuitbreaker-example</module>
         <module>sentinel-example/sentinel-webflux-example</module>
         <module>sentinel-example/sentinel-spring-cloud-gateway-example</module>

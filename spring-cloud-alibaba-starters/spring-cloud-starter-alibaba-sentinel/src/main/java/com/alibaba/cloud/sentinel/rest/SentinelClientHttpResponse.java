@@ -39,7 +39,7 @@ import org.springframework.http.client.ClientHttpResponse;
  */
 public class SentinelClientHttpResponse implements ClientHttpResponse {
 
-	private String blockResponse = "RestTemplate request block by sentinel";
+	private String blockResponse = "Request block by sentinel";
 
 	public SentinelClientHttpResponse() {
 	}

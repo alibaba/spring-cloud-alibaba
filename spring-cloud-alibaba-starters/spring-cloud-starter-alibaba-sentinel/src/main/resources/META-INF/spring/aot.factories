@@ -1,2 +1,3 @@
 org.springframework.aot.hint.RuntimeHintsRegistrar=\
-com.alibaba.cloud.sentinel.aot.hint.SentinelProtectInterceptorHints
+com.alibaba.cloud.sentinel.aot.hint.SentinelProtectInterceptorHints,\
+com.alibaba.cloud.sentinel.aot.hint.SentinelRestClientInterceptorHints
