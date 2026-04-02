@@ -61,6 +61,10 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 
 	private static final String IPV4_REGEX = "((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}";
 
+	private static final long CROSS_CLUSTER_WARN_INTERVAL_MS = 10_000L;
+
+	private volatile long lastWarnLogTime;
+
 	private static final String IPV6_KEY = "IPv6";
 	/**
 	 * Storage local valid IPv6 address, it's a flag whether local machine support IPv6 address stack.
@@ -158,11 +162,9 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 				if (!CollectionUtils.isEmpty(sameClusterInstances)) {
 					instancesToChoose = sameClusterInstances;
 				}
-			}
-			else {
-				log.warn(
-						"A cross-cluster call occurs，name = {}, clusterName = {}, instance = {}",
-						serviceId, clusterName, serviceInstances);
+				else {
+					warnCrossClusterThrottled(clusterName, serviceInstances);
+				}
 			}
 			instancesToChoose = this.filterInstanceByIpType(instancesToChoose);
 
@@ -198,6 +200,15 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 		catch (Exception e) {
 			log.warn("NacosLoadBalancer error", e);
 			return new EmptyResponse();
+		}
+	}
+
+	private void warnCrossClusterThrottled(String clusterName, List<ServiceInstance> serviceInstances) {
+		long now = System.currentTimeMillis();
+		if (now - lastWarnLogTime > CROSS_CLUSTER_WARN_INTERVAL_MS) {
+			lastWarnLogTime = now;
+			log.warn("A cross-cluster call occurs，name = {}, clusterName = {}, instance = {}",
+					serviceId, clusterName, serviceInstances);
 		}
 	}
 
