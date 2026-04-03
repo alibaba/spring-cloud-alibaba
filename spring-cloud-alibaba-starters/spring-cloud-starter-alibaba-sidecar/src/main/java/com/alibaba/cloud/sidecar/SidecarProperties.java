@@ -21,6 +21,7 @@ import java.net.URI;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
@@ -35,6 +36,7 @@ public class SidecarProperties {
 	/**
 	 * polyglot service's ip.
 	 */
+	@Nullable
 	private String ip;
 
 	/**
@@ -43,12 +45,13 @@ public class SidecarProperties {
 	@NotNull
 	@Max(65535)
 	@Min(1)
-	private Integer port;
+	private Integer port = 1;
 
 	/**
 	 * polyglot service's health check url. this endpoint must return json and the format
 	 * must follow spring boot actuator's health endpoint. eg. {"status": "UP"}.
 	 */
+	@Nullable
 	private URI healthCheckUrl;
 
 	/**
@@ -56,11 +59,12 @@ public class SidecarProperties {
 	 */
 	private long healthCheckInterval = 30000L;
 
+	@Nullable
 	public String getIp() {
 		return ip;
 	}
 
-	public void setIp(String ip) {
+	public void setIp(@Nullable String ip) {
 		this.ip = ip;
 	}
 
@@ -72,11 +76,12 @@ public class SidecarProperties {
 		this.port = port;
 	}
 
+	@Nullable
 	public URI getHealthCheckUrl() {
 		return healthCheckUrl;
 	}
 
-	public void setHealthCheckUrl(URI healthCheckUrl) {
+	public void setHealthCheckUrl(@Nullable URI healthCheckUrl) {
 		this.healthCheckUrl = healthCheckUrl;
 	}
 

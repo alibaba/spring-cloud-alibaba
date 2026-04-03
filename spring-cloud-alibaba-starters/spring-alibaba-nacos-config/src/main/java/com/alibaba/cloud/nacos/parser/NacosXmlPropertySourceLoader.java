@@ -26,6 +26,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import com.alibaba.cloud.nacos.utils.StringUtils;
+import org.jspecify.annotations.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -88,12 +89,16 @@ public class NacosXmlPropertySourceLoader extends AbstractPropertySourceLoader
 	protected List<PropertySource<?>> doLoad(String name, Resource resource)
 			throws IOException {
 		Map<String, Object> nacosDataMap = parseXml2Map(resource);
+		if (nacosDataMap == null) {
+			return Collections.singletonList(
+					new OriginTrackedMapPropertySource(name, Collections.emptyMap(), true));
+		}
 		return Collections.singletonList(
 				new OriginTrackedMapPropertySource(name, nacosDataMap, true));
 
 	}
 
-	private Map<String, Object> parseXml2Map(Resource resource) throws IOException {
+	private @Nullable Map<String, Object> parseXml2Map(Resource resource) throws IOException {
 		Map<String, Object> map = new LinkedHashMap<>(32);
 		try {
 			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance()

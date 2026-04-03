@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import com.alibaba.cloud.nacos.utils.StringUtils;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ public class NacosRefreshHistory {
 	private final ThreadLocal<DateFormat> DATE_FORMAT = ThreadLocal
 			.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
-	private MessageDigest md;
+	private @Nullable MessageDigest md;
 
 	public NacosRefreshHistory() {
 		try {
@@ -82,7 +83,7 @@ public class NacosRefreshHistory {
 
 	private String md5(String data) {
 		if (StringUtils.isEmpty(data)) {
-			return null;
+			return "";
 		}
 		if (null == md) {
 			try {
@@ -107,7 +108,7 @@ public class NacosRefreshHistory {
 		private final String md5;
 
 		Record(String timestamp, String dataId, String group, String md5,
-				Map<String, Object> last) {
+				@Nullable Map<String, Object> last) {
 			this.timestamp = timestamp;
 			this.dataId = dataId;
 			this.group = group;

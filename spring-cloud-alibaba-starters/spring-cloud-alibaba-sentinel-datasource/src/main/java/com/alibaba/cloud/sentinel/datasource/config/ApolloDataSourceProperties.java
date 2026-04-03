@@ -18,7 +18,7 @@ package com.alibaba.cloud.sentinel.datasource.config;
 
 
 import com.alibaba.cloud.sentinel.datasource.factorybean.ApolloDataSourceFactoryBean;
-import jakarta.validation.constraints.NotEmpty;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Apollo Properties class Using by {@link DataSourcePropertiesConfiguration} and
@@ -28,39 +28,37 @@ import jakarta.validation.constraints.NotEmpty;
  */
 public class ApolloDataSourceProperties extends AbstractDataSourceProperties {
 
-	@NotEmpty
-	private String namespaceName;
+	private @Nullable String namespaceName;
 
-	@NotEmpty
-	private String flowRulesKey;
+	private @Nullable String flowRulesKey;
 
-	private String defaultFlowRuleValue;
+	private @Nullable String defaultFlowRuleValue;
 
 	public ApolloDataSourceProperties() {
 		super(ApolloDataSourceFactoryBean.class.getName());
 	}
 
-	public String getNamespaceName() {
+	public @Nullable String getNamespaceName() {
 		return namespaceName;
 	}
 
-	public void setNamespaceName(String namespaceName) {
+	public void setNamespaceName(@Nullable String namespaceName) {
 		this.namespaceName = namespaceName;
 	}
 
-	public String getFlowRulesKey() {
+	public @Nullable String getFlowRulesKey() {
 		return flowRulesKey;
 	}
 
-	public void setFlowRulesKey(String flowRulesKey) {
+	public void setFlowRulesKey(@Nullable String flowRulesKey) {
 		this.flowRulesKey = flowRulesKey;
 	}
 
-	public String getDefaultFlowRuleValue() {
+	public @Nullable String getDefaultFlowRuleValue() {
 		return defaultFlowRuleValue;
 	}
 
-	public void setDefaultFlowRuleValue(String defaultFlowRuleValue) {
+	public void setDefaultFlowRuleValue(@Nullable String defaultFlowRuleValue) {
 		this.defaultFlowRuleValue = defaultFlowRuleValue;
 	}
 

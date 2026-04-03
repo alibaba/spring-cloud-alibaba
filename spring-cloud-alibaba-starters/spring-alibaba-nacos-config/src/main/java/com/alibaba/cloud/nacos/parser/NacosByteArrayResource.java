@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.nacos.parser;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.core.io.ByteArrayResource;
 
 /**
@@ -25,7 +27,7 @@ import org.springframework.core.io.ByteArrayResource;
  */
 public class NacosByteArrayResource extends ByteArrayResource {
 
-	private String filename;
+	private @Nullable String filename;
 
 	/**
 	 * Create a new {@code ByteArrayResource}.

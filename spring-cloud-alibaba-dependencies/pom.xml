@@ -50,6 +50,8 @@
         <log4j-slf4j2-impl.version>2.25.1</log4j-slf4j2-impl.version>
         <guava.version>33.4.8-jre</guava.version>
         <lombok.version>1.18.38</lombok.version>
+
+		<jspecify.version>1.0.0</jspecify.version>
     </properties>
 
     <dependencyManagement>
@@ -331,6 +333,14 @@
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
             </dependency>
+
+			<!-- Nullness analysis -->
+			<dependency>
+				<groupId>org.jspecify</groupId>
+				<artifactId>jspecify</artifactId>
+				<version>${jspecify.version}</version>
+			</dependency>
+
         </dependencies>
     </dependencyManagement>
 

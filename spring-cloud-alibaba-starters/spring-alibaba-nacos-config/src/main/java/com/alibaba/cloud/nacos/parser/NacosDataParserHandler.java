@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.alibaba.cloud.nacos.utils.NacosConfigUtils;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.boot.env.OriginTrackedMapPropertySource;
 import org.springframework.boot.env.PropertiesPropertySourceLoader;
@@ -36,6 +37,7 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import static com.alibaba.cloud.nacos.constants.Constants.NACOS_PROPERTIES_TYPE;
 import static com.alibaba.cloud.nacos.parser.AbstractPropertySourceLoader.DOT;
 
 /**
@@ -46,9 +48,9 @@ public final class NacosDataParserHandler {
 	/**
 	 * default extension.
 	 */
-	private static final String DEFAULT_EXTENSION = "properties";
+	private static final String DEFAULT_EXTENSION = NACOS_PROPERTIES_TYPE;
 
-	private static List<PropertySourceLoader> propertySourceLoaders;
+	private static @Nullable List<PropertySourceLoader> propertySourceLoaders;
 
 	private NacosDataParserHandler() {
 		propertySourceLoaders = SpringFactoriesLoader
@@ -65,13 +67,14 @@ public final class NacosDataParserHandler {
 	 */
 	public List<PropertySource<?>> parseNacosData(String configName, String configValue,
 			String extension) throws IOException {
+
 		if (!StringUtils.hasLength(configValue)) {
 			return Collections.emptyList();
 		}
 		if (!StringUtils.hasLength(extension)) {
 			extension = this.getFileExtension(configName);
 		}
-		for (PropertySourceLoader propertySourceLoader : propertySourceLoaders) {
+		for (PropertySourceLoader propertySourceLoader : Objects.requireNonNull(propertySourceLoaders)) {
 			if (!canLoadFileExtension(propertySourceLoader, extension)) {
 				continue;
 			}

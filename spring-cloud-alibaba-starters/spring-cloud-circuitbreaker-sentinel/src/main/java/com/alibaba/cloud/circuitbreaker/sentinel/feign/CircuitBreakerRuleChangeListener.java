@@ -30,6 +30,7 @@ import com.alibaba.cloud.circuitbreaker.sentinel.SentinelConfigBuilder;
 import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tools.jackson.databind.SerializationFeature;
@@ -57,14 +58,14 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(CircuitBreakerRuleChangeListener.class);
 
-	private SentinelFeignClientProperties properties;
+	private @Nullable SentinelFeignClientProperties properties;
 	/**
 	 * properties backup, prevent rules from being updated every time the container is
 	 * refreshed.
 	 */
-	private SentinelFeignClientProperties propertiesBackup;
-	private AbstractCircuitBreakerFactory circuitBreakerFactory;
-	private ApplicationContext applicationContext;
+	private @Nullable SentinelFeignClientProperties propertiesBackup;
+	private @Nullable AbstractCircuitBreakerFactory circuitBreakerFactory;
+	private @Nullable ApplicationContext applicationContext;
 
 	@Override
 	public void onApplicationEvent(RefreshScopeRefreshedEvent event) {
@@ -72,6 +73,10 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 
 		// No need to update the rules
 		if (Objects.equals(properties, propertiesBackup)) {
+			return;
+		}
+
+		if (properties == null || circuitBreakerFactory == null) {
 			return;
 		}
 
@@ -95,15 +100,17 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 
 	@Override
 	public void afterSingletonsInstantiated() {
-		this.propertiesBackup = applicationContext
-				.getBean(SentinelFeignClientProperties.class).copy();
+		if (applicationContext != null) {
+			this.propertiesBackup = applicationContext
+					.getBean(SentinelFeignClientProperties.class).copy();
+		}
 	}
 
 	private void ensureReady() {
 		// Do not inject these beans directly,
 		// as it will cause the bean to be initialized prematurely,
 		// and we don't want to change the initialization order of the beans
-		if (circuitBreakerFactory == null) {
+		if (circuitBreakerFactory == null && applicationContext != null) {
 			String[] names = applicationContext
 					.getBeanNamesForType(AbstractCircuitBreakerFactory.class);
 			if (names.length >= 1) {
@@ -111,7 +118,7 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 						AbstractCircuitBreakerFactory.class);
 			}
 		}
-		if (properties == null) {
+		if (properties == null && applicationContext != null) {
 			this.properties = applicationContext
 					.getBean(SentinelFeignClientProperties.class);
 		}
@@ -123,19 +130,28 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 	}
 
 	private void configureDefault() {
-		configureDefault(properties, circuitBreakerFactory);
+		if (properties != null && circuitBreakerFactory != null) {
+			configureDefault(properties, circuitBreakerFactory);
+		}
 	}
 
 	private void configureCustom() {
-		configureCustom(properties, circuitBreakerFactory);
+		if (properties != null && circuitBreakerFactory != null) {
+			configureCustom(properties, circuitBreakerFactory);
+		}
 	}
 
 	private void clearCircuitBreakerFactory() {
-		Optional.ofNullable(getConfigurations(circuitBreakerFactory))
-				.ifPresent(Map::clear);
+		if (circuitBreakerFactory != null) {
+			Optional.ofNullable(getConfigurations(circuitBreakerFactory))
+					.ifPresent(Map::clear);
+		}
 	}
 
 	private void clearFeignClientRulesInDegradeManager() {
+		if (propertiesBackup == null || applicationContext == null) {
+			return;
+		}
 		// first, clear all manually configured feign clients and methods.
 		propertiesBackup.getRules().keySet().stream()
 				.filter(key -> !Objects.equals(key, propertiesBackup.getDefaultRule()))
@@ -158,10 +174,11 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 					}
 				}).filter(Objects::nonNull).forEach(clazz -> {
 					FeignClient anno = clazz.getAnnotation(FeignClient.class);
-					if (anno == null || AnnotationUtils.getValue(anno) == null) {
+					Object value = AnnotationUtils.getValue(anno);
+					if (anno == null || value == null) {
 						return;
 					}
-					String feignClientName = AnnotationUtils.getValue(anno).toString();
+					String feignClientName = value.toString();
 					Optional.ofNullable(
 							DegradeRuleManager.getRulesOfResource(feignClientName))
 							.ifPresent(Set::clear);
@@ -169,7 +186,9 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 	}
 
 	private void updateBackup() {
-		this.propertiesBackup = this.properties.copy();
+		if (this.properties != null) {
+			this.propertiesBackup = this.properties.copy();
+		}
 	}
 
 	private String prettyPrint(Object o) {

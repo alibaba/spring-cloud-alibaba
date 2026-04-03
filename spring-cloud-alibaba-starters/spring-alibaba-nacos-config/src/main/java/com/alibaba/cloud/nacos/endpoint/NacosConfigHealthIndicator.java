@@ -22,6 +22,9 @@ import org.springframework.boot.health.contributor.AbstractHealthIndicator;
 import org.springframework.boot.health.contributor.Health;
 import org.springframework.boot.health.contributor.HealthIndicator;
 
+import static com.alibaba.cloud.nacos.constants.Constants.STATUS_DOWN;
+import static com.alibaba.cloud.nacos.constants.Constants.STATUS_UP;
+
 /**
  * The {@link HealthIndicator} for Nacos Config.
  *
@@ -31,16 +34,6 @@ import org.springframework.boot.health.contributor.HealthIndicator;
 public class NacosConfigHealthIndicator extends AbstractHealthIndicator {
 
 	private final ConfigService configService;
-
-	/**
-	 * status up .
-	 */
-	private final String STATUS_UP = "UP";
-
-	/**
-	 * status down .
-	 */
-	private final String STATUS_DOWN = "DOWN";
 
 	public NacosConfigHealthIndicator(ConfigService configService) {
 		this.configService = configService;

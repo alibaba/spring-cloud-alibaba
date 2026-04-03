@@ -32,6 +32,9 @@ public class NacosDruidFilterConfiguration {
 	@ConditionalOnBean(NacosConfigManager.class)
 	public NacosDruidConfigFilter nacosDruidFilter(Environment environment) {
 		String proxyDataId = environment.getProperty("spring.nacos.config.proxy.druid.data-id");
+		if (proxyDataId == null) {
+			throw new IllegalStateException("spring.nacos.config.proxy.druid.data-id is required");
+		}
 		return new NacosDruidConfigFilter(proxyDataId);
 	}
 

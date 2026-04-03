@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.alibaba.cloud.sentinel.SentinelConstants;
 import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,8 +79,8 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 		}
 	}
 
-	private SentinelRestTemplate getSentinelRestTemplateFromBeanDefinition(RootBeanDefinition beanDefinition) {
-		SentinelRestTemplate sentinelRestTemplate = null;
+	private @Nullable SentinelRestTemplate getSentinelRestTemplateFromBeanDefinition(RootBeanDefinition beanDefinition) {
+		@Nullable SentinelRestTemplate sentinelRestTemplate = null;
 		if (beanDefinition.getSource() instanceof StandardMethodMetadata sentinelSource) {
 			sentinelRestTemplate = sentinelSource.getIntrospectedMethod().getAnnotation(SentinelRestTemplate.class);
 		}

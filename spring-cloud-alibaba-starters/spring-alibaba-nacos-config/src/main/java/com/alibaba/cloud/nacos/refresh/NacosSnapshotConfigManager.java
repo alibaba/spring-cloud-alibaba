@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,7 @@ public final class NacosSnapshotConfigManager {
 		return dataId + "@" + group;
 	}
 
-	public static String getAndRemoveConfigSnapshot(String dataId, String group) {
+	public static @Nullable String getAndRemoveConfigSnapshot(String dataId, String group) {
 		String configInfo = CONFIG_INFO_SNAPSHOT_MAP
 				.get(formatConfigSnapshotKey(dataId, group));
 		removeConfigSnapshot(dataId, group);

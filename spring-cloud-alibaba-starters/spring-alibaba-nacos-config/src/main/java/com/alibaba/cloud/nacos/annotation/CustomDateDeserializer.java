@@ -27,9 +27,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class CustomDateDeserializer extends JsonDeserializer<Date> {
 
-	private static final long serialVersionUID = 1L;
-
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public CustomDateDeserializer() {
 		super();

@@ -18,6 +18,9 @@ package com.alibaba.cloud.sentinel.datasource.config;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.sentinel.datasource.factorybean.ZookeeperDataSourceFactoryBean;
+import org.jspecify.annotations.Nullable;
+
+import org.springframework.core.env.Environment;
 
 
 /**
@@ -34,17 +37,19 @@ public class ZookeeperDataSourceProperties extends AbstractDataSourceProperties 
 
 	private String serverAddr = "localhost:2181";
 
-	private String path;
+	private @Nullable String path;
 
-	private String groupId;
+	private @Nullable String groupId;
 
-	private String dataId;
+	private @Nullable String dataId;
 
 	@Override
 	public void preCheck(String dataSourceName) {
 		if (StringUtils.isEmpty(serverAddr)) {
-			serverAddr = this.getEnv()
-					.getProperty("spring.cloud.sentinel.datasource.zk.server-addr", "");
+			Environment env = this.getEnv();
+			if (env != null) {
+				serverAddr = env.getProperty("spring.cloud.sentinel.datasource.zk.server-addr", "");
+			}
 			if (StringUtils.isEmpty(serverAddr)) {
 				throw new IllegalArgumentException(
 						"ZookeeperDataSource server-addr is empty");
@@ -60,27 +65,27 @@ public class ZookeeperDataSourceProperties extends AbstractDataSourceProperties 
 		this.serverAddr = serverAddr;
 	}
 
-	public String getPath() {
+	public @Nullable String getPath() {
 		return path;
 	}
 
-	public void setPath(String path) {
+	public void setPath(@Nullable String path) {
 		this.path = path;
 	}
 
-	public String getGroupId() {
+	public @Nullable String getGroupId() {
 		return groupId;
 	}
 
-	public void setGroupId(String groupId) {
+	public void setGroupId(@Nullable String groupId) {
 		this.groupId = groupId;
 	}
 
-	public String getDataId() {
+	public @Nullable String getDataId() {
 		return dataId;
 	}
 
-	public void setDataId(String dataId) {
+	public void setDataId(@Nullable String dataId) {
 		this.dataId = dataId;
 	}
 

@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.alibaba.cloud.scheduling.schedulerx.JobProperty;
 import com.alibaba.cloud.scheduling.schedulerx.SchedulerxProperties;
+import com.alibaba.cloud.scheduling.schedulerx.constants.SchedulerxConstants;
 import com.alibaba.schedulerx.common.domain.ExecuteMode;
 import com.alibaba.schedulerx.common.domain.JobType;
 import com.alibaba.schedulerx.common.domain.Pair;
@@ -34,6 +35,7 @@ import com.alibaba.schedulerx.worker.domain.SpringScheduleProfile;
 import com.alibaba.schedulerx.worker.log.LogFactory;
 import com.alibaba.schedulerx.worker.log.Logger;
 import com.alibaba.schedulerx.worker.processor.springscheduling.SchedulerxJobRegister;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +79,7 @@ public class ScheduledJobSyncConfigurer implements SchedulingConfigurer {
 		return (ExecuteMode.BROADCAST.getKey().equals(mode) || ExecuteMode.STANDALONE.getKey().equals(mode));
 	}
 
-	private JobProperty convertToJobProperty(Task task, Object target, Method method) {
+	private JobProperty convertToJobProperty(@Nullable Task task, Object target, Method method) {
 		JobProperty jobProperty = new JobProperty();
 		Class targetClass = AopProxyUtils.ultimateTargetClass(target);
 		if (ClassUtils.isCglibProxyClass(targetClass)) {
@@ -180,7 +182,11 @@ public class ScheduledJobSyncConfigurer implements SchedulingConfigurer {
 				}
 			}
 
-			jobSyncService.syncJobs(jobs, properties.getNamespaceSource());
+			String namespaceSource = properties.getNamespaceSource();
+			if (namespaceSource == null || namespaceSource.isEmpty()) {
+				namespaceSource = SchedulerxConstants.NAMESPACE_SOURCE_SPRINGBOOT;
+			}
+			jobSyncService.syncJobs(jobs, namespaceSource);
 			logger.info("spring scheduled job is not empty, sync jobs finished.");
 		}
 		catch (Exception e) {

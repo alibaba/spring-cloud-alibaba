@@ -33,6 +33,7 @@ import com.alibaba.cloud.nacos.utils.StringUtils;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.PostConstruct;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,23 +95,23 @@ public class NacosConfigProperties {
 
 	@Autowired
 	@JsonIgnore
-	private Environment environment;
+	private @Nullable Environment environment;
 	/**
 	 * nacos config server address.
 	 */
-	private String serverAddr;
+	private @Nullable String serverAddr;
 	/**
 	 * the nacos authentication username.
 	 */
-	private String username;
+	private @Nullable String username;
 	/**
 	 * the nacos authentication password.
 	 */
-	private String password;
+	private @Nullable String password;
 	/**
 	 * encode for nacos config content.
 	 */
-	private String encode;
+	private @Nullable String encode;
 	/**
 	 * nacos config group, group is config data meta info.
 	 */
@@ -118,7 +119,7 @@ public class NacosConfigProperties {
 	/**
 	 * nacos config dataId prefix.
 	 */
-	private String prefix;
+	private @Nullable String prefix;
 	/**
 	 * the suffix of nacos config dataId, also the file extension of config content.
 	 */
@@ -130,15 +131,15 @@ public class NacosConfigProperties {
 	/**
 	 * nacos maximum number of tolerable server reconnection errors.
 	 */
-	private String maxRetry;
+	private @Nullable String maxRetry;
 	/**
 	 * nacos get config long poll timeout.
 	 */
-	private String configLongPollTimeout;
+	private @Nullable String configLongPollTimeout;
 	/**
 	 * nacos get config failure retry time.
 	 */
-	private String configRetryTime;
+	private @Nullable String configRetryTime;
 	/**
 	 * If you want to pull it yourself when the program starts to get the configuration
 	 * for the first time, and the registered Listener is used for future configuration
@@ -151,45 +152,45 @@ public class NacosConfigProperties {
 	 * endpoint for Nacos, the domain name of a service, through which the server address
 	 * can be dynamically obtained.
 	 */
-	private String endpoint;
+	private @Nullable String endpoint;
 	/**
 	 * namespace, separation configuration of different environments.
 	 */
-	private String namespace;
+	private @Nullable String namespace;
 	/**
 	 * access key for namespace.
 	 */
-	private String accessKey;
+	private @Nullable String accessKey;
 	/**
 	 * secret key for namespace.
 	 */
-	private String secretKey;
+	private @Nullable String secretKey;
 	/**
 	 * role name for aliyun ram.
 	 */
-	private String ramRoleName;
+	private @Nullable String ramRoleName;
 	/**
 	 * context path for nacos config server.
 	 */
-	private String contextPath;
+	private @Nullable String contextPath;
 	/**
 	 * nacos config cluster name.
 	 */
-	private String clusterName;
+	private @Nullable String clusterName;
 	/**
 	 * nacos config dataId name.
 	 */
-	private String name;
+	private @Nullable String name;
 	/**
 	 * a set of shared configurations .e.g:
 	 * spring.cloud.nacos.config.shared-configs[0]=xxx .
 	 */
-	private List<Config> sharedConfigs;
+	private @Nullable List<Config> sharedConfigs;
 	/**
 	 * a set of extensional configurations .e.g:
 	 * spring.cloud.nacos.config.extension-configs[0]=xxx .
 	 */
-	private List<Config> extensionConfigs;
+	private @Nullable List<Config> extensionConfigs;
 	/**
 	 * the master switch for refresh configuration, it default opened(true).
 	 */
@@ -228,39 +229,39 @@ public class NacosConfigProperties {
 
 	// todo sts support
 
-	public String getServerAddr() {
+	public @Nullable String getServerAddr() {
 		return serverAddr;
 	}
 
-	public void setServerAddr(String serverAddr) {
+	public void setServerAddr(@Nullable String serverAddr) {
 		this.serverAddr = serverAddr;
 	}
 
-	public String getUsername() {
+	public @Nullable String getUsername() {
 		return username;
 	}
 
-	public void setUsername(String username) {
+	public void setUsername(@Nullable String username) {
 		this.username = username;
 	}
 
-	public String getPassword() {
+	public @Nullable String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
+	public void setPassword(@Nullable String password) {
 		this.password = password;
 	}
 
-	public String getPrefix() {
+	public @Nullable String getPrefix() {
 		return prefix;
 	}
 
-	public void setPrefix(String prefix) {
+	public void setPrefix(@Nullable String prefix) {
 		this.prefix = prefix;
 	}
 
-	public String getFileExtension() {
+	public @Nullable String getFileExtension() {
 		return fileExtension;
 	}
 
@@ -268,7 +269,7 @@ public class NacosConfigProperties {
 		this.fileExtension = fileExtension;
 	}
 
-	public String getGroup() {
+	public @Nullable String getGroup() {
 		return group;
 	}
 
@@ -284,27 +285,27 @@ public class NacosConfigProperties {
 		this.timeout = timeout;
 	}
 
-	public String getMaxRetry() {
+	public @Nullable String getMaxRetry() {
 		return maxRetry;
 	}
 
-	public void setMaxRetry(String maxRetry) {
+	public void setMaxRetry(@Nullable String maxRetry) {
 		this.maxRetry = maxRetry;
 	}
 
-	public String getConfigLongPollTimeout() {
+	public @Nullable String getConfigLongPollTimeout() {
 		return configLongPollTimeout;
 	}
 
-	public void setConfigLongPollTimeout(String configLongPollTimeout) {
+	public void setConfigLongPollTimeout(@Nullable String configLongPollTimeout) {
 		this.configLongPollTimeout = configLongPollTimeout;
 	}
 
-	public String getConfigRetryTime() {
+	public @Nullable String getConfigRetryTime() {
 		return configRetryTime;
 	}
 
-	public void setConfigRetryTime(String configRetryTime) {
+	public void setConfigRetryTime(@Nullable String configRetryTime) {
 		this.configRetryTime = configRetryTime;
 	}
 
@@ -312,103 +313,103 @@ public class NacosConfigProperties {
 		return enableRemoteSyncConfig;
 	}
 
-	public void setEnableRemoteSyncConfig(Boolean enableRemoteSyncConfig) {
-		this.enableRemoteSyncConfig = enableRemoteSyncConfig;
+	public void setEnableRemoteSyncConfig(@Nullable Boolean enableRemoteSyncConfig) {
+		this.enableRemoteSyncConfig = Boolean.TRUE.equals(enableRemoteSyncConfig);
 	}
 
-	public String getEndpoint() {
+	public @Nullable String getEndpoint() {
 		return endpoint;
 	}
 
-	public void setEndpoint(String endpoint) {
+	public void setEndpoint(@Nullable String endpoint) {
 		this.endpoint = endpoint;
 	}
 
-	public String getNamespace() {
+	public @Nullable String getNamespace() {
 		return namespace;
 	}
 
-	public void setNamespace(String namespace) {
+	public void setNamespace(@Nullable String namespace) {
 		this.namespace = namespace;
 	}
 
-	public String getAccessKey() {
+	public @Nullable String getAccessKey() {
 		return accessKey;
 	}
 
-	public void setAccessKey(String accessKey) {
+	public void setAccessKey(@Nullable String accessKey) {
 		this.accessKey = accessKey;
 	}
 
-	public String getSecretKey() {
+	public @Nullable String getSecretKey() {
 		return secretKey;
 	}
 
-	public void setSecretKey(String secretKey) {
+	public void setSecretKey(@Nullable String secretKey) {
 		this.secretKey = secretKey;
 	}
 
-	public String getRamRoleName() {
+	public @Nullable String getRamRoleName() {
 		return ramRoleName;
 	}
 
-	public void setRamRoleName(String ramRoleName) {
+	public void setRamRoleName(@Nullable String ramRoleName) {
 		this.ramRoleName = ramRoleName;
 	}
 
-	public String getEncode() {
+	public @Nullable String getEncode() {
 		return encode;
 	}
 
-	public void setEncode(String encode) {
+	public void setEncode(@Nullable String encode) {
 		this.encode = encode;
 	}
 
-	public String getContextPath() {
+	public @Nullable String getContextPath() {
 		return contextPath;
 	}
 
-	public void setContextPath(String contextPath) {
+	public void setContextPath(@Nullable String contextPath) {
 		this.contextPath = contextPath;
 	}
 
-	public String getClusterName() {
+	public @Nullable String getClusterName() {
 		return clusterName;
 	}
 
-	public void setClusterName(String clusterName) {
+	public void setClusterName(@Nullable String clusterName) {
 		this.clusterName = clusterName;
 	}
 
-	public String getName() {
+	public @Nullable String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(@Nullable String name) {
 		this.name = name;
 	}
 
-	public Environment getEnvironment() {
+	public @Nullable Environment getEnvironment() {
 		return environment;
 	}
 
-	public void setEnvironment(Environment environment) {
+	public void setEnvironment(@Nullable Environment environment) {
 		this.environment = environment;
 	}
 
-	public List<Config> getSharedConfigs() {
+	public @Nullable List<Config> getSharedConfigs() {
 		return sharedConfigs;
 	}
 
-	public void setSharedConfigs(List<Config> sharedConfigs) {
+	public void setSharedConfigs(@Nullable List<Config> sharedConfigs) {
 		this.sharedConfigs = sharedConfigs;
 	}
 
-	public List<Config> getExtensionConfigs() {
+	public @Nullable List<Config> getExtensionConfigs() {
 		return extensionConfigs;
 	}
 
-	public void setExtensionConfigs(List<Config> extensionConfigs) {
+	public void setExtensionConfigs(@Nullable List<Config> extensionConfigs) {
 		this.extensionConfigs = extensionConfigs;
 	}
 
@@ -426,7 +427,7 @@ public class NacosConfigProperties {
 	 */
 	@Deprecated
 	@DeprecatedConfigurationProperty(reason = "use spring.config.import instead")
-	public String getSharedDataids() {
+	public @Nullable String getSharedDataids() {
 		return null == getSharedConfigs() ? null
 				: getSharedConfigs().stream().map(Config::getDataId)
 				.collect(Collectors.joining(COMMAS));
@@ -439,7 +440,7 @@ public class NacosConfigProperties {
 	 *     multiple separated by commas .
 	 */
 	@Deprecated
-	public void setSharedDataids(String sharedDataids) {
+	public void setSharedDataids(@Nullable String sharedDataids) {
 		if (null != sharedDataids && sharedDataids.trim().length() > 0) {
 			List<Config> list = new ArrayList<>();
 			Stream.of(sharedDataids.split(SEPARATOR))
@@ -454,7 +455,7 @@ public class NacosConfigProperties {
 	 * @return string
 	 */
 	@Deprecated
-	public String getRefreshableDataids() {
+	public @Nullable String getRefreshableDataids() {
 		return null == getSharedConfigs() ? null
 				: getSharedConfigs().stream().filter(Config::isRefresh)
 				.map(Config::getDataId).collect(Collectors.joining(COMMAS));
@@ -466,7 +467,7 @@ public class NacosConfigProperties {
 	 * @param refreshableDataids refreshable dataids ,multiple separated by commas .
 	 */
 	@Deprecated
-	public void setRefreshableDataids(String refreshableDataids) {
+	public void setRefreshableDataids(@Nullable String refreshableDataids) {
 		if (null != refreshableDataids && refreshableDataids.trim().length() > 0) {
 			List<Config> list = new ArrayList<>();
 			Stream.of(refreshableDataids.split(SEPARATOR)).forEach(
@@ -483,12 +484,10 @@ public class NacosConfigProperties {
 		configList.stream()
 				.collect(Collectors.groupingBy(cfg -> (cfg.getGroup() + cfg.getDataId()),
 						LinkedHashMap::new, Collectors.toList()))
-				.forEach((key, list) -> {
-					list.stream()
-							.reduce((a, b) -> new Config(a.getDataId(), a.getGroup(),
-									a.isRefresh() || (b != null && b.isRefresh())))
-							.ifPresent(result::add);
-				});
+				.forEach((key, list) -> list.stream()
+					.reduce((a, b) -> new Config(a.getDataId(), a.getGroup(),
+								a.isRefresh() || (b != null && b.isRefresh())))
+						.ifPresent(result::add));
 		this.setSharedConfigs(result);
 	}
 
@@ -500,12 +499,12 @@ public class NacosConfigProperties {
 	 */
 	@Deprecated
 	@DeprecatedConfigurationProperty(reason = "use spring.config.import instead")
-	public List<Config> getExtConfig() {
+	public @Nullable List<Config> getExtConfig() {
 		return this.getExtensionConfigs();
 	}
 
 	@Deprecated
-	public void setExtConfig(List<Config> extConfig) {
+	public void setExtConfig(@Nullable List<Config> extConfig) {
 		this.setExtensionConfigs(extConfig);
 	}
 
@@ -612,7 +611,7 @@ public class NacosConfigProperties {
 	 * https://github.com/alibaba/spring-cloud-alibaba/issues/4242
 	 * Mask sensitive fields in logs to avoid credential leakage.
 	 */
-	private static String mask(String value) {
+	private static @Nullable String mask(@Nullable String value) {
 		return (value == null || value.isEmpty()) ? value : "******";
 	}
 
@@ -648,7 +647,7 @@ public class NacosConfigProperties {
 		/**
 		 * the data id of extended configuration.
 		 */
-		private String dataId;
+		private @Nullable String dataId;
 
 		/**
 		 * the group of extended configuration, the default value is DEFAULT_GROUP.
@@ -663,26 +662,26 @@ public class NacosConfigProperties {
 		public Config() {
 		}
 
-		public Config(String dataId) {
+		public Config(@Nullable String dataId) {
 			this.dataId = dataId;
 		}
 
-		public Config(String dataId, String group) {
+		public Config(@Nullable String dataId, String group) {
 			this(dataId);
 			this.group = group;
 		}
 
-		public Config(String dataId, boolean refresh) {
+		public Config(@Nullable String dataId, boolean refresh) {
 			this(dataId);
 			this.refresh = refresh;
 		}
 
-		public Config(String dataId, String group, boolean refresh) {
+		public Config(@Nullable String dataId, String group, boolean refresh) {
 			this(dataId, group);
 			this.refresh = refresh;
 		}
 
-		public String getDataId() {
+		public @Nullable String getDataId() {
 			return dataId;
 		}
 

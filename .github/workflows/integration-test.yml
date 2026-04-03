@@ -29,10 +29,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'adopt'
       - name: Dependencies Cache
         uses: actions/cache@v4
@@ -50,4 +50,3 @@ jobs:
 #        run: mvn clean -Dit.enabled=true test
       - name: Delete snapshots from the Maven local repository
         run: find ~/.m2/repository -type d -name '*-SNAPSHOT' -print -exec rm -r {} +
-

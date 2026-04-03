@@ -19,8 +19,7 @@ package com.alibaba.cloud.sentinel.gateway;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -28,6 +27,7 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -47,8 +47,9 @@ public class GatewayEnvironmentPostProcessorTest {
 		postProcessor.postProcessEnvironment(environment, mock(SpringApplication.class));
 
 		PropertySource<?> propertySource = propertySources.get("defaultProperties");
-		Assert.assertNotNull(propertySource);
-		Assert.assertNotNull(propertySource.getProperty("spring.cloud.sentinel.filter.enabled"));
+		assertThat(propertySource).isNotNull();
+		assertThat(propertySource.getProperty("spring.cloud.sentinel.filter.enabled"))
+				.isNotNull();
 	}
 
 	/**
@@ -70,9 +71,10 @@ public class GatewayEnvironmentPostProcessorTest {
 		postProcessor.postProcessEnvironment(environment, mock(SpringApplication.class));
 
 		PropertySource<?> propertySource = propertySources.get("defaultProperties");
-		Assert.assertNotNull(propertySource);
-		Assert.assertEquals("value", propertySource.getProperty("existing.property"));
-		Assert.assertEquals("false", propertySource.getProperty("spring.cloud.sentinel.filter.enabled"));
+		assertThat(propertySource).isNotNull();
+		assertThat(propertySource.getProperty("existing.property")).isEqualTo("value");
+		assertThat(propertySource.getProperty("spring.cloud.sentinel.filter.enabled"))
+				.isEqualTo("false");
 	}
 
 }

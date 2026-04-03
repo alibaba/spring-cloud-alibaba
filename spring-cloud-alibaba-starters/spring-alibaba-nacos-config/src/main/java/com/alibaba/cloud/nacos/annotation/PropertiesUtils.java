@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.alibaba.nacos.common.utils.StringUtils;
+import org.jspecify.annotations.Nullable;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
@@ -59,10 +60,14 @@ final class PropertiesUtils {
 		return properties;
 	}
 
-	private static void flattenMap(String prefix, Map<String, Object> map, Properties properties) {
-		for (Map.Entry<String, Object> entry : map.entrySet()) {
-			String key =
-					prefix.isEmpty() ? String.valueOf(entry.getKey()) : prefix + "." + String.valueOf(entry.getKey());
+	private static void flattenMap(String prefix, Map<String, ? extends @Nullable Object> map, Properties properties) {
+
+		for (Map.Entry<String, ?> entry : map.entrySet()) {
+
+			String key = prefix.isEmpty() ?
+					entry.getKey() :
+					prefix + "." + entry.getKey();
+
 			if (entry.getValue() instanceof Map) {
 				flattenMap(key, (Map<String, Object>) entry.getValue(), properties);
 			}

@@ -22,6 +22,7 @@ import com.alibaba.cloud.nacos.diagnostics.analyzer.NacosConnectionFailureExcept
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,17 +33,17 @@ public class NacosConfigManager {
 
 	private static final Logger log = LoggerFactory.getLogger(NacosConfigManager.class);
 
-	private static ConfigService service;
+	private @Nullable static ConfigService service;
 
-	private static NacosConfigManager INSTANCE;
+	private @Nullable static NacosConfigManager INSTANCE;
 
-	private NacosConfigProperties nacosConfigProperties;
+	private final NacosConfigProperties nacosConfigProperties;
 
 	public NacosConfigManager(NacosConfigProperties nacosConfigProperties) {
 		this.nacosConfigProperties = nacosConfigProperties;
 	}
 
-	public static NacosConfigManager getInstance() {
+	public static @Nullable NacosConfigManager getInstance() {
 		return INSTANCE;
 	}
 
@@ -71,9 +72,11 @@ public class NacosConfigManager {
 			}
 		}
 		catch (NacosException e) {
-			log.error(e.getMessage());
+			String serverAddr = nacosConfigProperties.getServerAddr();
+			String message = e.getMessage();
+			log.error(message != null ? message : "NacosException");
 			throw new NacosConnectionFailureException(
-					nacosConfigProperties.getServerAddr(), e.getMessage(), e);
+					serverAddr != null ? serverAddr : "", message != null ? message : "", e);
 		}
 		return service;
 	}
@@ -81,6 +84,9 @@ public class NacosConfigManager {
 	public ConfigService getConfigService() {
 		if (Objects.isNull(service)) {
 			createConfigService(this.nacosConfigProperties);
+		}
+		if (service == null) {
+			throw new IllegalStateException("ConfigService is not initialized");
 		}
 		return service;
 	}

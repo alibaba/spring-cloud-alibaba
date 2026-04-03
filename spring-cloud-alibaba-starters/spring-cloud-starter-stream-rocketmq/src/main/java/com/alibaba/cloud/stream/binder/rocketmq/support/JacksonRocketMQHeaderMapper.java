@@ -245,9 +245,9 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper {
 	 */
 	public static class NonTrustedHeaderType {
 
-		private String headerValue;
+		private String headerValue = "";
 
-		private String untrustedType;
+		private String untrustedType = "";
 
 		public NonTrustedHeaderType() {
 			super();

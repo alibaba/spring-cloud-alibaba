@@ -25,6 +25,7 @@ import com.alibaba.cloud.sentinel.datasource.config.DataSourcePropertiesConfigur
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.log.LogBase;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.DeprecatedConfigurationProperty;
@@ -56,7 +57,7 @@ public class SentinelProperties {
 	/**
 	 * The process page when the flow control is triggered.
 	 */
-	private String blockPage;
+	private @Nullable String blockPage;
 
 	/**
 	 * Configurations about datasource, like 'nacos', 'apollo', 'file', 'zookeeper'.
@@ -194,7 +195,7 @@ public class SentinelProperties {
 		this.httpMethodSpecify = httpMethodSpecify;
 	}
 
-	public String getBlockPage() {
+	public @Nullable String getBlockPage() {
 		if (StringUtils.hasText(this.blockPage)) {
 			return this.blockPage;
 		}
@@ -227,13 +228,13 @@ public class SentinelProperties {
 		/**
 		 * The process page when the flow control is triggered.
 		 */
-		private String blockPage;
+		private @Nullable String blockPage;
 
 		@Deprecated
 		@DeprecatedConfigurationProperty(
 				reason = "replaced to SentinelProperties#blockPage.",
 				replacement = SentinelConstants.PROPERTY_PREFIX + ".block-page")
-		public String getBlockPage() {
+		public @Nullable String getBlockPage() {
 			return blockPage;
 		}
 
@@ -249,12 +250,12 @@ public class SentinelProperties {
 		/**
 		 * The metric file size {@link SentinelConfig#SINGLE_METRIC_FILE_SIZE}.
 		 */
-		private String fileSingleSize;
+		private @Nullable String fileSingleSize;
 
 		/**
 		 * The total metric file count {@link SentinelConfig#TOTAL_METRIC_FILE_COUNT}.
 		 */
-		private String fileTotalCount;
+		private @Nullable String fileTotalCount;
 
 		/**
 		 * Charset when sentinel write or search metric file.
@@ -262,7 +263,7 @@ public class SentinelProperties {
 		 */
 		private String charset = SentinelConstants.CHARSET;
 
-		public String getFileSingleSize() {
+		public @Nullable String getFileSingleSize() {
 			return fileSingleSize;
 		}
 
@@ -270,7 +271,7 @@ public class SentinelProperties {
 			this.fileSingleSize = fileSingleSize;
 		}
 
-		public String getFileTotalCount() {
+		public @Nullable String getFileTotalCount() {
 			return fileTotalCount;
 		}
 
@@ -305,15 +306,15 @@ public class SentinelProperties {
 		 * Send heartbeat interval millisecond
 		 * {@link TransportConfig#HEARTBEAT_INTERVAL_MS}.
 		 */
-		private String heartbeatIntervalMs;
+		private @Nullable String heartbeatIntervalMs;
 
 		/**
 		 * Get heartbeat client local ip. If the client ip not configured, it will be the
 		 * address of local host.
 		 */
-		private String clientIp;
+		private @Nullable String clientIp;
 
-		public String getHeartbeatIntervalMs() {
+		public @Nullable String getHeartbeatIntervalMs() {
 			return heartbeatIntervalMs;
 		}
 
@@ -337,7 +338,7 @@ public class SentinelProperties {
 			this.dashboard = dashboard;
 		}
 
-		public String getClientIp() {
+		public @Nullable String getClientIp() {
 			return clientIp;
 		}
 
@@ -396,14 +397,14 @@ public class SentinelProperties {
 		/**
 		 * Sentinel log base dir.
 		 */
-		private String dir;
+		private @Nullable String dir;
 
 		/**
 		 * Distinguish the log file by pid number.
 		 */
 		private boolean switchPid = false;
 
-		public String getDir() {
+		public @Nullable String getDir() {
 			return dir;
 		}
 

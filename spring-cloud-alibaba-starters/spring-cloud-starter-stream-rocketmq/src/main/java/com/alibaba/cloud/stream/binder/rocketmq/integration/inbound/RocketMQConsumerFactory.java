@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.integration.inbound;
 
+import java.util.Objects;
+
 import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQBeanContainerCache;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.utils.RocketMQUtils;
@@ -68,14 +70,17 @@ public final class RocketMQConsumerFactory {
 					new SessionCredentials(consumerProperties.getAccessKey(),
 							consumerProperties.getSecretKey()));
 		}
-		DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(
-				consumerProperties.getGroup(), rpcHook, allocateMessageQueueStrategy,
+		RPCHook actualRpcHook = rpcHook != null ? rpcHook
+				: new AclClientRPCHook(new SessionCredentials("", ""));
+		String group = Objects.requireNonNull(consumerProperties.getGroup());
+		DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(group,
+				actualRpcHook, allocateMessageQueueStrategy,
 				consumerProperties.getEnableMsgTrace(),
 				consumerProperties.getCustomizedTraceTopic());
 		consumer.setVipChannelEnabled(
 				null == rpcHook && consumerProperties.getVipChannelEnabled());
 		consumer.setInstanceName(
-				RocketMQUtils.getInstanceName(rpcHook, consumerProperties.getGroup()));
+				RocketMQUtils.getInstanceName(actualRpcHook, group));
 		consumer.setNamespace(consumerProperties.getNamespace());
 		consumer.setNamespaceV2(consumerProperties.getNamespaceV2());
 		consumer.setNamesrvAddr(consumerProperties.getNameServer());
@@ -123,6 +128,7 @@ public final class RocketMQConsumerFactory {
 		if (anonymous) {
 			consumerProperties.setGroup(RocketMQUtils.anonymousGroup(topic));
 		}
+		String consumerGroup = Objects.requireNonNull(consumerProperties.getGroup());
 
 		Assert.notNull(consumerProperties.getNameServer(),
 				"Property 'nameServer' is required");
@@ -137,14 +143,15 @@ public final class RocketMQConsumerFactory {
 					new SessionCredentials(consumerProperties.getAccessKey(),
 							consumerProperties.getSecretKey()));
 		}
+		RPCHook actualRpcHook = rpcHook != null ? rpcHook
+				: new AclClientRPCHook(new SessionCredentials("", ""));
 
 		DefaultLitePullConsumer consumer = new DefaultLitePullConsumer(
-				consumerProperties.getNamespace(), consumerProperties.getGroup(),
-				rpcHook);
+				consumerProperties.getNamespace(), consumerGroup, actualRpcHook);
 		consumer.setVipChannelEnabled(
 				null == rpcHook && consumerProperties.getVipChannelEnabled());
 		consumer.setInstanceName(
-				RocketMQUtils.getInstanceName(rpcHook, consumerProperties.getGroup()));
+				RocketMQUtils.getInstanceName(actualRpcHook, consumerGroup));
 		if (null != allocateMessageQueueStrategy) {
 			consumer.setAllocateMessageQueueStrategy(allocateMessageQueueStrategy);
 		}

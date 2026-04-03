@@ -29,6 +29,7 @@ import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.NacosPropertiesPrefixer;
 import com.alibaba.cloud.nacos.utils.StringUtils;
 import org.apache.commons.logging.Log;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.boot.bootstrap.BootstrapRegistry;
 import org.springframework.boot.bootstrap.ConfigurableBootstrapContext;
@@ -77,10 +78,10 @@ public class NacosConfigDataLocationResolver
 		return -1;
 	}
 
-	protected NacosConfigProperties loadProperties(
+	protected @Nullable NacosConfigProperties loadProperties(
 			ConfigDataLocationResolverContext context) {
 		Binder binder = context.getBinder();
-		BindHandler bindHandler = getBindHandler(context);
+		@Nullable BindHandler bindHandler = getBindHandler(context);
 
 		NacosConfigProperties nacosConfigProperties;
 		if (context.getBootstrapContext().isRegistered(NacosConfigDataLoadProperties.class)) {
@@ -108,7 +109,7 @@ public class NacosConfigDataLocationResolver
 		return nacosConfigProperties;
 	}
 
-	private BindHandler getBindHandler(ConfigDataLocationResolverContext context) {
+	private @Nullable BindHandler getBindHandler(ConfigDataLocationResolverContext context) {
 		return context.getBootstrapContext().getOrElse(BindHandler.class, null);
 	}
 
@@ -147,6 +148,9 @@ public class NacosConfigDataLocationResolver
 			ConfigDataLocation location, Profiles profiles)
 			throws ConfigDataLocationNotFoundException {
 		NacosConfigProperties properties = loadProperties(resolverContext);
+		if (properties == null) {
+			throw new IllegalStateException("NacosConfigProperties could not be loaded");
+		}
 
 		ConfigurableBootstrapContext bootstrapContext = resolverContext
 				.getBootstrapContext();
@@ -165,22 +169,39 @@ public class NacosConfigDataLocationResolver
 		List<NacosConfigDataResource> result = new ArrayList<>();
 		URI uri = getUri(location, properties);
 
-		if (StringUtils.isBlank(dataIdFor(uri))) {
+		String dataIdNullable = dataIdFor(uri);
+		if (dataIdNullable == null || dataIdNullable.isEmpty()) {
 			throw new IllegalArgumentException("dataId must be specified");
+		}
+		String dataId = dataIdNullable;
+
+		String group = groupFor(uri, properties);
+		if (group == null) {
+			group = "";
+		}
+
+		String suffix = suffixFor(uri, properties);
+		if (suffix == null) {
+			suffix = "";
+		}
+
+		String preference = preferenceFor(uri);
+		if (preference == null) {
+			preference = "";
 		}
 
 		NacosConfigDataResource resource = new NacosConfigDataResource(properties,
 				location.isOptional(), profiles, log,
-				new NacosItemConfig().setGroup(groupFor(uri, properties))
-						.setDataId(dataIdFor(uri)).setSuffix(suffixFor(uri, properties))
+				new NacosItemConfig().setGroup(group)
+						.setDataId(dataId).setSuffix(suffix)
 						.setRefreshEnabled(refreshEnabledFor(uri, properties))
-						.setPreference(preferenceFor(uri)));
+						.setPreference(preference));
 		result.add(resource);
 
 		return result;
 	}
 
-	private String preferenceFor(URI uri) {
+	private @Nullable String preferenceFor(URI uri) {
 		return getQueryMap(uri).get(PREFERENCE);
 	}
 
@@ -221,7 +242,7 @@ public class NacosConfigDataLocationResolver
 		return uri;
 	}
 
-	private String groupFor(URI uri, NacosConfigProperties properties) {
+	private @Nullable String groupFor(URI uri, NacosConfigProperties properties) {
 		Map<String, String> queryMap = getQueryMap(uri);
 		return queryMap.containsKey(GROUP) ? queryMap.get(GROUP) : properties.getGroup();
 	}
@@ -241,7 +262,7 @@ public class NacosConfigDataLocationResolver
 		return result;
 	}
 
-	private String suffixFor(URI uri, NacosConfigProperties properties) {
+	private @Nullable String suffixFor(URI uri, NacosConfigProperties properties) {
 		String dataId = dataIdFor(uri);
 		if (dataId != null && dataId.contains(".")) {
 			return dataId.substring(dataId.lastIndexOf('.') + 1);
@@ -256,7 +277,7 @@ public class NacosConfigDataLocationResolver
 				: properties.isRefreshEnabled();
 	}
 
-	private String dataIdFor(URI uri) {
+	private @Nullable String dataIdFor(URI uri) {
 		String path = uri.getPath();
 		// notice '/'
 		if (path == null || path.length() <= 1) {

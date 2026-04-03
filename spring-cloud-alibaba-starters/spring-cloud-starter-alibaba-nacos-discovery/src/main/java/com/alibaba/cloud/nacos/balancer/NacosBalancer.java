@@ -19,6 +19,7 @@ package com.alibaba.cloud.nacos.balancer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -57,6 +58,9 @@ public class NacosBalancer extends Balancer {
 	 */
 	public static ServiceInstance getHostByRandomWeight3(
 			List<ServiceInstance> serviceInstances) {
+		if (serviceInstances.isEmpty()) {
+			throw new IllegalArgumentException("serviceInstances must not be empty");
+		}
 		Map<Instance, ServiceInstance> instanceMap = new HashMap<>();
 		List<Instance> nacosInstance = serviceInstances.stream().map(serviceInstance -> {
 			Map<String, String> metadata = serviceInstance.getMetadata();
@@ -66,14 +70,19 @@ public class NacosBalancer extends Balancer {
 			Instance instance = new Instance();
 			instance.setIp(serviceInstance.getHost());
 			instance.setPort(serviceInstance.getPort());
-			instance.setWeight(Double.parseDouble(metadata.get("nacos.weight")));
-			instance.setHealthy(Boolean.parseBoolean(metadata.get("nacos.healthy")));
+			String weight = metadata == null ? null : metadata.get("nacos.weight");
+			instance.setWeight(weight == null ? 1D : Double.parseDouble(weight));
+			String healthy = metadata == null ? null : metadata.get("nacos.healthy");
+			instance.setHealthy(healthy == null || Boolean.parseBoolean(healthy));
 			instanceMap.put(instance, serviceInstance);
 			return instance;
 		}).collect(Collectors.toList());
 
 		Instance instance = getHostByRandomWeight2(nacosInstance);
-		NacosServiceInstance nacosServiceInstance = (NacosServiceInstance) instanceMap.get(instance);
+		ServiceInstance chosenServiceInstance = instanceMap.get(instance);
+		if (!(chosenServiceInstance instanceof NacosServiceInstance nacosServiceInstance)) {
+			return Objects.requireNonNullElse(chosenServiceInstance, serviceInstances.get(0));
+		}
 		// When local support IPv6 address stack, referred to use IPv6 address.
 		if (StringUtils.isNotEmpty(NacosLoadBalancer.ipv6)) {
 			convertIPv4ToIPv6(nacosServiceInstance);
@@ -87,8 +96,9 @@ public class NacosBalancer extends Balancer {
 	 */
 	private static void convertIPv4ToIPv6(NacosServiceInstance instance) {
 		if (Pattern.matches(IPV4_REGEX, instance.getHost())) {
-			String ip = instance.getMetadata().get(IPV6_KEY);
-			if (StringUtils.isNotEmpty(ip)) {
+			Map<String, String> metadata = instance.getMetadata();
+			String ip = metadata == null ? null : metadata.get(IPV6_KEY);
+			if (ip != null && StringUtils.isNotEmpty(ip)) {
 				instance.setHost(ip);
 			}
 		}

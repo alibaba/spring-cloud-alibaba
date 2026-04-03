@@ -16,11 +16,12 @@
 
 package com.alibaba.cloud.sentinel.gateway;
 
-import junit.framework.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FallbackPropertiesTest {
 
@@ -39,11 +40,13 @@ public class FallbackPropertiesTest {
 				.setResponseStatus(HttpStatus.TOO_EARLY.value())
 				.setContentType("application/json");
 
-		Assert.assertEquals("response", properties.getMode());
-		Assert.assertEquals("http://example.com", properties.getRedirect());
-		Assert.assertEquals("{'message': 'Fallback response'}", properties.getResponseBody());
-		Assert.assertEquals(HttpStatus.TOO_EARLY.value(), properties.getResponseStatus().intValue());
-		Assert.assertEquals("application/json", properties.getContentType());
+		assertThat(properties.getMode()).isEqualTo("response");
+		assertThat(properties.getRedirect()).isEqualTo("http://example.com");
+		assertThat(properties.getResponseBody())
+				.isEqualTo("{'message': 'Fallback response'}");
+		assertThat(properties.getResponseStatus().intValue())
+				.isEqualTo(HttpStatus.TOO_EARLY.value());
+		assertThat(properties.getContentType()).isEqualTo("application/json");
 	}
 
 	/**
@@ -53,10 +56,12 @@ public class FallbackPropertiesTest {
 	@Test
 	public void testDefaultValues() {
 		FallbackProperties properties = new FallbackProperties();
-		Assert.assertNull(properties.getMode());
-		Assert.assertNull(properties.getRedirect());
-		Assert.assertNull(properties.getResponseBody());
-		Assert.assertEquals(HttpStatus.TOO_MANY_REQUESTS.value(), properties.getResponseStatus().intValue());
-		Assert.assertEquals(MediaType.APPLICATION_JSON.toString(), properties.getContentType());
+		assertThat(properties.getMode()).isNull();
+		assertThat(properties.getRedirect()).isNull();
+		assertThat(properties.getResponseBody()).isNull();
+		assertThat(properties.getResponseStatus().intValue())
+				.isEqualTo(HttpStatus.TOO_MANY_REQUESTS.value());
+		assertThat(properties.getContentType())
+				.isEqualTo(MediaType.APPLICATION_JSON.toString());
 	}
 }

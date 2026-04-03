@@ -43,8 +43,12 @@ public class RocketMQBinderHealthIndicator extends AbstractHealthIndicator {
 		builder.down();
 		InstrumentationManager.getHealthInstrumentations().stream()
 				.filter(instrumentation -> !instrumentation.isStarted())
-				.forEach(instrumentation1 -> builder
-						.withException(instrumentation1.getStartException()));
+				.forEach(instrumentation1 -> {
+					Exception startException = instrumentation1.getStartException();
+					if (startException != null) {
+						builder.withException(startException);
+					}
+				});
 	}
 
 }

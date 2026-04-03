@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.util.ObjectUtils;
 
@@ -38,17 +39,17 @@ import org.springframework.util.ObjectUtils;
  */
 public class DataSourcePropertiesConfiguration {
 
-	private FileDataSourceProperties file;
+	private @Nullable FileDataSourceProperties file;
 
-	private NacosDataSourceProperties nacos;
+	private @Nullable NacosDataSourceProperties nacos;
 
-	private ZookeeperDataSourceProperties zk;
+	private @Nullable ZookeeperDataSourceProperties zk;
 
-	private ApolloDataSourceProperties apollo;
+	private @Nullable ApolloDataSourceProperties apollo;
 
-	private RedisDataSourceProperties redis;
+	private @Nullable RedisDataSourceProperties redis;
 
-	private ConsulDataSourceProperties consul;
+	private @Nullable ConsulDataSourceProperties consul;
 
 	public DataSourcePropertiesConfiguration() {
 	}
@@ -57,11 +58,11 @@ public class DataSourcePropertiesConfiguration {
 		this.consul = consul;
 	}
 
-	public ConsulDataSourceProperties getConsul() {
+	public @Nullable ConsulDataSourceProperties getConsul() {
 		return consul;
 	}
 
-	public void setConsul(ConsulDataSourceProperties consul) {
+	public void setConsul(@Nullable ConsulDataSourceProperties consul) {
 		this.consul = consul;
 	}
 
@@ -85,43 +86,43 @@ public class DataSourcePropertiesConfiguration {
 		this.redis = redis;
 	}
 
-	public FileDataSourceProperties getFile() {
+	public @Nullable FileDataSourceProperties getFile() {
 		return file;
 	}
 
-	public void setFile(FileDataSourceProperties file) {
+	public void setFile(@Nullable FileDataSourceProperties file) {
 		this.file = file;
 	}
 
-	public NacosDataSourceProperties getNacos() {
+	public @Nullable NacosDataSourceProperties getNacos() {
 		return nacos;
 	}
 
-	public void setNacos(NacosDataSourceProperties nacos) {
+	public void setNacos(@Nullable NacosDataSourceProperties nacos) {
 		this.nacos = nacos;
 	}
 
-	public ZookeeperDataSourceProperties getZk() {
+	public @Nullable ZookeeperDataSourceProperties getZk() {
 		return zk;
 	}
 
-	public void setZk(ZookeeperDataSourceProperties zk) {
+	public void setZk(@Nullable ZookeeperDataSourceProperties zk) {
 		this.zk = zk;
 	}
 
-	public ApolloDataSourceProperties getApollo() {
+	public @Nullable ApolloDataSourceProperties getApollo() {
 		return apollo;
 	}
 
-	public void setApollo(ApolloDataSourceProperties apollo) {
+	public void setApollo(@Nullable ApolloDataSourceProperties apollo) {
 		this.apollo = apollo;
 	}
 
-	public RedisDataSourceProperties getRedis() {
+	public @Nullable RedisDataSourceProperties getRedis() {
 		return redis;
 	}
 
-	public void setRedis(RedisDataSourceProperties redis) {
+	public void setRedis(@Nullable RedisDataSourceProperties redis) {
 		this.redis = redis;
 	}
 
@@ -146,7 +147,7 @@ public class DataSourcePropertiesConfiguration {
 	}
 
 	@JsonIgnore
-	public AbstractDataSourceProperties getValidDataSourceProperties() {
+	public @Nullable AbstractDataSourceProperties getValidDataSourceProperties() {
 		List<String> invalidFields = getValidField();
 		if (invalidFields.size() == 1) {
 			try {

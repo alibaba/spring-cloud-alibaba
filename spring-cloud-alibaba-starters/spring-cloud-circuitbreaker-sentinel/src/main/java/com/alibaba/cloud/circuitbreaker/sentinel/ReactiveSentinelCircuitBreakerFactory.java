@@ -17,6 +17,7 @@
 package com.alibaba.cloud.circuitbreaker.sentinel;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.function.Function;
 
 import com.alibaba.cloud.circuitbreaker.sentinel.SentinelConfigBuilder.SentinelCircuitBreakerConfiguration;
@@ -41,8 +42,9 @@ public class ReactiveSentinelCircuitBreakerFactory extends
 		Assert.hasText(id, "A CircuitBreaker must have an id.");
 		SentinelConfigBuilder.SentinelCircuitBreakerConfiguration conf = getConfigurations()
 				.computeIfAbsent(id, defaultConfiguration);
-		return new ReactiveSentinelCircuitBreaker(id, conf.getEntryType(),
-				conf.getRules());
+		return new ReactiveSentinelCircuitBreaker(id,
+				Optional.ofNullable(conf.getEntryType()).orElse(com.alibaba.csp.sentinel.EntryType.OUT),
+				Optional.ofNullable(conf.getRules()).orElse(new ArrayList<>()));
 	}
 
 	@Override

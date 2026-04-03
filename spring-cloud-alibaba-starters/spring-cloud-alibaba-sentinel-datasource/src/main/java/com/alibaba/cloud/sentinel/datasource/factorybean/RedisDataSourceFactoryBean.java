@@ -23,6 +23,7 @@ import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.redis.RedisDataSource;
 import com.alibaba.csp.sentinel.datasource.redis.config.RedisConnectionConfig;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.util.Assert;
@@ -36,37 +37,37 @@ import org.springframework.util.StringUtils;
  */
 public class RedisDataSourceFactoryBean implements FactoryBean<RedisDataSource> {
 
-	private String host;
+	private @Nullable String host;
 
 	private int port;
 
 	private int database;
 
-	private Duration timeout;
+	private @Nullable Duration timeout;
 
 	/**
 	 * Comma-separated list of "host:port" pairs.
 	 */
-	private List<String> nodes;
+	private @Nullable List<String> nodes;
 
-	private Converter converter;
+	private @Nullable Converter converter;
 
 	/**
 	 * data key in Redis.
 	 */
-	private String ruleKey;
+	private @Nullable String ruleKey;
 
 	/**
 	 * channel to subscribe in Redis.
 	 */
-	private String channel;
+	private @Nullable String channel;
 
 	/**
 	 * redis server password.
 	 */
-	private String password;
+	private @Nullable String password;
 
-	private String masterId;
+	private @Nullable String masterId;
 
 	@Override
 	public RedisDataSource getObject() {
@@ -79,7 +80,7 @@ public class RedisDataSourceFactoryBean implements FactoryBean<RedisDataSource> 
 			nodes.forEach(node -> {
 				try {
 					String[] parts = StringUtils.split(node, ":");
-					Assert.state(parts.length == 2, "Must be defined as 'host:port'");
+					Assert.state(parts != null && parts.length == 2, "Must be defined as 'host:port'");
 					builder.withRedisSentinel(parts[0], Integer.parseInt(parts[1]));
 				}
 				catch (RuntimeException ex) {
@@ -107,19 +108,19 @@ public class RedisDataSourceFactoryBean implements FactoryBean<RedisDataSource> 
 		return RedisDataSource.class;
 	}
 
-	public Converter getConverter() {
+	public @Nullable Converter getConverter() {
 		return converter;
 	}
 
-	public void setConverter(Converter converter) {
+	public void setConverter(@Nullable Converter converter) {
 		this.converter = converter;
 	}
 
-	public String getHost() {
+	public @Nullable String getHost() {
 		return host;
 	}
 
-	public void setHost(String host) {
+	public void setHost(@Nullable String host) {
 		this.host = host;
 	}
 
@@ -131,27 +132,27 @@ public class RedisDataSourceFactoryBean implements FactoryBean<RedisDataSource> 
 		this.port = port;
 	}
 
-	public String getRuleKey() {
+	public @Nullable String getRuleKey() {
 		return ruleKey;
 	}
 
-	public void setRuleKey(String ruleKey) {
+	public void setRuleKey(@Nullable String ruleKey) {
 		this.ruleKey = ruleKey;
 	}
 
-	public String getChannel() {
+	public @Nullable String getChannel() {
 		return channel;
 	}
 
-	public void setChannel(String channel) {
+	public void setChannel(@Nullable String channel) {
 		this.channel = channel;
 	}
 
-	public String getPassword() {
+	public @Nullable String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
+	public void setPassword(@Nullable String password) {
 		this.password = password;
 	}
 
@@ -163,27 +164,27 @@ public class RedisDataSourceFactoryBean implements FactoryBean<RedisDataSource> 
 		this.database = database;
 	}
 
-	public Duration getTimeout() {
+	public @Nullable Duration getTimeout() {
 		return timeout;
 	}
 
-	public void setTimeout(Duration timeout) {
+	public void setTimeout(@Nullable Duration timeout) {
 		this.timeout = timeout;
 	}
 
-	public List<String> getNodes() {
+	public @Nullable List<String> getNodes() {
 		return nodes;
 	}
 
-	public void setNodes(List<String> nodes) {
+	public void setNodes(@Nullable List<String> nodes) {
 		this.nodes = nodes;
 	}
 
-	public String getMasterId() {
+	public @Nullable String getMasterId() {
 		return masterId;
 	}
 
-	public void setMasterId(String masterId) {
+	public void setMasterId(@Nullable String masterId) {
 		this.masterId = masterId;
 	}
 

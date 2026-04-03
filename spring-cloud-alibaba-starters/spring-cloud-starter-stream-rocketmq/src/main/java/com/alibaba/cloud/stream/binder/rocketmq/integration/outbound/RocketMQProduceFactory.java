@@ -75,17 +75,20 @@ public final class RocketMQProduceFactory {
 					new SessionCredentials(producerProperties.getAccessKey(),
 							producerProperties.getSecretKey()));
 		}
+		RPCHook actualRpcHook = rpcHook != null ? rpcHook
+				: new AclClientRPCHook(new SessionCredentials("", ""));
 		DefaultMQProducer producer;
 		if (RocketMQProducerProperties.ProducerType.Trans
 				.equalsName(producerProperties.getProducerType())) {
 			producer = new TransactionMQProducer(producerProperties.getNamespace(),
-					producerProperties.getGroup(), rpcHook, producerProperties.getEnableMsgTrace(),
+					producerProperties.getGroup(), actualRpcHook,
+					producerProperties.getEnableMsgTrace(),
 					producerProperties.getCustomizedTraceTopic());
 			if (producerProperties.getEnableMsgTrace()) {
 				try {
 					AsyncTraceDispatcher dispatcher = new AsyncTraceDispatcher(
 							producerProperties.getGroup(), TraceDispatcher.Type.PRODUCE, 10,
-							producerProperties.getCustomizedTraceTopic(), rpcHook);
+							producerProperties.getCustomizedTraceTopic(), actualRpcHook);
 					dispatcher.setHostProducer(producer.getDefaultMQProducerImpl());
 					Field field = DefaultMQProducer.class
 							.getDeclaredField("traceDispatcher");
@@ -102,7 +105,7 @@ public final class RocketMQProduceFactory {
 		}
 		else {
 			producer = new DefaultMQProducer(producerProperties.getNamespace(),
-					producerProperties.getGroup(), rpcHook,
+					producerProperties.getGroup(), actualRpcHook,
 					producerProperties.getEnableMsgTrace(),
 					producerProperties.getCustomizedTraceTopic());
 		}
@@ -110,7 +113,8 @@ public final class RocketMQProduceFactory {
 		producer.setVipChannelEnabled(
 				null == rpcHook && producerProperties.getVipChannelEnabled());
 		producer.setInstanceName(
-				RocketMQUtils.getInstanceName(rpcHook, topic + "|" + UtilAll.getPid()));
+				RocketMQUtils.getInstanceName(actualRpcHook,
+						topic + "|" + UtilAll.getPid()));
 		producer.setNamesrvAddr(producerProperties.getNameServer());
 		producer.setNamespaceV2(producerProperties.getNamespaceV2());
 		producer.setSendMsgTimeout(producerProperties.getSendMsgTimeout());
@@ -126,14 +130,16 @@ public final class RocketMQProduceFactory {
 		producer.setUseTLS(producerProperties.getUseTLS());
 		producer.setUnitName(producerProperties.getUnitName());
 		producer.setAccessChannel(AccessChannel.valueOf(producerProperties.getAccessChannel()));
+		String checkForbiddenHookName = producerProperties.getCheckForbiddenHook();
 		CheckForbiddenHook checkForbiddenHook = RocketMQBeanContainerCache.getBean(
-				producerProperties.getCheckForbiddenHook(), CheckForbiddenHook.class);
+				checkForbiddenHookName, CheckForbiddenHook.class);
 		if (null != checkForbiddenHook) {
 			producer.getDefaultMQProducerImpl()
 					.registerCheckForbiddenHook(checkForbiddenHook);
 		}
+		String sendMessageHookName = producerProperties.getSendMessageHook();
 		SendMessageHook sendMessageHook = RocketMQBeanContainerCache
-				.getBean(producerProperties.getSendMessageHook(), SendMessageHook.class);
+				.getBean(sendMessageHookName, SendMessageHook.class);
 		if (null != sendMessageHook) {
 			producer.getDefaultMQProducerImpl().registerSendMessageHook(sendMessageHook);
 		}

@@ -18,6 +18,7 @@ package com.alibaba.cloud.sentinel.datasource.factorybean;
 
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.consul.ConsulDataSource;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.beans.factory.FactoryBean;
 
@@ -29,17 +30,17 @@ import org.springframework.beans.factory.FactoryBean;
  */
 public class ConsulDataSourceFactoryBean implements FactoryBean<ConsulDataSource> {
 
-	private String host;
+	private @Nullable String host;
 
 	private int port;
 
-	private String ruleKey;
+	private @Nullable String ruleKey;
 
-	private String token;
+	private @Nullable String token;
 
 	private int waitTimeoutInSecond;
 
-	private Converter converter;
+	private @Nullable Converter converter;
 
 	@Override
 	public ConsulDataSource getObject() throws Exception {
@@ -51,11 +52,11 @@ public class ConsulDataSourceFactoryBean implements FactoryBean<ConsulDataSource
 		return ConsulDataSource.class;
 	}
 
-	public String getHost() {
+	public @Nullable String getHost() {
 		return host;
 	}
 
-	public void setHost(String host) {
+	public void setHost(@Nullable String host) {
 		this.host = host;
 	}
 
@@ -67,11 +68,11 @@ public class ConsulDataSourceFactoryBean implements FactoryBean<ConsulDataSource
 		this.port = port;
 	}
 
-	public String getRuleKey() {
+	public @Nullable String getRuleKey() {
 		return ruleKey;
 	}
 
-	public void setRuleKey(String ruleKey) {
+	public void setRuleKey(@Nullable String ruleKey) {
 		this.ruleKey = ruleKey;
 	}
 
@@ -83,19 +84,19 @@ public class ConsulDataSourceFactoryBean implements FactoryBean<ConsulDataSource
 		this.waitTimeoutInSecond = waitTimeoutInSecond;
 	}
 
-	public Converter getConverter() {
+	public @Nullable Converter getConverter() {
 		return converter;
 	}
 
-	public void setConverter(Converter converter) {
+	public void setConverter(@Nullable Converter converter) {
 		this.converter = converter;
 	}
 
-	public String getToken() {
+	public @Nullable String getToken() {
 		return token;
 	}
 
-	public void setToken(String token) {
+	public void setToken(@Nullable String token) {
 		this.token = token;
 	}
 }

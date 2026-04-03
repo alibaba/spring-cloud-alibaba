@@ -17,42 +17,44 @@
 package com.alibaba.cloud.sentinel.gateway.scg;
 
 import com.alibaba.cloud.sentinel.gateway.FallbackProperties;
-import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.core.Ordered;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SentinelGatewayPropertiesTest {
 
 	private SentinelGatewayProperties properties;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		properties = new SentinelGatewayProperties();
 	}
 
 	@Test
 	public void testDefaultOrder() {
-		Assert.assertEquals(Ordered.HIGHEST_PRECEDENCE, properties.getOrder().intValue());
+		assertThat(properties.getOrder().intValue())
+				.isEqualTo(Ordered.HIGHEST_PRECEDENCE);
 	}
 
 	@Test
 	public void testSetOrder() {
 		int newOrder = 100;
 		properties.setOrder(newOrder);
-		Assert.assertEquals(newOrder, properties.getOrder().intValue());
+		assertThat(properties.getOrder().intValue()).isEqualTo(newOrder);
 	}
 
 	@Test
 	public void testFallbackPropertiesInitialization() {
-		Assert.assertNull(properties.getFallback());
+		assertThat(properties.getFallback()).isNull();
 	}
 
 	@Test
 	public void testSetFallbackProperties() {
 		FallbackProperties newFallback = new FallbackProperties();
 		properties.setFallback(newFallback);
-		Assert.assertSame(newFallback, properties.getFallback());
+		assertThat(properties.getFallback()).isSameAs(newFallback);
 	}
 }

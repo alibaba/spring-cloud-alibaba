@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import com.alibaba.cloud.sentinel.datasource.factorybean.FileRefreshableDataSourceFactoryBean;
 import jakarta.validation.constraints.NotEmpty;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
@@ -33,7 +34,7 @@ import org.springframework.util.StringUtils;
 public class FileDataSourceProperties extends AbstractDataSourceProperties {
 
 	@NotEmpty
-	private String file;
+	private @Nullable String file;
 
 	private String charset = "utf-8";
 
@@ -45,11 +46,11 @@ public class FileDataSourceProperties extends AbstractDataSourceProperties {
 		super(FileRefreshableDataSourceFactoryBean.class.getName());
 	}
 
-	public String getFile() {
+	public @Nullable String getFile() {
 		return file;
 	}
 
-	public void setFile(String file) {
+	public void setFile(@Nullable String file) {
 		this.file = file;
 	}
 
@@ -80,14 +81,19 @@ public class FileDataSourceProperties extends AbstractDataSourceProperties {
 	@Override
 	public void preCheck(String dataSourceName) {
 		super.preCheck(dataSourceName);
+		String file = this.getFile();
+		if (file == null) {
+			throw new IllegalArgumentException("[Sentinel Starter] DataSource " + dataSourceName
+					+ " file cannot be null");
+		}
 		try {
 			this.setFile(
-					ResourceUtils.getFile(StringUtils.trimAllWhitespace(this.getFile()))
+					ResourceUtils.getFile(StringUtils.trimAllWhitespace(file))
 							.getAbsolutePath());
 		}
 		catch (IOException e) {
 			throw new RuntimeException("[Sentinel Starter] DataSource " + dataSourceName
-					+ " handle file [" + this.getFile() + "] error: " + e.getMessage(),
+					+ " handle file [" + file + "] error: " + e.getMessage(),
 					e);
 		}
 

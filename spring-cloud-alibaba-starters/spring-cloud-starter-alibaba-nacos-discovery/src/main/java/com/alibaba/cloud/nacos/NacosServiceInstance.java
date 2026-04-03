@@ -17,6 +17,7 @@
 package com.alibaba.cloud.nacos;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -28,17 +29,17 @@ import org.springframework.cloud.client.ServiceInstance;
  */
 public class NacosServiceInstance implements ServiceInstance {
 
-	private String serviceId;
+	private String serviceId = "";
 
-	private String instanceId;
+	private String instanceId = "";
 
-	private String host;
+	private String host = "";
 
 	private int port;
 
 	private boolean secure;
 
-	private Map<String, String> metadata;
+	private Map<String, String> metadata = new HashMap<>();
 
 	@Override
 	public String getServiceId() {

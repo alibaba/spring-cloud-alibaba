@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos.registry;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
@@ -62,7 +63,9 @@ public class NacosServiceRegistryAutoConfiguration {
 			ObjectProvider<List<NacosRegistrationCustomizer>> registrationCustomizers,
 			NacosDiscoveryProperties nacosDiscoveryProperties,
 			ApplicationContext context) {
-		return new NacosRegistration(registrationCustomizers.getIfAvailable(),
+		List<NacosRegistrationCustomizer> customizers = registrationCustomizers
+				.getIfAvailable(Collections::emptyList);
+		return new NacosRegistration(customizers,
 				nacosDiscoveryProperties, context);
 	}
 

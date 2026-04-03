@@ -21,6 +21,7 @@ import java.nio.charset.Charset;
 
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.FileRefreshableDataSource;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.beans.factory.FactoryBean;
 
@@ -33,18 +34,21 @@ import org.springframework.beans.factory.FactoryBean;
 public class FileRefreshableDataSourceFactoryBean
 		implements FactoryBean<FileRefreshableDataSource> {
 
-	private String file;
+	private @Nullable String file;
 
-	private String charset;
+	private @Nullable String charset;
 
 	private long recommendRefreshMs;
 
 	private int bufSize;
 
-	private Converter converter;
+	private @Nullable Converter converter;
 
 	@Override
 	public FileRefreshableDataSource getObject() throws Exception {
+		if (file == null || charset == null) {
+			throw new IllegalStateException("file and charset must not be null");
+		}
 		return new FileRefreshableDataSource(new File(file), converter,
 				recommendRefreshMs, bufSize, Charset.forName(charset));
 	}
@@ -54,19 +58,19 @@ public class FileRefreshableDataSourceFactoryBean
 		return FileRefreshableDataSource.class;
 	}
 
-	public String getFile() {
+	public @Nullable String getFile() {
 		return file;
 	}
 
-	public void setFile(String file) {
+	public void setFile(@Nullable String file) {
 		this.file = file;
 	}
 
-	public String getCharset() {
+	public @Nullable String getCharset() {
 		return charset;
 	}
 
-	public void setCharset(String charset) {
+	public void setCharset(@Nullable String charset) {
 		this.charset = charset;
 	}
 
@@ -86,11 +90,11 @@ public class FileRefreshableDataSourceFactoryBean
 		this.bufSize = bufSize;
 	}
 
-	public Converter getConverter() {
+	public @Nullable Converter getConverter() {
 		return converter;
 	}
 
-	public void setConverter(Converter converter) {
+	public void setConverter(@Nullable Converter converter) {
 		this.converter = converter;
 	}
 

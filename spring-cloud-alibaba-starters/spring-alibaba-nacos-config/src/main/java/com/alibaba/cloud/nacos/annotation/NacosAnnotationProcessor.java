@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,6 +36,7 @@ import com.alibaba.nacos.api.config.ConfigChangeEvent;
 import com.alibaba.nacos.api.config.ConfigChangeItem;
 import com.alibaba.nacos.api.config.listener.AbstractListener;
 import com.alibaba.nacos.client.config.common.GroupKey;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,9 +60,9 @@ import org.springframework.util.ReflectionUtils;
 
 public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrdered, ApplicationContextAware {
 
-	private NacosConfigManager nacosConfigManager;
+	private @Nullable NacosConfigManager nacosConfigManager;
 
-	private ApplicationContext applicationContext;
+	private @Nullable ApplicationContext applicationContext;
 
 	private final static Logger log = LoggerFactory
 			.getLogger(NacosAnnotationProcessor.class);
@@ -70,17 +72,19 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 		return 0;
 	}
 
-	private Map<String, TargetRefreshable> targetListenerMap = new ConcurrentHashMap<>();
-	private Map<String, AtomicReference<String>> groupKeyCache = new ConcurrentHashMap<>();
+	private final Map<String, TargetRefreshable> targetListenerMap = new ConcurrentHashMap<>();
+	private final Map<String, AtomicReference<String>> groupKeyCache = new ConcurrentHashMap<>();
 
 	private String getGroupKeyContent(String dataId, String group, boolean refreshed) throws Exception {
-		if (groupKeyCache.containsKey(GroupKey.getKey(dataId, group))) {
-			return groupKeyCache.get(GroupKey.getKey(dataId, group)).get();
+		String cacheKey = GroupKey.getKey(dataId, group);
+		if (groupKeyCache.containsKey(cacheKey)) {
+			AtomicReference<String> ref = groupKeyCache.get(cacheKey);
+			return ref != null ? ref.get() : "";
 		}
 		synchronized (this) {
-			if (!groupKeyCache.containsKey(GroupKey.getKey(dataId, group))) {
+			if (!groupKeyCache.containsKey(cacheKey)) {
 				String content = getNacosConfigManager().getConfigService().getConfig(dataId, group, 5000);
-				groupKeyCache.put(GroupKey.getKey(dataId, group), new AtomicReference<>(content));
+				groupKeyCache.put(cacheKey, new AtomicReference<>(content));
 				if (!refreshed) {
 					log.info("[Nacos Config] refreshed is set to false, not listening config for annotation: dataId={}, group={}", dataId,
 							group);
@@ -91,18 +95,22 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 				getNacosConfigManager().getConfigService().addListener(dataId, group, new AbstractListener() {
 					@Override
 					public void receiveConfigInfo(String s) {
-						groupKeyCache.get(GroupKey.getKey(dataId, group)).set(s);
+						AtomicReference<String> r = groupKeyCache.get(cacheKey);
+						if (r != null) {
+							r.set(s);
+						}
 					}
 
 					@Override
 					public String toString() {
-						return String.format("sca nacos config annotation cache config listener");
+						return "sca nacos config annotation cache config listener";
 					}
 				});
 
 			}
 
-			return groupKeyCache.get(GroupKey.getKey(dataId, group)).get();
+			AtomicReference<String> ref = groupKeyCache.get(cacheKey);
+			return ref != null ? ref.get() : "";
 		}
 
 	}
@@ -116,7 +124,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
-		Class clazz = bean.getClass();
+		Class<?> clazz = bean.getClass();
 		NacosConfig annotationBean = AnnotationUtils.findAnnotation(clazz, NacosConfig.class);
 		if (annotationBean != null) {
 			handleBeanNacosConfigAnnotation(annotationBean.dataId(), annotationBean.group(), annotationBean.key(), annotationBean.refreshed(), beanName, bean, annotationBean.defaultValue());
@@ -163,7 +171,9 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			if (org.springframework.util.StringUtils.hasText(config)) {
 				Object targetObject = convertContentToTargetType(config, bean.getClass());
 				//yaml and json to object
-				BeanUtils.copyProperties(targetObject, bean, getNullPropertyNames(targetObject));
+				if (targetObject != null) {
+					BeanUtils.copyProperties(targetObject, bean, getNullPropertyNames(targetObject));
+				}
 			}
 
 			String refreshTargetKey = beanName + "#instance#";
@@ -175,7 +185,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			if (currentTarget != null) {
 				log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
 						currentTarget.getTarget(), bean);
-				targetListenerMap.get(refreshTargetKey).setTarget(bean);
+				currentTarget.setTarget(bean);
 				return;
 			}
 
@@ -194,9 +204,12 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 								newConfig = defaultValue;
 							}
 							if (org.springframework.util.StringUtils.hasText(newConfig)) {
-								Object targetObject = convertContentToTargetType(newConfig, getTarget().getClass());
+								Object t = Objects.requireNonNull(getTarget());
+								Object targetObject = convertContentToTargetType(newConfig, t.getClass());
 								//yaml and json to object
-								BeanUtils.copyProperties(targetObject, getTarget(), getNullPropertyNames(targetObject));
+									if (targetObject != null) {
+										BeanUtils.copyProperties(targetObject, t, getNullPropertyNames(targetObject));
+									}
 							}
 						}
 						catch (Exception e) {
@@ -221,7 +234,9 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 						if (org.springframework.util.StringUtils.hasText(configInfo)) {
 							Object targetObject = convertContentToTargetType(configInfo, bean.getClass());
 							//yaml and json to object
-							BeanUtils.copyProperties(targetObject, getTarget(), getNullPropertyNames(targetObject));
+							if (targetObject != null) {
+								BeanUtils.copyProperties(targetObject, Objects.requireNonNull(getTarget()), getNullPropertyNames(targetObject));
+							}
 						}
 					}
 
@@ -258,7 +273,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			if (currentTarget != null) {
 				log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
 						currentTarget.getTarget(), bean);
-				targetListenerMap.get(refreshTargetKey).setTarget(bean);
+				currentTarget.setTarget(bean);
 				return;
 			}
 
@@ -270,7 +285,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 				@Override
 				public void configChanged(ConfigChangeEvent event) {
-					ReflectionUtils.invokeMethod(method, this.getTarget(), event);
+					ReflectionUtils.invokeMethod(method, Objects.requireNonNull(this.getTarget()), event);
 				}
 
 				@Override
@@ -323,7 +338,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			if (currentTarget != null) {
 				log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
 						currentTarget.getTarget(), bean);
-				targetListenerMap.get(refreshTargetKey).setTarget(bean);
+				currentTarget.setTarget(bean);
 				return;
 			}
 
@@ -341,12 +356,13 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 							String newConfig = changeItem == null ? null : changeItem.getNewValue();
 
 							if (org.springframework.util.StringUtils.hasText(newConfig)) {
-								if (invokePrimitiveMethod(method, getTarget(), newConfig)) {
+								Object t = Objects.requireNonNull(getTarget());
+								if (invokePrimitiveMethod(method, t, newConfig)) {
 									return;
 								}
 
 								Object targetObject = convertContentToTargetType(newConfig, parameterTypes[0]);
-								ReflectionUtils.invokeMethod(method, getTarget(), targetObject);
+								ReflectionUtils.invokeMethod(method, t, targetObject);
 							}
 						}
 						catch (Exception e) {
@@ -371,11 +387,12 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 					public void receiveConfigInfo(String configInfo) {
 						if (org.springframework.util.StringUtils.hasText(configInfo)) {
 							try {
-								if (invokePrimitiveMethod(method, getTarget(), configInfo)) {
+								Object t = Objects.requireNonNull(getTarget());
+								if (invokePrimitiveMethod(method, t, configInfo)) {
 									return;
 								}
 								Object targetObject = convertContentToTargetType(configInfo, parameterTypes[0]);
-								ReflectionUtils.invokeMethod(method, getTarget(), targetObject);
+								ReflectionUtils.invokeMethod(method, t, targetObject);
 							}
 							catch (Exception e) {
 								throw new RuntimeException(e);
@@ -413,7 +430,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 	}
 
 
-	Object convertContentToTargetType(String rawContent, Type type) {
+	@Nullable Object convertContentToTargetType(String rawContent, Type type) {
 
 		if (String.class.getCanonicalName().equals(type.getTypeName())) {
 			return rawContent;
@@ -478,7 +495,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			if (currentTarget != null) {
 				log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
 						currentTarget.getTarget(), bean);
-				targetListenerMap.get(refreshTargetKey).setTarget(bean);
+				currentTarget.setTarget(bean);
 				return;
 			}
 
@@ -498,7 +515,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 							}
 							if (org.springframework.util.StringUtils.hasText(newConfig)) {
 								Object targetObject = convertContentToTargetType(newConfig, field.getGenericType());
-								ReflectionUtils.setField(field, getTarget(), targetObject);
+								ReflectionUtils.setField(field, Objects.requireNonNull(getTarget()), targetObject);
 							}
 						}
 						catch (Exception e) {
@@ -522,7 +539,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 						}
 						if (org.springframework.util.StringUtils.hasText(configInfo)) {
 							Object targetObject = convertContentToTargetType(configInfo, field.getGenericType());
-							ReflectionUtils.setField(field, getTarget(), targetObject);
+							ReflectionUtils.setField(field, Objects.requireNonNull(getTarget()), targetObject);
 						}
 					}
 
@@ -565,7 +582,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			if (currentTarget != null) {
 				log.info("[Nacos Config] reset {} listener from  {} to {} ", refreshTargetKey,
 						currentTarget.getTarget(), bean);
-				targetListenerMap.get(refreshTargetKey).setTarget(bean);
+				currentTarget.setTarget(bean);
 				return true;
 			}
 
@@ -584,7 +601,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 								newConfig = defaultValue;
 							}
 							if (org.springframework.util.StringUtils.hasText(newConfig)) {
-								setPrimitiveFiled(field, getTarget(), newConfig);
+								setPrimitiveFiled(field, Objects.requireNonNull(getTarget()), newConfig);
 							}
 						}
 						catch (Exception e) {
@@ -608,7 +625,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 						}
 						if (org.springframework.util.StringUtils.hasText(configInfo)) {
 							try {
-								setPrimitiveFiled(field, getTarget(), configInfo);
+								setPrimitiveFiled(field, Objects.requireNonNull(getTarget()), configInfo);
 							}
 							catch (Exception e) {
 								throw new RuntimeException(e);
@@ -730,7 +747,7 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 			return;
 		}
 
-		if (!applicationContext.containsBeanDefinition(beanName)) {
+		if (applicationContext == null || !applicationContext.containsBeanDefinition(beanName)) {
 			return;
 		}
 		BeanDefinition beanDefinition = ((GenericApplicationContext) applicationContext).getBeanDefinition(beanName);
@@ -747,7 +764,9 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 					String group = (String) stringObjectMap.get("group");
 					String key = (String) stringObjectMap.get("key");
 					String defaultValue = (String) stringObjectMap.get("defaultValue");
+				if (dataId != null && group != null && key != null && defaultValue != null) {
 					handleBeanNacosConfigAnnotation(dataId, group, key, true, beanName, bean, defaultValue);
+				}
 				}
 			}
 
@@ -762,6 +781,9 @@ public class NacosAnnotationProcessor implements BeanPostProcessor, PriorityOrde
 
 	private NacosConfigManager getNacosConfigManager() {
 		if (this.nacosConfigManager == null) {
+			if (this.applicationContext == null) {
+				throw new IllegalStateException("ApplicationContext not set");
+			}
 			nacosConfigManager = this.applicationContext.getBean(NacosConfigManager.class);
 
 		}

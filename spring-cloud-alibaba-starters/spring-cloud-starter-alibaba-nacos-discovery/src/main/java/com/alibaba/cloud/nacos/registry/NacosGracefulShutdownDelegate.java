@@ -18,6 +18,8 @@ package com.alibaba.cloud.nacos.registry;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.nacos.common.utils.ThreadUtils;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +28,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
-import org.springframework.lang.NonNull;
 
 /**
  * @author <a href="mailto:uuuyuqi@gmail.com">uuuyuqi</a>
@@ -39,7 +40,7 @@ public class NacosGracefulShutdownDelegate implements ApplicationListener<Contex
 
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	private ApplicationContext applicationContext;
+	private @Nullable ApplicationContext applicationContext;
 
 	public NacosGracefulShutdownDelegate(NacosAutoServiceRegistration autoServiceRegistration,
 		NacosDiscoveryProperties nacosDiscoveryProperties) {
@@ -55,7 +56,8 @@ public class NacosGracefulShutdownDelegate implements ApplicationListener<Contex
 	@Override
 	public void onApplicationEvent(@NonNull ContextClosedEvent event) {
 		// should NOT be executed if ContextClosedEvent published by sub contexts
-		if (!applicationContext.equals(event.getApplicationContext())) {
+		if (applicationContext == null
+				|| !applicationContext.equals(event.getApplicationContext())) {
 			log.debug("Nacos client graceful shutdown will NOT be executed "
 					+ "for Spring context source: {}", event.getApplicationContext());
 			return;

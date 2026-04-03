@@ -27,8 +27,7 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.core.env.Environment;
 
@@ -39,19 +38,17 @@ import org.springframework.core.env.Environment;
  */
 public class AbstractDataSourceProperties {
 
-	@NotEmpty
 	private String dataType = "json";
 
-	@NotNull
-	private RuleType ruleType;
+	private @Nullable RuleType ruleType;
 
-	private String converterClass;
+	private @Nullable String converterClass;
 
 	@JsonIgnore
 	private final String factoryBeanName;
 
 	@JsonIgnore
-	private Environment env;
+	private @Nullable Environment env;
 
 	public AbstractDataSourceProperties(String factoryBeanName) {
 		this.factoryBeanName = factoryBeanName;
@@ -61,23 +58,23 @@ public class AbstractDataSourceProperties {
 		return dataType;
 	}
 
-	public void setDataType(String dataType) {
-		this.dataType = dataType;
+	public void setDataType(@Nullable String dataType) {
+		this.dataType = dataType == null ? "json" : dataType;
 	}
 
-	public RuleType getRuleType() {
+	public @Nullable RuleType getRuleType() {
 		return ruleType;
 	}
 
-	public void setRuleType(RuleType ruleType) {
+	public void setRuleType(@Nullable RuleType ruleType) {
 		this.ruleType = ruleType;
 	}
 
-	public String getConverterClass() {
+	public @Nullable String getConverterClass() {
 		return converterClass;
 	}
 
-	public void setConverterClass(String converterClass) {
+	public void setConverterClass(@Nullable String converterClass) {
 		this.converterClass = converterClass;
 	}
 
@@ -85,11 +82,11 @@ public class AbstractDataSourceProperties {
 		return factoryBeanName;
 	}
 
-	protected Environment getEnv() {
+	protected @Nullable Environment getEnv() {
 		return env;
 	}
 
-	public void setEnv(Environment env) {
+	public void setEnv(@Nullable Environment env) {
 		this.env = env;
 	}
 
@@ -98,7 +95,11 @@ public class AbstractDataSourceProperties {
 	}
 
 	public void postRegister(AbstractDataSource dataSource) {
-		switch (this.getRuleType()) {
+		RuleType ruleType = this.getRuleType();
+		if (ruleType == null) {
+			return;
+		}
+		switch (ruleType) {
 		case FLOW -> FlowRuleManager.register2Property(dataSource.getProperty());
 		case DEGRADE -> DegradeRuleManager.register2Property(dataSource.getProperty());
 		case PARAM_FLOW -> ParamFlowRuleManager.register2Property(dataSource.getProperty());

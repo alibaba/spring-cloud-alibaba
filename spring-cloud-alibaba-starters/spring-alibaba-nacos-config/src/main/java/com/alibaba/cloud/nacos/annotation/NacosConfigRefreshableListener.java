@@ -17,21 +17,22 @@
 package com.alibaba.cloud.nacos.annotation;
 
 import com.alibaba.nacos.api.config.listener.AbstractListener;
+import org.jspecify.annotations.Nullable;
 
 public abstract class NacosConfigRefreshableListener extends AbstractListener implements TargetRefreshable {
 
-	Object target;
+	@Nullable Object target;
 
 	NacosConfigRefreshableListener(Object target) {
 		this.target = target;
 	}
 
-	public Object getTarget() {
+	public @Nullable Object getTarget() {
 		return target;
 	}
 
 	@Override
-	public void setTarget(Object target) {
+	public void setTarget(@Nullable Object target) {
 		this.target = target;
 	}
 

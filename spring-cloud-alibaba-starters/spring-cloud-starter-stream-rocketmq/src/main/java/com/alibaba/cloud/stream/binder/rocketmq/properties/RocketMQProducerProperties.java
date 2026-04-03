@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.properties;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Extended producer properties for RocketMQ binder.
  *
@@ -66,19 +68,19 @@ public class RocketMQProducerProperties extends RocketMQCommonProperties {
 
 	private String sendType = SendType.Sync.name();
 
-	private String sendCallBack;
+	private @Nullable String sendCallBack;
 
-	private String transactionListener;
+	private @Nullable String transactionListener;
 
-	private String messageQueueSelector;
+	private @Nullable String messageQueueSelector;
 
-	private String errorMessageStrategy;
+	private @Nullable String errorMessageStrategy;
 
-	private String sendFailureChannel;
+	private @Nullable String sendFailureChannel;
 
-	private String checkForbiddenHook;
+	private @Nullable String checkForbiddenHook;
 
-	private String sendMessageHook;
+	private @Nullable String sendMessageHook;
 
 	public int getSendMsgTimeout() {
 		return sendMsgTimeout;
@@ -144,59 +146,59 @@ public class RocketMQProducerProperties extends RocketMQCommonProperties {
 		this.sendType = sendType;
 	}
 
-	public String getSendCallBack() {
+	public @Nullable String getSendCallBack() {
 		return sendCallBack;
 	}
 
-	public void setSendCallBack(String sendCallBack) {
+	public void setSendCallBack(@Nullable String sendCallBack) {
 		this.sendCallBack = sendCallBack;
 	}
 
-	public String getTransactionListener() {
+	public @Nullable String getTransactionListener() {
 		return transactionListener;
 	}
 
-	public void setTransactionListener(String transactionListener) {
+	public void setTransactionListener(@Nullable String transactionListener) {
 		this.transactionListener = transactionListener;
 	}
 
-	public String getMessageQueueSelector() {
+	public @Nullable String getMessageQueueSelector() {
 		return messageQueueSelector;
 	}
 
-	public void setMessageQueueSelector(String messageQueueSelector) {
+	public void setMessageQueueSelector(@Nullable String messageQueueSelector) {
 		this.messageQueueSelector = messageQueueSelector;
 	}
 
-	public String getErrorMessageStrategy() {
+	public @Nullable String getErrorMessageStrategy() {
 		return errorMessageStrategy;
 	}
 
-	public void setErrorMessageStrategy(String errorMessageStrategy) {
+	public void setErrorMessageStrategy(@Nullable String errorMessageStrategy) {
 		this.errorMessageStrategy = errorMessageStrategy;
 	}
 
-	public String getSendFailureChannel() {
+	public @Nullable String getSendFailureChannel() {
 		return sendFailureChannel;
 	}
 
-	public void setSendFailureChannel(String sendFailureChannel) {
+	public void setSendFailureChannel(@Nullable String sendFailureChannel) {
 		this.sendFailureChannel = sendFailureChannel;
 	}
 
-	public String getCheckForbiddenHook() {
+	public @Nullable String getCheckForbiddenHook() {
 		return checkForbiddenHook;
 	}
 
-	public void setCheckForbiddenHook(String checkForbiddenHook) {
+	public void setCheckForbiddenHook(@Nullable String checkForbiddenHook) {
 		this.checkForbiddenHook = checkForbiddenHook;
 	}
 
-	public String getSendMessageHook() {
+	public @Nullable String getSendMessageHook() {
 		return sendMessageHook;
 	}
 
-	public void setSendMessageHook(String sendMessageHook) {
+	public void setSendMessageHook(@Nullable String sendMessageHook) {
 		this.sendMessageHook = sendMessageHook;
 	}
 

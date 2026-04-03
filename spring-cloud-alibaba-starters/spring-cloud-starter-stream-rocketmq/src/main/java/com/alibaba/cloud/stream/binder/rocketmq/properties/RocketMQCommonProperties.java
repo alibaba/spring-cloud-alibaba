@@ -21,6 +21,7 @@ import java.io.Serializable;
 import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.client.impl.factory.MQClientInstance;
 import org.apache.rocketmq.remoting.netty.TlsSystemConfig;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author zkzlx
@@ -31,17 +32,17 @@ public class RocketMQCommonProperties implements Serializable {
 
 	private boolean enabled = true;
 
-	private String nameServer;
+	private @Nullable String nameServer;
 
 	/**
 	 * The property of "access-key".
 	 */
-	private String accessKey;
+	private @Nullable String accessKey;
 
 	/**
 	 * The property of "secret-key".
 	 */
-	private String secretKey;
+	private @Nullable String secretKey;
 
 	/**
 	 * Consumers of the same role is required to have exactly same subscriptions and
@@ -52,16 +53,16 @@ public class RocketMQCommonProperties implements Serializable {
 	 * per process. See <a href="http://rocketmq.apache.org/docs/core-concept/">here</a>
 	 * for further discussion.
 	 */
-	private String group;
+	private @Nullable String group;
 
-	private String namespace;
+	private @Nullable String namespace;
 
-	private String namespaceV2;
+	private @Nullable String namespaceV2;
 
 	/**
 	 * The property of "unitName".
 	 */
-	private String unitName;
+	private @Nullable String unitName;
 
 	private String accessChannel = AccessChannel.LOCAL.name();
 
@@ -92,7 +93,7 @@ public class RocketMQCommonProperties implements Serializable {
 
 	private boolean enableMsgTrace = true;
 
-	private String customizedTraceTopic;
+	private @Nullable String customizedTraceTopic;
 
 	public boolean getEnabled() {
 		return enabled;
@@ -102,51 +103,51 @@ public class RocketMQCommonProperties implements Serializable {
 		this.enabled = enabled;
 	}
 
-	public String getNameServer() {
+	public @Nullable String getNameServer() {
 		return nameServer;
 	}
 
-	public void setNameServer(String nameServer) {
+	public void setNameServer(@Nullable String nameServer) {
 		this.nameServer = nameServer;
 	}
 
-	public String getAccessKey() {
+	public @Nullable String getAccessKey() {
 		return accessKey;
 	}
 
-	public void setAccessKey(String accessKey) {
+	public void setAccessKey(@Nullable String accessKey) {
 		this.accessKey = accessKey;
 	}
 
-	public String getSecretKey() {
+	public @Nullable String getSecretKey() {
 		return secretKey;
 	}
 
-	public void setSecretKey(String secretKey) {
+	public void setSecretKey(@Nullable String secretKey) {
 		this.secretKey = secretKey;
 	}
 
-	public String getGroup() {
+	public @Nullable String getGroup() {
 		return group;
 	}
 
-	public void setGroup(String group) {
+	public void setGroup(@Nullable String group) {
 		this.group = group;
 	}
 
-	public String getNamespace() {
+	public @Nullable String getNamespace() {
 		return namespace;
 	}
 
-	public void setNamespace(String namespace) {
+	public void setNamespace(@Nullable String namespace) {
 		this.namespace = namespace;
 	}
 
-	public String getNamespaceV2() {
+	public @Nullable String getNamespaceV2() {
 		return namespaceV2;
 	}
 
-	public void setNamespaceV2(String namespaceV2) {
+	public void setNamespaceV2(@Nullable String namespaceV2) {
 		this.namespaceV2 = namespaceV2;
 	}
 
@@ -206,19 +207,19 @@ public class RocketMQCommonProperties implements Serializable {
 		this.enableMsgTrace = enableMsgTrace;
 	}
 
-	public String getCustomizedTraceTopic() {
+	public @Nullable String getCustomizedTraceTopic() {
 		return customizedTraceTopic;
 	}
 
-	public void setCustomizedTraceTopic(String customizedTraceTopic) {
+	public void setCustomizedTraceTopic(@Nullable String customizedTraceTopic) {
 		this.customizedTraceTopic = customizedTraceTopic;
 	}
 
-	public String getUnitName() {
+	public @Nullable String getUnitName() {
 		return unitName;
 	}
 
-	public void setUnitName(String unitName) {
+	public void setUnitName(@Nullable String unitName) {
 		this.unitName = unitName;
 	}
 }

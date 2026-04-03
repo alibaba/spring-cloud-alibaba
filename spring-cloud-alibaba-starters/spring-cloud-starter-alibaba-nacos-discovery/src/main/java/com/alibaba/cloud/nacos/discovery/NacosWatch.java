@@ -112,8 +112,12 @@ public class NacosWatch implements SmartLifecycle, DisposableBean {
 	}
 
 	private Optional<Instance> selectCurrentInstance(List<Instance> instances) {
+		String currentIp = properties.getIp();
+		if (currentIp == null) {
+			return Optional.empty();
+		}
 		return instances.stream()
-				.filter(instance -> properties.getIp().equals(instance.getIp())
+				.filter(instance -> currentIp.equals(instance.getIp())
 						&& properties.getPort() == instance.getPort())
 				.findFirst();
 	}

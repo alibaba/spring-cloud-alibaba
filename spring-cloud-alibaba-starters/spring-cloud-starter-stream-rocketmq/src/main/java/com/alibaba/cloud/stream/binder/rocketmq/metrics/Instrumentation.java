@@ -19,6 +19,8 @@ package com.alibaba.cloud.stream.binder.rocketmq.metrics;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.context.Lifecycle;
 
 /**
@@ -29,26 +31,26 @@ public class Instrumentation {
 
 	private final String name;
 
-	private Lifecycle actuator;
+	private @Nullable Lifecycle actuator;
 
 	protected final AtomicBoolean started = new AtomicBoolean(false);
 
-	protected Exception startException = null;
+	protected @Nullable Exception startException = null;
 
 	public Instrumentation(String name) {
 		this.name = name;
 	}
 
-	public Instrumentation(String name, Lifecycle actuator) {
+	public Instrumentation(String name, @Nullable Lifecycle actuator) {
 		this.name = name;
 		this.actuator = actuator;
 	}
 
-	public Lifecycle getActuator() {
+	public @Nullable Lifecycle getActuator() {
 		return actuator;
 	}
 
-	public void setActuator(Lifecycle actuator) {
+	public void setActuator(@Nullable Lifecycle actuator) {
 		this.actuator = actuator;
 	}
 
@@ -81,7 +83,7 @@ public class Instrumentation {
 		return started.get();
 	}
 
-	public Exception getStartException() {
+	public @Nullable Exception getStartException() {
 		return startException;
 	}
 
@@ -99,7 +101,8 @@ public class Instrumentation {
 			return false;
 		}
 		Instrumentation that = (Instrumentation) o;
-		return name.equals(that.name) && actuator.equals(that.actuator);
+		return Objects.equals(name, that.name)
+				&& Objects.equals(actuator, that.actuator);
 	}
 
 }

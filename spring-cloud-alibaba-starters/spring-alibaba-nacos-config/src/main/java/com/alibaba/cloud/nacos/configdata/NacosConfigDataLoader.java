@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
@@ -31,6 +32,7 @@ import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
 import org.apache.commons.logging.Log;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.boot.context.config.ConfigData;
 import org.springframework.boot.context.config.ConfigDataLoader;
@@ -63,18 +65,24 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 	}
 
 	@Override
-	public ConfigData load(ConfigDataLoaderContext context,
+	public @Nullable ConfigData load(ConfigDataLoaderContext context,
 			NacosConfigDataResource resource) {
 		return doLoad(context, resource);
 	}
 
-	public ConfigData doLoad(ConfigDataLoaderContext context,
+	public @Nullable ConfigData doLoad(ConfigDataLoaderContext context,
 			NacosConfigDataResource resource) {
 		try {
-			ConfigService configService = getBean(context, NacosConfigManager.class)
-					.getConfigService();
+			NacosConfigManager configManager = getBean(context, NacosConfigManager.class);
+			if (configManager == null) {
+				throw new IllegalStateException("NacosConfigManager not available");
+			}
+			ConfigService configService = configManager.getConfigService();
 			NacosConfigProperties properties = getBean(context,
 					NacosConfigProperties.class);
+			if (properties == null) {
+				throw new IllegalStateException("NacosConfigProperties not available");
+			}
 
 			NacosItemConfig config = resource.getConfig();
 			// pull config from nacos
@@ -116,6 +124,9 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 	private ConfigPreference getPreference(ConfigDataLoaderContext context,
 			NacosConfigDataResource resource) {
 		Binder binder = context.getBootstrapContext().get(Binder.class);
+		if (binder == null) {
+			throw new IllegalStateException("Binder not available in BootstrapContext");
+		}
 		String prefix = NacosPropertiesPrefixer.getPrefix(binder);
 
 
@@ -164,10 +175,13 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 		}
 	}
 
-	protected <T> T getBean(ConfigDataLoaderContext context, Class<T> type) {
+	@Nullable
+	protected <T> T getBean(ConfigDataLoaderContext context, Class<? extends @Nullable T> type) {
+
 		if (context.getBootstrapContext().isRegistered(type)) {
-			return context.getBootstrapContext().get(type);
+			return Objects.requireNonNull(context.getBootstrapContext().get(type));
 		}
+
 		return null;
 	}
 

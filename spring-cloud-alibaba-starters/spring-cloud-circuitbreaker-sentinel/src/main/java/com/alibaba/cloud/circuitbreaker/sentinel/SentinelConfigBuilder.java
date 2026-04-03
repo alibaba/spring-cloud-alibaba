@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.cloud.client.circuitbreaker.ConfigBuilder;
 import org.springframework.util.Assert;
@@ -32,11 +33,11 @@ import org.springframework.util.Assert;
 public class SentinelConfigBuilder implements
 		ConfigBuilder<SentinelConfigBuilder.SentinelCircuitBreakerConfiguration> {
 
-	private String resourceName;
+	private @Nullable String resourceName;
 
-	private EntryType entryType;
+	private @Nullable EntryType entryType;
 
-	private List<DegradeRule> rules;
+	private @Nullable List<DegradeRule> rules;
 
 	public SentinelConfigBuilder() {
 	}
@@ -74,13 +75,13 @@ public class SentinelConfigBuilder implements
 
 	public static class SentinelCircuitBreakerConfiguration {
 
-		private String resourceName;
+		private @Nullable String resourceName;
 
-		private EntryType entryType;
+		private @Nullable EntryType entryType;
 
-		private List<DegradeRule> rules;
+		private @Nullable List<DegradeRule> rules;
 
-		public String getResourceName() {
+		public @Nullable String getResourceName() {
 			return resourceName;
 		}
 
@@ -89,7 +90,7 @@ public class SentinelConfigBuilder implements
 			return this;
 		}
 
-		public EntryType getEntryType() {
+		public @Nullable EntryType getEntryType() {
 			return entryType;
 		}
 
@@ -98,7 +99,7 @@ public class SentinelConfigBuilder implements
 			return this;
 		}
 
-		public List<DegradeRule> getRules() {
+		public @Nullable List<DegradeRule> getRules() {
 			return rules;
 		}
 

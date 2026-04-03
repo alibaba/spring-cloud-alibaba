@@ -19,6 +19,7 @@ package com.alibaba.cloud.nacos.registry;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
@@ -123,12 +124,12 @@ public class NacosRegistration implements Registration {
 
 	@Override
 	public String getServiceId() {
-		return nacosDiscoveryProperties.getService();
+		return Objects.toString(nacosDiscoveryProperties.getService(), "");
 	}
 
 	@Override
 	public String getHost() {
-		return nacosDiscoveryProperties.getIp();
+		return Objects.toString(nacosDiscoveryProperties.getIp(), "");
 	}
 
 	@Override
@@ -160,7 +161,7 @@ public class NacosRegistration implements Registration {
 	}
 
 	public String getCluster() {
-		return nacosDiscoveryProperties.getClusterName();
+		return Objects.toString(nacosDiscoveryProperties.getClusterName(), "");
 	}
 
 	public float getRegisterWeight() {

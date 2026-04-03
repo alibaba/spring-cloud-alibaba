@@ -87,8 +87,13 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 							return;
 						}
 						AbstractDataSourceProperties abstractDataSourceProperties = dataSourceProperties
-								.getValidDataSourceProperties();
-						abstractDataSourceProperties.setEnv(env);
+							.getValidDataSourceProperties();
+					if (abstractDataSourceProperties == null) {
+						log.error("[Sentinel Starter] DataSource " + dataSourceName
+								+ " has no valid data source properties");
+						return;
+					}
+					abstractDataSourceProperties.setEnv(env);
 						abstractDataSourceProperties.preCheck(dataSourceName);
 						registerBean(abstractDataSourceProperties, dataSourceName
 								+ "-sentinel-" + validFields.get(0) + "-datasource");
@@ -180,10 +185,12 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 					// converter type now support xml or json.
 					// The bean name of these converters wrapped by
 					// 'sentinel-{converterType}-{ruleType}-converter'
-					builder.addPropertyReference("converter",
-							"sentinel-" + propertyValue.toString() + "-"
-									+ dataSourceProperties.getRuleType().getName()
-									+ "-converter");
+					if (dataSourceProperties.getRuleType() != null) {
+						builder.addPropertyReference("converter",
+								"sentinel-" + propertyValue.toString() + "-"
+										+ dataSourceProperties.getRuleType().getName()
+										+ "-converter");
+					}
 				}
 			}
 			else {

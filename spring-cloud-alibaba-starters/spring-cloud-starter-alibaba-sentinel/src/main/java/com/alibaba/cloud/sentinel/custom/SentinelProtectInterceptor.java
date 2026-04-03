@@ -29,6 +29,7 @@ import com.alibaba.csp.sentinel.SphU;
 import com.alibaba.csp.sentinel.Tracer;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -153,11 +154,11 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 		}
 	}
 
-	private Method extractFallbackMethod(String fallback, Class<?> fallbackClass) {
+	private @Nullable Method extractFallbackMethod(String fallback, Class<?> fallbackClass) {
 		return BlockClassRegistry.lookupFallback(fallbackClass, fallback);
 	}
 
-	private Method extractBlockHandlerMethod(String block, Class<?> blockClass) {
+	private @Nullable Method extractBlockHandlerMethod(String block, Class<?> blockClass) {
 		return BlockClassRegistry.lookupBlockHandler(blockClass, block);
 	}
 

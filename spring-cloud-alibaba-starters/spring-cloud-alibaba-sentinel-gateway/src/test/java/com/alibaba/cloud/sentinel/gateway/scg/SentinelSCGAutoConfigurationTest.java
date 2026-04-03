@@ -24,9 +24,8 @@ import java.util.Optional;
 import com.alibaba.cloud.sentinel.gateway.ConfigConstants;
 import com.alibaba.cloud.sentinel.gateway.FallbackProperties;
 import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.GatewayCallbackManager;
-import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import reactor.core.publisher.Mono;
@@ -39,6 +38,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.reactive.result.view.ViewResolver;
 import org.springframework.web.server.ServerWebExchange;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -56,7 +56,7 @@ public class SentinelSCGAutoConfigurationTest {
 
 	private SentinelSCGAutoConfiguration config;
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		MockitoAnnotations.openMocks(this).close();
 		config = new SentinelSCGAutoConfiguration(viewResolversProvider, serverCodecConfigurer);
@@ -76,8 +76,8 @@ public class SentinelSCGAutoConfigurationTest {
 	public void testInit() {
 		config.init();
 		verify(gatewayProperties).getFallback(); // Check if fallback properties are fetched
-		Assert.assertNotNull(config.sentinelGatewayBlockExceptionHandler());
-		Assert.assertNotNull(config.sentinelGatewayFilter());
+		assertThat(config.sentinelGatewayBlockExceptionHandler()).isNotNull();
+		assertThat(config.sentinelGatewayFilter()).isNotNull();
 	}
 
 	/**
@@ -95,7 +95,8 @@ public class SentinelSCGAutoConfigurationTest {
 		config.init();
 		Mono<ServerResponse> responseMono = GatewayCallbackManager.getBlockHandler()
 				.handleRequest(mock(ServerWebExchange.class), null);
-		Assert.assertEquals(200, Objects.requireNonNull(responseMono.block()).statusCode().value());
+		assertThat(Objects.requireNonNull(responseMono.block()).statusCode().value())
+				.isEqualTo(200);
 	}
 
 	/**
@@ -113,7 +114,7 @@ public class SentinelSCGAutoConfigurationTest {
 				.handleRequest(mock(ServerWebExchange.class), null);
 		HttpHeaders headers = Objects.requireNonNull(responseMono.block()).headers();
 		List<String> location = headers.get("Location");
-		Assert.assertNotNull(location);
-		Assert.assertEquals("/test", location.get(0));
+		assertThat(location).isNotNull();
+		assertThat(location.get(0)).isEqualTo("/test");
 	}
 }

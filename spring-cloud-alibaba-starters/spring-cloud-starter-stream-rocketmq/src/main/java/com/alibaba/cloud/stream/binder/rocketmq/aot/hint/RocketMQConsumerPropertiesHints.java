@@ -18,8 +18,10 @@ package com.alibaba.cloud.stream.binder.rocketmq.aot.hint;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.aot.hint.ExecutableMode;
 import org.springframework.aot.hint.RuntimeHints;
@@ -32,7 +34,7 @@ import org.springframework.util.ReflectionUtils;
 public class RocketMQConsumerPropertiesHints implements RuntimeHintsRegistrar {
 
 	@Override
-	public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
+	public void registerHints(RuntimeHints hints, @Nullable ClassLoader classLoader) {
 		Constructor<RocketMQConsumerProperties> constructor;
 		try {
 			constructor = RocketMQConsumerProperties.class.getConstructor();
@@ -43,12 +45,15 @@ public class RocketMQConsumerPropertiesHints implements RuntimeHintsRegistrar {
 		hints.reflection().registerConstructor(constructor, ExecutableMode.INVOKE);
 		// setMessageModel
 		Method setMessageModel = ReflectionUtils.findMethod(RocketMQConsumerProperties.class, "setMessageModel", String.class);
-		hints.reflection().registerMethod(setMessageModel, ExecutableMode.INVOKE);
+		hints.reflection().registerMethod(Objects.requireNonNull(setMessageModel),
+				ExecutableMode.INVOKE);
 		// getPush
 		Method getPush = ReflectionUtils.findMethod(RocketMQConsumerProperties.class, "getPush");
-		hints.reflection().registerMethod(getPush, ExecutableMode.INVOKE);
+		hints.reflection().registerMethod(Objects.requireNonNull(getPush),
+				ExecutableMode.INVOKE);
 		// setSubscription
 		Method setSubscription = ReflectionUtils.findMethod(RocketMQConsumerProperties.class, "setSubscription", String.class);
-		hints.reflection().registerMethod(setSubscription, ExecutableMode.INVOKE);
+		hints.reflection().registerMethod(Objects.requireNonNull(setSubscription),
+				ExecutableMode.INVOKE);
 	}
 }

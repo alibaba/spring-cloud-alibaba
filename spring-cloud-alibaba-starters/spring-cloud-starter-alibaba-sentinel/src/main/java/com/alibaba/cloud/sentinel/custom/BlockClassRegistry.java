@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.alibaba.csp.sentinel.util.StringUtil;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author fangjian
@@ -37,15 +38,15 @@ final class BlockClassRegistry {
 
 	private static final Map<String, Method> URL_CLEANER_MAP = new ConcurrentHashMap<>();
 
-	static Method lookupFallback(Class<?> clazz, String name) {
+	static @Nullable Method lookupFallback(Class<?> clazz, String name) {
 		return FALLBACK_MAP.get(getKey(clazz, name));
 	}
 
-	static Method lookupBlockHandler(Class<?> clazz, String name) {
+	static @Nullable Method lookupBlockHandler(Class<?> clazz, String name) {
 		return BLOCK_HANDLER_MAP.get(getKey(clazz, name));
 	}
 
-	static Method lookupUrlCleaner(Class<?> clazz, String name) {
+	static @Nullable Method lookupUrlCleaner(Class<?> clazz, String name) {
 		return URL_CLEANER_MAP.get(getKey(clazz, name));
 	}
 

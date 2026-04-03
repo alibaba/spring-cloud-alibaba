@@ -19,6 +19,9 @@ package com.alibaba.cloud.sentinel.datasource.config;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.sentinel.datasource.factorybean.NacosDataSourceFactoryBean;
 import jakarta.validation.constraints.NotEmpty;
+import org.jspecify.annotations.Nullable;
+
+import org.springframework.core.env.Environment;
 
 /**
  * Nacos Properties class Using by {@link DataSourcePropertiesConfiguration} and
@@ -28,27 +31,27 @@ import jakarta.validation.constraints.NotEmpty;
  */
 public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 
-	private String serverAddr;
+	private @Nullable String serverAddr;
 
-	private String contextPath;
+	private @Nullable String contextPath;
 
-	private String username;
+	private @Nullable String username;
 
-	private String password;
+	private @Nullable String password;
 
 	@NotEmpty
 	private String groupId = "DEFAULT_GROUP";
 
 	@NotEmpty
-	private String dataId;
+	private @Nullable String dataId;
 
-	private String endpoint;
+	private @Nullable String endpoint;
 
-	private String namespace;
+	private @Nullable String namespace;
 
-	private String accessKey;
+	private @Nullable String accessKey;
 
-	private String secretKey;
+	private @Nullable String secretKey;
 
 	public NacosDataSourceProperties() {
 		super(NacosDataSourceFactoryBean.class.getName());
@@ -57,41 +60,47 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 	@Override
 	public void preCheck(String dataSourceName) {
 		if (StringUtils.isEmpty(serverAddr)) {
-			serverAddr = this.getEnv().getProperty(
-					"spring.cloud.sentinel.datasource.nacos.server-addr",
-					"127.0.0.1:8848");
+			Environment env = this.getEnv();
+			if (env != null) {
+				serverAddr = env.getProperty(
+						"spring.cloud.sentinel.datasource.nacos.server-addr",
+						"127.0.0.1:8848");
+			}
+			else {
+				serverAddr = "127.0.0.1:8848";
+			}
 		}
 	}
 
-	public String getServerAddr() {
+	public @Nullable String getServerAddr() {
 		return serverAddr;
 	}
 
-	public void setServerAddr(String serverAddr) {
+	public void setServerAddr(@Nullable String serverAddr) {
 		this.serverAddr = serverAddr;
 	}
 
-	public String getContextPath() {
+	public @Nullable String getContextPath() {
 		return contextPath;
 	}
 
-	public void setContextPath(String contextPath) {
+	public void setContextPath(@Nullable String contextPath) {
 		this.contextPath = contextPath;
 	}
 
-	public String getUsername() {
+	public @Nullable String getUsername() {
 		return username;
 	}
 
-	public void setUsername(String username) {
+	public void setUsername(@Nullable String username) {
 		this.username = username;
 	}
 
-	public String getPassword() {
+	public @Nullable String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
+	public void setPassword(@Nullable String password) {
 		this.password = password;
 	}
 
@@ -103,43 +112,43 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 		this.groupId = groupId;
 	}
 
-	public String getDataId() {
+	public @Nullable String getDataId() {
 		return dataId;
 	}
 
-	public void setDataId(String dataId) {
+	public void setDataId(@Nullable String dataId) {
 		this.dataId = dataId;
 	}
 
-	public String getEndpoint() {
+	public @Nullable String getEndpoint() {
 		return endpoint;
 	}
 
-	public void setEndpoint(String endpoint) {
+	public void setEndpoint(@Nullable String endpoint) {
 		this.endpoint = endpoint;
 	}
 
-	public String getNamespace() {
+	public @Nullable String getNamespace() {
 		return namespace;
 	}
 
-	public void setNamespace(String namespace) {
+	public void setNamespace(@Nullable String namespace) {
 		this.namespace = namespace;
 	}
 
-	public String getAccessKey() {
+	public @Nullable String getAccessKey() {
 		return accessKey;
 	}
 
-	public void setAccessKey(String accessKey) {
+	public void setAccessKey(@Nullable String accessKey) {
 		this.accessKey = accessKey;
 	}
 
-	public String getSecretKey() {
+	public @Nullable String getSecretKey() {
 		return secretKey;
 	}
 
-	public void setSecretKey(String secretKey) {
+	public void setSecretKey(@Nullable String secretKey) {
 		this.secretKey = secretKey;
 	}
 

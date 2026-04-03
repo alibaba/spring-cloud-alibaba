@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.sentinel.gateway;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -28,16 +30,19 @@ public class FallbackProperties {
 	 * The fallback mode for sentinel spring-cloud-gateway. choose `redirect` or
 	 * `response`.
 	 */
+	@Nullable
 	private String mode;
 
 	/**
 	 * Redirect Url for `redirect` mode.
 	 */
+	@Nullable
 	private String redirect;
 
 	/**
 	 * Response Body for `response` mode.
 	 */
+	@Nullable
 	private String responseBody;
 
 	/**
@@ -50,29 +55,29 @@ public class FallbackProperties {
 	 */
 	private String contentType = MediaType.APPLICATION_JSON.toString();
 
-	public String getMode() {
+	public @Nullable String getMode() {
 		return mode;
 	}
 
-	public FallbackProperties setMode(String mode) {
+	public FallbackProperties setMode(@Nullable String mode) {
 		this.mode = mode;
 		return this;
 	}
 
-	public String getRedirect() {
+	public @Nullable String getRedirect() {
 		return redirect;
 	}
 
-	public FallbackProperties setRedirect(String redirect) {
+	public FallbackProperties setRedirect(@Nullable String redirect) {
 		this.redirect = redirect;
 		return this;
 	}
 
-	public String getResponseBody() {
+	public @Nullable String getResponseBody() {
 		return responseBody;
 	}
 
-	public FallbackProperties setResponseBody(String responseBody) {
+	public FallbackProperties setResponseBody(@Nullable String responseBody) {
 		this.responseBody = responseBody;
 		return this;
 	}
@@ -90,8 +95,9 @@ public class FallbackProperties {
 		return contentType;
 	}
 
-	public FallbackProperties setContentType(String contentType) {
-		this.contentType = contentType;
+	public FallbackProperties setContentType(@Nullable String contentType) {
+		this.contentType = contentType != null ? contentType
+				: MediaType.APPLICATION_JSON.toString();
 		return this;
 	}
 

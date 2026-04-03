@@ -150,8 +150,9 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 				// If one DataSource failed to loadConfig, means that the DataSource is
 				// DOWN
 				dataSourceUp = false;
+				String errorMessage = e.getMessage();
 				dataSourceDetailMap.put(dataSourceBeanName,
-						new Status(Status.UNKNOWN.getCode(), e.getMessage()));
+						new Status(Status.UNKNOWN.getCode(), errorMessage != null ? errorMessage : "Unknown error"));
 			}
 		}
 

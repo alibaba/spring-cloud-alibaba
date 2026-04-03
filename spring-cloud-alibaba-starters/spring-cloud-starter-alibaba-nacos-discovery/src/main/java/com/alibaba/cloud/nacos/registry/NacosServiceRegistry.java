@@ -24,6 +24,7 @@ import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +58,11 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 	}
 
 	@Override
-	public void register(Registration registration) {
+	public void register(@Nullable Registration registration) {
+
+		if (registration == null) {
+			return;
+		}
 
 		if (StringUtils.isEmpty(registration.getServiceId())) {
 			log.warn("No service to register for nacos client...");
@@ -89,7 +94,11 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 	}
 
 	@Override
-	public void deregister(Registration registration) {
+	public void deregister(@Nullable Registration registration) {
+
+		if (registration == null) {
+			return;
+		}
 
 		log.info("De-registering from Nacos Server now...");
 
@@ -147,7 +156,10 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 	}
 
 	@Override
-	public Object getStatus(Registration registration) {
+	public Object getStatus(@Nullable Registration registration) {
+		if (registration == null) {
+			return STATUS_DOWN;
+		}
 
 		String serviceName = registration.getServiceId();
 		String group = nacosDiscoveryProperties.getGroup();
@@ -164,7 +176,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		catch (Exception e) {
 			log.error("get all instance of {} error,", serviceName, e);
 		}
-		return null;
+		return STATUS_DOWN;
 	}
 
 	private Instance getNacosInstanceFromRegistration(Registration registration) {

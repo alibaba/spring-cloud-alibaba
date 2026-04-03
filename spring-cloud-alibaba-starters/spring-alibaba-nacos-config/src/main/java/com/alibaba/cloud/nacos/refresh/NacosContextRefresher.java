@@ -29,6 +29,7 @@ import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.AbstractSharedListener;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,15 +57,15 @@ public class NacosContextRefresher
 	private final boolean isRefreshEnabled;
 	private final NacosRefreshHistory nacosRefreshHistory;
 	private NacosConfigProperties nacosConfigProperties;
-	private ConfigService configService;
+	private @Nullable ConfigService configService;
 
-	private NacosConfigManager configManager;
+	private final NacosConfigManager configManager;
 
-	private ApplicationContext applicationContext;
+	private @Nullable ApplicationContext applicationContext;
 
-	private AtomicBoolean ready = new AtomicBoolean(false);
+	private final AtomicBoolean ready = new AtomicBoolean(false);
 
-	private Map<String, Listener> listenerMap = new ConcurrentHashMap<>(16);
+	private final Map<String, Listener> listenerMap = new ConcurrentHashMap<>(16);
 
 	public NacosContextRefresher(NacosConfigManager nacosConfigManager,
 			NacosRefreshHistory refreshHistory) {
@@ -128,8 +129,10 @@ public class NacosContextRefresher
 						NacosConfigRefreshEvent event = new NacosConfigRefreshEvent(this, null, "Refresh Nacos config");
 						event.setDataId(dataId);
 						event.setGroup(group);
+					if (applicationContext != null) {
 						applicationContext.publishEvent(
 								event);
+					}
 						if (log.isDebugEnabled()) {
 							log.debug(String.format(
 									"Publish Nacos config Refresh Event group=%s,dataId=%s,configInfo=%s",
@@ -140,6 +143,9 @@ public class NacosContextRefresher
 		try {
 			if (configService == null && configManager != null) {
 				configService = configManager.getConfigService();
+			}
+			if (configService == null) {
+				throw new IllegalStateException("ConfigService not available");
 			}
 			configService.addListener(dataKey, groupKey, listener);
 			log.info("[Nacos Config] Listening config: dataId={}, group={}", dataKey,

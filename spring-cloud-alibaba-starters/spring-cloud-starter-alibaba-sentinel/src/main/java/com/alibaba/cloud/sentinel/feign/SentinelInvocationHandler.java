@@ -34,6 +34,7 @@ import feign.Feign;
 import feign.InvocationHandlerFactory.MethodHandler;
 import feign.MethodMetadata;
 import feign.Target;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.cloud.openfeign.FallbackFactory;
 
@@ -50,9 +51,9 @@ public class SentinelInvocationHandler implements InvocationHandler {
 
 	private final Map<Method, MethodHandler> dispatch;
 
-	private FallbackFactory fallbackFactory;
+	private @Nullable FallbackFactory fallbackFactory;
 
-	private Map<Method, Method> fallbackMethodMap;
+	private @Nullable Map<Method, Method> fallbackMethodMap;
 
 	SentinelInvocationHandler(Target<?> target, Map<Method, MethodHandler> dispatch,
 			FallbackFactory fallbackFactory) {
@@ -75,6 +76,9 @@ public class SentinelInvocationHandler implements InvocationHandler {
 				Object otherHandler = args.length > 0 && args[0] != null
 						? Proxy.getInvocationHandler(args[0])
 						: null;
+				if (otherHandler == null) {
+					return false;
+				}
 				return equals(otherHandler);
 			}
 			catch (IllegalArgumentException e) {
@@ -90,6 +94,9 @@ public class SentinelInvocationHandler implements InvocationHandler {
 
 		Object result;
 		MethodHandler methodHandler = this.dispatch.get(method);
+		if (methodHandler == null) {
+			throw new IllegalStateException("Method handler not found for method: " + method);
+		}
 		// only handle by HardCodedTarget
 		if (target instanceof Target.HardCodedTarget hardCodedTarget) {
 			MethodMetadata methodMetadata = SentinelContractHolder.METADATA_MAP
@@ -113,10 +120,13 @@ public class SentinelInvocationHandler implements InvocationHandler {
 					if (!BlockException.isBlockException(ex)) {
 						Tracer.traceEntry(ex, entry);
 					}
-					if (fallbackFactory != null) {
+					if (fallbackFactory != null && fallbackMethodMap != null) {
 						try {
-							Object fallbackResult = fallbackMethodMap.get(method)
-									.invoke(fallbackFactory.create(ex), args);
+							Method fallbackMethod = fallbackMethodMap.get(method);
+							if (fallbackMethod == null) {
+								throw new IllegalStateException("Fallback method not found for method: " + method);
+							}
+							Object fallbackResult = fallbackMethod.invoke(fallbackFactory.create(ex), args);
 							return fallbackResult;
 						}
 						catch (IllegalAccessException e) {

@@ -24,6 +24,7 @@ import com.alibaba.cloud.scheduling.SchedulingConstants;
 import com.alibaba.schedulerx.common.domain.ContactInfo;
 import com.alibaba.schedulerx.common.util.JsonUtil;
 import com.alibaba.schedulerx.worker.domain.WorkerConstants;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,30 +49,30 @@ public class SchedulerxProperties implements InitializingBean {
 	/**
 	 * domainName.
 	 */
-	private String domainName;
+	private @Nullable String domainName;
 
 	/**
 	 * groupId.
 	 */
-	private String groupId;
+	private @Nullable String groupId;
 
 	/**
 	 * host.
 	 */
-	private String host;
+	private @Nullable String host;
 
 	/**
 	 * client port.
 	 */
 	private int port = 0;
 
-	private String enableUnits;
+	private @Nullable String enableUnits;
 
-	private String disableUnits;
+	private @Nullable String disableUnits;
 
-	private String enableSites;
+	private @Nullable String enableSites;
 
-	private String disableSites;
+	private @Nullable String disableSites;
 
 	private boolean enableBatchWork;
 
@@ -83,66 +84,66 @@ public class SchedulerxProperties implements InitializingBean {
 	/**
 	 * appName.
 	 */
-	private String appName;
+	private @Nullable String appName;
 
 	/**
 	 * appKey.
 	 */
-	private String appKey;
+	private @Nullable String appKey;
 
 	/**
 	 * aliyunRamRole.
 	 */
-	private String aliyunRamRole;
+	private @Nullable String aliyunRamRole;
 
 	/**
 	 * aliyunAccessKey.
 	 */
-	private String aliyunAccessKey;
+	private @Nullable String aliyunAccessKey;
 	/**
 	 * aliyunSecretKey.
 	 */
-	private String aliyunSecretKey;
+	private @Nullable String aliyunSecretKey;
 
 	/**
 	 * STS ak.
 	 */
-	private String stsAccessKey;
+	private @Nullable String stsAccessKey;
 
 	/**
 	 * STS sk.
 	 */
-	private String stsSecretKey;
+	private @Nullable String stsSecretKey;
 
 	/**
 	 * STS secret token.
 	 */
-	private String stsToken;
+	private @Nullable String stsToken;
 
 	/**
 	 * Namespace UID.
 	 */
-	private String namespace;
+	private @Nullable String namespace;
 
 	/**
 	 * endpoint.
 	 */
-	private String endpoint;
+	private @Nullable String endpoint;
 
 	/**
 	 * endpointPort.
 	 */
-	private String endpointPort;
+	private @Nullable String endpointPort;
 
 	/**
 	 * namespaceName.
 	 */
-	private String namespaceName;
+	private @Nullable String namespaceName;
 
 	/**
 	 * namespaceSource.
 	 */
-	private String namespaceSource;
+	private @Nullable String namespaceSource;
 
 	/**
 	 * maxTaskBodySize (byte).
@@ -164,7 +165,7 @@ public class SchedulerxProperties implements InitializingBean {
 	/**
 	 * threadPoolMode.
 	 */
-	private String threadPoolMode;
+	private @Nullable String threadPoolMode;
 
 	/**
 	 * sharePoolSize.
@@ -179,7 +180,7 @@ public class SchedulerxProperties implements InitializingBean {
 	/**
 	 * Wlabel.
 	 */
-	private String label;
+	private @Nullable String label;
 
 	private String labelPath = "/etc/podinfo/labels";
 
@@ -231,7 +232,7 @@ public class SchedulerxProperties implements InitializingBean {
 	/**
 	 * GraceShutdownMode(WAIT_ALL; WAIT_RUNNING;).
 	 */
-	private String graceShutdownMode;
+	private @Nullable String graceShutdownMode;
 
 	/**
 	 * graceShutdownTimeout.
@@ -263,44 +264,44 @@ public class SchedulerxProperties implements InitializingBean {
 	 */
 	private boolean mapMasterDispatchRandom = false;
 
-	private Integer mapMasterRouterStrategy;
+	private @Nullable Integer mapMasterRouterStrategy;
 
-	private String regionId;
+	private @Nullable String regionId;
 
 	/**
 	 * h2DatabaseUser.
 	 */
-	private String h2DatabaseUser;
+	private @Nullable String h2DatabaseUser;
 
 	/**
 	 * h2DatabasePassword.
 	 */
-	private String h2DatabasePassword;
+	private @Nullable String h2DatabasePassword;
 
 	/**
 	 * httpServerEnable.
 	 */
-	private Boolean httpServerEnable;
+	private @Nullable Boolean httpServerEnable;
 
 	/**
 	 * httpServerPort.
 	 */
-	private Integer httpServerPort;
+	private @Nullable Integer httpServerPort;
 
 	/**
 	 * maxMapDiskPercent.
 	 */
-	private Float maxMapDiskPercent;
+	private @Nullable Float maxMapDiskPercent;
 
 	private Map<String, JobProperty> jobs = new LinkedHashMap<>();
 
-	private String alarmChannel;
+	private @Nullable String alarmChannel;
 
 	private Map<String, ContactInfo> alarmUsers = new LinkedHashMap<>();
 
 	private Map<String, Integer> processorPoolSize = new HashMap<>();
 
-	public String getDomainName() {
+	public @Nullable String getDomainName() {
 		return domainName;
 	}
 
@@ -308,7 +309,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.domainName = domainName;
 	}
 
-	public String getGroupId() {
+	public @Nullable String getGroupId() {
 		return groupId;
 	}
 
@@ -324,7 +325,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.enabled = enabled;
 	}
 
-	public String getHost() {
+	public @Nullable String getHost() {
 		return host;
 	}
 
@@ -340,7 +341,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.port = port;
 	}
 
-	public String getEnableUnits() {
+	public @Nullable String getEnableUnits() {
 		return enableUnits;
 	}
 
@@ -348,7 +349,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.enableUnits = enableUnits;
 	}
 
-	public String getDisableUnits() {
+	public @Nullable String getDisableUnits() {
 		return disableUnits;
 	}
 
@@ -356,7 +357,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.disableUnits = disableUnits;
 	}
 
-	public String getEnableSites() {
+	public @Nullable String getEnableSites() {
 		return enableSites;
 	}
 
@@ -364,7 +365,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.enableSites = enableSites;
 	}
 
-	public String getDisableSites() {
+	public @Nullable String getDisableSites() {
 		return disableSites;
 	}
 
@@ -380,7 +381,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.enableBatchWork = enableBatchWork;
 	}
 
-	public String getAliyunAccessKey() {
+	public @Nullable String getAliyunAccessKey() {
 		return aliyunAccessKey;
 	}
 
@@ -388,7 +389,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.aliyunAccessKey = aliyunAccessKey;
 	}
 
-	public String getAliyunSecretKey() {
+	public @Nullable String getAliyunSecretKey() {
 		return aliyunSecretKey;
 	}
 
@@ -396,7 +397,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.aliyunSecretKey = aliyunSecretKey;
 	}
 
-	public String getNamespace() {
+	public @Nullable String getNamespace() {
 		return namespace;
 	}
 
@@ -404,7 +405,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.namespace = namespace;
 	}
 
-	public String getEndpoint() {
+	public @Nullable String getEndpoint() {
 		return endpoint;
 	}
 
@@ -412,7 +413,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.endpoint = endpoint;
 	}
 
-	public String getEndpointPort() {
+	public @Nullable String getEndpointPort() {
 		return endpointPort;
 	}
 
@@ -420,7 +421,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.endpointPort = endpointPort;
 	}
 
-	public String getNamespaceName() {
+	public @Nullable String getNamespaceName() {
 		return namespaceName;
 	}
 
@@ -428,7 +429,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.namespaceName = namespaceName;
 	}
 
-	public String getNamespaceSource() {
+	public @Nullable String getNamespaceSource() {
 		return namespaceSource;
 	}
 
@@ -452,7 +453,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.blockAppStart = blockAppStart;
 	}
 
-	public String getAppName() {
+	public @Nullable String getAppName() {
 		return appName;
 	}
 
@@ -460,7 +461,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.appName = appName;
 	}
 
-	public String getAppKey() {
+	public @Nullable String getAppKey() {
 		return appKey;
 	}
 
@@ -468,7 +469,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.appKey = appKey;
 	}
 
-	public String getStsAccessKey() {
+	public @Nullable String getStsAccessKey() {
 		return stsAccessKey;
 	}
 
@@ -476,7 +477,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.stsAccessKey = stsAccessKey;
 	}
 
-	public String getStsSecretKey() {
+	public @Nullable String getStsSecretKey() {
 		return stsSecretKey;
 	}
 
@@ -484,11 +485,11 @@ public class SchedulerxProperties implements InitializingBean {
 		this.stsSecretKey = stsSecretKey;
 	}
 
-	public String getStsToken() {
+	public @Nullable String getStsToken() {
 		return stsToken;
 	}
 
-	public String getAliyunRamRole() {
+	public @Nullable String getAliyunRamRole() {
 		return aliyunRamRole;
 	}
 
@@ -524,7 +525,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.sharePoolSize = sharePoolSize;
 	}
 
-	public String getLabel() {
+	public @Nullable String getLabel() {
 		return label;
 	}
 
@@ -615,7 +616,7 @@ public class SchedulerxProperties implements InitializingBean {
 		return pageSize;
 	}
 
-	public String getGraceShutdownMode() {
+	public @Nullable String getGraceShutdownMode() {
 		return graceShutdownMode;
 	}
 
@@ -635,7 +636,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.pageSize = pageSize;
 	}
 
-	public String getRegionId() {
+	public @Nullable String getRegionId() {
 		return regionId;
 	}
 
@@ -651,7 +652,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.jobs = jobs;
 	}
 
-	public String getAlarmChannel() {
+	public @Nullable String getAlarmChannel() {
 		return alarmChannel;
 	}
 
@@ -683,7 +684,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.broadcastDispatchThreadEnable = broadcastDispatchThreadEnable;
 	}
 
-	public String getThreadPoolMode() {
+	public @Nullable String getThreadPoolMode() {
 		return threadPoolMode;
 	}
 
@@ -731,7 +732,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.broadcastDispatchRetryTimes = broadcastDispatchRetryTimes;
 	}
 
-	public Integer getMapMasterRouterStrategy() {
+	public @Nullable Integer getMapMasterRouterStrategy() {
 		return mapMasterRouterStrategy;
 	}
 
@@ -739,7 +740,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.mapMasterRouterStrategy = mapMasterRouterStrategy;
 	}
 
-	public String getH2DatabaseUser() {
+	public @Nullable String getH2DatabaseUser() {
 		return h2DatabaseUser;
 	}
 
@@ -747,7 +748,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.h2DatabaseUser = h2DatabaseUser;
 	}
 
-	public String getH2DatabasePassword() {
+	public @Nullable String getH2DatabasePassword() {
 		return h2DatabasePassword;
 	}
 
@@ -755,7 +756,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.h2DatabasePassword = h2DatabasePassword;
 	}
 
-	public Boolean getHttpServerEnable() {
+	public @Nullable Boolean getHttpServerEnable() {
 		return httpServerEnable;
 	}
 
@@ -763,7 +764,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.httpServerEnable = httpServerEnable;
 	}
 
-	public Integer getHttpServerPort() {
+	public @Nullable Integer getHttpServerPort() {
 		return httpServerPort;
 	}
 
@@ -771,7 +772,7 @@ public class SchedulerxProperties implements InitializingBean {
 		this.httpServerPort = httpServerPort;
 	}
 
-	public Float getMaxMapDiskPercent() {
+	public @Nullable Float getMaxMapDiskPercent() {
 		return maxMapDiskPercent;
 	}
 

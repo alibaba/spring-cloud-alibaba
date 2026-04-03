@@ -36,6 +36,7 @@ import org.apache.rocketmq.client.producer.TransactionListener;
 import org.apache.rocketmq.client.producer.TransactionMQProducer;
 import org.apache.rocketmq.common.message.MessageQueue;
 import org.apache.rocketmq.remoting.exception.RemotingException;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +46,7 @@ import org.springframework.cloud.stream.binding.MessageConverterConfigurer.Parti
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.context.Lifecycle;
 import org.springframework.integration.handler.AbstractMessageHandler;
+import org.springframework.integration.support.DefaultErrorMessageStrategy;
 import org.springframework.integration.support.ErrorMessageStrategy;
 import org.springframework.integration.support.ErrorMessageUtils;
 import org.springframework.messaging.Message;
@@ -64,15 +66,15 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 
 	private volatile boolean isTrans = false;
 
-	private ErrorMessageStrategy errorMessageStrategy;
+	private @Nullable ErrorMessageStrategy errorMessageStrategy;
 
-	private MessageChannel sendFailureChannel;
+	private @Nullable MessageChannel sendFailureChannel;
 
-	private MessageConverterConfigurer.PartitioningInterceptor partitioningInterceptor;
+	private MessageConverterConfigurer.@Nullable PartitioningInterceptor partitioningInterceptor;
 
-	private DefaultMQProducer defaultMQProducer;
+	private @Nullable DefaultMQProducer defaultMQProducer;
 
-	private MessageQueueSelector messageQueueSelector;
+	private @Nullable MessageQueueSelector messageQueueSelector;
 
 	private final ProducerDestination destination;
 
@@ -111,6 +113,9 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 		Instrumentation instrumentation = new Instrumentation(destination.getName(),
 				this);
 		try {
+			if (defaultMQProducer == null) {
+				throw new IllegalStateException("defaultMQProducer not initialized");
+			}
 			defaultMQProducer.start();
 			// TransactionMQProducer does not currently support custom
 			// MessageQueueSelector.
@@ -126,8 +131,10 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 							messageQueues.size()));
 					extendedProducerProperties.setPartitionCount(messageQueues.size());
 					// may be npe!
-					partitioningInterceptor.setPartitionCount(
-							extendedProducerProperties.getPartitionCount());
+					if (partitioningInterceptor != null) {
+						partitioningInterceptor.setPartitionCount(
+								extendedProducerProperties.getPartitionCount());
+					}
 				}
 			}
 			running = true;
@@ -203,9 +210,12 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 	}
 
 	private SendResult send(org.apache.rocketmq.common.message.Message mqMessage,
-			MessageQueueSelector selector, Object args, Message<?> message)
+			@Nullable MessageQueueSelector selector, Object args, Message<?> message)
 			throws RemotingException, MQClientException, InterruptedException,
 			MQBrokerException {
+		if (defaultMQProducer == null) {
+			throw new MessagingException("defaultMQProducer not initialized");
+		}
 		SendResult sendResult = new SendResult();
 		sendResult.setSendStatus(SendStatus.SEND_OK);
 		if (RocketMQProducerProperties.SendType.OneWay
@@ -264,8 +274,9 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 	}
 
 	private void doFail(Message<?> message, Throwable e) {
-		if (getSendFailureChannel() != null) {
-			getSendFailureChannel().send(getErrorMessageStrategy().buildErrorMessage(e,
+		MessageChannel channel = getSendFailureChannel();
+		if (channel != null) {
+			channel.send(getErrorMessageStrategy().buildErrorMessage(e,
 					ErrorMessageUtils.getAttributeAccessor(message, message)));
 		}
 		else {
@@ -273,28 +284,29 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 		}
 	}
 
-	public MessageChannel getSendFailureChannel() {
+	public @Nullable MessageChannel getSendFailureChannel() {
 		return sendFailureChannel;
 	}
 
-	public void setSendFailureChannel(MessageChannel sendFailureChannel) {
+	public void setSendFailureChannel(@Nullable MessageChannel sendFailureChannel) {
 		this.sendFailureChannel = sendFailureChannel;
 	}
 
 	public ErrorMessageStrategy getErrorMessageStrategy() {
-		return errorMessageStrategy;
+		return errorMessageStrategy != null ? errorMessageStrategy
+				: new DefaultErrorMessageStrategy();
 	}
 
 	public void setErrorMessageStrategy(ErrorMessageStrategy errorMessageStrategy) {
 		this.errorMessageStrategy = errorMessageStrategy;
 	}
 
-	public PartitioningInterceptor getPartitioningInterceptor() {
+	public @Nullable PartitioningInterceptor getPartitioningInterceptor() {
 		return partitioningInterceptor;
 	}
 
 	public RocketMQProducerMessageHandler setPartitioningInterceptor(
-			PartitioningInterceptor partitioningInterceptor) {
+			@Nullable PartitioningInterceptor partitioningInterceptor) {
 		this.partitioningInterceptor = partitioningInterceptor;
 		return this;
 	}

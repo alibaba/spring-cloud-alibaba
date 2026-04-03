@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.alibaba.cloud.nacos.client.NacosPropertySource;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @author xiaojing
@@ -59,7 +60,7 @@ public final class NacosPropertySourceRepository {
 	 * @return NacosPropertySource
 	 */
 	@Deprecated
-	public static NacosPropertySource getNacosPropertySource(String dataId) {
+	public static @Nullable NacosPropertySource getNacosPropertySource(String dataId) {
 		return NACOS_PROPERTY_SOURCE_REPOSITORY.get(dataId);
 	}
 
@@ -70,7 +71,7 @@ public final class NacosPropertySourceRepository {
 						nacosPropertySource.getGroup()), nacosPropertySource);
 	}
 
-	public static NacosPropertySource getNacosPropertySource(String dataId,
+	public static @Nullable NacosPropertySource getNacosPropertySource(String dataId,
 			String group) {
 		return NACOS_PROPERTY_SOURCE_REPOSITORY.get(getMapKey(dataId, group));
 	}

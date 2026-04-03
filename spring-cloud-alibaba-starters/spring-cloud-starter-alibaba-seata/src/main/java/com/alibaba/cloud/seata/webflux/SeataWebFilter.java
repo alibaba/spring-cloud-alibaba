@@ -34,6 +34,7 @@ public class SeataWebFilter implements WebFilter {
 	private static final Logger log = LoggerFactory.getLogger(SeataWebFilter.class);
 
 	@Override
+	@SuppressWarnings("NullAway")
 	public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 		String xid = RootContext.getXID();
 		String rpcXid = exchange.getRequest().getHeaders().getFirst(RootContext.KEY_XID);

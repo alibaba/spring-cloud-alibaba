@@ -17,6 +17,7 @@
 package com.alibaba.cloud.nacos.configdata;
 
 import com.alibaba.cloud.nacos.refresh.NacosConfigRefreshEvent;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,7 @@ public class NacosConfigRefreshEventListener implements SmartApplicationListener
 
 	private final static Logger log = LoggerFactory.getLogger(NacosConfigRefreshEventListener.class);
 
-	private ApplicationContext applicationContext;
+	private @Nullable ApplicationContext applicationContext;
 
 	@Override
 	public boolean supportsEventType(Class<? extends ApplicationEvent> eventType) {
@@ -49,7 +50,9 @@ public class NacosConfigRefreshEventListener implements SmartApplicationListener
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
-		applicationContext.publishEvent(new RefreshEvent(event.getSource(), null, "Refresh Nacos config"));
+		if (applicationContext != null) {
+			applicationContext.publishEvent(new RefreshEvent(event.getSource(), null, "Refresh Nacos config"));
+		}
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("Refresh Nacos config group=%s,dataId=%s", ((NacosConfigRefreshEvent) event).getGroup(), ((NacosConfigRefreshEvent) event).getDataId()));
 		}

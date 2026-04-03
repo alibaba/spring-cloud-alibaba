@@ -18,6 +18,8 @@ package com.alibaba.cloud.nacos.annotation;
 
 import java.lang.reflect.Type;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.util.StringUtils;
 
 final class ObjectUtils {
@@ -25,6 +27,7 @@ final class ObjectUtils {
 	private ObjectUtils() {
 	}
 
+	@Nullable
 	public static Object convertToObject(String content, Type clazz) {
 		if (!StringUtils.hasText(content)) {
 			return null;
