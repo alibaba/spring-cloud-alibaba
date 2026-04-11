@@ -105,6 +105,8 @@ If you need to use the already published `Snapshot Version`, add the following c
 ```
 
 Add the following configuration in `repositories`.
+If users in China have difficulty accessing the `maven.pkg.github.com` domain, consider using [Alibaba Cloud Effect Artifact Repository](https://packages.aliyun.com/) as a proxy for GitHub Packages.
+
 ```xml
 <repositories>
     <repository>
