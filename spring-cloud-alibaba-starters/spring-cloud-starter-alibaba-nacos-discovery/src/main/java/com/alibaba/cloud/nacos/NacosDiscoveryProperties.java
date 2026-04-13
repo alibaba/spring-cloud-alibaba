@@ -41,6 +41,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -327,7 +328,22 @@ public class NacosDiscoveryProperties {
 			applicationEventPublisher
 					.publishEvent(new NacosDiscoveryInfoChangedEvent(this));
 		}
-		nacosServiceManager.setNacosDiscoveryProperties(this);
+		nacosServiceManager.setNacosDiscoveryProperties(copyNacosDiscoveryProperties());
+	}
+
+	/**
+	 * copy {@link NacosDiscoveryProperties}
+	 * @return NacosDiscoveryProperties
+	 */
+	private NacosDiscoveryProperties copyNacosDiscoveryProperties() {
+		NacosDiscoveryProperties nacosDiscoveryProperties = new NacosDiscoveryProperties();
+		BeanUtils.copyProperties(this, nacosDiscoveryProperties);
+		nacosDiscoveryProperties.inetIPv6Utils = this.inetIPv6Utils;
+		nacosDiscoveryProperties.inetUtils = this.inetUtils;
+		nacosDiscoveryProperties.environment = this.environment;
+		nacosDiscoveryProperties.nacosServiceManager = this.nacosServiceManager;
+		nacosDiscoveryProperties.applicationEventPublisher = this.applicationEventPublisher;
+		return nacosDiscoveryProperties;
 	}
 
 	/**
