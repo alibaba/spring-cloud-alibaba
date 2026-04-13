@@ -41,7 +41,6 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -365,7 +364,7 @@ public class NacosDiscoveryProperties {
 		nacosDiscoveryProperties.ephemeral = this.ephemeral;
 		nacosDiscoveryProperties.failureToleranceEnabled = this.failureToleranceEnabled;
 		nacosDiscoveryProperties.failFast = this.failFast;
-		nacosDiscoveryProperties.gracefulShutdownWaitTime= this.gracefulShutdownWaitTime;
+		nacosDiscoveryProperties.gracefulShutdownWaitTime = this.gracefulShutdownWaitTime;
 		nacosDiscoveryProperties.inetIPv6Utils = this.inetIPv6Utils;
 		nacosDiscoveryProperties.inetUtils = this.inetUtils;
 		nacosDiscoveryProperties.environment = this.environment;
