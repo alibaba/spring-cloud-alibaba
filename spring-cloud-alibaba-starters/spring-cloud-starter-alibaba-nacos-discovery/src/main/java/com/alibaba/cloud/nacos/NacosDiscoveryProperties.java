@@ -332,7 +332,7 @@ public class NacosDiscoveryProperties {
 	}
 
 	/**
-	 * copy {@link NacosDiscoveryProperties}
+	 * copy {@link NacosDiscoveryProperties} .
 	 * @return NacosDiscoveryProperties
 	 */
 	private NacosDiscoveryProperties copyNacosDiscoveryProperties() {
