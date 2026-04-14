@@ -348,7 +348,7 @@ public class NacosDiscoveryProperties {
 		nacosDiscoveryProperties.networkInterface = this.networkInterface;
 		nacosDiscoveryProperties.port = this.port;
 		nacosDiscoveryProperties.secure = this.secure;
-		nacosDiscoveryProperties.metadata = this.metadata;
+		nacosDiscoveryProperties.metadata = new HashMap<>(this.metadata);
 		nacosDiscoveryProperties.serverAddr = this.serverAddr;
 		nacosDiscoveryProperties.accessKey = this.accessKey;
 		nacosDiscoveryProperties.secretKey = this.secretKey;
