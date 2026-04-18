@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2023 the original author or authors.
+ * Copyright 2026-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationC
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 
-
 import static com.alibaba.cloud.nacos.NacosDiscoveryPropertiesTests.TestConfig;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,6 +46,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 		"spring.cloud.nacos.server-addr=123.123.123.123:8848" })
 class NacosDiscoveryPropertiesTests {
 
+	private static final String KEY = UUID.randomUUID().toString();
+
 	@Autowired
 	private NacosDiscoveryProperties properties;
 
@@ -59,12 +60,16 @@ class NacosDiscoveryPropertiesTests {
 	public void testNacosDiscoveryInfoChangedEvent() throws Exception {
 		TestConfig.eventPublished = false;
 		// modify some property
-		properties.setPassword(UUID.randomUUID().toString());
-		properties.getMetadata().put("test", UUID.randomUUID().toString());
+		String password = UUID.randomUUID().toString();
+		String value = UUID.randomUUID().toString();
+		properties.setPassword(password);
+		properties.getMetadata().put(KEY, value);
 		// trigger init
 		properties.init();
 		// check if event is published
 		assertThat(TestConfig.eventPublished).isTrue();
+		assertThat(TestConfig.password).isEqualTo(password);
+		assertThat(TestConfig.metadataValue).isEqualTo(value);
 	}
 
 	@Configuration
@@ -74,11 +79,26 @@ class NacosDiscoveryPropertiesTests {
 			NacosServiceRegistryAutoConfiguration.class })
 	public static class TestConfig {
 
+		/**
+		 * eventPublished.
+		 */
 		public static boolean eventPublished = false;
+
+		/**
+		 * password.
+		 */
+		public static String password;
+
+		/**
+		 * metadataValue.
+		 */
+		public static String metadataValue;
 
 		@EventListener
 		public void onEvent(NacosDiscoveryInfoChangedEvent event) {
 			eventPublished = true;
+			password = event.getSource().getPassword();
+			metadataValue = event.getSource().getMetadata().get(KEY);
 		}
 
 	}
