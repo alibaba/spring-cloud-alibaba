@@ -107,6 +107,7 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
 ```
 
 在 `repositories` 中添加如下配置。
+如果中国国内用户访问 `maven.pkg.github.com` 域名存在困难，可以考虑使用 [阿里云云效制品仓库](https://packages.aliyun.com/) 代理 GitHub Packages。
 
 ```xml
 <repositories>
