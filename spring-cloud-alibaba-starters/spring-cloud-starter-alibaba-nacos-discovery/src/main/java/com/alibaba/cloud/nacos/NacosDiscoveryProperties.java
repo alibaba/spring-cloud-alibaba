@@ -327,7 +327,50 @@ public class NacosDiscoveryProperties {
 			applicationEventPublisher
 					.publishEvent(new NacosDiscoveryInfoChangedEvent(this));
 		}
-		nacosServiceManager.setNacosDiscoveryProperties(this);
+		nacosServiceManager.setNacosDiscoveryProperties(copyNacosDiscoveryProperties());
+	}
+
+	/**
+	 * copy {@link NacosDiscoveryProperties} .
+	 * @return NacosDiscoveryProperties
+	 */
+	private NacosDiscoveryProperties copyNacosDiscoveryProperties() {
+		NacosDiscoveryProperties nacosDiscoveryProperties = new NacosDiscoveryProperties();
+		nacosDiscoveryProperties.endpoint = this.endpoint;
+		nacosDiscoveryProperties.namespace = this.namespace;
+		nacosDiscoveryProperties.logName = this.logName;
+		nacosDiscoveryProperties.weight = this.weight;
+		nacosDiscoveryProperties.clusterName = this.clusterName;
+		nacosDiscoveryProperties.service = this.service;
+		nacosDiscoveryProperties.registerEnabled = this.registerEnabled;
+		nacosDiscoveryProperties.ip = this.ip;
+		nacosDiscoveryProperties.ipType = this.ipType;
+		nacosDiscoveryProperties.networkInterface = this.networkInterface;
+		nacosDiscoveryProperties.port = this.port;
+		nacosDiscoveryProperties.secure = this.secure;
+		nacosDiscoveryProperties.metadata = new HashMap<>(this.metadata);
+		nacosDiscoveryProperties.serverAddr = this.serverAddr;
+		nacosDiscoveryProperties.accessKey = this.accessKey;
+		nacosDiscoveryProperties.secretKey = this.secretKey;
+		nacosDiscoveryProperties.heartBeatInterval = this.heartBeatInterval;
+		nacosDiscoveryProperties.heartBeatTimeout = this.heartBeatTimeout;
+		nacosDiscoveryProperties.ipDeleteTimeout = this.ipDeleteTimeout;
+		nacosDiscoveryProperties.namingLoadCacheAtStart = this.namingLoadCacheAtStart;
+		nacosDiscoveryProperties.watchDelay = this.watchDelay;
+		nacosDiscoveryProperties.group = this.group;
+		nacosDiscoveryProperties.username = this.username;
+		nacosDiscoveryProperties.password = this.password;
+		nacosDiscoveryProperties.instanceEnabled = this.instanceEnabled;
+		nacosDiscoveryProperties.ephemeral = this.ephemeral;
+		nacosDiscoveryProperties.failureToleranceEnabled = this.failureToleranceEnabled;
+		nacosDiscoveryProperties.failFast = this.failFast;
+		nacosDiscoveryProperties.gracefulShutdownWaitTime = this.gracefulShutdownWaitTime;
+		nacosDiscoveryProperties.inetIPv6Utils = this.inetIPv6Utils;
+		nacosDiscoveryProperties.inetUtils = this.inetUtils;
+		nacosDiscoveryProperties.environment = this.environment;
+		nacosDiscoveryProperties.nacosServiceManager = this.nacosServiceManager;
+		nacosDiscoveryProperties.applicationEventPublisher = this.applicationEventPublisher;
+		return nacosDiscoveryProperties;
 	}
 
 	/**
