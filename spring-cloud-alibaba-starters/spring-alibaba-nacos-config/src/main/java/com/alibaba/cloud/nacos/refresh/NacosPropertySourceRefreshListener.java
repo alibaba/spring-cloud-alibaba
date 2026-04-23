@@ -40,6 +40,7 @@ import org.springframework.context.event.SmartApplicationListener;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
+import org.springframework.util.StringUtils;
 
 public class NacosPropertySourceRefreshListener implements BeanPostProcessor, SmartApplicationListener, ApplicationContextAware {
 
@@ -116,16 +117,23 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 					}
 					NacosPropertySource prevNacosPropertySource = (NacosPropertySource) prevpropertySource;
 					String fileExtension = prevNacosPropertySource.getFileExtension();
-					if (fileExtension == null || fileExtension.isEmpty()) {
-						fileExtension = nacosConfigManager.getNacosConfigProperties()
-								.getFileExtension();
-					}
-					if (fileExtension == null || fileExtension.isEmpty()) {
+					if (!StringUtils.hasText(fileExtension)) {
+						// The source was built through the legacy constructor (e.g. by
+						// third-party code) and did not record its format. We cannot
+						// safely guess the extension from global configuration here,
+						// because shared-configs / extension-configs may declare their
+						// own suffix per entry. Fall back to "properties" — the
+						// historical default — and log so the case is diagnosable.
+						log.warn(
+								"Previous Nacos property source did not record a file extension,"
+										+ " falling back to 'properties'; non-properties formats"
+										+ " may be mis-parsed. sourceName={}", sourceName);
 						fileExtension = "properties";
 					}
 					NacosPropertySource newProperSource = nacosPropertySourceBuilder.build(dataId, group, fileExtension, prevNacosPropertySource.isRefreshable());
 					target.replace(sourceName, newProperSource);
-					log.info("Replace Nacos Property Source : " + sourceName);
+					log.info("Replace Nacos Property Source: {} (fileExtension={})",
+							sourceName, fileExtension);
 				}
 
 			}

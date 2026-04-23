@@ -60,30 +60,39 @@ public class NacosPropertySource extends MapPropertySource {
 	 * File extension this property source was parsed with (e.g. {@code yaml},
 	 * {@code properties}, {@code json}). Captured so that subsequent refreshes
 	 * can re-parse updated config with the same loader instead of falling back
-	 * to the properties default.
+	 * to the properties default. The value is the same notion the rest of the
+	 * codebase tracks as {@code NacosConfigProperties#fileExtension} and
+	 * {@code NacosItemConfig#suffix}.
 	 */
-	private @Nullable String fileExtension;
+	private final @Nullable String fileExtension;
 
 	NacosPropertySource(String group, String dataId, Map<String, Object> source,
 			Date timestamp, boolean isRefreshable) {
+		this(group, dataId, source, timestamp, isRefreshable, null);
+	}
+
+	private NacosPropertySource(String group, String dataId, Map<String, Object> source,
+			Date timestamp, boolean isRefreshable,
+			@Nullable String fileExtension) {
 		super(String.join(NacosConfigProperties.COMMAS, dataId, group), source);
 		this.group = group;
 		this.dataId = dataId;
 		this.timestamp = timestamp;
 		this.isRefreshable = isRefreshable;
+		this.fileExtension = fileExtension;
 	}
 
 	public NacosPropertySource(List<PropertySource<?>> propertySources, String group,
 			String dataId, Date timestamp, boolean isRefreshable) {
 		this(group, dataId, getSourceMap(group, dataId, propertySources), timestamp,
-				isRefreshable);
+				isRefreshable, null);
 	}
 
 	public NacosPropertySource(List<PropertySource<?>> propertySources, String group,
 			String dataId, Date timestamp, boolean isRefreshable,
 			@Nullable String fileExtension) {
-		this(propertySources, group, dataId, timestamp, isRefreshable);
-		this.fileExtension = fileExtension;
+		this(group, dataId, getSourceMap(group, dataId, propertySources), timestamp,
+				isRefreshable, fileExtension);
 	}
 
 	private static Map<String, Object> getSourceMap(String group, String dataId,
@@ -146,6 +155,12 @@ public class NacosPropertySource extends MapPropertySource {
 		return isRefreshable;
 	}
 
+	/**
+	 * Returns the file extension this property source was parsed with, or
+	 * {@code null} if it was built through a constructor that does not carry
+	 * the extension. Used internally by the refresh listener to re-parse
+	 * pushed Nacos content with the original format.
+	 */
 	public @Nullable String getFileExtension() {
 		return fileExtension;
 	}
