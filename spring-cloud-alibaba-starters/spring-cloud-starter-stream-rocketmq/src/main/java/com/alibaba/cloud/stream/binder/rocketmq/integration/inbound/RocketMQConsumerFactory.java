@@ -80,7 +80,8 @@ public final class RocketMQConsumerFactory {
 		consumer.setVipChannelEnabled(
 				null == rpcHook && consumerProperties.getVipChannelEnabled());
 		consumer.setInstanceName(
-				RocketMQUtils.getInstanceName(actualRpcHook, group));
+				RocketMQUtils.getInstanceName(actualRpcHook, group,
+						consumerProperties.isShareClientInstance()));
 		consumer.setNamespace(consumerProperties.getNamespace());
 		consumer.setNamespaceV2(consumerProperties.getNamespaceV2());
 		consumer.setNamesrvAddr(consumerProperties.getNameServer());
@@ -151,7 +152,8 @@ public final class RocketMQConsumerFactory {
 		consumer.setVipChannelEnabled(
 				null == rpcHook && consumerProperties.getVipChannelEnabled());
 		consumer.setInstanceName(
-				RocketMQUtils.getInstanceName(actualRpcHook, consumerGroup));
+				RocketMQUtils.getInstanceName(actualRpcHook, consumerGroup,
+						consumerProperties.isShareClientInstance()));
 		if (null != allocateMessageQueueStrategy) {
 			consumer.setAllocateMessageQueueStrategy(allocateMessageQueueStrategy);
 		}

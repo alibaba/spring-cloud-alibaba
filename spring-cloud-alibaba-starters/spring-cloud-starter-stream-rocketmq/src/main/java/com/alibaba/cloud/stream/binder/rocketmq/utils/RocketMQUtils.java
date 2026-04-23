@@ -71,11 +71,19 @@ public final class RocketMQUtils {
 		if (StringUtils.isEmpty(mqProperties.getUnitName())) {
 			mqProperties.setUnitName(binderConfigurationProperties.getUnitName());
 		}
+		if (binderConfigurationProperties.isShareClientInstance()) {
+			mqProperties.setShareClientInstance(true);
+		}
 		mqProperties.setNameServer(getNameServerStr(mqProperties.getNameServer()));
 		return mqProperties;
 	}
 
 	public static String getInstanceName(RPCHook rpcHook, String identify) {
+		return getInstanceName(rpcHook, identify, false);
+	}
+
+	public static String getInstanceName(RPCHook rpcHook, String identify,
+			boolean shareClientInstance) {
 		String separator = "|";
 		StringBuilder instanceName = new StringBuilder();
 		if (null != rpcHook) {
@@ -83,8 +91,11 @@ public final class RocketMQUtils {
 					.getSessionCredentials();
 			instanceName.append(sessionCredentials.getAccessKey()).append(separator);
 		}
-		instanceName.append(identify).append(separator).append(UtilAll.getPid())
-				.append(separator).append(Long.toString(System.nanoTime(), 36));
+		instanceName.append(identify).append(separator).append(UtilAll.getPid());
+		if (!shareClientInstance) {
+			instanceName.append(separator)
+					.append(Long.toString(System.nanoTime(), 36));
+		}
 		return instanceName.toString();
 	}
 

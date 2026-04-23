@@ -114,7 +114,8 @@ public final class RocketMQProduceFactory {
 				null == rpcHook && producerProperties.getVipChannelEnabled());
 		producer.setInstanceName(
 				RocketMQUtils.getInstanceName(actualRpcHook,
-						topic + "|" + UtilAll.getPid()));
+						topic + "|" + UtilAll.getPid(),
+						producerProperties.isShareClientInstance()));
 		producer.setNamesrvAddr(producerProperties.getNameServer());
 		producer.setNamespaceV2(producerProperties.getNamespaceV2());
 		producer.setSendMsgTimeout(producerProperties.getSendMsgTimeout());
