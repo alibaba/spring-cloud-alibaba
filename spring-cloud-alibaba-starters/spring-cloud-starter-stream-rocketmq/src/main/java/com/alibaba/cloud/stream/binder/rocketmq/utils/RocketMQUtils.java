@@ -71,8 +71,9 @@ public final class RocketMQUtils {
 		if (StringUtils.isEmpty(mqProperties.getUnitName())) {
 			mqProperties.setUnitName(binderConfigurationProperties.getUnitName());
 		}
-		if (binderConfigurationProperties.isShareClientInstance()) {
-			mqProperties.setShareClientInstance(true);
+		if (mqProperties.getShareClientInstance() == null) {
+			mqProperties.setShareClientInstance(
+					binderConfigurationProperties.getShareClientInstance());
 		}
 		mqProperties.setNameServer(getNameServerStr(mqProperties.getNameServer()));
 		return mqProperties;

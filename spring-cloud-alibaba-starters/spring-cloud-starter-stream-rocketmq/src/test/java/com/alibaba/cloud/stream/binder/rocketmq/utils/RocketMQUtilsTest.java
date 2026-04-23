@@ -18,6 +18,7 @@ package com.alibaba.cloud.stream.binder.rocketmq.utils;
 
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
+import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.junit.jupiter.api.Test;
@@ -83,30 +84,51 @@ public class RocketMQUtilsTest {
 	}
 
 	@Test
-	public void mergeRocketMQPropertiesPropagatesShareClientInstanceFromBinder() {
+	public void mergeRocketMQPropertiesAppliesBinderShareClientInstanceWhenConsumerUnset() {
 		RocketMQBinderConfigurationProperties binder = new RocketMQBinderConfigurationProperties();
 		binder.setShareClientInstance(true);
 		RocketMQConsumerProperties consumer = new RocketMQConsumerProperties();
-		assertThat(consumer.isShareClientInstance()).isFalse();
+		assertThat(consumer.getShareClientInstance()).isNull();
 		RocketMQUtils.mergeRocketMQProperties(binder, consumer);
-		assertThat(consumer.isShareClientInstance()).isTrue();
+		assertThat(consumer.getShareClientInstance()).isTrue();
 	}
 
 	@Test
-	public void mergeRocketMQPropertiesPreservesConsumerShareClientInstanceWhenBinderIsFalse() {
+	public void mergeRocketMQPropertiesAppliesBinderShareClientInstanceToProducerWhenUnset() {
+		RocketMQBinderConfigurationProperties binder = new RocketMQBinderConfigurationProperties();
+		binder.setShareClientInstance(true);
+		RocketMQProducerProperties producer = new RocketMQProducerProperties();
+		RocketMQUtils.mergeRocketMQProperties(binder, producer);
+		assertThat(producer.getShareClientInstance()).isTrue();
+	}
+
+	@Test
+	public void mergeRocketMQPropertiesPreservesExplicitConsumerFalseOverBinderTrue() {
+		// A binding that needs its own MQClientInstance (e.g. ordered consumer)
+		// must be able to opt out even when the binder enables sharing globally.
+		RocketMQBinderConfigurationProperties binder = new RocketMQBinderConfigurationProperties();
+		binder.setShareClientInstance(true);
+		RocketMQConsumerProperties consumer = new RocketMQConsumerProperties();
+		consumer.setShareClientInstance(false);
+		RocketMQUtils.mergeRocketMQProperties(binder, consumer);
+		assertThat(consumer.getShareClientInstance()).isFalse();
+	}
+
+	@Test
+	public void mergeRocketMQPropertiesPreservesExplicitConsumerTrueWhenBinderUnset() {
 		RocketMQBinderConfigurationProperties binder = new RocketMQBinderConfigurationProperties();
 		RocketMQConsumerProperties consumer = new RocketMQConsumerProperties();
 		consumer.setShareClientInstance(true);
 		RocketMQUtils.mergeRocketMQProperties(binder, consumer);
-		assertThat(consumer.isShareClientInstance()).isTrue();
+		assertThat(consumer.getShareClientInstance()).isTrue();
 	}
 
 	@Test
-	public void mergeRocketMQPropertiesDefaultLeavesShareClientInstanceFalse() {
+	public void mergeRocketMQPropertiesLeavesBothUnsetWhenNeitherConfigured() {
 		RocketMQBinderConfigurationProperties binder = new RocketMQBinderConfigurationProperties();
 		RocketMQConsumerProperties consumer = new RocketMQConsumerProperties();
 		RocketMQUtils.mergeRocketMQProperties(binder, consumer);
-		assertThat(consumer.isShareClientInstance()).isFalse();
+		assertThat(consumer.getShareClientInstance()).isNull();
 	}
 
 }
