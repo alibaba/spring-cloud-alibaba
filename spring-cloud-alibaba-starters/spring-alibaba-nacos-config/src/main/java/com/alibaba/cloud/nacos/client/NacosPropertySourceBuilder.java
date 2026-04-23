@@ -75,7 +75,7 @@ public class NacosPropertySourceBuilder {
 		List<PropertySource<?>> propertySources = loadNacosData(dataId, group,
 				fileExtension);
 		NacosPropertySource nacosPropertySource = new NacosPropertySource(propertySources,
-				group, dataId, new Date(), isRefreshable);
+				group, dataId, new Date(), isRefreshable, fileExtension);
 		NacosPropertySourceRepository.collectNacosPropertySource(nacosPropertySource);
 		return nacosPropertySource;
 	}

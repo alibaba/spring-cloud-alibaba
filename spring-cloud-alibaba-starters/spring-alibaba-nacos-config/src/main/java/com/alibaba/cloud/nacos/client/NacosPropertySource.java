@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.nacos.NacosConfigProperties;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
@@ -55,6 +56,14 @@ public class NacosPropertySource extends MapPropertySource {
 	 */
 	private final boolean isRefreshable;
 
+	/**
+	 * File extension this property source was parsed with (e.g. {@code yaml},
+	 * {@code properties}, {@code json}). Captured so that subsequent refreshes
+	 * can re-parse updated config with the same loader instead of falling back
+	 * to the properties default.
+	 */
+	private @Nullable String fileExtension;
+
 	NacosPropertySource(String group, String dataId, Map<String, Object> source,
 			Date timestamp, boolean isRefreshable) {
 		super(String.join(NacosConfigProperties.COMMAS, dataId, group), source);
@@ -68,6 +77,13 @@ public class NacosPropertySource extends MapPropertySource {
 			String dataId, Date timestamp, boolean isRefreshable) {
 		this(group, dataId, getSourceMap(group, dataId, propertySources), timestamp,
 				isRefreshable);
+	}
+
+	public NacosPropertySource(List<PropertySource<?>> propertySources, String group,
+			String dataId, Date timestamp, boolean isRefreshable,
+			@Nullable String fileExtension) {
+		this(propertySources, group, dataId, timestamp, isRefreshable);
+		this.fileExtension = fileExtension;
 	}
 
 	private static Map<String, Object> getSourceMap(String group, String dataId,
@@ -128,6 +144,10 @@ public class NacosPropertySource extends MapPropertySource {
 
 	public boolean isRefreshable() {
 		return isRefreshable;
+	}
+
+	public @Nullable String getFileExtension() {
+		return fileExtension;
 	}
 
 }

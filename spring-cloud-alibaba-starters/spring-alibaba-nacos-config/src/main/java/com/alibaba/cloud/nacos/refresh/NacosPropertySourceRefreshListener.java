@@ -114,7 +114,16 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 						log.warn("Event dataId or group is null, skipping refresh");
 						return;
 					}
-					NacosPropertySource newProperSource = nacosPropertySourceBuilder.build(dataId, group, "properties", ((NacosPropertySource) prevpropertySource).isRefreshable());
+					NacosPropertySource prevNacosPropertySource = (NacosPropertySource) prevpropertySource;
+					String fileExtension = prevNacosPropertySource.getFileExtension();
+					if (fileExtension == null || fileExtension.isEmpty()) {
+						fileExtension = nacosConfigManager.getNacosConfigProperties()
+								.getFileExtension();
+					}
+					if (fileExtension == null || fileExtension.isEmpty()) {
+						fileExtension = "properties";
+					}
+					NacosPropertySource newProperSource = nacosPropertySourceBuilder.build(dataId, group, fileExtension, prevNacosPropertySource.isRefreshable());
 					target.replace(sourceName, newProperSource);
 					log.info("Replace Nacos Property Source : " + sourceName);
 				}
