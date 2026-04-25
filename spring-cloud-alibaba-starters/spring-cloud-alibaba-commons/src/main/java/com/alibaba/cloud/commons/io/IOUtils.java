@@ -38,9 +38,9 @@ public final class IOUtils {
 	public static final int EOF = -1;
 
 	/**
-	 * The default buffer size ({@value}) to use for.
+	 * The default buffer size ({@value}) to use for
 	 * {@link #copyLarge(InputStream, java.io.OutputStream)} and
-	 * {@link #copyLarge(Reader, Writer)}
+	 * {@link #copyLarge(Reader, Writer)}.
 	 */
 	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 

@@ -68,7 +68,7 @@ Spring Cloud uses Maven for most build-related activities, and you should be abl
 
 ## How to Use
 
-### Add maven dependency 
+### Add maven dependency
 
 #### Release Version
 
@@ -187,6 +187,6 @@ If no-one else is using your branch, please rebase it against the current 2023.x
 When writing a commit message please follow these conventions, if you are fixing an existing issue please add Fixes gh-XXXX at the end of the commit message (where XXXX is the issue number).
 
 ## Contact Us
-Mailing list is recommended for discussing almost anything related to spring-cloud-alibaba. 
+Mailing list is recommended for discussing almost anything related to spring-cloud-alibaba.
 
 spring-cloud-alibaba@googlegroups.com: You can ask questions here if you encounter any problem when using or developing spring-cloud-alibaba.
