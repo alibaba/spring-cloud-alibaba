@@ -156,7 +156,7 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 					this.retryTemplate.execute(() -> {
 						this.sendMessage(message);
 						return Boolean.TRUE;
-					});
+					}, this.recoveryCallback);
 				}
 				else {
 					this.sendMessage(message);

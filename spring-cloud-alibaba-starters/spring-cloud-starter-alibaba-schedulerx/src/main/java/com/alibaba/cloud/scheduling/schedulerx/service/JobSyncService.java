@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import com.alibaba.cloud.scheduling.schedulerx.JobProperty;
@@ -381,12 +382,12 @@ public class JobSyncService {
 			timeType = TimeType.API.getValue();
 		}
 
-		if (!jobConfigInfo.getDescription().equals(jobProperty.getDescription())
-				|| !jobConfigInfo.getClassName().equals(jobProperty.getClassName())
-				|| !jobConfigInfo.getParameters().equals(jobProperty.getJobParameter())
-				|| !jobConfigInfo.getExecuteMode().equals(executeMode)
+		if (!Objects.equals(jobConfigInfo.getDescription(), jobProperty.getDescription())
+				|| !Objects.equals(jobConfigInfo.getClassName(), jobProperty.getClassName())
+				|| !Objects.equals(jobConfigInfo.getParameters(), jobProperty.getJobParameter())
+				|| !Objects.equals(jobConfigInfo.getExecuteMode(), executeMode)
 				|| jobConfigInfo.getTimeConfig().getTimeType() != timeType
-				|| !jobConfigInfo.getTimeConfig().getTimeExpression().equals(timeExpression)) {
+				|| !Objects.equals(jobConfigInfo.getTimeConfig().getTimeExpression(), timeExpression)) {
 
 			UpdateJobRequest request = new UpdateJobRequest();
 			request.setNamespace(properties.getNamespace());
