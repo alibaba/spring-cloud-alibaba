@@ -119,24 +119,29 @@ public class NacosContextRefresher
 					@Override
 					public void innerReceive(String dataId, String group,
 							String configInfo) {
+						if (dataId == null || group == null) {
+							log.warn("[Nacos Config] Received config change with null dataId or group, skipping. dataId={}, group={}",
+									dataId, group);
+							return;
+						}
 
 						log.info("[Nacos Config] Receive Nacos config change: dataId={}, group={}", dataKey,
 								groupKey);
 						refreshCountIncrement();
-						nacosRefreshHistory.addRefreshRecord(dataId, group, configInfo);
+						nacosRefreshHistory.addRefreshRecord(dataId, group, configInfo != null ? configInfo : "");
 						NacosSnapshotConfigManager.putConfigSnapshot(dataId, group,
-								configInfo);
+								configInfo != null ? configInfo : "");
 						NacosConfigRefreshEvent event = new NacosConfigRefreshEvent(this, null, "Refresh Nacos config");
 						event.setDataId(dataId);
 						event.setGroup(group);
-					if (applicationContext != null) {
-						applicationContext.publishEvent(
-								event);
-					}
+						if (applicationContext != null) {
+							applicationContext.publishEvent(
+									event);
+						}
 						if (log.isDebugEnabled()) {
 							log.debug(String.format(
 									"Publish Nacos config Refresh Event group=%s,dataId=%s,configInfo=%s",
-									group, dataId, configInfo));
+									group, dataId, configInfo != null ? configInfo : "null"));
 						}
 					}
 				});
