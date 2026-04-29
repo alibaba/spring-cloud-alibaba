@@ -39,7 +39,7 @@ jobs:
           wget https://raw.githubusercontent.com/xuruidong/markdown-link-checker/main/link_checker.py
 
       - name: Setup python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
