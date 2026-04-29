@@ -37,12 +37,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.core.retry.RetryException;
 import org.springframework.core.retry.RetryListener;
-import org.springframework.core.retry.RetryPolicy;
 import org.springframework.core.retry.RetryTemplate;
-import org.springframework.core.retry.Retryable;
 import org.springframework.integration.context.OrderlyShutdownCapable;
 import org.springframework.integration.core.RecoveryCallback;
 import org.springframework.integration.endpoint.MessageProducerSupport;
+import org.springframework.integration.support.ErrorMessageUtils;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessagingException;
@@ -146,17 +145,26 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 				Message<?> message = RocketMQMessageConverterSupport
 						.convertMessage2Spring(messageExt);
 				if (this.retryTemplate != null) {
-					this.retryTemplate.setRetryListener(new RetryListener() {
-						@Override
-						public void onRetryPolicyExhaustion(RetryPolicy retryPolicy, Retryable<?> retryable, RetryException exception) {
-							log.warn("retry exhausted for messageExt: {}",
-									messageExt, exception);
+					try {
+						this.retryTemplate.execute(() -> {
+							this.sendMessage(message);
+							return Boolean.TRUE;
+						});
+					}
+					catch (RetryException retryException) {
+						if (this.recoveryCallback != null) {
+							log.warn("retry exhausted for messageExt: {}; invoking recovery callback",
+									messageExt, retryException);
+							Throwable cause = retryException.getCause() != null
+									? retryException.getCause() : retryException;
+							this.recoveryCallback.recover(
+									ErrorMessageUtils.getAttributeAccessor(message, message),
+									cause);
 						}
-					});
-					this.retryTemplate.execute(() -> {
-						this.sendMessage(message);
-						return Boolean.TRUE;
-					});
+						else {
+							throw retryException;
+						}
+					}
 				}
 				else {
 					this.sendMessage(message);
