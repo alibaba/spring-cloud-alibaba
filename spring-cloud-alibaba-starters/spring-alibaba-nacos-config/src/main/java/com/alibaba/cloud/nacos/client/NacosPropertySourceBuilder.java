@@ -44,9 +44,17 @@ public class NacosPropertySourceBuilder {
 
 	private long timeout;
 
+	private @Nullable String namespace;
+
 	public NacosPropertySourceBuilder(ConfigService configService, long timeout) {
+		this(configService, timeout, null);
+	}
+
+	public NacosPropertySourceBuilder(ConfigService configService, long timeout,
+			@Nullable String namespace) {
 		this.configService = configService;
 		this.timeout = timeout;
+		this.namespace = namespace;
 	}
 
 	public long getTimeout() {
@@ -84,8 +92,9 @@ public class NacosPropertySourceBuilder {
 			String fileExtension) {
 		String data = null;
 		try {
-			String configSnapshot = NacosSnapshotConfigManager.getAndRemoveConfigSnapshot(dataId, group);
-			if (configSnapshot == null || configSnapshot.isEmpty()) {
+			String configSnapshot = NacosSnapshotConfigManager
+				.getAndRemoveConfigSnapshot(namespace, dataId, group);
+			if (configSnapshot == null) {
 				log.debug("get config from nacos, dataId: {}, group: {}", dataId, group);
 				data = configService.getConfig(dataId, group, timeout);
 			}

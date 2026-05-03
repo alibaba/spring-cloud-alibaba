@@ -124,7 +124,8 @@ public class NacosContextRefresher
 								groupKey);
 						refreshCountIncrement();
 						nacosRefreshHistory.addRefreshRecord(dataId, group, configInfo);
-						NacosSnapshotConfigManager.putConfigSnapshot(dataId, group,
+						NacosSnapshotConfigManager.putConfigSnapshot(
+								nacosConfigProperties.getNamespace(), dataId, group,
 								configInfo);
 						NacosConfigRefreshEvent event = new NacosConfigRefreshEvent(this, null, "Refresh Nacos config");
 						event.setDataId(dataId);

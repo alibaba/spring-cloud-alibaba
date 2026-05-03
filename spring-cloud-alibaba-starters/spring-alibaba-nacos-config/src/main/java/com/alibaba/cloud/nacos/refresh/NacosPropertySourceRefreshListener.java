@@ -101,8 +101,10 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 			if (!applicationContext.containsBean("nacosConfigSpringCloudRefreshEventListener")) {
 				log.info("Event received " + event.getEventDesc());
 
-				NacosPropertySourceBuilder nacosPropertySourceBuilder = new NacosPropertySourceBuilder(nacosConfigManager.getConfigService(), nacosConfigManager.getNacosConfigProperties()
-						.getTimeout());
+				NacosPropertySourceBuilder nacosPropertySourceBuilder = new NacosPropertySourceBuilder(
+						nacosConfigManager.getConfigService(),
+						nacosConfigManager.getNacosConfigProperties().getTimeout(),
+						nacosConfigManager.getNacosConfigProperties().getNamespace());
 				String sourceName = String.join(NacosConfigProperties.COMMAS, event.dataId, event.group);
 				ConfigurableEnvironment environment = ((ConfigurableApplicationContext) applicationContext).getEnvironment();
 				MutablePropertySources target = environment.getPropertySources();
