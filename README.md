@@ -97,7 +97,7 @@ If you need to use the already published `Snapshot Version`, add the following c
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>2025.1.0.0-SNAPSHOT</version>
+            <version>2025.1.0.1-SNAPSHOT</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -106,6 +106,8 @@ If you need to use the already published `Snapshot Version`, add the following c
 ```
 
 Add the following configuration in `repositories`.
+If users in China have difficulty accessing the `maven.pkg.github.com` domain, consider using [Alibaba Cloud Effect Artifact Repository](https://packages.aliyun.com/) as a proxy for GitHub Packages.
+
 ```xml
 <repositories>
     <repository>
