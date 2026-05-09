@@ -44,7 +44,7 @@
 
         <druid.version>1.2.28</druid.version>
         <mybatis.version>3.0.5</mybatis.version>
-        <log4j-core.version>2.25.1</log4j-core.version>
+        <log4j-core.version>2.25.3</log4j-core.version>
         <slf4j-api.version>2.0.17</slf4j-api.version>
         <fastjson.version>2.0.58</fastjson.version>
         <log4j-slf4j2-impl.version>2.25.1</log4j-slf4j2-impl.version>
