@@ -73,6 +73,18 @@ public class NacosServiceDiscovery {
 		return services.getData();
 	}
 
+	/**
+	 * Probe the naming service with a lightweight status check.
+	 * @throws NacosException nacosException
+	 */
+	public void probe() throws NacosException {
+		String status = namingService().getServerStatus();
+		if (!"UP".equals(status)) {
+			throw new IllegalStateException(
+					"Nacos naming server status is " + (status != null ? status : "UNKNOWN"));
+		}
+	}
+
 	public static List<ServiceInstance> hostToServiceInstanceList(
 			List<Instance> instances, String serviceId) {
 		List<ServiceInstance> result = new ArrayList<>(instances.size());

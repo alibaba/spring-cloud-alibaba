@@ -36,6 +36,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 /**
@@ -130,6 +131,20 @@ public class NacosDiscoveryClientTests {
 				.thenReturn(singletonList(serviceInstance));
 		this.client.getInstances("a");
 		assertThat(ServiceCache.getInstances("a")).isEqualTo(singletonList(serviceInstance));
+	}
+
+	@Test
+	public void testProbe() throws Exception {
+		this.client.probe();
+	}
+
+	@Test
+	public void testProbeFailure() throws NacosException {
+		doThrow(new NacosException()).when(serviceDiscovery).probe();
+
+		assertThatThrownBy(() -> this.client.probe())
+				.hasMessage("Nacos discovery client probe failed")
+				.hasCauseInstanceOf(NacosException.class);
 	}
 
 }

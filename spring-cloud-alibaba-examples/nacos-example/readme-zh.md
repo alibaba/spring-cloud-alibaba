@@ -328,6 +328,8 @@ SecretKey|spring.cloud.nacos.config.secret-key||
 是否开启 Nacos Config 的 Health Indicator|spring.nacos.config.health-indicator.enabled|false|
 是否开启 Nacos Discovery 的 Health Indicator|spring.cloud.nacos.discovery.health-indicator.enabled|false|
 
+对于服务发现健康检查，建议配置 `spring.cloud.discovery.client.health-indicator.use-services-query=false`，走更轻量的 `probe()` 路径。
+
 
 ### Spring Cloud Alibaba Nacos Discovery
 
@@ -654,4 +656,3 @@ Nacos 为用户提供包括动态服务发现，配置管理，服务管理等�
 未来，Spring-Alibaba-Nacos-Config模块将承载更多职责，面向二方中间件组件，对SpringBoot(包括Spring AI)以及SpringCloud应用提供统一的配置托管以及运行时无损轮转功能，面向普通的业务组件，通过@NacosConfig，@NacosConfigListener注解提供灵活易用的配置注入和变更回调能力。
 
 如果您对 Spring Cloud Nacos Discovery 有任何建议或想法，欢迎在 issue 中或者通过其他社区渠道向我们提出。
-
