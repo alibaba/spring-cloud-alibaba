@@ -41,12 +41,19 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - name: Set up Maven Daemon
+        uses: gauthamchandra/mvnd-action@22dcb7d03ed0401ddadc760783dd9629432dff77 # v0.2.1
+        with:
+          # https://downloads.apache.org/maven/mvnd/
+          version: '1.0.5'
+      - name: "Print Maven Daemon version"
+        run: mvnd -version
       - name: Compile & Checkstyle
-        run: mvn clean -B compile
+        run: mvnd clean -B compile
       - name: install dependencies
-        run: mvn clean -B install -U package -pl '!spring-cloud-alibaba-coverage'  -DskipTests
+        run: mvnd clean -B install -U package -pl '!spring-cloud-alibaba-coverage'  -DskipTests
       - name: Testing
-        run: ./mvnw verify -B -Dmaven.test.skip=false
+        run: mvnd verify -B -Dmaven.test.skip=false
 #        run: mvn clean -Dit.enabled=true test
       - name: Delete snapshots from the Maven local repository
         run: find ~/.m2/repository -type d -name '*-SNAPSHOT' -print -exec rm -r {} +
