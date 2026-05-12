@@ -27,12 +27,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -140,6 +144,39 @@ class NacosReactiveDiscoveryClientTests {
 		StepVerifier.create(instances)
 						.expectNext(serviceInstance)
 						.expectComplete().verify();
+	}
+
+	@Test
+	void testProbe() throws Exception {
+		this.client.probe();
+
+		verify(serviceDiscovery).probe();
+	}
+
+	@Test
+	void testProbeFailure() throws NacosException {
+		doThrow(new NacosException()).when(serviceDiscovery).probe();
+
+		assertThatThrownBy(() -> this.client.probe())
+				.hasMessage("Nacos reactive discovery client probe failed")
+				.hasCauseInstanceOf(NacosException.class);
+	}
+
+	@Test
+	void testReactiveProbe() throws Exception {
+		Mono<Void> probe = this.client.reactiveProbe();
+
+		StepVerifier.create(probe).expectComplete().verify();
+		verify(serviceDiscovery).probe();
+	}
+
+	@Test
+	void testReactiveProbeFailure() throws NacosException {
+		doThrow(new NacosException()).when(serviceDiscovery).probe();
+
+		StepVerifier.create(this.client.reactiveProbe())
+				.expectError(NacosException.class)
+				.verify();
 	}
 
 }

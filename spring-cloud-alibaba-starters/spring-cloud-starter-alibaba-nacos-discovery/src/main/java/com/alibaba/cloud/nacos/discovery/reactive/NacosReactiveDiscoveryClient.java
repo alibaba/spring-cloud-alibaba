@@ -99,4 +99,22 @@ public class NacosReactiveDiscoveryClient implements ReactiveDiscoveryClient {
 		}).subscribeOn(Schedulers.boundedElastic());
 	}
 
+	@Override
+	public void probe() {
+		try {
+			serviceDiscovery.probe();
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Nacos reactive discovery client probe failed", e);
+		}
+	}
+
+	@Override
+	public Mono<Void> reactiveProbe() {
+		return Mono.fromCallable(() -> {
+			serviceDiscovery.probe();
+			return true;
+		}).subscribeOn(Schedulers.boundedElastic()).then();
+	}
+
 }

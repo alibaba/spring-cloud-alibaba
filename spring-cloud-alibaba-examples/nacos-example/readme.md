@@ -324,6 +324,8 @@ Cluster service name | spring. Cloud. Nacos. Config. Cluster -name | |
 Whether to enable nacos-config health indicator |spring.nacos.config.health-indicator.enabled|false|
 Whether to enable nacos-discovery health indicator |spring.cloud.nacos.discovery.health-indicator.enabled|false|
 
+For discovery health checks, prefer `spring.cloud.discovery.client.health-indicator.use-services-query=false` to use the lightweight `probe()` path.
+
 ### Spring Cloud Alibaba Nacos Discovery
 
 #### How to access

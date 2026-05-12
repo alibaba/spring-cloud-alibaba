@@ -33,6 +33,7 @@ import org.springframework.cloud.client.ServiceInstance;
 
 import static com.alibaba.cloud.nacos.test.NacosMockTest.serviceInstance;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -122,6 +123,40 @@ public class NacosServiceDiscoveryTest {
 		assertThat(services.contains(serviceName + "1"));
 		assertThat(services.contains(serviceName + "2"));
 		assertThat(services.contains(serviceName + "3"));
+	}
+
+	@Test
+	public void testProbe() throws NacosException {
+		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
+				NacosDiscoveryProperties.class);
+		NacosServiceManager nacosServiceManager = mock(NacosServiceManager.class);
+		NamingService namingService = mock(NamingService.class);
+
+		when(nacosServiceManager.getNamingService()).thenReturn(namingService);
+		when(namingService.getServerStatus()).thenReturn("UP");
+
+		NacosServiceDiscovery serviceDiscovery = new NacosServiceDiscovery(
+				nacosDiscoveryProperties, nacosServiceManager);
+
+		serviceDiscovery.probe();
+	}
+
+	@Test
+	public void testProbeUnhealthy() throws NacosException {
+		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
+				NacosDiscoveryProperties.class);
+		NacosServiceManager nacosServiceManager = mock(NacosServiceManager.class);
+		NamingService namingService = mock(NamingService.class);
+
+		when(nacosServiceManager.getNamingService()).thenReturn(namingService);
+		when(namingService.getServerStatus()).thenReturn("DOWN");
+
+		NacosServiceDiscovery serviceDiscovery = new NacosServiceDiscovery(
+				nacosDiscoveryProperties, nacosServiceManager);
+
+		assertThatThrownBy(serviceDiscovery::probe)
+				.isInstanceOf(IllegalStateException.class)
+				.hasMessage("Nacos naming server status is DOWN");
 	}
 
 	private String getUri(ServiceInstance instance) {

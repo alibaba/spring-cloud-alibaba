@@ -89,4 +89,14 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 		}
 	}
 
+	@Override
+	public void probe() {
+		try {
+			serviceDiscovery.probe();
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Nacos discovery client probe failed", e);
+		}
+	}
+
 }
