@@ -12,6 +12,8 @@ jobs:
   deploy-docker-image:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    permissions:
+      contents: read
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -25,6 +27,8 @@ jobs:
   integration-testing:
     name: Integration Testing
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 17
