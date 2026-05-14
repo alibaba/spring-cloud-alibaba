@@ -36,13 +36,11 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.core.retry.RetryException;
-import org.springframework.core.retry.RetryListener;
-import org.springframework.core.retry.RetryPolicy;
 import org.springframework.core.retry.RetryTemplate;
-import org.springframework.core.retry.Retryable;
 import org.springframework.integration.context.OrderlyShutdownCapable;
 import org.springframework.integration.core.RecoveryCallback;
 import org.springframework.integration.endpoint.MessageProducerSupport;
+import org.springframework.integration.support.ErrorMessageUtils;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessagingException;
@@ -87,8 +85,6 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 						"Cannot have an 'errorChannel' property when a 'RetryTemplate' is "
 								+ "provided; use an 'ErrorMessageSendingRecoverer' in the 'recoveryCallback' property to "
 								+ "send an error message when retries are exhausted");
-				this.retryTemplate.setRetryListener(new RetryListener() {
-				});
 			}
 			pushConsumer = RocketMQConsumerFactory
 					.initPushConsumer(extendedConsumerProperties);
@@ -141,22 +137,35 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 			throw new MessagingException(
 					"DefaultMQPushConsumer consuming failed, Caused by messageExtList is empty");
 		}
+		// With consumeMessageBatchMaxSize > 1, a recoveryCallback that throws midway
+		// through a batch causes the whole batch to be redelivered, so previously
+		// recovered messages will be recovered again. Prefer batchSize=1 when relying
+		// on recoveryCallback for DLQ wiring.
 		for (MessageExt messageExt : messageExtList) {
 			try {
 				Message<?> message = RocketMQMessageConverterSupport
 						.convertMessage2Spring(messageExt);
 				if (this.retryTemplate != null) {
-					this.retryTemplate.setRetryListener(new RetryListener() {
-						@Override
-						public void onRetryPolicyExhaustion(RetryPolicy retryPolicy, Retryable<?> retryable, RetryException exception) {
-							log.warn("retry exhausted for messageExt: {}",
-									messageExt, exception);
+					try {
+						this.retryTemplate.execute(() -> {
+							this.sendMessage(message);
+							return Boolean.TRUE;
+						});
+					}
+					catch (RetryException retryException) {
+						log.warn("retry exhausted for messageExt: {}",
+								messageExt, retryException);
+						if (this.recoveryCallback != null) {
+							Throwable cause = retryException.getCause() != null
+									? retryException.getCause() : retryException;
+							this.recoveryCallback.recover(
+									ErrorMessageUtils.getAttributeAccessor(message, message),
+									cause);
 						}
-					});
-					this.retryTemplate.execute(() -> {
-						this.sendMessage(message);
-						return Boolean.TRUE;
-					});
+						else {
+							throw retryException;
+						}
+					}
 				}
 				else {
 					this.sendMessage(message);
