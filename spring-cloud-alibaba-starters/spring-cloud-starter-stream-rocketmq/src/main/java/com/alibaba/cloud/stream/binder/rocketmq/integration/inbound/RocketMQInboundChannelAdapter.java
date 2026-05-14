@@ -140,6 +140,10 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 			throw new MessagingException(
 					"DefaultMQPushConsumer consuming failed, Caused by messageExtList is empty");
 		}
+		// With consumeMessageBatchMaxSize > 1, a recoveryCallback that throws midway
+		// through a batch causes the whole batch to be redelivered, so previously
+		// recovered messages will be recovered again. Prefer batchSize=1 when relying
+		// on recoveryCallback for DLQ wiring.
 		for (MessageExt messageExt : messageExtList) {
 			try {
 				Message<?> message = RocketMQMessageConverterSupport
@@ -152,9 +156,9 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 						});
 					}
 					catch (RetryException retryException) {
+						log.warn("retry exhausted for messageExt: {}",
+								messageExt, retryException);
 						if (this.recoveryCallback != null) {
-							log.warn("retry exhausted for messageExt: {}; invoking recovery callback",
-									messageExt, retryException);
 							Throwable cause = retryException.getCause() != null
 									? retryException.getCause() : retryException;
 							this.recoveryCallback.recover(

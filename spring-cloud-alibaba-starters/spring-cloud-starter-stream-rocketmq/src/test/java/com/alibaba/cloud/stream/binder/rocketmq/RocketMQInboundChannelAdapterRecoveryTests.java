@@ -176,4 +176,68 @@ public class RocketMQInboundChannelAdapterRecoveryTests {
 		assertThat(result).isEqualTo("FAIL");
 	}
 
+	@Test
+	public void recoveryCallbackThrowingFallsBackToFailureSupplier() throws Exception {
+		ExtendedConsumerProperties<RocketMQConsumerProperties> props =
+				new ExtendedConsumerProperties<>(new RocketMQConsumerProperties());
+		RocketMQInboundChannelAdapter adapter = new RocketMQInboundChannelAdapter("topic", props);
+
+		AtomicInteger sendAttempts = new AtomicInteger();
+		SubscribableChannel outputChannel = new SubscribableChannel() {
+			@Override
+			public boolean send(Message<?> message, long timeout) {
+				sendAttempts.incrementAndGet();
+				throw new MessagingException("simulated downstream failure");
+			}
+
+			@Override
+			public boolean send(Message<?> message) {
+				return send(message, -1);
+			}
+
+			@Override
+			public boolean subscribe(MessageHandler handler) {
+				return true;
+			}
+
+			@Override
+			public boolean unsubscribe(MessageHandler handler) {
+				return true;
+			}
+		};
+		adapter.setOutputChannel(outputChannel);
+
+		adapter.setRetryTemplate(new RetryTemplate(
+				RetryPolicy.builder().backOff(new FixedBackOff(0L, 1L)).build()));
+
+		AtomicInteger recoveryInvocations = new AtomicInteger();
+		RecoveryCallback<Object> failingRecoveryCallback = new RecoveryCallback<>() {
+			@Override
+			public Object recover(AttributeAccessor accessor, Throwable throwable) {
+				recoveryInvocations.incrementAndGet();
+				throw new IllegalStateException("simulated error channel failure");
+			}
+		};
+		adapter.setRecoveryCallback(failingRecoveryCallback);
+
+		MessageExt messageExt = new MessageExt();
+		messageExt.setBody("payload".getBytes());
+		messageExt.setTopic("topic");
+		messageExt.setMsgId("test-msg-id");
+
+		Method consumeMessage = RocketMQInboundChannelAdapter.class
+				.getDeclaredMethod("consumeMessage", List.class, Supplier.class, Supplier.class);
+		consumeMessage.setAccessible(true);
+
+		Object result = consumeMessage.invoke(adapter,
+				Collections.singletonList(messageExt),
+				(Supplier<String>) () -> "FAIL",
+				(Supplier<String>) () -> "OK");
+
+		// Recovery was attempted but its own failure propagates to the outer catch, which
+		// returns the failure supplier so RocketMQ can redeliver the message.
+		assertThat(recoveryInvocations.get()).isEqualTo(1);
+		assertThat(result).isEqualTo("FAIL");
+	}
+
 }
