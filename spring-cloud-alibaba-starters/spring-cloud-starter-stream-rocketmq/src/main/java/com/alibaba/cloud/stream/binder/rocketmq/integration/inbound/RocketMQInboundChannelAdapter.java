@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.core.retry.RetryException;
-import org.springframework.core.retry.RetryListener;
 import org.springframework.core.retry.RetryTemplate;
 import org.springframework.integration.context.OrderlyShutdownCapable;
 import org.springframework.integration.core.RecoveryCallback;
@@ -86,8 +85,6 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 						"Cannot have an 'errorChannel' property when a 'RetryTemplate' is "
 								+ "provided; use an 'ErrorMessageSendingRecoverer' in the 'recoveryCallback' property to "
 								+ "send an error message when retries are exhausted");
-				this.retryTemplate.setRetryListener(new RetryListener() {
-				});
 			}
 			pushConsumer = RocketMQConsumerFactory
 					.initPushConsumer(extendedConsumerProperties);

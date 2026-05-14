@@ -234,8 +234,10 @@ public class RocketMQInboundChannelAdapterRecoveryTests {
 				(Supplier<String>) () -> "FAIL",
 				(Supplier<String>) () -> "OK");
 
-		// Recovery was attempted but its own failure propagates to the outer catch, which
-		// returns the failure supplier so RocketMQ can redeliver the message.
+		// Retry template runs the configured 2 attempts before exhaustion, then recovery is
+		// attempted once but its own failure propagates to the outer catch, which returns
+		// the failure supplier so RocketMQ can redeliver the message.
+		assertThat(sendAttempts.get()).isEqualTo(2);
 		assertThat(recoveryInvocations.get()).isEqualTo(1);
 		assertThat(result).isEqualTo("FAIL");
 	}
