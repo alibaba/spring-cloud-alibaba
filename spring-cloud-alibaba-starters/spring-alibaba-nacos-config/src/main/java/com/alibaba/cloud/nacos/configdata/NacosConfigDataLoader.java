@@ -29,6 +29,7 @@ import com.alibaba.cloud.nacos.NacosPropertiesPrefixer;
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
 import com.alibaba.cloud.nacos.client.NacosPropertySource;
 import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
+import com.alibaba.cloud.nacos.refresh.NacosSnapshotConfigManager;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
 import org.apache.commons.logging.Log;
@@ -88,7 +89,7 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 			// pull config from nacos
 			List<PropertySource<?>> propertySources = pullConfig(configService,
 					config.getGroup(), config.getDataId(), config.getSuffix(),
-					properties.getTimeout());
+					properties.getTimeout(), properties.getNamespace());
 
 			NacosPropertySource propertySource = new NacosPropertySource(propertySources,
 					config.getGroup(), config.getDataId(), new Date(),
@@ -149,9 +150,13 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 	}
 
 	private List<PropertySource<?>> pullConfig(ConfigService configService, String group,
-			String dataId, String suffix, long timeout)
+			String dataId, String suffix, long timeout, @Nullable String namespace)
 			throws NacosException, IOException {
-		String config = configService.getConfig(dataId, group, timeout);
+		String config = NacosSnapshotConfigManager.getAndRemoveConfigSnapshot(namespace,
+				dataId, group);
+		if (config == null) {
+			config = configService.getConfig(dataId, group, timeout);
+		}
 		logLoadInfo(group, dataId, config);
 		// fixed issue: https://github.com/alibaba/spring-cloud-alibaba/issues/2906 .
 		String configName = group + "@" + dataId;

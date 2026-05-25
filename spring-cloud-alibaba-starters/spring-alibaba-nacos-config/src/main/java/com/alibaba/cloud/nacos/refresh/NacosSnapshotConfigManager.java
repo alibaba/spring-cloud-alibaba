@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.alibaba.cloud.nacos.NacosConfigProperties;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,24 +46,41 @@ public final class NacosSnapshotConfigManager {
 		return dataId + "@" + group;
 	}
 
+	private static String formatConfigSnapshotKey(@Nullable String namespace,
+			String dataId, String group) {
+		if (namespace == null || namespace.isEmpty()
+				|| NacosConfigProperties.DEFAULT_NAMESPACE.equals(namespace)) {
+			return formatConfigSnapshotKey(dataId, group);
+		}
+		return namespace + "@" + dataId + "@" + group;
+	}
+
 	public static @Nullable String getAndRemoveConfigSnapshot(String dataId, String group) {
-		String configInfo = CONFIG_INFO_SNAPSHOT_MAP
-				.get(formatConfigSnapshotKey(dataId, group));
-		removeConfigSnapshot(dataId, group);
-		return configInfo;
+		return CONFIG_INFO_SNAPSHOT_MAP.remove(formatConfigSnapshotKey(dataId, group));
+	}
+
+	public static @Nullable String getAndRemoveConfigSnapshot(@Nullable String namespace,
+			String dataId, String group) {
+		return CONFIG_INFO_SNAPSHOT_MAP
+			.remove(formatConfigSnapshotKey(namespace, dataId, group));
 	}
 
 	public static void putConfigSnapshot(String dataId, String group, String configInfo) {
+		putConfigSnapshot(null, dataId, group, configInfo);
+	}
+
+	public static void putConfigSnapshot(@Nullable String namespace, String dataId,
+			String group, String configInfo) {
 		try {
 			// Theoretically, the capacity limit restriction will never be triggered.
 			// This portion of the code serves as an additional fault tolerance layer.
 			if (CONFIG_INFO_SNAPSHOT_MAP.size() > MAX_SNAPSHOT_COUNT) {
 				Iterator<Map.Entry<String, String>> iterator = CONFIG_INFO_SNAPSHOT_MAP
-						.entrySet().iterator();
+					.entrySet().iterator();
 				iterator.next();
 				iterator.remove();
 			}
-			String snapshotKey = formatConfigSnapshotKey(dataId, group);
+			String snapshotKey = formatConfigSnapshotKey(namespace, dataId, group);
 			if (configInfo == null) {
 				CONFIG_INFO_SNAPSHOT_MAP.remove(snapshotKey);
 			}
@@ -77,6 +95,12 @@ public final class NacosSnapshotConfigManager {
 
 	public static void removeConfigSnapshot(String dataId, String group) {
 		CONFIG_INFO_SNAPSHOT_MAP.remove(formatConfigSnapshotKey(dataId, group));
+	}
+
+	public static void removeConfigSnapshot(@Nullable String namespace, String dataId,
+			String group) {
+		CONFIG_INFO_SNAPSHOT_MAP
+			.remove(formatConfigSnapshotKey(namespace, dataId, group));
 	}
 
 }
