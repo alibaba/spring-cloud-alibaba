@@ -90,9 +90,9 @@ public class NacosPropertySourceRefreshListenerTest {
 		initialData.put("app.name", "old-value");
 		MapPropertySource innerSource = new MapPropertySource(configDataName, initialData);
 		NacosPropertySource nacosPropertySource = new NacosPropertySource(
-				Collections.singletonList(innerSource), group, dataId, new Date(), true);
+				Collections.singletonList(innerSource), group, dataId, new Date(), true, "yml");
 
-		propertySources.addLast(innerSource);
+		propertySources.addLast(nacosPropertySource);
 
 		// Mark app as ready
 		listener.handle(mock(ApplicationReadyEvent.class));
@@ -129,9 +129,9 @@ public class NacosPropertySourceRefreshListenerTest {
 		initialData.put("app.port", "8080");
 		MapPropertySource innerSource = new MapPropertySource(sourceName, initialData);
 		NacosPropertySource nacosPropertySource = new NacosPropertySource(
-				Collections.singletonList(innerSource), group, dataId, new Date(), true);
+				Collections.singletonList(innerSource), group, dataId, new Date(), true, "yml");
 
-		propertySources.addLast(innerSource);
+		propertySources.addLast(nacosPropertySource);
 
 		// Mark app as ready
 		listener.handle(mock(ApplicationReadyEvent.class));
