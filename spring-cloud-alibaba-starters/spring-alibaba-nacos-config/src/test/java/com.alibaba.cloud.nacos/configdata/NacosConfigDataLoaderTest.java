@@ -18,6 +18,7 @@ package com.alibaba.cloud.nacos.configdata;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
+import com.alibaba.cloud.nacos.client.NacosPropertySource;
 import com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosItemConfig;
 import com.alibaba.cloud.nacos.refresh.NacosSnapshotConfigManager;
 import com.alibaba.nacos.api.config.ConfigService;
@@ -53,6 +54,10 @@ class NacosConfigDataLoaderTest {
 
 			assertThat(configData).isNotNull();
 			assertThat(configData.getPropertySources()).hasSize(1);
+			assertThat(configData.getPropertySources().get(0))
+				.isInstanceOf(NacosPropertySource.class);
+			assertThat(configData.getPropertySources().get(0).getName())
+				.isEqualTo("test.properties,DEFAULT_GROUP");
 			assertThat(configData.getPropertySources().get(0).getProperty("name"))
 				.isEqualTo("snapshot");
 			verify(configService, never()).getConfig("test.properties", "DEFAULT_GROUP",
@@ -76,7 +81,11 @@ class NacosConfigDataLoaderTest {
 			ConfigData configData = load(configService);
 
 			assertThat(configData).isNotNull();
-			assertThat(configData.getPropertySources()).isEmpty();
+			assertThat(configData.getPropertySources()).hasSize(1);
+			assertThat(configData.getPropertySources().get(0))
+				.isInstanceOf(NacosPropertySource.class);
+			assertThat(((NacosPropertySource) configData.getPropertySources().get(0))
+				.getSource()).isEmpty();
 			verify(configService, never()).getConfig("test.properties", "DEFAULT_GROUP",
 					3000L);
 		}
