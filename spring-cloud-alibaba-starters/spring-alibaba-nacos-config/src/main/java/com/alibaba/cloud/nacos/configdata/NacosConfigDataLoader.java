@@ -18,6 +18,7 @@ package com.alibaba.cloud.nacos.configdata;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -97,7 +98,8 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 
 			NacosPropertySourceRepository.collectNacosPropertySource(propertySource);
 
-			return new ConfigData(propertySources, getOptions(context, resource));
+			return new ConfigData(Collections.singletonList(propertySource),
+					getOptions(context, resource));
 		}
 		catch (Exception e) {
 			log.error("Error getting properties from nacos: " + resource, e);
