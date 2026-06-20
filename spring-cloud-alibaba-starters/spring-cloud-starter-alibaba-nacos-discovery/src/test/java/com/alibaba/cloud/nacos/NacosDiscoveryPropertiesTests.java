@@ -21,6 +21,7 @@ import java.util.UUID;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
 import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoChangedEvent;
 import com.alibaba.cloud.nacos.registry.NacosServiceRegistryAutoConfiguration;
+import com.alibaba.cloud.nacos.util.InetIPv6Utils;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +30,17 @@ import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
+import org.springframework.cloud.commons.util.InetUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.env.Environment;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static com.alibaba.cloud.nacos.NacosDiscoveryPropertiesTests.TestConfig;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author xuxiaowei
@@ -72,6 +79,78 @@ class NacosDiscoveryPropertiesTests {
 		assertThat(TestConfig.metadataValue).isEqualTo(value);
 	}
 
+	@Test
+	public void toStringShouldRenderDiscoveryFieldsOnce() {
+		NacosDiscoveryProperties properties = new NacosDiscoveryProperties();
+		properties.setIpType("IPv6");
+		properties.setIpDeleteTimeout(30000);
+		properties.setGracefulShutdownWaitTime(5000);
+
+		String value = properties.toString();
+
+		assertThat(value).contains(", ipType='IPv6'");
+		assertThat(value).contains(", gracefulShutdownWaitTime=5000");
+		assertThat(value).contains(", failFast=true");
+		assertThat(value).containsOnlyOnce("ipDeleteTimeout=");
+		assertThat(value).doesNotContain("}, ipDeleteTimeout=");
+		assertThat(value).endsWith("}");
+	}
+
+	@Test
+	public void equalsAndHashCodeShouldIncludeIpType() {
+		NacosDiscoveryProperties left = new NacosDiscoveryProperties();
+		NacosDiscoveryProperties right = new NacosDiscoveryProperties();
+
+		left.setIpType("IPv4");
+		right.setIpType("IPv6");
+
+		assertThat(left).isNotEqualTo(right);
+		assertThat(left.hashCode()).isNotEqualTo(right.hashCode());
+	}
+
+	@Test
+	public void equalsAndHashCodeShouldIncludeGracefulShutdownWaitTime() {
+		NacosDiscoveryProperties left = new NacosDiscoveryProperties();
+		NacosDiscoveryProperties right = new NacosDiscoveryProperties();
+
+		left.setGracefulShutdownWaitTime(5000);
+		right.setGracefulShutdownWaitTime(10000);
+
+		assertThat(left).isNotEqualTo(right);
+		assertThat(left.hashCode()).isNotEqualTo(right.hashCode());
+	}
+
+	@Test
+	public void initShouldNotPutNullIpv6IntoMetadata() throws Exception {
+		NacosDiscoveryProperties properties = new NacosDiscoveryProperties();
+		properties.setServerAddr("127.0.0.1:8848");
+		properties.setInetUtils(inetUtils("192.168.1.10"));
+		ReflectionTestUtils.setField(properties, "inetIPv6Utils", noIpv6Utils());
+		ReflectionTestUtils.setField(properties, "environment", mock(Environment.class));
+		ReflectionTestUtils.setField(properties, "nacosServiceManager",
+				mock(NacosServiceManager.class));
+		ReflectionTestUtils.setField(properties, "applicationEventPublisher",
+				mock(ApplicationEventPublisher.class));
+
+		properties.init();
+
+		assertThat(properties.getMetadata()).doesNotContainKey("IPv6");
+	}
+
+	private static InetUtils inetUtils(String ipAddress) {
+		InetUtils inetUtils = mock(InetUtils.class);
+		InetUtils.HostInfo hostInfo = new InetUtils.HostInfo();
+		hostInfo.setIpAddress(ipAddress);
+		when(inetUtils.findFirstNonLoopbackHostInfo()).thenReturn(hostInfo);
+		return inetUtils;
+	}
+
+	private static InetIPv6Utils noIpv6Utils() {
+		InetIPv6Utils inetIPv6Utils = mock(InetIPv6Utils.class);
+		when(inetIPv6Utils.findIPv6Address()).thenReturn(null);
+		return inetIPv6Utils;
+	}
+
 	@Configuration
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration({ AutoServiceRegistrationConfiguration.class,
@@ -104,4 +183,3 @@ class NacosDiscoveryPropertiesTests {
 	}
 
 }
-
