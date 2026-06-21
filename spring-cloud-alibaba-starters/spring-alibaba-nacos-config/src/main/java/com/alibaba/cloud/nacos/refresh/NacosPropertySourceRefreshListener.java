@@ -54,6 +54,9 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 
 	NacosConfigManager nacosConfigManager;
 
+	@Nullable
+	NacosPropertySourceBuilder nacosPropertySourceBuilder;
+
 	public NacosPropertySourceRefreshListener(NacosConfigManager nacosConfigManager) {
 		this.nacosConfigManager = nacosConfigManager;
 	}
@@ -101,10 +104,12 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 			if (!applicationContext.containsBean("nacosConfigSpringCloudRefreshEventListener")) {
 				log.info("Event received " + event.getEventDesc());
 
-				NacosPropertySourceBuilder nacosPropertySourceBuilder = new NacosPropertySourceBuilder(
-						nacosConfigManager.getConfigService(),
-						nacosConfigManager.getNacosConfigProperties().getTimeout(),
-						nacosConfigManager.getNacosConfigProperties().getNamespace());
+				if (nacosPropertySourceBuilder == null) {
+					nacosPropertySourceBuilder = new NacosPropertySourceBuilder(
+							nacosConfigManager.getConfigService(),
+							nacosConfigManager.getNacosConfigProperties().getTimeout(),
+							nacosConfigManager.getNacosConfigProperties().getNamespace());
+				}
 				String sourceName = String.join(NacosConfigProperties.COMMAS, event.dataId, event.group);
 				ConfigurableEnvironment environment = ((ConfigurableApplicationContext) applicationContext).getEnvironment();
 				MutablePropertySources target = environment.getPropertySources();
@@ -116,7 +121,9 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 						log.warn("Event dataId or group is null, skipping refresh");
 						return;
 					}
-					NacosPropertySource newProperSource = nacosPropertySourceBuilder.build(dataId, group, "properties", ((NacosPropertySource) prevpropertySource).isRefreshable());
+					NacosPropertySource prev = (NacosPropertySource) prevpropertySource;
+					String fileExtension = prev.getSuffix() != null ? prev.getSuffix() : "properties";
+					NacosPropertySource newProperSource = nacosPropertySourceBuilder.build(dataId, group, fileExtension, prev.isRefreshable());
 					target.replace(sourceName, newProperSource);
 					log.info("Replace Nacos Property Source : " + sourceName);
 				}

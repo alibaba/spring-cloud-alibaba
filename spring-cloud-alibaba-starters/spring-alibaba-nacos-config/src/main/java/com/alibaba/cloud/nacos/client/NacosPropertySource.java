@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.nacos.NacosConfigProperties;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
@@ -54,6 +55,11 @@ public class NacosPropertySource extends MapPropertySource {
 	 * Whether to support dynamic refresh for this Property Source.
 	 */
 	private final boolean isRefreshable;
+
+	/**
+	 * File extension used to parse this property source (e.g. "yml", "yaml", "json", "xml", "properties").
+	 */
+	private @Nullable String suffix;
 
 	NacosPropertySource(String group, String dataId, Map<String, Object> source,
 			Date timestamp, boolean isRefreshable) {
@@ -128,6 +134,14 @@ public class NacosPropertySource extends MapPropertySource {
 
 	public boolean isRefreshable() {
 		return isRefreshable;
+	}
+
+	public @Nullable String getSuffix() {
+		return suffix;
+	}
+
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
 	}
 
 }
