@@ -275,7 +275,6 @@ public class NacosDiscoveryProperties {
 				if (ipType == null) {
 					ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
 					String ipv6Addr = inetIPv6Utils.findIPv6Address();
-					metadata.put(IPV6, ipv6Addr);
 					if (ipv6Addr != null) {
 						metadata.put(IPV6, ipv6Addr);
 					}
@@ -644,12 +643,15 @@ public class NacosDiscoveryProperties {
 				&& Objects.equals(namingLoadCacheAtStart, that.namingLoadCacheAtStart)
 				&& Objects.equals(metadata, that.metadata) && Objects.equals(ip, that.ip)
 				&& Objects.equals(networkInterface, that.networkInterface)
+				&& Objects.equals(ipType, that.ipType)
 				&& Objects.equals(accessKey, that.accessKey)
 				&& Objects.equals(secretKey, that.secretKey)
 				&& Objects.equals(heartBeatInterval, that.heartBeatInterval)
 				&& Objects.equals(heartBeatTimeout, that.heartBeatTimeout)
 				&& Objects.equals(failFast, that.failFast)
-				&& Objects.equals(ipDeleteTimeout, that.ipDeleteTimeout);
+				&& Objects.equals(ipDeleteTimeout, that.ipDeleteTimeout)
+				&& Objects.equals(gracefulShutdownWaitTime,
+						that.gracefulShutdownWaitTime);
 	}
 
 	@Override
@@ -657,9 +659,9 @@ public class NacosDiscoveryProperties {
 		return Objects.hash(serverAddr, username, password, endpoint, namespace,
 				watchDelay, logName, service, weight, clusterName, group,
 				namingLoadCacheAtStart, metadata, registerEnabled, ip, networkInterface,
-				port, secure, accessKey, secretKey, heartBeatInterval, heartBeatTimeout,
-				ipDeleteTimeout, instanceEnabled, ephemeral, failureToleranceEnabled,
-				failFast);
+				ipType, port, secure, accessKey, secretKey, heartBeatInterval,
+				heartBeatTimeout, ipDeleteTimeout, instanceEnabled, ephemeral,
+				failureToleranceEnabled, gracefulShutdownWaitTime, failFast);
 	}
 
 	@Override
@@ -673,13 +675,15 @@ public class NacosDiscoveryProperties {
 				+ ", namingLoadCacheAtStart='" + namingLoadCacheAtStart + '\''
 				+ ", metadata=" + metadata + ", registerEnabled=" + registerEnabled
 				+ ", ip='" + ip + '\'' + ", networkInterface='" + networkInterface + '\''
-				+ ", port=" + port + ", secure=" + secure + ", accessKey='" + accessKey
-				+ '\'' + ", secretKey='" + secretKey + '\'' + ", heartBeatInterval="
-				+ heartBeatInterval + ", heartBeatTimeout=" + heartBeatTimeout
+				+ ", ipType='" + ipType + '\'' + ", port=" + port + ", secure="
+				+ secure + ", accessKey='" + accessKey + '\'' + ", secretKey='"
+				+ secretKey + '\'' + ", heartBeatInterval=" + heartBeatInterval
+				+ ", heartBeatTimeout=" + heartBeatTimeout
 				+ ", ipDeleteTimeout=" + ipDeleteTimeout + ", instanceEnabled="
 				+ instanceEnabled + ", ephemeral=" + ephemeral
-				+ ", failureToleranceEnabled=" + failureToleranceEnabled + '}'
-				+ ", ipDeleteTimeout=" + ipDeleteTimeout + ", failFast=" + failFast + '}';
+				+ ", failureToleranceEnabled=" + failureToleranceEnabled
+				+ ", gracefulShutdownWaitTime=" + gracefulShutdownWaitTime
+				+ ", failFast=" + failFast + '}';
 	}
 
 	public void overrideFromEnv(Environment env) {
