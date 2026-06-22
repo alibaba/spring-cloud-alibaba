@@ -57,10 +57,15 @@ public class SentinelInvocationHandler implements InvocationHandler {
 
 	SentinelInvocationHandler(Target<?> target, Map<Method, MethodHandler> dispatch,
 			FallbackFactory fallbackFactory) {
+		this(target, dispatch, fallbackFactory, null);
+	}
+
+	SentinelInvocationHandler(Target<?> target, Map<Method, MethodHandler> dispatch,
+			FallbackFactory fallbackFactory, @Nullable Class<?> fallbackType) {
 		this.target = checkNotNull(target, "target");
 		this.dispatch = checkNotNull(dispatch, "dispatch");
 		this.fallbackFactory = fallbackFactory;
-		this.fallbackMethodMap = toFallbackMethod(dispatch);
+		this.fallbackMethodMap = toFallbackMethod(dispatch, fallbackType);
 	}
 
 	SentinelInvocationHandler(Target<?> target, Map<Method, MethodHandler> dispatch) {
@@ -126,7 +131,10 @@ public class SentinelInvocationHandler implements InvocationHandler {
 							if (fallbackMethod == null) {
 								throw new IllegalStateException("Fallback method not found for method: " + method);
 							}
-							Object fallbackResult = fallbackMethod.invoke(fallbackFactory.create(ex), args);
+							Object fallback = fallbackFactory.create(ex);
+							fallbackMethod = resolveFallbackMethod(fallbackMethod,
+									fallback != null ? fallback.getClass() : null);
+							Object fallbackResult = fallbackMethod.invoke(fallback, args);
 							return fallbackResult;
 						}
 						catch (IllegalAccessException e) {
@@ -178,12 +186,33 @@ public class SentinelInvocationHandler implements InvocationHandler {
 	}
 
 	static Map<Method, Method> toFallbackMethod(Map<Method, MethodHandler> dispatch) {
+		return toFallbackMethod(dispatch, null);
+	}
+
+	static Map<Method, Method> toFallbackMethod(Map<Method, MethodHandler> dispatch,
+			@Nullable Class<?> fallbackType) {
 		Map<Method, Method> result = new LinkedHashMap<>();
 		for (Method method : dispatch.keySet()) {
-			method.setAccessible(true);
-			result.put(method, method);
+			result.put(method, resolveFallbackMethod(method, fallbackType));
 		}
 		return result;
+	}
+
+	private static Method resolveFallbackMethod(Method method,
+			@Nullable Class<?> fallbackType) {
+		Method fallbackMethod = method;
+		if (fallbackType != null) {
+			try {
+				fallbackMethod = fallbackType.getMethod(method.getName(),
+						method.getParameterTypes());
+			}
+			catch (NoSuchMethodException e) {
+				throw new IllegalStateException(
+						"Fallback method not found for method: " + method, e);
+			}
+		}
+		fallbackMethod.setAccessible(true);
+		return fallbackMethod;
 	}
 
 }

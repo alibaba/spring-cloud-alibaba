@@ -127,7 +127,8 @@ public final class SentinelFeign {
 						fallbackInstance = getFromContext(beanName, "fallback", fallback,
 								target.type());
 						return new SentinelInvocationHandler(target, dispatch,
-								new FallbackFactory.Default(fallbackInstance));
+								new FallbackFactory.Default(fallbackInstance),
+								fallbackInstance.getClass());
 					}
 					if (void.class != fallbackFactory) {
 						fallbackFactoryInstance = (FallbackFactory) getFromContext(
