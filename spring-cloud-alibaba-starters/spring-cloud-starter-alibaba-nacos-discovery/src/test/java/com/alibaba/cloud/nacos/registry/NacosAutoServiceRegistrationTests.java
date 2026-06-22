@@ -18,7 +18,9 @@ package com.alibaba.cloud.nacos.registry;
 
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
@@ -40,6 +42,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
 import org.springframework.cloud.commons.util.InetUtils;
+import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -87,42 +91,31 @@ public class NacosAutoServiceRegistrationTests {
 	@Autowired
 	private InetUtils inetUtils;
 
+	@Autowired
+	private ConfigurableApplicationContext context;
+
 	private static MockedStatic<NacosFactory> nacosFactoryMockedStatic;
+
+	private static final CountingNamingService countingNamingService = new CountingNamingService();
+
 	static {
 		nacosFactoryMockedStatic = Mockito.mockStatic(NacosFactory.class);
 		nacosFactoryMockedStatic.when(() -> NacosFactory.createNamingService((Properties) any()))
-				.thenReturn(new MockNamingService() {
-					@Override
-					public void fuzzyWatch(String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
-
-					}
-
-					@Override
-					public void fuzzyWatch(String serviceNamePattern, String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
-
-					}
-
-					@Override
-					public Future<ListView<String>> fuzzyWatchWithServiceKeys(String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
-						return null;
-					}
-
-					@Override
-					public Future<ListView<String>> fuzzyWatchWithServiceKeys(String serviceNamePattern, String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
-						return null;
-					}
-
-					@Override
-					public void cancelFuzzyWatch(String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
-
-					}
-
-					@Override
-					public void cancelFuzzyWatch(String serviceNamePattern, String groupNamePattern, FuzzyWatchEventWatcher listener) throws NacosException {
-
-					}
-				});
+				.thenReturn(countingNamingService);
 	}
+
+	@Test
+	public void unrelatedEnvironmentChangeShouldNotShutdownNamingService() {
+		assertThat(nacosAutoServiceRegistration.isRunning()).isTrue();
+		countingNamingService.reset();
+
+		context.publishEvent(new EnvironmentChangeEvent(context, Set.of("user.password")));
+
+		assertThat(countingNamingService.shutdownCount()).isZero();
+		assertThat(nacosAutoServiceRegistration.isRunning()).isTrue();
+		assertThat(registration.getServiceId()).isEqualTo("myTestService1");
+	}
+
 	@AfterAll
 	public static void finished() {
 		if (nacosFactoryMockedStatic != null) {
@@ -237,6 +230,63 @@ public class NacosAutoServiceRegistrationTests {
 		assertThat(properties).isEqualTo(map.get("NacosDiscoveryProperties"));
 		// assertThat(properties.namingServiceInstance().getSubscribeServices().toString())
 		// .isEqualTo(map.get("subscribe").toString());
+	}
+
+	static class CountingNamingService extends MockNamingService {
+
+		private final AtomicInteger shutdownCount = new AtomicInteger();
+
+		void reset() {
+			this.shutdownCount.set(0);
+		}
+
+		int shutdownCount() {
+			return this.shutdownCount.get();
+		}
+
+		@Override
+		public void shutDown() throws NacosException {
+			this.shutdownCount.incrementAndGet();
+		}
+
+		@Override
+		public void fuzzyWatch(String groupNamePattern,
+				FuzzyWatchEventWatcher listener) throws NacosException {
+
+		}
+
+		@Override
+		public void fuzzyWatch(String serviceNamePattern, String groupNamePattern,
+				FuzzyWatchEventWatcher listener) throws NacosException {
+
+		}
+
+		@Override
+		public Future<ListView<String>> fuzzyWatchWithServiceKeys(
+				String groupNamePattern,
+				FuzzyWatchEventWatcher listener) throws NacosException {
+			return null;
+		}
+
+		@Override
+		public Future<ListView<String>> fuzzyWatchWithServiceKeys(
+				String serviceNamePattern, String groupNamePattern,
+				FuzzyWatchEventWatcher listener) throws NacosException {
+			return null;
+		}
+
+		@Override
+		public void cancelFuzzyWatch(String groupNamePattern,
+				FuzzyWatchEventWatcher listener) throws NacosException {
+
+		}
+
+		@Override
+		public void cancelFuzzyWatch(String serviceNamePattern, String groupNamePattern,
+				FuzzyWatchEventWatcher listener) throws NacosException {
+
+		}
+
 	}
 
 	@Configuration

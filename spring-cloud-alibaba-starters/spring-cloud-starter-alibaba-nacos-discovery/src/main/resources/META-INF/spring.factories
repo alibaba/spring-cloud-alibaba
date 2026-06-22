@@ -1,2 +1,5 @@
+org.springframework.boot.EnvironmentPostProcessor=\
+  com.alibaba.cloud.nacos.refresh.NacosDiscoveryRefreshEnvironmentPostProcessor
+
 org.springframework.cloud.bootstrap.BootstrapConfiguration=\
   com.alibaba.cloud.nacos.discovery.configclient.NacosDiscoveryClientConfigServiceBootstrapConfiguration
