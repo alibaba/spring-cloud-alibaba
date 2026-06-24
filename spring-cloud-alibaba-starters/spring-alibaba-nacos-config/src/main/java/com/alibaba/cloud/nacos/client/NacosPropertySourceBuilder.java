@@ -84,6 +84,7 @@ public class NacosPropertySourceBuilder {
 				fileExtension);
 		NacosPropertySource nacosPropertySource = new NacosPropertySource(propertySources,
 				group, dataId, new Date(), isRefreshable);
+		nacosPropertySource.setSuffix(fileExtension);
 		NacosPropertySourceRepository.collectNacosPropertySource(nacosPropertySource);
 		return nacosPropertySource;
 	}
