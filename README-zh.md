@@ -137,6 +137,52 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
 </servers>
 ```
 
+### 如何引入 Gradle 依赖
+
+#### 正式版
+
+在 `build.gradle`（或 `build.gradle.kts`）中通过 `platform` 引入 BOM：
+
+```groovy
+dependencies {
+    implementation platform("com.alibaba.cloud:spring-cloud-alibaba-dependencies:2025.1.0.0")
+
+    // 按需选择 starter
+    implementation "com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config"
+}
+```
+
+#### 快照
+
+如果需要使用已发布的`快照版本`，使用快照 BOM 并添加 GitHub Packages 仓库：
+
+```groovy
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("https://maven.pkg.github.com/alibaba/spring-cloud-alibaba")
+        credentials {
+            username = findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
+            password = findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
+}
+
+dependencies {
+    implementation platform("com.alibaba.cloud:spring-cloud-alibaba-dependencies:2025.1.0.0-SNAPSHOT")
+
+    // 按需选择 starter
+    implementation "com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config"
+}
+```
+
+你可以在 `~/.gradle/gradle.properties` 中配置凭据：
+
+```properties
+gpr.user=你的 GitHub 用户名
+gpr.key=你的 GitHub Token（需要 read:packages 权限）
+```
+
 ## 演示 Demo
 
 为了演示如何使用，Spring Cloud Alibaba 项目包含了一个子模块`spring-cloud-alibaba-examples`。此模块中提供了演示用的 example ，您可以阅读对应的 example 工程下的 readme 文档，根据里面的步骤来体验。

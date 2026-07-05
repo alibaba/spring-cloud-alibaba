@@ -134,6 +134,52 @@ Add the following configuration in `settings.xml`.
 </servers>
 ```
 
+### Add Gradle dependency
+
+#### Release Version
+
+Use Maven Central BOM in your `build.gradle` (or `build.gradle.kts`) via `platform`:
+
+```groovy
+dependencies {
+    implementation platform("com.alibaba.cloud:spring-cloud-alibaba-dependencies:2025.1.0.0")
+
+    // choose starter(s) as needed
+    implementation "com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config"
+}
+```
+
+#### Snapshot
+
+If you need the published `Snapshot Version`, use snapshot BOM and add GitHub Packages repository:
+
+```groovy
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("https://maven.pkg.github.com/alibaba/spring-cloud-alibaba")
+        credentials {
+            username = findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
+            password = findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
+}
+
+dependencies {
+    implementation platform("com.alibaba.cloud:spring-cloud-alibaba-dependencies:2025.1.0.0-SNAPSHOT")
+
+    // choose starter(s) as needed
+    implementation "com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config"
+}
+```
+
+You can put credentials in `~/.gradle/gradle.properties`:
+
+```properties
+gpr.user=Your GitHub Username
+gpr.key=Your GitHub Token (requires read:packages permission)
+```
+
 ## Examples
 
 A `spring-cloud-alibaba-examples` module is included in our project for you to get started with Spring Cloud Alibaba quickly. It contains an example, and you can refer to the readme file in the example project for a quick walkthrough.
