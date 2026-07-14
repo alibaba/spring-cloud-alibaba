@@ -126,7 +126,9 @@ public class SentinelInvocationHandler implements InvocationHandler {
 							if (fallbackMethod == null) {
 								throw new IllegalStateException("Fallback method not found for method: " + method);
 							}
-							Object fallbackResult = fallbackMethod.invoke(fallbackFactory.create(ex), args);
+							Object fallback = fallbackFactory.create(ex);
+							validateFallbackInstance(fallback);
+							Object fallbackResult = fallbackMethod.invoke(fallback, args);
 							return fallbackResult;
 						}
 						catch (IllegalAccessException e) {
@@ -186,4 +188,12 @@ public class SentinelInvocationHandler implements InvocationHandler {
 		return result;
 	}
 
+	private void validateFallbackInstance(Object fallback) {
+		if (!target.type().isInstance(fallback)) {
+			throw new IllegalStateException(String.format(
+					"Incompatible fallback instance. FallbackFactory returned %s, which is not assignable to %s for feign client %s",
+					fallback == null ? null : fallback.getClass(), target.type(),
+					target.name()));
+		}
+	}
 }
