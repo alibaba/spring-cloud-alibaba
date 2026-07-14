@@ -26,6 +26,7 @@ import com.alibaba.cloud.stream.binder.rocketmq.convert.RocketMQMessageConverter
 import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQBeanContainerCache;
 import org.apache.rocketmq.common.message.MessageConst;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -203,7 +204,8 @@ public final class RocketMQMessageConverterSupport {
 	 * @param rawValue the raw header value, may be {@code null}
 	 * @return the parsed value, or {@code 0} when absent or non-numeric
 	 */
-	private static int parseHeaderAsIntOrDefault(String headerName, Object rawValue) {
+	private static int parseHeaderAsIntOrDefault(String headerName,
+			@Nullable Object rawValue) {
 		if (rawValue == null) {
 			return 0;
 		}
