@@ -26,6 +26,9 @@ import com.alibaba.cloud.stream.binder.rocketmq.convert.RocketMQMessageConverter
 import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQBeanContainerCache;
 import org.apache.rocketmq.common.message.MessageConst;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
@@ -39,6 +42,9 @@ import org.springframework.util.ObjectUtils;
  * @author zkzlx
  */
 public final class RocketMQMessageConverterSupport {
+
+	private static final Logger log = LoggerFactory
+			.getLogger(RocketMQMessageConverterSupport.class);
 
 	private RocketMQMessageConverterSupport() {
 	}
@@ -153,20 +159,15 @@ public final class RocketMQMessageConverterSupport {
 			}
 			Object flagObj = headers.getOrDefault(Headers.FLAG,
 					headers.get(toRocketHeaderKey(Headers.FLAG)));
-			int flag = 0;
-			int delayLevel = 0;
-			try {
-				flagObj = flagObj == null ? 0 : flagObj;
-				Object delayLevelObj = headers.getOrDefault(
-						RocketMQConst.PROPERTY_DELAY_TIME_LEVEL,
-						headers.get(toRocketHeaderKey(
-								RocketMQConst.PROPERTY_DELAY_TIME_LEVEL)));
-				delayLevelObj = delayLevelObj == null ? 0 : delayLevelObj;
-				delayLevel = Integer.parseInt(String.valueOf(delayLevelObj));
-				flag = Integer.parseInt(String.valueOf(flagObj));
-			}
-			catch (Exception ignored) {
-			}
+			Object delayLevelObj = headers.getOrDefault(
+					RocketMQConst.PROPERTY_DELAY_TIME_LEVEL,
+					headers.get(toRocketHeaderKey(
+							RocketMQConst.PROPERTY_DELAY_TIME_LEVEL)));
+			// Parse each header independently so a malformed value in one never
+			// forces the other, well-formed header to fall back to 0.
+			int flag = parseHeaderAsIntOrDefault(Headers.FLAG, flagObj);
+			int delayLevel = parseHeaderAsIntOrDefault(
+					RocketMQConst.PROPERTY_DELAY_TIME_LEVEL, delayLevelObj);
 			if (delayLevel > 0) {
 				rocketMsg.setDelayTimeLevel(delayLevel);
 			}
@@ -189,6 +190,33 @@ public final class RocketMQMessageConverterSupport {
 
 		}
 		return rocketMsg;
+	}
+
+	/**
+	 * Parses a message header value as an {@code int}, falling back to {@code 0}
+	 * when the header is absent or not a valid integer. Each header is parsed on
+	 * its own so a malformed value in one header never drags a well-formed value
+	 * in another header down to the fallback, and the warning names only the
+	 * header that actually failed. Only the exception message is logged (no stack
+	 * trace) to avoid flooding the logs when many messages carry the same bad
+	 * header.
+	 * @param headerName the header name, used only for the warning message
+	 * @param rawValue the raw header value, may be {@code null}
+	 * @return the parsed value, or {@code 0} when absent or non-numeric
+	 */
+	private static int parseHeaderAsIntOrDefault(String headerName,
+			@Nullable Object rawValue) {
+		if (rawValue == null) {
+			return 0;
+		}
+		try {
+			return Integer.parseInt(String.valueOf(rawValue));
+		}
+		catch (NumberFormatException e) {
+			log.warn("Non-numeric '{}' header value [{}]; falling back to 0: {}",
+					headerName, rawValue, e.getMessage());
+			return 0;
+		}
 	}
 
 }
