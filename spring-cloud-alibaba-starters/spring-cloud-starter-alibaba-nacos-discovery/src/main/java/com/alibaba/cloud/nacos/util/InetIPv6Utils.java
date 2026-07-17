@@ -56,7 +56,7 @@ public class InetIPv6Utils {
 			for (Enumeration<NetworkInterface> nics = NetworkInterface
 					.getNetworkInterfaces(); nics.hasMoreElements(); ) {
 				NetworkInterface ifc = nics.nextElement();
-				if (ifc.isUp() || !ifc.isVirtual() || !ifc.isLoopback()) {
+				if (ifc.isUp() && !ifc.isVirtual() && !ifc.isLoopback()) {
 					if (address != null) {
 						break;
 					}
