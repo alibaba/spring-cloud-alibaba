@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-present the original author or authors.
+ * Copyright 2026-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,63 +37,61 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 /**
- * Tests for {@link InetIPv6Utils}.
- *
+ * Tests for InetIPv6Utils.
  * @author EmaniPreethika
  */
 class InetIPv6UtilsTests {
 
-    private static final String EXPECTED_IPV6_ADDRESS = "[2001:db8:0:0:0:0:0:1]";
+	private static final String EXPECTED_IPV6_ADDRESS = "[2001:db8:0:0:0:0:0:1]";
 
-    private final InetIPv6Utils inetIPv6Utils = new InetIPv6Utils(new InetUtilsProperties());
+	private final InetIPv6Utils inetIPv6Utils = new InetIPv6Utils(new InetUtilsProperties());
 
-    @ParameterizedTest(name = "{0}")
-    @MethodSource("invalidNetworkInterfaceStates")
-    void shouldIgnoreInvalidNetworkInterface(String description, boolean up,
-                                             boolean virtual, boolean loopback) throws Exception {
-        NetworkInterface networkInterface = networkInterface(up, virtual, loopback);
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("invalidNetworkInterfaceStates")
+	void shouldIgnoreInvalidNetworkInterface(String description, boolean up,
+		boolean virtual, boolean loopback) throws Exception {
+		NetworkInterface networkInterface = networkInterface(up, virtual, loopback);
 
-        try (MockedStatic<NetworkInterface> networkInterfaces = mockStatic(NetworkInterface.class)) {
-            networkInterfaces.when(NetworkInterface::getNetworkInterfaces)
-                    .thenReturn(Collections.enumeration(List.of(networkInterface)));
+		try (MockedStatic<NetworkInterface> networkInterfaces = mockStatic(NetworkInterface.class)) {
+			networkInterfaces.when(NetworkInterface::getNetworkInterfaces)
+					.thenReturn(Collections.enumeration(List.of(networkInterface)));
 
-            assertThat(inetIPv6Utils.findIPv6Address()).isNull();
-        }
-    }
+			assertThat(inetIPv6Utils.findIPv6Address()).isNull();
+		}
+	}
 
-    @Test
-    void shouldSelectAddressFromValidNetworkInterface() throws Exception {
-        NetworkInterface networkInterface = networkInterface(true, false, false);
+	@Test
+	void shouldSelectAddressFromValidNetworkInterface() throws Exception {
+		NetworkInterface networkInterface = networkInterface(true, false, false);
 
-        try (MockedStatic<NetworkInterface> networkInterfaces = mockStatic(NetworkInterface.class)) {
-            networkInterfaces.when(NetworkInterface::getNetworkInterfaces)
-                    .thenReturn(Collections.enumeration(List.of(networkInterface)));
+		try (MockedStatic<NetworkInterface> networkInterfaces = mockStatic(NetworkInterface.class)) {
+			networkInterfaces.when(NetworkInterface::getNetworkInterfaces)
+					.thenReturn(Collections.enumeration(List.of(networkInterface)));
 
-            assertThat(inetIPv6Utils.findIPv6Address()).isEqualTo(EXPECTED_IPV6_ADDRESS);
-        }
-    }
+			assertThat(inetIPv6Utils.findIPv6Address()).isEqualTo(EXPECTED_IPV6_ADDRESS);
+		}
+	}
 
-    private static Stream<Arguments> invalidNetworkInterfaceStates() {
-        return Stream.of(arguments("down interface", false, false, false),
-                arguments("virtual interface", true, true, false),
-                arguments("loopback interface", true, false, true));
-    }
+	private static Stream<Arguments> invalidNetworkInterfaceStates() {
+		return Stream.of(arguments("down interface", false, false, false),
+				arguments("virtual interface", true, true, false),
+				arguments("loopback interface", true, false, true));
+	}
 
-    private static NetworkInterface networkInterface(boolean up, boolean virtual,
-                                                     boolean loopback) throws Exception {
-        NetworkInterface networkInterface = mock(NetworkInterface.class);
-        when(networkInterface.isUp()).thenReturn(up);
-        when(networkInterface.isVirtual()).thenReturn(virtual);
-        when(networkInterface.isLoopback()).thenReturn(loopback);
-        when(networkInterface.getDisplayName()).thenReturn("test0");
-        when(networkInterface.getInetAddresses())
-                .thenReturn(Collections.enumeration(List.of(globalIPv6Address())));
-        return networkInterface;
-    }
+	private static NetworkInterface networkInterface(boolean up, boolean virtual,
+		boolean loopback) throws Exception {
+		NetworkInterface networkInterface = mock(NetworkInterface.class);
+		when(networkInterface.isUp()).thenReturn(up);
+		when(networkInterface.isVirtual()).thenReturn(virtual);
+		when(networkInterface.isLoopback()).thenReturn(loopback);
+		when(networkInterface.getDisplayName()).thenReturn("test0");
+		when(networkInterface.getInetAddresses())
+				.thenReturn(Collections.enumeration(List.of(globalIPv6Address())));
+		return networkInterface;
+	}
 
-    private static InetAddress globalIPv6Address() throws Exception {
-        return InetAddress.getByAddress("test-host",
-                new byte[]{0x20, 0x01, 0x0d, (byte) 0xb8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1});
-    }
-
+	private static InetAddress globalIPv6Address() throws Exception {
+		return InetAddress.getByAddress("test-host",
+				new byte[]{0x20, 0x01, 0x0d, (byte) 0xb8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1});
+	}
 }
