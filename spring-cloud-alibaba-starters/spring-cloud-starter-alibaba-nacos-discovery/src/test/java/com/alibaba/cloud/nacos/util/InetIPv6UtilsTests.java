@@ -93,7 +93,7 @@ class InetIPv6UtilsTests {
 
     private static InetAddress globalIPv6Address() throws Exception {
         return InetAddress.getByAddress("test-host",
-                new byte[] { 0x20, 0x01, 0x0d, (byte) 0xb8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 });
+                new byte[]{0x20, 0x01, 0x0d, (byte) 0xb8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1});
     }
 
 }
