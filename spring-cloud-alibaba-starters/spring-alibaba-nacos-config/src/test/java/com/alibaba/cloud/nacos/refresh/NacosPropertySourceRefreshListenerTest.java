@@ -22,11 +22,9 @@ import java.util.Date;
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.client.NacosPropertySource;
-import com.alibaba.cloud.nacos.client.NacosPropertySourceBuilder;
 import com.alibaba.nacos.api.config.ConfigService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -35,10 +33,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -50,7 +44,7 @@ class NacosPropertySourceRefreshListenerTest {
 
 	private NacosConfigManager nacosConfigManager;
 
-	private NacosPropertySourceBuilder builder;
+	private ConfigService configService;
 
 	private NacosPropertySourceRefreshListener listener;
 
@@ -59,11 +53,12 @@ class NacosPropertySourceRefreshListenerTest {
 	@BeforeEach
 	void setup() {
 		nacosConfigManager = Mockito.mock(NacosConfigManager.class);
-		builder = Mockito.mock(NacosPropertySourceBuilder.class);
+		configService = Mockito.mock(ConfigService.class);
 		ConfigurableApplicationContext applicationContext = Mockito.mock(ConfigurableApplicationContext.class);
 		ConfigurableEnvironment environment = Mockito.mock(ConfigurableEnvironment.class);
 		propertySources = new MutablePropertySources();
 		NacosConfigProperties props = new NacosConfigProperties();
+		when(nacosConfigManager.getConfigService()).thenReturn(configService);
 		when(nacosConfigManager.getNacosConfigProperties()).thenReturn(props);
 		when(applicationContext.getEnvironment()).thenReturn(environment);
 		when(environment.getPropertySources()).thenReturn(propertySources);
@@ -74,47 +69,43 @@ class NacosPropertySourceRefreshListenerTest {
 	}
 
 	@Test
-	void refreshUsesYmlSuffix() {
+	void refreshUsesYmlSuffix() throws Exception {
 		addSource("app.yml", "DEFAULT_GROUP", "yml");
-		stubBuild("app.yml", "DEFAULT_GROUP");
-		injectBuilder();
-		NacosConfigRefreshEvent e1 = new NacosConfigRefreshEvent(this, null, "app.yml,DEFAULT_GROUP");
-		e1.setDataId("app.yml");
-		e1.setGroup("DEFAULT_GROUP");
-		listener.handle(e1);
-		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-		verify(builder).build(eq("app.yml"), eq("DEFAULT_GROUP"), captor.capture(), anyBoolean());
-		assertThat(captor.getValue()).isEqualTo("yml");
+		when(configService.getConfig("app.yml", "DEFAULT_GROUP", 3000L))
+			.thenReturn("key: value");
+
+		refresh("app.yml", "DEFAULT_GROUP");
+
+		NacosPropertySource refreshed = getSource("app.yml", "DEFAULT_GROUP");
+		assertThat(refreshed.getSuffix()).isEqualTo("yml");
+		assertThat(refreshed.getProperty("key")).isEqualTo("value");
 	}
 
 	@Test
-	void refreshUsesJsonSuffix() {
+	void refreshUsesJsonSuffix() throws Exception {
 		addSource("app.json", "DEFAULT_GROUP", "json");
-		stubBuild("app.json", "DEFAULT_GROUP");
-		injectBuilder();
-		NacosConfigRefreshEvent e2 = new NacosConfigRefreshEvent(this, null, "app.json,DEFAULT_GROUP");
-		e2.setDataId("app.json");
-		e2.setGroup("DEFAULT_GROUP");
-		listener.handle(e2);
-		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-		verify(builder).build(eq("app.json"), eq("DEFAULT_GROUP"), captor.capture(), anyBoolean());
-		assertThat(captor.getValue()).isEqualTo("json");
+		when(configService.getConfig("app.json", "DEFAULT_GROUP", 3000L))
+			.thenReturn(null);
+
+		refresh("app.json", "DEFAULT_GROUP");
+
+		NacosPropertySource refreshed = getSource("app.json", "DEFAULT_GROUP");
+		assertThat(refreshed.getSuffix()).isEqualTo("json");
 	}
 
 	@Test
-	void refreshFallsBackToPropertiesWhenSuffixIsNull() {
+	void refreshFallsBackToPropertiesWhenSuffixIsNull() throws Exception {
 		NacosPropertySource ps = new NacosPropertySource(
 				Collections.emptyList(), "DEFAULT_GROUP", "app", new Date(), true);
 		propertySources.addFirst(ps);
-		stubBuild("app", "DEFAULT_GROUP");
-		injectBuilder();
-		NacosConfigRefreshEvent e3 = new NacosConfigRefreshEvent(this, null, "app,DEFAULT_GROUP");
-		e3.setDataId("app");
-		e3.setGroup("DEFAULT_GROUP");
-		listener.handle(e3);
-		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-		verify(builder).build(eq("app"), eq("DEFAULT_GROUP"), captor.capture(), anyBoolean());
-		assertThat(captor.getValue()).isEqualTo("properties");
+		when(configService.getConfig("app", "DEFAULT_GROUP", 3000L))
+			.thenReturn("key=value");
+
+		refresh("app", "DEFAULT_GROUP");
+
+		NacosPropertySource refreshed = getSource("app", "DEFAULT_GROUP");
+		assertThat(refreshed.getSuffix()).isEqualTo("properties");
+		assertThat(refreshed.getProperty("key")).isEqualTo("value");
 	}
 
 	@Test
@@ -123,26 +114,16 @@ class NacosPropertySourceRefreshListenerTest {
 		String group = "DEFAULT_GROUP";
 		addSource(dataId, group, "yml");
 
-		ConfigService configService = Mockito.mock(ConfigService.class);
 		when(configService.getConfig(dataId, group, 3000L))
 			.thenReturn("key: first", "key: second");
-		listener.nacosPropertySourceBuilder = new NacosPropertySourceBuilder(
-				configService, 3000L);
 
-		NacosConfigRefreshEvent event = new NacosConfigRefreshEvent(this, null,
-				String.join(NacosConfigProperties.COMMAS, dataId, group));
-		event.setDataId(dataId);
-		event.setGroup(group);
-
-		listener.handle(event);
-		NacosPropertySource firstReplacement = (NacosPropertySource) propertySources
-			.get(String.join(NacosConfigProperties.COMMAS, dataId, group));
+		refresh(dataId, group);
+		NacosPropertySource firstReplacement = getSource(dataId, group);
 		assertThat(firstReplacement.getSuffix()).isEqualTo("yml");
 		assertThat(firstReplacement.getProperty("key")).isEqualTo("first");
 
-		listener.handle(event);
-		NacosPropertySource secondReplacement = (NacosPropertySource) propertySources
-			.get(String.join(NacosConfigProperties.COMMAS, dataId, group));
+		refresh(dataId, group);
+		NacosPropertySource secondReplacement = getSource(dataId, group);
 		assertThat(secondReplacement.getSuffix()).isEqualTo("yml");
 		assertThat(secondReplacement.getProperty("key")).isEqualTo("second");
 	}
@@ -154,22 +135,17 @@ class NacosPropertySourceRefreshListenerTest {
 		propertySources.addFirst(ps);
 	}
 
-	private void stubBuild(String dataId, String group) {
-		NacosPropertySource result = new NacosPropertySource(
-				Collections.emptyList(), group, dataId, new Date(), true);
-		when(builder.build(eq(dataId), eq(group), anyString(), anyBoolean())).thenReturn(result);
+	private void refresh(String dataId, String group) {
+		NacosConfigRefreshEvent event = new NacosConfigRefreshEvent(this, null,
+				String.join(NacosConfigProperties.COMMAS, dataId, group));
+		event.setDataId(dataId);
+		event.setGroup(group);
+		listener.handle(event);
 	}
 
-	private void injectBuilder() {
-		try {
-			var field = NacosPropertySourceRefreshListener.class
-					.getDeclaredField("nacosPropertySourceBuilder");
-			field.setAccessible(true);
-			field.set(listener, builder);
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+	private NacosPropertySource getSource(String dataId, String group) {
+		return (NacosPropertySource) propertySources
+			.get(String.join(NacosConfigProperties.COMMAS, dataId, group));
 	}
 
 }

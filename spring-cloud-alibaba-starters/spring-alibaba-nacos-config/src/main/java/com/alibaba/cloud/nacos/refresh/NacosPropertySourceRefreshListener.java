@@ -54,9 +54,6 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 
 	NacosConfigManager nacosConfigManager;
 
-	@Nullable
-	NacosPropertySourceBuilder nacosPropertySourceBuilder;
-
 	public NacosPropertySourceRefreshListener(NacosConfigManager nacosConfigManager) {
 		this.nacosConfigManager = nacosConfigManager;
 	}
@@ -104,7 +101,10 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 			if (!applicationContext.containsBean("nacosConfigSpringCloudRefreshEventListener")) {
 				log.info("Event received " + event.getEventDesc());
 
-				NacosPropertySourceBuilder builder = getNacosPropertySourceBuilder();
+				NacosPropertySourceBuilder builder = new NacosPropertySourceBuilder(
+						nacosConfigManager.getConfigService(),
+						nacosConfigManager.getNacosConfigProperties().getTimeout(),
+						nacosConfigManager.getNacosConfigProperties().getNamespace());
 				String sourceName = String.join(NacosConfigProperties.COMMAS, event.dataId, event.group);
 				ConfigurableEnvironment environment = ((ConfigurableApplicationContext) applicationContext).getEnvironment();
 				MutablePropertySources target = environment.getPropertySources();
@@ -127,18 +127,5 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 			}
 
 		}
-	}
-
-	private synchronized NacosPropertySourceBuilder getNacosPropertySourceBuilder() {
-		@Nullable
-		NacosPropertySourceBuilder builder = this.nacosPropertySourceBuilder;
-		if (builder == null) {
-			builder = new NacosPropertySourceBuilder(
-					nacosConfigManager.getConfigService(),
-					nacosConfigManager.getNacosConfigProperties().getTimeout(),
-					nacosConfigManager.getNacosConfigProperties().getNamespace());
-			this.nacosPropertySourceBuilder = builder;
-		}
-		return builder;
 	}
 }
