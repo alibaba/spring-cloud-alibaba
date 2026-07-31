@@ -101,7 +101,7 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 			if (!applicationContext.containsBean("nacosConfigSpringCloudRefreshEventListener")) {
 				log.info("Event received " + event.getEventDesc());
 
-				NacosPropertySourceBuilder nacosPropertySourceBuilder = new NacosPropertySourceBuilder(
+				NacosPropertySourceBuilder builder = new NacosPropertySourceBuilder(
 						nacosConfigManager.getConfigService(),
 						nacosConfigManager.getNacosConfigProperties().getTimeout(),
 						nacosConfigManager.getNacosConfigProperties().getNamespace());
@@ -116,7 +116,10 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 						log.warn("Event dataId or group is null, skipping refresh");
 						return;
 					}
-					NacosPropertySource newProperSource = nacosPropertySourceBuilder.build(dataId, group, "properties", ((NacosPropertySource) prevpropertySource).isRefreshable());
+					NacosPropertySource prev = (NacosPropertySource) prevpropertySource;
+					String fileExtension = prev.getSuffix() != null ? prev.getSuffix() : "properties";
+					NacosPropertySource newProperSource = builder.build(dataId, group,
+							fileExtension, prev.isRefreshable());
 					target.replace(sourceName, newProperSource);
 					log.info("Replace Nacos Property Source : " + sourceName);
 				}
