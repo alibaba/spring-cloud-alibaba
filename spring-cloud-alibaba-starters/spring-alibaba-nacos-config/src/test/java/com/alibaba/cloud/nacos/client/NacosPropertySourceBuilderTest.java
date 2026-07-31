@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos.client;
 
+import com.alibaba.cloud.nacos.refresh.NacosSnapshotConfigManager;
 import com.alibaba.nacos.api.config.ConfigService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -28,6 +29,30 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @see <a href="https://github.com/alibaba/spring-cloud-alibaba/issues/4337">#4337</a>
  */
 class NacosPropertySourceBuilderTest {
+
+	@Test
+	void buildWhenSnapshotIsEmptyThenDoesNotUseRemoteConfig() throws Exception {
+		ConfigService configService = Mockito.mock(ConfigService.class);
+		Mockito.when(configService.getConfig("builder-test.properties",
+				"DEFAULT_GROUP", 3000L)).thenReturn("name=remote");
+
+		NacosSnapshotConfigManager.putConfigSnapshot("builder-test.properties",
+				"DEFAULT_GROUP", "");
+		try {
+			NacosPropertySource propertySource = new NacosPropertySourceBuilder(
+					configService, 3000L)
+				.build("builder-test.properties", "DEFAULT_GROUP", "properties",
+						true);
+
+			assertThat(propertySource.getSource()).isEmpty();
+			Mockito.verify(configService, Mockito.never())
+				.getConfig("builder-test.properties", "DEFAULT_GROUP", 3000L);
+		}
+		finally {
+			NacosSnapshotConfigManager.removeConfigSnapshot(
+					"builder-test.properties", "DEFAULT_GROUP");
+		}
+	}
 
 	@Test
 	void buildPreservesSuffixOnResult() throws Exception {

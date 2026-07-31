@@ -57,7 +57,10 @@ public class NacosPropertySource extends MapPropertySource {
 	private final boolean isRefreshable;
 
 	/**
-	 * File extension used to parse this property source (e.g. "yml", "yaml", "json", "xml", "properties").
+	 * File extension used to parse this property source, such as {@code yml},
+	 * {@code yaml}, {@code json}, {@code xml}, or {@code properties}. A
+	 * {@code null} value indicates that no format metadata is available; refresh
+	 * processing then uses {@code properties} for backward compatibility.
 	 */
 	private @Nullable String suffix;
 

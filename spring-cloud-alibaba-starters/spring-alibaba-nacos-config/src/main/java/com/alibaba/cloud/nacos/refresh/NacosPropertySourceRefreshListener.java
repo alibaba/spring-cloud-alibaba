@@ -104,12 +104,7 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 			if (!applicationContext.containsBean("nacosConfigSpringCloudRefreshEventListener")) {
 				log.info("Event received " + event.getEventDesc());
 
-				if (nacosPropertySourceBuilder == null) {
-					nacosPropertySourceBuilder = new NacosPropertySourceBuilder(
-							nacosConfigManager.getConfigService(),
-							nacosConfigManager.getNacosConfigProperties().getTimeout(),
-							nacosConfigManager.getNacosConfigProperties().getNamespace());
-				}
+				NacosPropertySourceBuilder builder = getNacosPropertySourceBuilder();
 				String sourceName = String.join(NacosConfigProperties.COMMAS, event.dataId, event.group);
 				ConfigurableEnvironment environment = ((ConfigurableApplicationContext) applicationContext).getEnvironment();
 				MutablePropertySources target = environment.getPropertySources();
@@ -123,7 +118,8 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 					}
 					NacosPropertySource prev = (NacosPropertySource) prevpropertySource;
 					String fileExtension = prev.getSuffix() != null ? prev.getSuffix() : "properties";
-					NacosPropertySource newProperSource = nacosPropertySourceBuilder.build(dataId, group, fileExtension, prev.isRefreshable());
+					NacosPropertySource newProperSource = builder.build(dataId, group,
+							fileExtension, prev.isRefreshable());
 					target.replace(sourceName, newProperSource);
 					log.info("Replace Nacos Property Source : " + sourceName);
 				}
@@ -131,5 +127,18 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 			}
 
 		}
+	}
+
+	private synchronized NacosPropertySourceBuilder getNacosPropertySourceBuilder() {
+		@Nullable
+		NacosPropertySourceBuilder builder = this.nacosPropertySourceBuilder;
+		if (builder == null) {
+			builder = new NacosPropertySourceBuilder(
+					nacosConfigManager.getConfigService(),
+					nacosConfigManager.getNacosConfigProperties().getTimeout(),
+					nacosConfigManager.getNacosConfigProperties().getNamespace());
+			this.nacosPropertySourceBuilder = builder;
+		}
+		return builder;
 	}
 }

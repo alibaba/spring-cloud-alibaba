@@ -23,6 +23,7 @@ import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.client.NacosPropertySource;
 import com.alibaba.cloud.nacos.client.NacosPropertySourceBuilder;
+import com.alibaba.nacos.api.config.ConfigService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -114,6 +115,36 @@ class NacosPropertySourceRefreshListenerTest {
 		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
 		verify(builder).build(eq("app"), eq("DEFAULT_GROUP"), captor.capture(), anyBoolean());
 		assertThat(captor.getValue()).isEqualTo("properties");
+	}
+
+	@Test
+	void consecutiveRefreshesPreserveYmlSuffix() throws Exception {
+		String dataId = "app.yml";
+		String group = "DEFAULT_GROUP";
+		addSource(dataId, group, "yml");
+
+		ConfigService configService = Mockito.mock(ConfigService.class);
+		when(configService.getConfig(dataId, group, 3000L))
+			.thenReturn("key: first", "key: second");
+		listener.nacosPropertySourceBuilder = new NacosPropertySourceBuilder(
+				configService, 3000L);
+
+		NacosConfigRefreshEvent event = new NacosConfigRefreshEvent(this, null,
+				String.join(NacosConfigProperties.COMMAS, dataId, group));
+		event.setDataId(dataId);
+		event.setGroup(group);
+
+		listener.handle(event);
+		NacosPropertySource firstReplacement = (NacosPropertySource) propertySources
+			.get(String.join(NacosConfigProperties.COMMAS, dataId, group));
+		assertThat(firstReplacement.getSuffix()).isEqualTo("yml");
+		assertThat(firstReplacement.getProperty("key")).isEqualTo("first");
+
+		listener.handle(event);
+		NacosPropertySource secondReplacement = (NacosPropertySource) propertySources
+			.get(String.join(NacosConfigProperties.COMMAS, dataId, group));
+		assertThat(secondReplacement.getSuffix()).isEqualTo("yml");
+		assertThat(secondReplacement.getProperty("key")).isEqualTo("second");
 	}
 
 	private void addSource(String dataId, String group, String suffix) {
