@@ -109,6 +109,7 @@ public class GatewayConfig {
 		config.addAllowedHeader("*");
 		config.addAllowedMethod("*");
 		config.addAllowedOriginPattern("*");
+		config.setMaxAge(3600L);
 		source.registerCorsConfiguration("/**", config);
 
 		return new CorsWebFilter(source);
