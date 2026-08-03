@@ -265,6 +265,11 @@
                 <artifactId>spring-cloud-starter-bus-rocketmq</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-sentinel-rocketmq</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
