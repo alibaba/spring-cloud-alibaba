@@ -48,7 +48,7 @@ public abstract class NacosPropertiesKeyListener extends AbstractConfigChangeLis
 		if (CollectionUtils.isNotEmpty(interestedKeys) || CollectionUtils.isNotEmpty(interestedKeyPrefixes)) {
 			boolean foundInterested = false;
 			for (ConfigChangeItem changeItem : event.getChangeItems()) {
-				if (interestedKeys != null && interestedKeys.contains(changeItem.getKey())) {
+				if (interestedKeys != null && matchesInterestedKey(changeItem.getKey(), interestedKeys)) {
 					foundInterested = true;
 					break;
 				}
@@ -66,6 +66,32 @@ public abstract class NacosPropertiesKeyListener extends AbstractConfigChangeLis
 			}
 		}
 		configChanged(event);
+	}
+
+	/**
+	 * Check whether the changed key matches any of the interested keys.
+	 *
+	 * For YAML array/list configurations, the config change parser flattens keys
+	 * with array indices (e.g. {@code myList[0]}, {@code myList[1]}), but users
+	 * typically register interest in the base key ({@code myList}). This method
+	 * handles both exact matches and array-indexed key matches by stripping the
+	 * first {@code [index]} suffix and checking against the interested keys.
+	 *
+	 * @param changedKey the key from the {@link ConfigChangeItem}
+	 * @param interestedKeys the set of keys the listener is interested in
+	 * @return {@code true} if the changed key matches any interested key
+	 */
+	private boolean matchesInterestedKey(String changedKey, Set<String> interestedKeys) {
+		if (interestedKeys.contains(changedKey)) {
+			return true;
+		}
+		// Handle array-indexed keys: "key[0]" or "key[0].nested" should match "key"
+		int bracketIndex = changedKey.indexOf('[');
+		if (bracketIndex > 0) {
+			String baseKey = changedKey.substring(0, bracketIndex);
+			return interestedKeys.contains(baseKey);
+		}
+		return false;
 	}
 
 	@Override
