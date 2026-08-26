@@ -24,7 +24,6 @@ import com.alibaba.schedulerx.worker.SchedulerxWorker;
 import com.alibaba.schedulerx.worker.domain.WorkerConstants;
 import com.alibaba.schedulerx.worker.log.LogFactory;
 import com.alibaba.schedulerx.worker.log.Logger;
-import com.alibaba.schedulerx.worker.processor.springscheduling.NoOpScheduler;
 import com.alibaba.schedulerx.worker.processor.springscheduling.SchedulerxAnnotationBeanPostProcessor;
 import com.alibaba.schedulerx.worker.processor.springscheduling.SchedulerxSchedulingConfigurer;
 import jakarta.annotation.PostConstruct;
@@ -37,6 +36,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor;
+import org.springframework.scheduling.support.NoOpTaskScheduler;
 
 /**
  * @author yaohui
@@ -154,8 +154,8 @@ public class SchedulerxConfigurations {
 	static class SpringScheduleAdaptConfiguration {
 
 		@Bean(ScheduledAnnotationBeanPostProcessor.DEFAULT_TASK_SCHEDULER_BEAN_NAME)
-		public NoOpScheduler noOpScheduler() {
-			return new NoOpScheduler();
+		public NoOpTaskScheduler noOpScheduler() {
+			return new NoOpTaskScheduler();
 		}
 
 		@Bean
