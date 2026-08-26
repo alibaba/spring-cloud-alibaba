@@ -29,6 +29,7 @@ import com.alibaba.schedulerx.worker.processor.springscheduling.SchedulerxSchedu
 import jakarta.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -159,8 +160,9 @@ public class SchedulerxConfigurations {
 		}
 
 		@Bean
-		public SchedulerxSchedulingConfigurer schedulerxSchedulingConfigurer() {
-			return new SchedulerxSchedulingConfigurer(noOpScheduler(), true);
+		public SchedulerxSchedulingConfigurer schedulerxSchedulingConfigurer(
+				@Qualifier(ScheduledAnnotationBeanPostProcessor.DEFAULT_TASK_SCHEDULER_BEAN_NAME) NoOpTaskScheduler taskScheduler) {
+			return new SchedulerxSchedulingConfigurer(taskScheduler, true);
 		}
 
 		@Bean
