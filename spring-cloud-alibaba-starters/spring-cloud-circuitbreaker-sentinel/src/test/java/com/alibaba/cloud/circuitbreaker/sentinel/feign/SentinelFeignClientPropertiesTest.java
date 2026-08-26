@@ -71,17 +71,53 @@ public class SentinelFeignClientPropertiesTest {
 
 	@Test
 	public void copyFailsFastWhenJacksonCannotSerialize() {
-		SentinelFeignClientProperties brokenProps = new SentinelFeignClientProperties() {
-			@Override
-			public Map<String, List<DegradeRule>> getRules() {
-				throw new RuntimeException("simulated serialization failure");
-			}
-		};
+		RuleAccessFailureProperties brokenProps = new RuleAccessFailureProperties();
+		brokenProps.failOnRuleAccess = true;
 
 		assertThatThrownBy(brokenProps::copy)
 				.isInstanceOf(IllegalStateException.class)
 				.hasMessageContaining("SentinelFeignClientProperties")
-				.hasCauseInstanceOf(RuntimeException.class);
+				.hasRootCauseInstanceOf(IllegalArgumentException.class)
+				.rootCause()
+				.hasMessage("simulated serialization failure");
+	}
+
+	// Control for copyFailsFastWhenJacksonCannotSerialize: the same carrier
+	// round-trips cleanly once the getter stops throwing, so the failure asserted
+	// there can only come from the getter and not from the carrier type itself.
+	@Test
+	public void copySucceedsForTheSameSubclassWhenTheGetterDoesNotThrow() {
+		RuleAccessFailureProperties props = new RuleAccessFailureProperties();
+		props.setDefaultRule("custom-default");
+		Map<String, List<DegradeRule>> rules = new HashMap<>();
+		rules.put("resource-a",
+				new ArrayList<>(List.of(new DegradeRule("resource-a"))));
+		props.setRules(rules);
+
+		SentinelFeignClientProperties copied = props.copy();
+
+		assertThat(copied).isNotSameAs(props);
+		assertThat(copied).isEqualTo(props);
+	}
+
+	/**
+	 * Named subclass used as the failure carrier. {@code failOnRuleAccess} has no
+	 * accessors on purpose so that Jackson neither writes nor reads it, keeping the
+	 * serialized form identical to the base class.
+	 */
+	public static class RuleAccessFailureProperties
+			extends SentinelFeignClientProperties {
+
+		boolean failOnRuleAccess;
+
+		@Override
+		public Map<String, List<DegradeRule>> getRules() {
+			if (failOnRuleAccess) {
+				throw new IllegalArgumentException("simulated serialization failure");
+			}
+			return super.getRules();
+		}
+
 	}
 
 }
