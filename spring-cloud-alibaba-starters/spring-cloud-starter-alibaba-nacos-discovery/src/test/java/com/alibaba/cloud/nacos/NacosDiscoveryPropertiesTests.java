@@ -16,6 +16,10 @@
 
 package com.alibaba.cloud.nacos;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
@@ -23,6 +27,7 @@ import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoChangedEvent;
 import com.alibaba.cloud.nacos.registry.NacosServiceRegistryAutoConfiguration;
 import com.alibaba.cloud.nacos.util.InetIPv6Utils;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -40,6 +45,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import static com.alibaba.cloud.nacos.NacosDiscoveryPropertiesTests.TestConfig;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 /**
@@ -135,6 +141,34 @@ class NacosDiscoveryPropertiesTests {
 		properties.init();
 
 		assertThat(properties.getMetadata()).doesNotContainKey("IPv6");
+	}
+
+	@Test
+	public void initShouldSkipLoopbackAddressFromNetworkInterface() throws Exception {
+		NacosDiscoveryProperties properties = new NacosDiscoveryProperties();
+		properties.setServerAddr("127.0.0.1:8848");
+		properties.setNetworkInterface("eth-test");
+		ReflectionTestUtils.setField(properties, "environment", mock(Environment.class));
+		ReflectionTestUtils.setField(properties, "nacosServiceManager",
+				mock(NacosServiceManager.class));
+		ReflectionTestUtils.setField(properties, "applicationEventPublisher",
+				mock(ApplicationEventPublisher.class));
+
+		NetworkInterface networkInterface = mock(NetworkInterface.class);
+		when(networkInterface.getInetAddresses())
+				.thenReturn(Collections.enumeration(List.of(
+						InetAddress.getByName("127.0.0.1"),
+						InetAddress.getByName("192.168.1.10"))));
+
+		try (MockedStatic<NetworkInterface> mockedNetworkInterface = mockStatic(
+				NetworkInterface.class)) {
+			mockedNetworkInterface.when(() -> NetworkInterface.getByName("eth-test"))
+					.thenReturn(networkInterface);
+
+			properties.init();
+		}
+
+		assertThat(properties.getIp()).isEqualTo("192.168.1.10");
 	}
 
 	private static InetUtils inetUtils(String ipAddress) {

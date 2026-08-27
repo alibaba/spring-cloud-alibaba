@@ -137,7 +137,8 @@ public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 			Enumeration<InetAddress> inetAddress = netInterface.getInetAddresses();
 			while (inetAddress.hasMoreElements()) {
 				InetAddress currentAddress = inetAddress.nextElement();
-				if (currentAddress instanceof Inet4Address || currentAddress instanceof Inet6Address
+				if ((currentAddress instanceof Inet4Address
+						|| currentAddress instanceof Inet6Address)
 						&& !currentAddress.isLoopbackAddress()) {
 					return currentAddress.getHostAddress();
 				}
@@ -170,7 +171,8 @@ public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 							.getInetAddresses();
 					while (inetAddress.hasMoreElements()) {
 						InetAddress currentAddress = inetAddress.nextElement();
-						if (currentAddress instanceof Inet4Address || currentAddress instanceof Inet6Address
+						if ((currentAddress instanceof Inet4Address
+								|| currentAddress instanceof Inet6Address)
 								&& !currentAddress.isLoopbackAddress()) {
 							hasValidNetworkInterface = true;
 							netWorkInterfaceName = networkInterface.getName();
