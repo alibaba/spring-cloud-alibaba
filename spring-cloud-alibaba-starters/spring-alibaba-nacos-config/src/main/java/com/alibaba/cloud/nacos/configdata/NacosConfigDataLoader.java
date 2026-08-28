@@ -85,7 +85,7 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 
 			NacosPropertySource propertySource = new NacosPropertySource(propertySources,
 					config.getGroup(), config.getDataId(), new Date(),
-					config.isRefreshEnabled());
+					config.isRefreshEnabled(), config.getSuffix());
 
 			NacosPropertySourceRepository.collectNacosPropertySource(propertySource);
 

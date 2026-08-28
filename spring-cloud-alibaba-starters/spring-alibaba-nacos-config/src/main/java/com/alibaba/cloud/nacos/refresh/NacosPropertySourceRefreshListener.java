@@ -100,12 +100,32 @@ public class NacosPropertySourceRefreshListener implements BeanPostProcessor, Sm
 
 				NacosPropertySourceBuilder nacosPropertySourceBuilder = new NacosPropertySourceBuilder(nacosConfigManager.getConfigService(), nacosConfigManager.getNacosConfigProperties()
 						.getTimeout());
-				String sourceName = String.join(NacosConfigProperties.COMMAS, event.dataId, event.group);
+
+				// Try both naming conventions: bootstrap path (dataId,group) and ConfigData path (group@dataId)
+				String bootstrapName = String.join(NacosConfigProperties.COMMAS, event.dataId, event.group);
+				String configDataName = event.group + "@" + event.dataId;
+
 				ConfigurableEnvironment environment = ((ConfigurableApplicationContext) applicationContext).getEnvironment();
 				MutablePropertySources target = environment.getPropertySources();
-				PropertySource<?> prevpropertySource = target.get(sourceName);
+
+				PropertySource<?> prevpropertySource = target.get(bootstrapName);
+				String sourceName = bootstrapName;
+
+				// If not found with bootstrap naming, try ConfigData naming
+				if (prevpropertySource == null) {
+					prevpropertySource = target.get(configDataName);
+					sourceName = configDataName;
+				}
+
 				if (prevpropertySource instanceof NacosPropertySource) {
-					NacosPropertySource newProperSource = nacosPropertySourceBuilder.build(event.getDataId(), event.getGroup(), "properties", ((NacosPropertySource) prevpropertySource).isRefreshable());
+					NacosPropertySource prevNacosSource = (NacosPropertySource) prevpropertySource;
+					// Use the actual suffix from the previous source instead of hardcoding "properties"
+					String fileExtension = prevNacosSource.getSuffix();
+					if (fileExtension == null || fileExtension.isEmpty()) {
+						fileExtension = "properties";
+					}
+					NacosPropertySource newProperSource = nacosPropertySourceBuilder.build(
+							event.getDataId(), event.getGroup(), fileExtension, prevNacosSource.isRefreshable());
 					target.replace(sourceName, newProperSource);
 					log.info("Replace Nacos Property Source : " + sourceName);
 
