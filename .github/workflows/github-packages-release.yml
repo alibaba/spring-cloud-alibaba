@@ -5,6 +5,12 @@ on:
       - 2023.x
       - 2025.0.x
       - 2025.1.x
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   release:
     name: Release
