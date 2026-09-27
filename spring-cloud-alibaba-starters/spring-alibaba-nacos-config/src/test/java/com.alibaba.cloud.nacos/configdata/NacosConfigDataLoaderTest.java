@@ -27,13 +27,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.bootstrap.BootstrapRegistry;
 import org.springframework.boot.bootstrap.DefaultBootstrapContext;
 import org.springframework.boot.context.config.ConfigData;
+import org.springframework.boot.context.config.ConfigDataException;
 import org.springframework.boot.context.config.ConfigDataLoaderContext;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.boot.context.config.Profiles;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.logging.DeferredLogs;
 import org.springframework.mock.env.MockEnvironment;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -95,7 +98,33 @@ class NacosConfigDataLoaderTest {
 		}
 	}
 
+	@Test
+	void loadWhenContentUnparseableThenThrowsParseExceptionInsteadOfNotFound() throws Exception {
+		ConfigService configService = mock(ConfigService.class);
+		// duplicate YAML key: the content is fetched fine, but SnakeYAML rejects it
+		// while parsing, which must not be reported as "config resource does not exist".
+		when(configService.getConfig("test.yaml", "DEFAULT_GROUP", 3000L)).thenReturn(
+				"single:\n  oss:\n    path-style-access: true\n"
+						+ "single:\n  oss:\n    path-style-access: true\n");
+
+		NacosConfigDataLoader loader = new NacosConfigDataLoader(new DeferredLogs());
+
+		assertThatThrownBy(
+				() -> loader.load(context(configService), resource("test.yaml", "yaml", false)))
+			.isInstanceOf(NacosConfigParseException.class)
+			.isInstanceOf(ConfigDataException.class)
+			.isNotInstanceOf(ConfigDataResourceNotFoundException.class)
+			.hasMessageContaining("Failed to parse")
+			.hasMessageContaining("test.yaml")
+			.hasCauseInstanceOf(Exception.class);
+	}
+
 	private ConfigData load(ConfigService configService) {
+		return new NacosConfigDataLoader(new DeferredLogs()).load(context(configService),
+				resource("test.properties", "properties", false));
+	}
+
+	private ConfigDataLoaderContext context(ConfigService configService) {
 		NacosConfigManager configManager = mock(NacosConfigManager.class);
 		when(configManager.getConfigService()).thenReturn(configService);
 
@@ -110,12 +139,15 @@ class NacosConfigDataLoaderTest {
 		bootstrapContext.register(NacosConfigProperties.class,
 				BootstrapRegistry.InstanceSupplier.of(properties));
 
-		ConfigDataLoaderContext context = () -> bootstrapContext;
-		NacosConfigDataResource resource = new NacosConfigDataResource(properties, false,
-				mock(Profiles.class), new DeferredLogs().getLog(getClass()),
-				new NacosItemConfig("DEFAULT_GROUP", "test.properties", "properties", true, ""));
+		return () -> bootstrapContext;
+	}
 
-		return new NacosConfigDataLoader(new DeferredLogs()).load(context, resource);
+	private NacosConfigDataResource resource(String dataId, String suffix,
+			boolean optional) {
+		NacosConfigProperties properties = new NacosConfigProperties();
+		return new NacosConfigDataResource(properties, optional, mock(Profiles.class),
+				new DeferredLogs().getLog(getClass()),
+				new NacosItemConfig("DEFAULT_GROUP", dataId, suffix, true, ""));
 	}
 
 }
