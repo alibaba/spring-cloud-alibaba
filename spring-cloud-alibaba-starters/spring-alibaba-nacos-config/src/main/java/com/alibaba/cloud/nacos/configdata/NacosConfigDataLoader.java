@@ -31,6 +31,7 @@ import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
 import com.alibaba.cloud.nacos.client.NacosPropertySource;
 import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
 import com.alibaba.cloud.nacos.refresh.NacosSnapshotConfigManager;
+import com.alibaba.cloud.nacos.utils.StringUtils;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
 import org.apache.commons.logging.Log;
@@ -138,7 +139,7 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 				.bind(prefix + ".config.preference", ConfigPreference.class)
 				.orElse(LOCAL);
 		String specificPreference = resource.getConfig().getPreference();
-		if (specificPreference != null) {
+		if (StringUtils.isNotEmpty(specificPreference)) {
 			try {
 				preference = ConfigPreference.valueOf(specificPreference.toUpperCase(Locale.ROOT));
 			}
