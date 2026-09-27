@@ -36,6 +36,7 @@ import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
 import org.apache.commons.logging.Log;
 import org.jspecify.annotations.Nullable;
+import org.yaml.snakeyaml.constructor.DuplicateKeyException;
 
 import org.springframework.boot.context.config.ConfigData;
 import org.springframework.boot.context.config.ConfigDataLoader;
@@ -105,6 +106,15 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 		}
 		catch (Exception e) {
 			log.error("Error getting properties from nacos: " + resource, e);
+			// The content was fetched fine but SnakeYAML rejected it (e.g. a duplicate
+			// key). Report the real cause and the offending config instead of pretending
+			// the resource does not exist, which would nudge users toward `optional:` and
+			// silently skip a genuinely broken config.
+			if (e instanceof DuplicateKeyException) {
+				NacosItemConfig unparseable = resource.getConfig();
+				throw new NacosConfigParseException(unparseable.getDataId(),
+						unparseable.getGroup(), e);
+			}
 			if (!resource.isOptional()) {
 				throw new ConfigDataResourceNotFoundException(resource, e);
 			}
