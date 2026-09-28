@@ -55,19 +55,31 @@ public class NacosPropertySource extends MapPropertySource {
 	 */
 	private final boolean isRefreshable;
 
+	/**
+	 * File extension (suffix) of the config data (e.g., "properties", "yml", "json").
+	 */
+	private final String suffix;
+
 	NacosPropertySource(String group, String dataId, Map<String, Object> source,
-			Date timestamp, boolean isRefreshable) {
+			Date timestamp, boolean isRefreshable, String suffix) {
 		super(String.join(NacosConfigProperties.COMMAS, dataId, group), source);
 		this.group = group;
 		this.dataId = dataId;
 		this.timestamp = timestamp;
 		this.isRefreshable = isRefreshable;
+		this.suffix = suffix;
 	}
 
 	public NacosPropertySource(List<PropertySource<?>> propertySources, String group,
 			String dataId, Date timestamp, boolean isRefreshable) {
 		this(group, dataId, getSourceMap(group, dataId, propertySources), timestamp,
-				isRefreshable);
+				isRefreshable, "properties");
+	}
+
+	public NacosPropertySource(List<PropertySource<?>> propertySources, String group,
+			String dataId, Date timestamp, boolean isRefreshable, String suffix) {
+		this(group, dataId, getSourceMap(group, dataId, propertySources), timestamp,
+				isRefreshable, suffix);
 	}
 
 	private static Map<String, Object> getSourceMap(String group, String dataId,
@@ -127,6 +139,10 @@ public class NacosPropertySource extends MapPropertySource {
 
 	public boolean isRefreshable() {
 		return isRefreshable;
+	}
+
+	public String getSuffix() {
+		return suffix;
 	}
 
 }
