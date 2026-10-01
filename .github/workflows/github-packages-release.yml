@@ -37,23 +37,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: install dependencies
-        run: mvn clean -B install -U package -pl '!spring-cloud-alibaba-coverage'  -DskipTests
+        run: ./mvnw clean -B install -U package -pl '!spring-cloud-alibaba-coverage'  -DskipTests
       - name: cat ~/.m2/settings.xml
         run: |
           cat ~/.m2/settings.xml
       - name: Deploy to GitHub Package Maven
         run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "Project version: $VERSION"
           if [[ "$VERSION" != *"-SNAPSHOT" ]]; then
             echo "Not a snapshot version. Skipping deployment."
             exit 0
           fi
-          mvn clean -B deploy -pl . -DskipTests
+          ./mvnw clean -B deploy -pl . -DskipTests
           cd $GITHUB_WORKSPACE/spring-cloud-alibaba-dependencies
-          mvn clean -B deploy -DskipTests
+          ./mvnw clean -B deploy -DskipTests
           cd $GITHUB_WORKSPACE/spring-cloud-alibaba-starters
-          mvn clean -B deploy -DskipTests
+          ./mvnw clean -B deploy -DskipTests
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Delete snapshots from the Maven local repository
