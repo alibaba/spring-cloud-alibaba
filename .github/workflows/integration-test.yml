@@ -53,6 +53,6 @@ jobs:
         run: ./mvnw clean -B -T 1C install -U package -pl '!spring-cloud-alibaba-coverage'  -DskipTests
       - name: Testing
         run: ./mvnw verify -B -T 1C -Dmaven.test.skip=false
-#        run: ./mvnw clean -Dit.enabled=true test
+#        run: ./mvnw clean -B -Dit.enabled=true test
       - name: Delete snapshots from the Maven local repository
         run: find ~/.m2/repository -type d -name '*-SNAPSHOT' -print -exec rm -r {} +
