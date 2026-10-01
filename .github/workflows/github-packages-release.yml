@@ -36,6 +36,8 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - name: Print Maven version
+        run: ./mvnw -version
       - name: install dependencies
         run: ./mvnw clean -B install -U package -pl '!spring-cloud-alibaba-coverage'  -DskipTests
       - name: cat ~/.m2/settings.xml
