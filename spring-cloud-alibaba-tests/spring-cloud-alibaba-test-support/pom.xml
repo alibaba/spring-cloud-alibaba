@@ -18,7 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.2</junit.version>
         <selenium.version>3.141.59</selenium.version>
-        <assertj-core.version>3.25.3</assertj-core.version>
+        <assertj-core.version>3.27.7</assertj-core.version>
         <awaitility.version>4.2.2</awaitility.version>
         <kotlin.version>1.9.24</kotlin.version>
         <hamcrest.version>3.0</hamcrest.version>
