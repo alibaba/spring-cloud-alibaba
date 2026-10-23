@@ -19,6 +19,8 @@ package com.alibaba.cloud.circuitbreaker.sentinel;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.alibaba.cloud.circuitbreaker.sentinel.feign.CircuitBreakerRuleChangeListener;
+import com.alibaba.cloud.circuitbreaker.sentinel.feign.SentinelFeignClientProperties;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import org.junit.jupiter.api.AfterEach;
@@ -56,6 +58,25 @@ public class SentinelCircuitBreakerTest {
 		assertThat(cb2.run(() -> "Sentinel")).isEqualTo("Sentinel");
 		assertThat(DegradeRuleManager.hasConfig("testSentinelCreateDirectlyThenRunB"))
 				.isTrue();
+	}
+
+	@Test
+	public void testDefaultRulesAreIsolatedPerResource() {
+		String firstResource = "testDefaultRulesAreIsolatedPerResourceA";
+		String secondResource = "testDefaultRulesAreIsolatedPerResourceB";
+		DegradeRule defaultRule = new DegradeRule().setCount(100).setTimeWindow(10);
+		SentinelFeignClientProperties properties = new SentinelFeignClientProperties();
+		properties.setRules(Collections.singletonMap(properties.getDefaultRule(),
+				Collections.singletonList(defaultRule)));
+		SentinelCircuitBreakerFactory factory = new SentinelCircuitBreakerFactory();
+
+		CircuitBreakerRuleChangeListener.configureDefault(properties, factory);
+		factory.create(firstResource);
+		factory.create(secondResource);
+
+		assertThat(DegradeRuleManager.hasConfig(firstResource)).isTrue();
+		assertThat(DegradeRuleManager.hasConfig(secondResource)).isTrue();
+		assertThat(defaultRule.getResource()).isNull();
 	}
 
 	@Test
