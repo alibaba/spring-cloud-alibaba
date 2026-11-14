@@ -18,15 +18,15 @@ package com.alibaba.cloud.circuitbreaker.sentinel.feign;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import com.alibaba.cloud.circuitbreaker.sentinel.SentinelConfigBuilder;
+import com.alibaba.cloud.circuitbreaker.sentinel.SentinelConfigBuilder.SentinelCircuitBreakerConfiguration;
 import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
@@ -40,11 +40,11 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.cloud.client.circuitbreaker.AbstractCircuitBreakerFactory;
 import org.springframework.cloud.context.scope.refresh.RefreshScopeRefreshedEvent;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
-import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * Sentinel circuit breaker config change listener.
@@ -119,54 +119,40 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 	}
 
 	private void clearRules() {
-		clearCircuitBreakerFactory();
-		clearFeignClientRulesInDegradeManager();
+		// Snapshot actual resource IDs before clearing the factory caches. These IDs
+		// already include OpenFeign contextId and placeholder resolution.
+		Set<String> resources = new HashSet<>();
+		if (circuitBreakerFactory != null) {
+			Map configurations = getConfigurations(circuitBreakerFactory);
+			for (Object resource : configurations.keySet()) {
+				if (resource instanceof String name && StringUtils.hasText(name)
+						&& configurations.get(resource) instanceof SentinelCircuitBreakerConfiguration configuration
+						&& !CollectionUtils.isEmpty(configuration.getRules())) {
+					resources.add(name);
+				}
+			}
+			configurations.clear();
+		}
+		if (propertiesBackup != null) {
+			propertiesBackup.getRules().keySet().stream()
+					.filter(key -> !Objects.equals(key, propertiesBackup.getDefaultRule())
+							&& StringUtils.hasText(key)
+							&& !CollectionUtils.isEmpty(propertiesBackup.getRules().get(key)))
+					.forEach(resources::add);
+		}
+		resources.forEach(resource -> DegradeRuleManager.setRulesForResource(resource, null));
 	}
 
 	private void configureDefault() {
-		configureDefault(properties, circuitBreakerFactory);
+		if (properties != null && circuitBreakerFactory != null) {
+			configureDefault(properties, circuitBreakerFactory);
+		}
 	}
 
 	private void configureCustom() {
-		configureCustom(properties, circuitBreakerFactory);
-	}
-
-	private void clearCircuitBreakerFactory() {
-		Optional.ofNullable(getConfigurations(circuitBreakerFactory))
-				.ifPresent(Map::clear);
-	}
-
-	private void clearFeignClientRulesInDegradeManager() {
-		// first, clear all manually configured feign clients and methods.
-		propertiesBackup.getRules().keySet().stream()
-				.filter(key -> !Objects.equals(key, propertiesBackup.getDefaultRule()))
-				.forEach(resource -> Optional
-						.ofNullable(DegradeRuleManager.getRulesOfResource(resource))
-						.ifPresent(Set::clear));
-
-		// Find all feign clients, clear the corresponding rules
-		// NOTE: feign client name cannot be the same as the general resource name !!!
-		Arrays.stream(applicationContext.getBeanNamesForAnnotation(FeignClient.class))
-				// A little trick, FeignClient bean name is full class name.
-				// Simple exclusions, such as its subclass.
-				.filter(beanName -> beanName.contains(".")).map(beanName -> {
-					try {
-						return Class.forName(beanName);
-					}
-					catch (ClassNotFoundException ignore) {
-						// definitely not a feign client, just ignore
-						return null;
-					}
-				}).filter(Objects::nonNull).forEach(clazz -> {
-					FeignClient anno = clazz.getAnnotation(FeignClient.class);
-					if (anno == null || AnnotationUtils.getValue(anno) == null) {
-						return;
-					}
-					String feignClientName = AnnotationUtils.getValue(anno).toString();
-					Optional.ofNullable(
-							DegradeRuleManager.getRulesOfResource(feignClientName))
-							.ifPresent(Set::clear);
-				});
+		if (properties != null && circuitBreakerFactory != null) {
+			configureCustom(properties, circuitBreakerFactory);
+		}
 	}
 
 	private void updateBackup() {
