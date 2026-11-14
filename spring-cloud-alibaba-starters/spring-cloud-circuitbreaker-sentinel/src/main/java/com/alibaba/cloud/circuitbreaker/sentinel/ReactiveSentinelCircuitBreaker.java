@@ -75,8 +75,7 @@ public class ReactiveSentinelCircuitBreaker implements ReactiveCircuitBreaker {
 			if (rule == null) {
 				continue;
 			}
-			rule.setResource(resourceName);
-			ruleSet.add(rule);
+			ruleSet.add(DegradeRuleUtils.copyForResource(rule, resourceName));
 		}
 		DegradeRuleManager.loadRules(new ArrayList<>(ruleSet));
 	}
