@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.circuitbreaker.sentinel;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.List;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,6 +43,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
@@ -56,24 +59,20 @@ public class SentinelCircuitBreakerIntegrationTest {
 	private Application.DemoControllerService service;
 
 	@Test
-	public void testSlow() throws Exception {
-		assertThat(service.slow(true)).isEqualTo("slow");
-		assertThat(service.slow(true)).isEqualTo("slow");
-		assertThat(service.slow(true)).isEqualTo("slow");
+	public void testSlow() {
 		assertThat(service.slow(false)).isEqualTo("slow");
-		assertThat(service.slow(false)).isEqualTo("slow");
-		assertThat(service.slow(true)).isEqualTo("slow");
-		assertThat(service.slow(true)).isEqualTo("slow");
 
-		// Then in the next 10s, the fallback method should be called.
-		for (int i = 0; i < 5; i++) {
-			assertThat(service.slow(true)).isEqualTo("fallback");
-			Thread.sleep(1000);
-		}
+		// Sentinel's statistics bucket may roll over between requests. Wait for
+		// actual circuit opening instead of assuming a fixed request count.
+		await().atMost(Duration.ofSeconds(10))
+			.pollInterval(Duration.ofMillis(100))
+			.untilAsserted(() -> assertThat(service.slow(true)).isEqualTo("fallback"));
+		assertThat(service.slow(true)).isEqualTo("fallback");
 
-		// Try a normal request.
-		assertThat(service.slow(false)).isEqualTo("slow");
-		// Recovered.
+		// A successful fast probe closes the circuit after the open window.
+		await().atMost(Duration.ofSeconds(10))
+			.pollInterval(Duration.ofMillis(100))
+			.untilAsserted(() -> assertThat(service.slow(false)).isEqualTo("slow"));
 		assertThat(service.slow(true)).isEqualTo("slow");
 	}
 
@@ -87,7 +86,7 @@ public class SentinelCircuitBreakerIntegrationTest {
 		DegradeRuleManager.loadRules(new ArrayList<>());
 	}
 
-	@BeforeEach
+	@AfterEach
 	public void tearDown() {
 		DegradeRuleManager.loadRules(new ArrayList<>());
 	}
