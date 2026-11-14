@@ -16,7 +16,13 @@
 
 package com.alibaba.cloud.sentinel.datasource;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.jar.JarOutputStream;
+import java.util.zip.ZipEntry;
 
 import com.alibaba.cloud.sentinel.datasource.config.ApolloDataSourceProperties;
 import com.alibaba.cloud.sentinel.datasource.config.FileDataSourceProperties;
@@ -124,6 +130,34 @@ public class DataSourcePropertiesTests {
 			fileDataSourceProperties.setFile("classpath: 1.json");
 			fileDataSourceProperties.preCheck("test-ds");
 		});
+	}
+
+	@Test
+	public void testFileClasspathPreCheck() {
+		FileDataSourceProperties fileDataSourceProperties = new FileDataSourceProperties();
+		fileDataSourceProperties.setFile("classpath: flowrule.json");
+		fileDataSourceProperties.preCheck("test-ds");
+		assertThat(fileDataSourceProperties.getFile()).isNotBlank();
+		assertThat(new File(fileDataSourceProperties.getFile()).isFile()).isTrue();
+	}
+
+	@Test
+	public void testFileInJar() throws Exception {
+		Path jarFile = Files.createTempFile("sentinel-rules", ".jar");
+		try {
+			try (JarOutputStream jos = new JarOutputStream(Files.newOutputStream(jarFile))) {
+				jos.putNextEntry(new ZipEntry("sentinel.json"));
+				jos.write("[]".getBytes(StandardCharsets.UTF_8));
+				jos.closeEntry();
+			}
+			FileDataSourceProperties properties = new FileDataSourceProperties();
+			properties.setFile("jar:" + jarFile.toUri() + "!/sentinel.json");
+			properties.preCheck("jar-ds");
+			assertThat(new File(properties.getFile()).isFile()).isTrue();
+		}
+		finally {
+			Files.deleteIfExists(jarFile);
+		}
 	}
 
 	@Test

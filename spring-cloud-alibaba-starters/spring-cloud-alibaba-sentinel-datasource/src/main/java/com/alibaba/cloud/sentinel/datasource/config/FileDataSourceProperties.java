@@ -16,12 +16,18 @@
 
 package com.alibaba.cloud.sentinel.datasource.config;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import com.alibaba.cloud.sentinel.datasource.factorybean.FileRefreshableDataSourceFactoryBean;
 import jakarta.validation.constraints.NotEmpty;
 import org.jspecify.annotations.Nullable;
 
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
@@ -92,11 +98,29 @@ public class FileDataSourceProperties extends AbstractDataSourceProperties {
 							.getAbsolutePath());
 		}
 		catch (IOException e) {
-			throw new RuntimeException("[Sentinel Starter] DataSource " + dataSourceName
-					+ " handle file [" + file + "] error: " + e.getMessage(),
-					e);
+			try {
+				this.setFile(copyResourceToTempFile(StringUtils.trimAllWhitespace(file)));
+			}
+			catch (IOException ex) {
+				throw new RuntimeException("[Sentinel Starter] DataSource " + dataSourceName
+						+ " handle file [" + file + "] error: " + e.getMessage(),
+						e);
+			}
 		}
 
+	}
+
+	private String copyResourceToTempFile(String location) throws IOException {
+		Resource resource = new DefaultResourceLoader().getResource(location);
+		if (!resource.exists()) {
+			throw new IOException("resource does not exist: " + location);
+		}
+		File tempFile = File.createTempFile("sentinel-", ".tmp");
+		tempFile.deleteOnExit();
+		try (InputStream in = resource.getInputStream()) {
+			Files.copy(in, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		}
+		return tempFile.getAbsolutePath();
 	}
 
 }
