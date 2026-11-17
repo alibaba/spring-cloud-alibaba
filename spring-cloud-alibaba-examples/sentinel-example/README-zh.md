@@ -184,7 +184,7 @@ Hello
   }
   ```
 
-一个简单的 `@SentinelResource` 示例可以见 [sentinel-demo-annotation-spring-aop](https://github.com/alibaba/Sentinel/tree/2021.x/sentinel-demo/sentinel-demo-annotation-spring-aop)。
+一个简单的 `@SentinelResource` 示例可以见 [sentinel-demo-annotation-spring-aop](https://github.com/alibaba/Sentinel/tree/1.8/sentinel-demo/sentinel-demo-annotation-spring-aop)。
 
 ### Sentinel Circuitbreaker Example
 

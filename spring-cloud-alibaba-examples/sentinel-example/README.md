@@ -185,7 +185,7 @@ Hello
   }
   ```
 
-A simple `@SentinelResource` example can be found in [sentinel-demo-annotation-spring-aop](https://github.com/alibaba/Sentinel/tree/2021.x/sentinel-demo/sentinel-demo-annotation-spring-aop).
+A simple `@SentinelResource` example can be found in [sentinel-demo-annotation-spring-aop](https://github.com/alibaba/Sentinel/tree/1.8/sentinel-demo/sentinel-demo-annotation-spring-aop).
 
 ### Sentinel Circuitbreaker Example
 

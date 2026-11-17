@@ -186,7 +186,7 @@ A `spring-cloud-alibaba-examples` module is included in our project for you to g
 
 Examples：
 
-[Sentinel Example](https://github.com/alibaba/spring-cloud-alibaba/tree/2025.1.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme.md)
+[Sentinel Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2025.1.x/spring-cloud-alibaba-examples/sentinel-example/README.md)
 
 [Nacos Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2025.1.x/spring-cloud-alibaba-examples/nacos-example/readme.md)
 
