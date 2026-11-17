@@ -50,7 +50,7 @@ public class RocketMQCommonProperties implements Serializable {
 	 * globally unique. Producer group conceptually aggregates all producer instances of
 	 * exactly same role, which is particularly important when transactional messages are
 	 * involved. For non-transactional messages, it does not matter as long as it's unique
-	 * per process. See <a href="http://rocketmq.apache.org/docs/core-concept/">here</a>
+	 * per process. See <a href="https://rocketmq.apache.org/docs/domainModel/01main/">here</a>
 	 * for further discussion.
 	 */
 	private @Nullable String group;

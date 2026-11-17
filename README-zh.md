@@ -189,7 +189,7 @@ gpr.key=你的 GitHub Token（需要 read:packages 权限）
 
 Example 列表：
 
-[Sentinel Example](https://github.com/alibaba/spring-cloud-alibaba/tree/2025.1.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme-zh.md)
+[Sentinel Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2025.1.x/spring-cloud-alibaba-examples/sentinel-example/README-zh.md)
 
 [Nacos Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2025.1.x/spring-cloud-alibaba-examples/nacos-example/readme-zh.md)
 

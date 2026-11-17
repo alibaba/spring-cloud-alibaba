@@ -589,7 +589,7 @@ Tag example: `tag:red || blue`
 
 Sql example: `sql:(color in ('red1', 'red2', 'red4') and price>3)`
 
-More: [Filter](https://rocketmq.apache.org/docs/filter-by-sql92-example/)
+More: [Filter](https://rocketmq.apache.org/docs/featureBehavior/07messagefilter/)
 
 ```yaml
 server:
