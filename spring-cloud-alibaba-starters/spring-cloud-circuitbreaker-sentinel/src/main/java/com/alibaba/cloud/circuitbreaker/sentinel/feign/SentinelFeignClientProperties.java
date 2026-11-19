@@ -97,9 +97,10 @@ public class SentinelFeignClientProperties {
 			String json = objectMapper.writeValueAsString(this);
 			return objectMapper.readValue(json, this.getClass());
 		}
-		catch (Exception ignored) {
+		catch (Exception e) {
+			throw new IllegalStateException(
+					"Failed to deep-copy SentinelFeignClientProperties via Jackson", e);
 		}
-		return new SentinelFeignClientProperties();
 	}
 
 }
