@@ -48,7 +48,7 @@
         <slf4j-api.version>2.0.17</slf4j-api.version>
         <fastjson.version>2.0.58</fastjson.version>
         <log4j-slf4j2-impl.version>2.25.1</log4j-slf4j2-impl.version>
-        <guava.version>33.4.8-jre</guava.version>
+        <guava.version>33.7.1-jre</guava.version>
         <lombok.version>1.18.38</lombok.version>
 
 		<jspecify.version>1.0.0</jspecify.version>
