@@ -95,6 +95,21 @@ public class RocketMQCommonProperties implements Serializable {
 
 	private @Nullable String customizedTraceTopic;
 
+	/**
+	 * Whether to share a single {@link MQClientInstance} across producers and
+	 * consumers that connect to the same name server. When {@code true}, the
+	 * per-client {@code nanoTime} suffix is omitted from the generated
+	 * instance name so RocketMQ can reuse one {@link MQClientInstance} and
+	 * its worker threads instead of spawning ~20 threads per binding.
+	 * <p>{@code null} (the default) preserves the historical per-client
+	 * isolation on the extension side while still allowing binder-level
+	 * configuration to apply; an explicit {@code false} on the extension
+	 * takes precedence over a binder-level {@code true}, giving bindings
+	 * that need isolated instances (e.g. ordered/transactional producers)
+	 * a way to opt out.
+	 */
+	private @Nullable Boolean shareClientInstance;
+
 	public boolean getEnabled() {
 		return enabled;
 	}
@@ -221,5 +236,13 @@ public class RocketMQCommonProperties implements Serializable {
 
 	public void setUnitName(@Nullable String unitName) {
 		this.unitName = unitName;
+	}
+
+	public @Nullable Boolean getShareClientInstance() {
+		return shareClientInstance;
+	}
+
+	public void setShareClientInstance(@Nullable Boolean shareClientInstance) {
+		this.shareClientInstance = shareClientInstance;
 	}
 }
