@@ -6,6 +6,17 @@ This project demonstrates how to use Spring Cloud Alibaba Nacos related Starters
 
 [Nacos](https://github.com/alibaba/Nacos) It is Alibaba's open source dynamic service discovery, configuration management and service management platform that is easier to build cloud-native applications.
 
+## Create a Spring Boot application
+
+1. Open https://start.spring.io/.
+2. Select Maven or Gradle.
+3. Select Java.
+4. Choose a compatible Spring Boot version.
+5. Enter your project details.
+6. Select the required dependencies.
+7. Click Generate.
+8. Extract the ZIP file and import the project into your IDE.
+
 ## Nacos Server 3.1.0 is properly configured and started
 
 In Nacos 3.1.0, functions related to user authentication are added. When starting Nacos Server for the first time, it needs to be configured correctly to avoid the problem of startup failure.
